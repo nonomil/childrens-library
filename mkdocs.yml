@@ -1,0 +1,37 @@
+site_name: 儿童英语绘本图书馆
+site_description: 幼小衔接英语故事绘本精选 - 8本经典PDF在线阅读
+theme:
+  name: material
+  language: zh
+  palette:
+    primary: teal
+    accent: deep orange
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.indexes
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji
+
+extra:
+  social:
+    - icon: fontawesome/solid/book
+      link: https://github.com/nonomil/my-notes
+
+nav:
+  - 首页: index.md
+  - 绘本列表:
+    - The Gruffalo: books/gruffalo.md
+    - Don't Let the Pigeon Drive the Bus!:
+      - 介绍: books/pigeon_bus.md
+      - 🎯 逐页阅读: books/pigeon_bus_reader.md
+    - Knuffle Bunny: books/knuffle_bunny.md
+    - Pete the Cat: books/pete_cat.md
+    - Little Critter: books/little_critter.md
+    - Where the Wild Things Are: books/wild_things.md
+    - Winnie the Witch: books/winnie_witch.md
+    - The Day the Crayons Quit: books/crayons_quit.md
+  - 全部PDF打包下载: download.md
