@@ -24,7 +24,7 @@
 
 ## 📖 逐页阅读
 
-👉 <a href="pigeon_bus_reader/" target="_blank" style="display: inline-block; padding: 14px 32px; background: #009688; color: white; border-radius: 30px; text-decoration: none; font-size: 20px; font-weight: bold;">📖 打开逐页阅读器 →</a>
+👉 <a href="../pigeon_bus_reader/" target="_blank" style="display: inline-block; padding: 14px 32px; background: #009688; color: white; border-radius: 30px; text-decoration: none; font-size: 20px; font-weight: bold;">📖 打开逐页阅读器 →</a>
 
 点击上面的按钮，像翻纸质书一样逐页阅读，支持键盘 ← → 翻页。
 

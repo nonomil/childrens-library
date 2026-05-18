@@ -24,7 +24,9 @@ extra:
 nav:
   - 首页: index.md
   - 绘本列表:
-    - The Gruffalo: books/gruffalo.md
+    - The Gruffalo:
+      - 介绍: books/gruffalo.md
+      - 🎯 逐页阅读: books/gruffalo_reader.md
     - Don't Let the Pigeon Drive the Bus!:
       - 介绍: books/pigeon_bus.md
       - 🎯 逐页阅读: books/pigeon_bus_reader.md
