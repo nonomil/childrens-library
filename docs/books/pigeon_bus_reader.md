@@ -8,7 +8,7 @@
 <div id="pigeon-reader" style="max-width: 800px; margin: 0 auto; text-align: center;">
   <!-- 封面显示 -->
   <div id="page-display" style="position: relative;">
-    <img id="page-img" src="../../../images/pigeon_bus/page_01.png" 
+    <img id="page-img" src="../../images/pigeon_bus/page_01.png" 
          style="width: 100%; max-width: 700px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); cursor: pointer;"
          onclick="nextPage()" alt="Page">
     
