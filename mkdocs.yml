@@ -35,3 +35,6 @@ nav:
     - Winnie the Witch: books/winnie_witch.md
     - The Day the Crayons Quit: books/crayons_quit.md
   - 全部PDF打包下载: download.md
+
+# GitHub Pages 部署配置
+site_url: https://nonomil.github.io/childrens-library/
