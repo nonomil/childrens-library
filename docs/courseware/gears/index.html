@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🚲 齿轮和链条 - 小管家课堂</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes spin-cw { to { transform: rotate(360deg); } }
+  @keyframes spin-ccw { to { transform: rotate(-360deg); } }
+  @keyframes chain-glow {
+    0%, 100% { filter: drop-shadow(0 0 3px rgba(255,165,0,0.3)); }
+    50% { filter: drop-shadow(0 0 10px rgba(255,165,0,0.7)); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes popIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-15px); }
+    50% { transform: translateY(0); }
+    70% { transform: translateY(-8px); }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0; transform: scale(0); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes ride {
+    0% { transform: translateX(-30px); }
+    100% { transform: translateX(30px); }
+  }
+
+  body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+    background: linear-gradient(145deg, #FFF8E7 0%, #FFE8C8 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 820px;
+    min-height: 600px;
+    background: #FFFCF5;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 4px #FFF, 0 0 0 8px #FFB347;
+    padding: 32px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page {
+    display: none;
+    animation: slideIn 0.5s ease-out;
+  }
+  .page.active {
+    display: block;
+  }
+
+  /* ====== COVER ====== */
+  #page-cover {
+    text-align: center;
+    padding: 20px 0;
+  }
+  #page-cover .big-icon {
+    font-size: 100px;
+    animation: float 3s ease-in-out infinite;
+    margin-bottom: 10px;
+  }
+  #page-cover h1 {
+    font-size: 44px;
+    color: #E8751A;
+    text-shadow: 3px 3px 0 #FFD700;
+    margin: 10px 0 8px;
+  }
+  #page-cover h1 .emoji-bike {
+    display: inline-block;
+  }
+  #page-cover .subtitle {
+    font-size: 22px;
+    color: #8B5E3C;
+    margin-bottom: 18px;
+  }
+  #page-cover .age-badge {
+    display: inline-block;
+    background: #FFB347;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 8px 24px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+  }
+  .cover-gears {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .cover-gears .gear {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 8px dashed #888;
+    display: inline-block;
+  }
+  .cover-gears .gear.s1 { animation: spin-cw 3s linear infinite; border-color: #FF6B6B; }
+  .cover-gears .gear.s2 { animation: spin-ccw 2.5s linear infinite; border-color: #4ECDC4; width: 45px; height: 45px; }
+  .cover-gears .gear.s3 { animation: spin-cw 4s linear infinite; border-color: #FFE66D; width: 50px; height: 50px; }
+
+  /* ====== NAVIGATION ====== */
+  .nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+    gap: 10px;
+  }
+  .nav-btn {
+    background: #FFB347;
+    border: none;
+    color: #FFF;
+    font-size: 28px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,179,71,0.4);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  .nav-btn:hover { transform: scale(1.1); background: #FF9F1C; }
+  .nav-btn:active { transform: scale(0.92); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; transform: none; }
+
+  .page-dots {
+    display: flex;
+    gap: 10px;
+  }
+  .page-dots .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #E0D5C7;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .page-dots .dot.active { background: #FFB347; transform: scale(1.3); }
+
+  .read-btn {
+    background: #6BCB77;
+    border: none;
+    color: #FFF;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(107,203,119,0.4);
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .read-btn:hover { background: #4CAF50; transform: scale(1.05); }
+  .read-btn:active { transform: scale(0.92); }
+
+  /* ====== CONTENT STYLES ====== */
+  .page-title {
+    text-align: center;
+    font-size: 36px;
+    color: #E8751A;
+    margin-bottom: 6px;
+  }
+  .page-title-icon {
+    display: block;
+    font-size: 50px;
+    margin-bottom: 4px;
+  }
+  .page-desc {
+    text-align: center;
+    font-size: 20px;
+    color: #6B4F3A;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+
+  /* ====== LESSON 1: GEAR ====== */
+  .gear-demo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
+  }
+  .gear-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+  }
+  .gear-large {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: conic-gradient(#FF6B6B 0deg 30deg, #FF8E8E 30deg 60deg, #FF6B6B 60deg 90deg, #FF8E8E 90deg 120deg, #FF6B6B 120deg 150deg, #FF8E8E 150deg 180deg, #FF6B6B 180deg 210deg, #FF8E8E 210deg 240deg, #FF6B6B 240deg 270deg, #FF8E8E 270deg 300deg, #FF6B6B 300deg 330deg, #FF8E8E 330deg 360deg);
+    border: 10px solid #D94F4F;
+    position: relative;
+    animation: spin-cw 4s linear infinite;
+    cursor: pointer;
+    transition: animation-duration 0.3s;
+    box-shadow: 0 8px 25px rgba(255,107,107,0.3);
+  }
+  .gear-large .hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #D94F4F;
+    border: 5px solid #FFF;
+  }
+  .gear-large .teeth {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+  .gear-large .teeth span {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #D94F4F;
+    border-radius: 4px;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .gear-large .teeth span:nth-child(1) { transform: translateX(-50%) rotate(0deg); top: -12px; left: 50%; }
+  .gear-large .teeth span:nth-child(2) { transform: translateX(-50%) rotate(30deg); top: -12px; left: 50%; }
+  
+  .gear-controls {
+    display: flex;
+    gap: 14px;
+    margin-top: 14px;
+    align-items: center;
+  }
+  .gear-controls button {
+    background: #FF8E8E;
+    border: none;
+    color: #FFF;
+    font-size: 20px;
+    padding: 8px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: all 0.15s;
+  }
+  .gear-controls button:hover { transform: scale(1.08); }
+
+  .gear-fact-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .gear-fact-bubbles .bubble {
+    background: #FFE0D0;
+    color: #A0522D;
+    font-size: 17px;
+    padding: 12px 20px;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  }
+
+  /* ====== LESSON 2: TWO GEARS ====== */
+  .two-gears-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    margin: 18px 0;
+    position: relative;
+    height: 210px;
+  }
+  .gear-a, .gear-b {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 8px solid #888;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  }
+  .gear-a {
+    background: conic-gradient(#4ECDC4 0deg 30deg, #7EDDD6 30deg 60deg, #4ECDC4 60deg 90deg, #7EDDD6 90deg 120deg, #4ECDC4 120deg 150deg, #7EDDD6 150deg 180deg, #4ECDC4 180deg 210deg, #7EDDD6 210deg 240deg, #4ECDC4 240deg 270deg, #7EDDD6 270deg 300deg, #4ECDC4 300deg 330deg, #7EDDD6 330deg 360deg);
+    border-color: #2EAD9E;
+    animation: spin-cw 3s linear infinite;
+    z-index: 2;
+  }
+  .gear-b {
+    background: conic-gradient(#FFE66D 0deg 30deg, #FFF0A0 30deg 60deg, #FFE66D 60deg 90deg, #FFF0A0 90deg 120deg, #FFE66D 120deg 150deg, #FFF0A0 150deg 180deg, #FFE66D 180deg 210deg, #FFF0A0 210deg 240deg, #FFE66D 240deg 270deg, #FFF0A0 270deg 300deg, #FFE66D 300deg 330deg, #FFF0A0 330deg 360deg);
+    border-color: #D4B83C;
+    animation: spin-ccw 3s linear infinite;
+    margin-left: -18px;
+    z-index: 1;
+  }
+  .gear-a .hub, .gear-b .hub {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #FFF;
+    border: 4px solid #666;
+  }
+  .touch-hint {
+    text-align: center;
+    color: #E8751A;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 6px 0;
+  }
+  .speed-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin: 6px 0;
+  }
+  .speed-control label {
+    font-size: 16px;
+    color: #6B4F3A;
+  }
+  .speed-control input[type="range"] {
+    width: 120px;
+    accent-color: #4ECDC4;
+  }
+
+  /* ====== LESSON 3: CHAIN ====== */
+  .chain-area {
+    background: linear-gradient(180deg, #F0E6D3, #E8DCC8);
+    border-radius: 30px;
+    padding: 24px 20px;
+    margin: 14px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .chain-demo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    position: relative;
+    height: 160px;
+  }
+  .sprocket {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 6px solid #A0826A;
+    background: #C4A882;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    flex-shrink: 0;
+  }
+  .sprocket.large { width: 130px; height: 130px; }
+  .sprocket .inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #8B6F57;
+    border: 4px solid #5C4838;
+  }
+  .sprocket .teeth-mark {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: #8B6F57;
+    border-radius: 3px;
+  }
+
+  .chain-links {
+    flex: 1;
+    height: 16px;
+    background: repeating-linear-gradient(
+      90deg,
+      #555 0px,
+      #555 12px,
+      #888 12px,
+      #888 16px
+    );
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+    animation: chain-glow 1.5s ease-in-out infinite;
+  }
+  .chain-animating {
+    background: repeating-linear-gradient(
+      90deg,
+      #555 0px,
+      #555 12px,
+      #888 12px,
+      #888 16px
+    );
+    background-size: 16px 100%;
+    animation: chain-move 0.5s linear infinite;
+  }
+  @keyframes chain-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 16px 0; }
+  }
+
+  .chain-bike {
+    text-align: center;
+    margin: 12px 0;
+  }
+  .chain-bike .bike-icon {
+    font-size: 64px;
+    display: inline-block;
+    animation: ride 1.5s ease-in-out infinite alternate;
+  }
+
+  .chain-facts {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .chain-facts .tag {
+    background: #C4A882;
+    color: #FFF;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 8px 18px;
+    border-radius: 30px;
+  }
+
+  /* ====== QUIZ ====== */
+  .quiz-area {
+    padding: 10px 0;
+  }
+  .quiz-question {
+    background: #FFF3E0;
+    border-radius: 24px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .quiz-question .q-num {
+    display: inline-block;
+    background: #FFB347;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 4px 16px;
+    border-radius: 30px;
+    margin-bottom: 10px;
+  }
+  .quiz-question .q-text {
+    font-size: 24px;
+    color: #5C4033;
+    font-weight: bold;
+  }
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .quiz-opt {
+    background: #FFFCF5;
+    border: 3px solid #E8DCC8;
+    border-radius: 20px;
+    padding: 16px 12px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #5C4033;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .quiz-opt:hover {
+    border-color: #FFB347;
+    transform: scale(1.03);
+    background: #FFF8E7;
+  }
+  .quiz-opt.correct {
+    border-color: #6BCB77;
+    background: #E8F5E9;
+    animation: popIn 0.3s ease-out;
+  }
+  .quiz-opt.wrong {
+    border-color: #FF6B6B;
+    background: #FFE0E0;
+    animation: shake 0.3s ease-out;
+  }
+  .quiz-opt:disabled {
+    cursor: default;
+    opacity: 0.8;
+  }
+  .quiz-opt:disabled:hover {
+    transform: none;
+  }
+  .quiz-feedback {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    min-height: 50px;
+    padding: 10px;
+    border-radius: 20px;
+    margin-bottom: 10px;
+  }
+  .quiz-feedback.correct { background: #E8F5E9; color: #2E7D32; }
+  .quiz-feedback.wrong { background: #FFE0E0; color: #C62828; }
+
+  .quiz-progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .quiz-progress .dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #E0D5C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    color: #FFF;
+  }
+  .quiz-progress .dot.done { background: #6BCB77; }
+  .quiz-progress .dot.wrong-dot { background: #FF6B6B; }
+  .quiz-progress .dot.current { background: #FFB347; transform: scale(1.2); }
+
+  .quiz-result {
+    display: none;
+    text-align: center;
+    padding: 30px;
+    background: linear-gradient(135deg, #FFF8E7, #FFE8C8);
+    border-radius: 30px;
+  }
+  .quiz-result.show { display: block; animation: popIn 0.5s ease-out; }
+  .quiz-result .big-emoji { font-size: 72px; }
+  .quiz-result .score-text { font-size: 32px; color: #E8751A; font-weight: bold; margin: 10px 0; }
+  .quiz-result .star-row { font-size: 40px; margin: 8px 0; }
+  .quiz-result .msg { font-size: 20px; color: #6B4F3A; }
+  .quiz-restart-btn {
+    background: #FFB347;
+    border: none;
+    color: #FFF;
+    font-size: 22px;
+    padding: 12px 32px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    margin-top: 16px;
+    transition: all 0.15s;
+  }
+  .quiz-restart-btn:hover { transform: scale(1.05); background: #FF9F1C; }
+
+  /* ====== CONFETTI ====== */
+  .confetti-piece {
+    position: fixed;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    animation: confetti-fall 2s ease-out forwards;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ====== YAY ====== */
+  .yay-container {
+    display: none;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  .yay-container.show {
+    display: block;
+    animation: popIn 0.6s ease-out;
+  }
+  .yay-container .big {
+    font-size: 80px;
+  }
+  .yay-container .title {
+    font-size: 36px;
+    color: #E8751A;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  .yay-container .sub {
+    font-size: 20px;
+    color: #6B4F3A;
+  }
+  .yay-container .btn-row {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+  }
+  .yay-container .btn-row button {
+    background: #FFB347;
+    border: none;
+    color: #FFF;
+    font-size: 20px;
+    padding: 12px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+    transition: all 0.15s;
+  }
+  .yay-container .btn-row button:hover { transform: scale(1.08); }
+  .yay-container .btn-row button:last-child { background: #6BCB77; }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width: 600px) {
+    .book { padding: 20px 16px; border-radius: 28px; min-height: auto; }
+    #page-cover h1 { font-size: 30px; }
+    .page-title { font-size: 28px; }
+    .page-desc { font-size: 17px; }
+    .quiz-options { grid-template-columns: 1fr; }
+    .two-gears-area { height: 150px; }
+    .gear-a, .gear-b { width: 100px; height: 100px; }
+    .gear-large { width: 140px; height: 140px; }
+    .gear-wrapper { width: 150px; height: 150px; }
+    .sprocket { width: 80px; height: 80px; }
+    .sprocket.large { width: 100px; height: 100px; }
+    .nav-btn { width: 46px; height: 46px; font-size: 22px; }
+    .read-btn { font-size: 16px; padding: 8px 16px; }
+    .quiz-opt { font-size: 17px; padding: 12px; }
+  }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="book" id="app">
+
+  <!-- ==================== PAGE 0: COVER ==================== -->
+  <div class="page active" id="page-cover">
+    <div class="big-icon">🚲</div>
+    <h1>咕噜咕噜转！<span class="emoji-bike">⚙️</span></h1>
+    <div class="subtitle">齿轮 · 传动 · 链条 的小秘密</div>
+    <div class="age-badge">🧒 幼儿园小宝贝</div>
+    <div class="cover-gears">
+      <span class="gear s1"></span>
+      <span class="gear s2"></span>
+      <span class="gear s3"></span>
+    </div>
+    <div style="margin-top:20px;">
+      <button class="read-btn" onclick="speak('咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！')" style="display:inline-flex;margin:0 auto;">🔊 听故事</button>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 1: WHAT IS A GEAR ==================== -->
+  <div class="page" id="page-1">
+    <span class="page-title-icon" style="text-align:center;display:block;">⚙️</span>
+    <div class="page-title">什么是齿轮？</div>
+    <div class="page-desc">
+      齿轮就像一个个"<strong>小牙齿</strong>"围成的圆饼饼！<br>
+      它们手拉手转圈圈，就能把力气传给别人 🤝
+    </div>
+
+    <div class="gear-demo">
+      <div class="gear-wrapper" id="gearDemoWrapper">
+        <div class="gear-large" id="singleGear" onclick="toggleGear()">
+          <div class="hub"></div>
+        </div>
+      </div>
+      <div class="gear-controls">
+        <button onclick="toggleGear()">⏯️ 转/停</button>
+        <button onclick="changeGearSpeed(-0.5)">🐢 慢</button>
+        <button onclick="changeGearSpeed(0.5)">🐇 快</button>
+      </div>
+    </div>
+
+    <div class="gear-fact-bubbles">
+      <span class="bubble">🦷 有牙齿</span>
+      <span class="bubble">🔄 会转圈</span>
+      <span class="bubble">🤝 传力气</span>
+      <span class="bubble">🔢 大小不同</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: TWO GEARS ==================== -->
+  <div class="page" id="page-2">
+    <span class="page-title-icon" style="text-align:center;display:block;">🔄</span>
+    <div class="page-title">齿轮碰齿轮</div>
+    <div class="page-desc">
+      两个齿轮<strong>牙齿咬牙齿</strong>，一个转，另一个也转！<br>
+      方向是 <strong>相反的</strong> 哦～左边往右，右边往左 🤯
+    </div>
+
+    <div class="touch-hint">👆 点下面的小人都可以调速哟！</div>
+    <div class="two-gears-area" id="twoGearsArea">
+      <div class="gear-a" id="gearA" style="animation-duration:3s;">
+        <div class="hub"></div>
+      </div>
+      <div class="gear-b" id="gearB" style="animation-duration:3s;">
+        <div class="hub"></div>
+      </div>
+    </div>
+    <div class="speed-control">
+      <label>🐢 慢</label>
+      <input type="range" id="speedSlider" min="0.5" max="6" step="0.5" value="3" oninput="changePairSpeed(this.value)">
+      <label>🐇 快</label>
+    </div>
+    <div class="gear-fact-bubbles">
+      <span class="bubble">🦷 牙齿咬牙齿</span>
+      <span class="bubble">↔️ 方向相反</span>
+      <span class="bubble">⚡ 一起转</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3: CHAIN ==================== -->
+  <div class="page" id="page-3">
+    <span class="page-title-icon" style="text-align:center;display:block;">⛓️</span>
+    <div class="page-title">链条传动</div>
+    <div class="page-desc">
+      链条就像一条长长的"<strong>小铁链</strong>"，<br>
+      把两个齿轮连起来，力气就能传好远好远！
+    </div>
+
+    <div class="chain-area">
+      <div class="chain-demo" id="chainDemo">
+        <div class="sprocket" id="sprocketL">
+          <div class="inner"></div>
+        </div>
+        <div class="chain-links" id="chainLinks"></div>
+        <div class="sprocket large" id="sprocketR">
+          <div class="inner"></div>
+        </div>
+      </div>
+      <div class="touch-hint">👆 点一下链条让它动起来！</div>
+    </div>
+
+    <div class="chain-bike">
+      <span class="bike-icon">🚲</span>
+      <div style="font-size:18px;color:#6B4F3A;font-weight:bold;">自行车就是靠链条传动的！</div>
+    </div>
+
+    <div class="chain-facts">
+      <span class="tag">🚲 自行车</span>
+      <span class="tag">🏍️ 摩托车</span>
+      <span class="tag">🏭 大机器</span>
+      <span class="tag">⏰ 老时钟</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 4: QUIZ ==================== -->
+  <div class="page" id="page-4">
+    <span class="page-title-icon" style="text-align:center;display:block;">❓</span>
+    <div class="page-title">小测验！</div>
+    <div class="page-desc">看看你记住了多少？点一点正确答案吧！</div>
+
+    <div class="quiz-area" id="quizArea">
+      <div class="quiz-progress" id="quizProgress"></div>
+      <div class="quiz-question" id="quizQuestion">
+        <div class="q-num" id="qNum">第 1 题</div>
+        <div class="q-text" id="qText">齿轮有什么？</div>
+      </div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-result" id="quizResult">
+        <div class="big-emoji" id="resultEmoji">🌟</div>
+        <div class="score-text" id="resultScore">答对 3 题！</div>
+        <div class="star-row" id="resultStars">⭐⭐⭐</div>
+        <div class="msg" id="resultMsg">你真棒！👏</div>
+        <button class="quiz-restart-btn" onclick="restartQuiz()">🔄 再来一次</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 5: END ==================== -->
+  <div class="page" id="page-5">
+    <div class="yay-container show" id="endPage">
+      <div class="big">🎉🌟🎉</div>
+      <div class="title">你太棒啦！</div>
+      <div class="sub">
+        今天你学会了 <strong>齿轮⚙️</strong>、<strong>传动🔄</strong> 和 <strong>链条⛓️</strong> 的小秘密！<br>
+        下次看到自行车🚲，想想链条是怎么工作的吧！
+      </div>
+      <div class="btn-row">
+        <button onclick="goToPage(0)">🏠 回到封面</button>
+        <button onclick="speak('你太棒啦！今天学会了齿轮、传动和链条的小秘密！下次看到自行车，想想链条是怎么工作的吧！')">🔊 再听一遍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NAVIGATION ==================== -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+  <div style="display:flex;justify-content:center;margin-top:6px;">
+    <button class="read-btn" onclick="speakCurrentPage()">🔊 读给我听</button>
+  </div>
+</div>
+
+<script>
+  // ========== STATE ==========
+  let currentPage = 0;
+  const TOTAL_PAGES = 6; // cover, 1, 2, 3, 4, 5
+  let gearRunning = true;
+  let gearSpeed = 4; // animation-duration in seconds
+
+  // Quiz state
+  const quizData = [
+    {
+      question: '齿轮像什么？',
+      options: ['圆圆的饼干 🍪', '有牙齿的圆饼饼 ⚙️', '小皮球 ⚽', '小碗 🥣'],
+      correct: 1
+    },
+    {
+      question: '两个齿轮碰在一起，方向会怎样？',
+      options: ['一样的方向 ➡️➡️', '方向相反 🔄↩️', '都不转 🛑', '越转越小 📉'],
+      correct: 1
+    },
+    {
+      question: '什么东西像长长的铁链把齿轮连起来？',
+      options: ['绳子 🧵', '链条 ⛓️', '胶带 📎', '吸管 🥤'],
+      correct: 1
+    },
+    {
+      question: '下面哪个东西用到链条传动？',
+      options: ['自行车 🚲', '电视机 📺', '台灯 💡', '枕头 🛏️'],
+      correct: 0
+    },
+    {
+      question: '齿轮的"牙齿"有什么作用？',
+      options: ['嚼东西吃 🍔', '咬住别的齿轮传递力气 🤝', '用来刷牙 🪥', '用来画画 🎨'],
+      correct: 1
+    }
+  ];
+  let quizIndex = 0;
+  let quizScore = 0;
+  let quizAnswered = false;
+  let quizDone = false;
+
+  // ========== NAVIGATION ==========
+  function renderDots() {
+    const container = document.getElementById('pageDots');
+    container.innerHTML = '';
+    for (let i = 0; i < TOTAL_PAGES; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (i === currentPage ? ' active' : '');
+      dot.onclick = () => goToPage(i);
+      container.appendChild(dot);
+    }
+    document.getElementById('prevBtn').disabled = (currentPage === 0);
+    document.getElementById('nextBtn').disabled = (currentPage === TOTAL_PAGES - 1);
+  }
+
+  function goToPage(n) {
+    document.querySelectorAll('.page').forEach((p, i) => {
+      p.classList.toggle('active', i === n);
+    });
+    currentPage = n;
+    renderDots();
+    if (n === 4 && !quizDone) initQuiz();
+  }
+
+  function nextPage() {
+    if (currentPage < TOTAL_PAGES - 1) goToPage(currentPage + 1);
+  }
+  function prevPage() {
+    if (currentPage > 0) goToPage(currentPage - 1);
+  }
+
+  // ========== SPEECH ==========
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakCurrentPage() {
+    const texts = {
+      0: '咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！',
+      1: '什么是齿轮？齿轮就像一个个小牙齿围成的圆饼饼！它们手拉手转圈圈，就能把力气传给别人。齿轮有牙齿、会转圈、能传力气、还可以有大小不同！',
+      2: '齿轮碰齿轮！两个齿轮牙齿咬牙齿，一个转，另一个也跟着转！方向是相反的哦！左边往右转，右边就往左转！',
+      3: '链条传动！链条就像一条长长的小铁链，把两个齿轮连起来，力气就能传好远好远！自行车就是靠链条传动的！还有摩托车、大机器和老时钟也用链条！',
+      4: '小测验时间到！看看你记住了多少？选一个答案吧！',
+      5: '你太棒啦！今天学会了齿轮、传动和链条的小秘密！下次看到自行车，想想链条是怎么工作的吧！'
+    };
+    speak(texts[currentPage] || texts[0]);
+  }
+
+  // ========== GEAR PAGE ==========
+  function toggleGear() {
+    const g = document.getElementById('singleGear');
+    gearRunning = !gearRunning;
+    g.style.animationPlayState = gearRunning ? 'running' : 'paused';
+  }
+
+  function changeGearSpeed(delta) {
+    gearSpeed = Math.max(1, Math.min(10, gearSpeed + delta));
+    document.getElementById('singleGear').style.animationDuration = gearSpeed + 's';
+  }
+
+  // ========== TWO GEARS ==========
+  function changePairSpeed(val) {
+    document.getElementById('gearA').style.animationDuration = val + 's';
+    document.getElementById('gearB').style.animationDuration = val + 's';
+  }
+
+  // ========== CHAIN PAGE ==========
+  document.addEventListener('DOMContentLoaded', () => {
+    const chain = document.getElementById('chainLinks');
+    chain.addEventListener('click', () => {
+      chain.classList.toggle('chain-animating');
+      // animate sprockets
+      const sl = document.getElementById('sprocketL');
+      const sr = document.getElementById('sprocketR');
+      if (chain.classList.contains('chain-animating')) {
+        sl.style.animation = 'spin-cw 2s linear infinite';
+        sr.style.animation = 'spin-cw 2.5s linear infinite';
+      } else {
+        sl.style.animation = 'none';
+        sr.style.animation = 'none';
+        speak('点一下链条，它就开始动啦！链条把齿轮连起来，力气就传过去了！');
+      }
+    });
+
+    const sprocketL = document.getElementById('sprocketL');
+    const sprocketR = document.getElementById('sprocketR');
+    // Add teeth marks to sprockets
+    for (let i = 0; i < 8; i++) {
+      const t1 = document.createElement('span');
+      t1.className = 'teeth-mark';
+      t1.style.cssText = `top:${-8}px;left:50%;transform:translateX(-50%) rotate(${i*45}deg);transform-origin:center ${55}px;`;
+      sprocketL.appendChild(t1);
+      
+      const t2 = document.createElement('span');
+      t2.className = 'teeth-mark';
+      t2.style.cssText = `top:${-8}px;left:50%;transform:translateX(-50%) rotate(${i*45}deg);transform-origin:center ${65}px;`;
+      sprocketR.appendChild(t2);
+    }
+  });
+
+  // ========== QUIZ ==========
+  function initQuiz() {
+    quizIndex = 0;
+    quizScore = 0;
+    quizAnswered = false;
+    quizDone = false;
+    document.getElementById('quizResult').classList.remove('show');
+    document.getElementById('quizResult').style.display = 'none';
+    document.getElementById('quizQuestion').style.display = 'block';
+    document.getElementById('quizOptions').style.display = 'grid';
+    document.getElementById('quizFeedback').textContent = '';
+    document.getElementById('quizFeedback').className = 'quiz-feedback';
+    showQuestion();
+  }
+
+  function showQuestion() {
+    if (quizIndex >= quizData.length) {
+      finishQuiz();
+      return;
+    }
+    const q = quizData[quizIndex];
+    document.getElementById('qNum').textContent = `第 ${quizIndex + 1} 题 / 共 ${quizData.length} 题`;
+    document.getElementById('qText').textContent = q.question;
+
+    const container = document.getElementById('quizOptions');
+    container.innerHTML = '';
+    q.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.onclick = () => answerQuiz(i);
+      container.appendChild(btn);
+    });
+
+    document.getElementById('quizFeedback').textContent = '';
+    document.getElementById('quizFeedback').className = 'quiz-feedback';
+    quizAnswered = false;
+
+    // progress dots
+    updateQuizProgress();
+  }
+
+  function answerQuiz(selected) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+
+    const q = quizData[quizIndex];
+    const options = document.querySelectorAll('.quiz-opt');
+    options.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === q.correct) btn.classList.add('correct');
+      else if (i === selected) btn.classList.add('wrong');
+    });
+
+    const feedback = document.getElementById('quizFeedback');
+    if (selected === q.correct) {
+      quizScore++;
+      feedback.textContent = '✅ 答对啦！你太聪明了！ 🌟';
+      feedback.className = 'quiz-feedback correct';
+      speak('答对啦！你太聪明了！');
+    } else {
+      feedback.textContent = '❌ 不对哦～正确答案是：' + q.options[q.correct] + ' 😊';
+      feedback.className = 'quiz-feedback wrong';
+      speak('不对哦～正确答案是：' + q.options[q.correct]);
+    }
+
+    updateQuizProgress();
+    setTimeout(() => {
+      quizIndex++;
+      showQuestion();
+    }, 1800);
+  }
+
+  function updateQuizProgress() {
+    const container = document.getElementById('quizProgress');
+    container.innerHTML = '';
+    quizData.forEach((_, i) => {
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      if (i < quizIndex) {
+        // check if that question was correct - we need to store per-question results
+        // simplified: just show as done
+        dot.classList.add('done');
+      } else if (i === quizIndex) {
+        dot.classList.add('current');
+      }
+      dot.textContent = i + 1;
+      container.appendChild(dot);
+    });
+  }
+
+  function finishQuiz() {
+    quizDone = true;
+    document.getElementById('quizQuestion').style.display = 'none';
+    document.getElementById('quizOptions').style.display = 'none';
+    document.getElementById('quizFeedback').style.display = 'none';
+    const result = document.getElementById('quizResult');
+    result.style.display = 'block';
+    result.classList.add('show');
+
+    const total = quizData.length;
+    const pct = quizScore / total;
+
+    let emoji, stars, msg;
+    if (pct === 1) {
+      emoji = '🏆';
+      stars = '⭐⭐⭐⭐⭐';
+      msg = '满分！你是齿轮小天才！🎉';
+      speak('满分！你是齿轮小天才！');
+      launchConfetti();
+    } else if (pct >= 0.8) {
+      emoji = '🌟';
+      stars = '⭐⭐⭐⭐';
+      msg = '太棒啦！你已经很厉害啦！👏';
+      speak('太棒啦！你已经很厉害啦！');
+      launchConfetti();
+    } else if (pct >= 0.6) {
+      emoji = '👍';
+      stars = '⭐⭐⭐';
+      msg = '不错哦！再学一次会更棒！💪';
+    } else {
+      emoji = '💪';
+      stars = '⭐⭐';
+      msg = '加油！我们再来一次吧！😊';
+    }
+
+    document.getElementById('resultEmoji').textContent = emoji;
+    document.getElementById('resultScore').textContent = `答对 ${quizScore} 题 / ${total} 题`;
+    document.getElementById('resultStars').textContent = stars;
+    document.getElementById('resultMsg').textContent = msg;
+  }
+
+  function restartQuiz() {
+    initQuiz();
+  }
+
+  // ========== CONFETTI ==========
+  function launchConfetti() {
+    const colors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FFB347', '#6BCB77', '#A78BFA', '#F472B6'];
+    for (let i = 0; i < 50; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.top = '-10px';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      el.style.width = (Math.random() * 10 + 6) + 'px';
+      el.style.height = (Math.random() * 10 + 6) + 'px';
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '3px';
+      el.style.animationDuration = (Math.random() * 2 + 1.5) + 's';
+      el.style.animationDelay = (Math.random() * 0.8) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+  }
+
+  // ========== INIT ==========
+  renderDots();
+  // Start cover auto-speak after a moment
+  setTimeout(() => {
+    speak('咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！');
+  }, 800);
+</script>
+</body>
+</html>
