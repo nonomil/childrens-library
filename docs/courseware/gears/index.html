@@ -731,7 +731,7 @@
       <span class="gear s3"></span>
     </div>
     <div style="margin-top:20px;">
-      <button class="read-btn" onclick="speak('咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！')" style="display:inline-flex;margin:0 auto;">🔊 听故事</button>
+      <button class="read-btn" onclick="speakPage(0)" style="display:inline-flex;margin:0 auto;">🔊 听故事</button>
     </div>
   </div>
 
@@ -865,7 +865,7 @@
       </div>
       <div class="btn-row">
         <button onclick="goToPage(0)">🏠 回到封面</button>
-        <button onclick="speak('你太棒啦！今天学会了齿轮、传动和链条的小秘密！下次看到自行车，想想链条是怎么工作的吧！')">🔊 再听一遍</button>
+        <button onclick="speakPage(5)">🔊 再听一遍</button>
       </div>
     </div>
   </div>
@@ -952,56 +952,64 @@
   }
 
   // ========== SPEECH ==========
-  let speechSupported = false;
-  let speechReady = false;
+  // Audio file mapping - real recorded voices!
+  const AUDIO_FILES = {
+    0: 'audio/cover.mp3',
+    1: 'audio/page1.mp3',
+    2: 'audio/page2.mp3',
+    3: 'audio/page3.mp3',
+    4: 'audio/page4.mp3',
+    5: 'audio/page5.mp3',
+    correct: 'audio/correct.mp3',
+    wrong: 'audio/wrong.mp3',
+    congrats: 'audio/congrats.mp3',
+    great: 'audio/great.mp3'
+  };
 
-  // Check and prepare speech
-  function initSpeech() {
-    if (!window.speechSynthesis) {
-      speechSupported = false;
-      return;
-    }
-    speechSupported = true;
-    // Try to load voices
-    const tryVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
-      if (voices.length > 0) {
-        speechReady = true;
-        return true;
-      }
-      return false;
-    };
-    if (tryVoices()) return;
-    window.speechSynthesis.onvoiceschanged = () => { tryVoices(); };
-    // Fallback: mark as ready even without voices (some browsers work anyway)
-    setTimeout(() => { speechReady = true; }, 1500);
-  }
+  let currentAudio = null;
 
-  function speak(text) {
-    if (!speechSupported) {
-      showSpeechBubble(text);
-      return;
+  function playAudio(src, showText) {
+    // Stop any playing audio
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
     }
+    
+    // Show text bubble
+    if (showText) showSpeechBubble(showText);
+    
+    // Play audio
     try {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'zh-CN';
-      u.rate = 0.85;
-      u.pitch = 1.1;
-      // Pick a Chinese voice if available
-      const voices = window.speechSynthesis.getVoices();
-      const zhVoice = voices.find(v => v.lang.startsWith('zh'));
-      if (zhVoice) u.voice = zhVoice;
-      u.onerror = () => showSpeechBubble(text);
-      window.speechSynthesis.speak(u);
+      const audio = new Audio(src);
+      currentAudio = audio;
+      audio.volume = 1.0;
+      audio.play().catch(function(e) {
+        console.log('Audio play failed, showing text only:', e);
+      });
+      audio.onended = function() { currentAudio = null; };
     } catch(e) {
-      showSpeechBubble(text);
+      console.log('Audio creation failed:', e);
     }
-    // Always show visual bubble for clarity
-    showSpeechBubble(text);
   }
 
-  // Visual speech bubble
+  function speakPage(pageNum) {
+    const texts = {
+      0: '咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！',
+      1: '什么是齿轮？齿轮就像一个个小牙齿围成的圆饼饼！它们手拉手转圈圈，就能把力气传给别人。齿轮有牙齿、会转圈、能传力气、还可以有大小不同！',
+      2: '齿轮碰齿轮！两个齿轮牙齿咬牙齿，一个转，另一个也跟着转！方向是相反的哦！左边往右转，右边就往左转！',
+      3: '链条传动！链条就像一条长长的小铁链，把两个齿轮连起来，力气就能传好远好远！自行车就是靠链条传动的！还有摩托车、大机器和老时钟也用链条！',
+      4: '小测验时间到！看看你记住了多少？选一个答案吧！',
+      5: '你太棒啦！今天学会了齿轮、传动和链条的小秘密！下次看到自行车，想想链条是怎么工作的吧！'
+    };
+    const src = AUDIO_FILES[pageNum];
+    if (src) playAudio(src, texts[pageNum]);
+  }
+
+  function speakCurrentPage() {
+    speakPage(currentPage);
+  }
+
+  // Visual speech bubble (always shown alongside audio)
   function showSpeechBubble(text) {
     const existing = document.querySelector('.speech-bubble');
     if (existing) existing.remove();
@@ -1011,23 +1019,11 @@
     bubble.textContent = text;
     document.querySelector('.book').appendChild(bubble);
     
-    setTimeout(() => { bubble.classList.add('show'); }, 10);
-    setTimeout(() => {
+    setTimeout(function() { bubble.classList.add('show'); }, 10);
+    setTimeout(function() {
       bubble.classList.remove('show');
-      setTimeout(() => bubble.remove(), 500);
-    }, text.length * 80 + 1000);
-  }
-
-  function speakCurrentPage() {
-    const texts = {
-      0: '咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！',
-      1: '什么是齿轮？齿轮就像一个个小牙齿围成的圆饼饼！它们手拉手转圈圈，就能把力气传给别人。齿轮有牙齿、会转圈、能传力气、还可以有大小不同！',
-      2: '齿轮碰齿轮！两个齿轮牙齿咬牙齿，一个转，另一个也跟着转！方向是相反的哦！左边往右转，右边就往左转！',
-      3: '链条传动！链条就像一条长长的小铁链，把两个齿轮连起来，力气就能传好远好远！自行车就是靠链条传动的！还有摩托车、大机器和老时钟也用链条！',
-      4: '小测验时间到！看看你记住了多少？选一个答案吧！',
-      5: '你太棒啦！今天学会了齿轮、传动和链条的小秘密！下次看到自行车，想想链条是怎么工作的吧！'
-    };
-    speak(texts[currentPage] || texts[0]);
+      setTimeout(function() { bubble.remove(); }, 500);
+    }, text.length * 80 + 1500);
   }
 
   // ========== GEAR PAGE ==========
@@ -1062,7 +1058,7 @@
       } else {
         sl.style.animation = 'none';
         sr.style.animation = 'none';
-        speak('点一下链条，它就开始动啦！链条把齿轮连起来，力气就传过去了！');
+        showSpeechBubble('点一下链条，它就开始动啦！链条把齿轮连起来，力气就传过去了！');
       }
     });
 
@@ -1141,11 +1137,11 @@
       quizScore++;
       feedback.textContent = '✅ 答对啦！你太聪明了！ 🌟';
       feedback.className = 'quiz-feedback correct';
-      speak('答对啦！你太聪明了！');
+      playAudio(AUDIO_FILES.correct, '答对啦！你太聪明了！');
     } else {
       feedback.textContent = '❌ 不对哦～正确答案是：' + q.options[q.correct] + ' 😊';
       feedback.className = 'quiz-feedback wrong';
-      speak('不对哦～正确答案是：' + q.options[q.correct]);
+      playAudio(AUDIO_FILES.wrong, q.options[q.correct] + '，再想想吧！');
     }
 
     updateQuizProgress();
@@ -1190,13 +1186,13 @@
       emoji = '🏆';
       stars = '⭐⭐⭐⭐⭐';
       msg = '满分！你是齿轮小天才！🎉';
-      speak('满分！你是齿轮小天才！');
+      playAudio(AUDIO_FILES.congrats, '满分！你是齿轮小天才！');
       launchConfetti();
     } else if (pct >= 0.8) {
       emoji = '🌟';
       stars = '⭐⭐⭐⭐';
       msg = '太棒啦！你已经很厉害啦！👏';
-      speak('太棒啦！你已经很厉害啦！');
+      playAudio(AUDIO_FILES.great, '太棒啦！你已经很厉害啦！');
       launchConfetti();
     } else if (pct >= 0.6) {
       emoji = '👍';
@@ -1239,11 +1235,9 @@
 
   // ========== INIT ==========
   renderDots();
-  initSpeech();
-  // Auto-speak after page loads (some browsers need user gesture first)
+  // Auto-play cover audio on first user click
   document.addEventListener('click', function firstClick() {
-    if (!speechReady) return;
-    speak('咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！');
+    speakPage(0);
     document.removeEventListener('click', firstClick);
   }, { once: true });
 </script>
