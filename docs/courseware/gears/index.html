@@ -286,6 +286,25 @@ body {
 .slide-in { animation:slideIn 0.4s ease-out; }
 
 /* ===== RESPONSIVE ===== */
+/* ====== CONNECTING ROD ====== */
+.rod-stage {
+  background:linear-gradient(180deg,#F3E5F5,#E1BEE7); border-radius:30px;
+  padding:16px; margin:8px 0; position:relative; text-align:center;
+  border:3px solid #CE93D8;
+}
+.rod-svg-wrap { width:100%; max-width:460px; margin:0 auto; }
+.rod-info {
+  display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:8px 0;
+}
+.rod-info .tag { background:#CE93D8; color:#FFF; font-size:15px; font-weight:bold; padding:6px 16px; border-radius:30px; }
+.rod-controls { display:flex; justify-content:center; gap:12px; margin:6px 0; flex-wrap:wrap; }
+.rod-controls button {
+  background:#AB47BC; border:none; color:#FFF; font-size:15px; padding:7px 18px; border-radius:30px;
+  cursor:pointer; font-family:inherit; font-weight:bold; transition:all 0.15s;
+}
+.rod-controls button:hover { transform:scale(1.05); }
+.rod-controls button.green { background:#66BB6A; }
+
 /* ====== ROBOT GAME ====== */
 .robot-page-inner {
   display:flex; flex-direction:column; align-items:center; gap:6px;
@@ -543,14 +562,27 @@ body {
 <div class="page" id="page-3">
   <span class="page-title-icon">⛓️</span>
   <div class="page-title">链条传动</div>
-  <div class="page-desc">链条把两个齿轮连起来，力气就能传好远！<br><strong>👆 点链条让它动起来！</strong></div>
-  <div class="chain-stage">
-    <div class="chain-demo">
-      <div class="sprocket" id="sprocketL"><div class="hub"></div></div>
-      <div class="chain-belt" id="chainBelt"></div>
-      <div class="sprocket big" id="sprocketR"><div class="hub"></div></div>
+  <div class="page-desc">
+    链条 <strong>绕在齿轮上</strong> 转圈圈！链条紧了就能传递力气，<br>
+    链条<strong>松了</strong>就传不动了 😅 <strong>👆 动手试试！</strong>
+  </div>
+  <div class="chain-stage" style="position:relative;">
+    <!-- SVG chain canvas -->
+    <svg id="chainSvg" style="width:100%;height:200px;display:block;" viewBox="0 0 480 200"></svg>
+    <!-- Sprocket overlay (for click) -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100%;height:100%;pointer-events:none;">
+      <div class="sprocket" id="sprocketL" style="position:absolute;left:18%;top:50%;transform:translateY(-50%);width:85px;height:85px;pointer-events:auto;cursor:pointer;"><div class="hub"></div></div>
+      <div class="sprocket big" id="sprocketR" style="position:absolute;right:12%;top:50%;transform:translateY(-50%);width:120px;height:120px;pointer-events:auto;cursor:pointer;"><div class="hub"></div></div>
     </div>
-    <div class="chain-arrow">⬇️ 踩踏板 → 链条转 → 轮子转 ⬇️</div>
+    <div class="chain-arrow" style="margin-top:8px;">⬇️ 踩踏板 → <strong id="chainStatus">链条🟢紧了</strong> → 轮子转 ⬇️</div>
+  </div>
+  <div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:6px 0;flex-wrap:wrap;">
+    <button class="read-btn" style="background:#C4A882;font-size:15px;" onclick="toggleChain()">⏯️ 转/停</button>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="font-size:18px;">😰 松</span>
+      <input type="range" id="chainTension" min="0" max="100" value="80" oninput="updateChainTension(this.value)" style="width:100px;accent-color:#C4A882;">
+      <span style="font-size:18px;">💪 紧</span>
+    </div>
   </div>
   <div class="chain-bike-row">
     <span class="tag">🚲 自行车</span>
@@ -560,8 +592,36 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 4: BUILD ====== -->
+<!-- ====== PAGE 4: CONNECTING ROD ====== -->
 <div class="page" id="page-4">
+  <span class="page-title-icon">🔗</span>
+  <div class="page-title">连杆传动</div>
+  <div class="page-desc">
+    连杆就像一根<strong>硬硬的棍子</strong> 🥢，<br>
+    把齿轮的<strong>转圈圈</strong>变成<strong>前后摆动</strong>！
+  </div>
+  <div class="rod-stage">
+    <div class="rod-svg-wrap">
+      <svg id="rodSvg" viewBox="0 0 460 240" style="width:100%;height:220px;"></svg>
+    </div>
+    <div style="font-size:16px;color:#6A1B9A;font-weight:bold;margin:4px 0;">
+      ⚡ 齿轮转 → 连杆推拉 → <span id="rodMachine">小锤子🔨 咚咚咚！</span>
+    </div>
+  </div>
+  <div class="rod-controls">
+    <button onclick="toggleRod()">⏯️ 转/停</button>
+    <button class="green" onclick="changeRodSpeed()">🐢🐇 变速</button>
+  </div>
+  <div class="rod-info">
+    <span class="tag">🚂 蒸汽火车</span>
+    <span class="tag">🚗 汽车发动机</span>
+    <span class="tag">🏭 冲压机</span>
+    <span class="tag">🧹 雨刮器</span>
+  </div>
+</div>
+
+<!-- ====== PAGE 5: BUILD ====== -->
+<div class="page" id="page-5">
   <span class="page-title-icon">🧩</span>
   <div class="page-title">搭一搭齿轮</div>
   <div class="page-desc">从下面选齿轮拖到绿地上，<strong>搭出你的传动机器！</strong></div>
@@ -584,8 +644,8 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 5: ROBOT GAME ====== -->
-<div class="page" id="page-5">
+<!-- ====== PAGE 6: ROBOT GAME ====== -->
+<div class="page" id="page-6">
   <span class="page-title-icon">🤖</span>
   <div class="page-title">修理小机器人！</div>
   <div class="page-desc">机器人坏了，不能走也不能挥手 😢<br>给它肚子里装上<strong>合适的齿轮</strong>，就能修好它！</div>
@@ -660,8 +720,8 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 6: QUIZ ====== -->
-<div class="page" id="page-6">
+<!-- ====== PAGE 7: QUIZ ====== -->
+<div class="page" id="page-7">
   <span class="page-title-icon">❓</span>
   <div class="page-title">小测验</div>
   <div class="page-desc">看看你记住了多少？选一个答案吧！</div>
@@ -683,8 +743,8 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 7: END ====== -->
-<div class="page" id="page-7">
+<!-- ====== PAGE 8: END ====== -->
+<div class="page" id="page-8">
   <div class="end-page">
     <div class="big">🎉</div>
     <div class="title">你太棒啦！</div>
@@ -716,13 +776,15 @@ body {
 <script>
 // ========== NAVIGATION ==========
 let currentPage = 0;
-const TOTAL_PAGES = 8;
+const TOTAL_PAGES = 9;
 function goToPage(n) {
   document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
   currentPage=n;
   renderDots();
-  if(n===5)initRobotGame();
-  if(n===6&&!quizDone)initQuiz();
+  if(n===3)setTimeout(initChainSVG,50);
+  if(n===4)setTimeout(initRodSVG,50);
+  if(n===6)initRobotGame();
+  if(n===7&&!quizDone)initQuiz();
 }
 function nextPage(){if(currentPage<TOTAL_PAGES-1)goToPage(currentPage+1);}
 function prevPage(){if(currentPage>0)goToPage(currentPage-1);}
@@ -739,8 +801,9 @@ function renderDots(){
 // ========== SPEECH ==========
 const AUDIO_FILES={
   0:'audio/cover.mp3',1:'audio/page1.mp3',2:'audio/page2.mp3',
-  3:'audio/page3.mp3',4:'audio/page4.mp3',5:'audio/robot.mp3',
-  6:'audio/page5.mp3',7:'audio/page6.mp3',
+  3:'audio/page3.mp3',4:'audio/rod.mp3',
+  5:'audio/page4.mp3',6:'audio/robot.mp3',
+  7:'audio/page5.mp3',8:'audio/page6.mp3',
   correct:'audio/correct.mp3',wrong:'audio/wrong.mp3',
   congrats:'audio/congrats.mp3',great:'audio/great.mp3'
 };
@@ -758,7 +821,8 @@ function speakPage(n){
   const texts=['咕噜咕噜转！齿轮游乐场！拖一拖，转一转，连一连，我们来玩齿轮吧！',
     '齿轮转转转！齿轮就像长了一圈小牙齿的圆饼饼！点一下就能让它转起来或停下来！齿轮有牙齿、会转圈、能传力气、还有不同大小！',
     '大小齿轮搭配！大齿轮转得慢，小齿轮转得快！它们牙齿咬牙齿，方向是相反的！大齿轮转一圈，小齿轮能转好几圈！',
-    '链条传动！链条就像一条长长的小铁链，把两个齿轮连起来，力气就能传好远！自行车就是靠链条传动的！踩踏板，链条转，轮子就转啦！',
+    '链条传动！链条绕在齿轮上转圈圈！链条紧了才能传递力气，松了就传不动了！试试调紧链条让它动起来！',
+    '连杆传动！连杆就像一根硬硬的棍子，把齿轮的转圈圈变成前后摆动！蒸汽火车、汽车发动机都用连杆！',
     '搭一搭齿轮！从下面选齿轮拖到绿地上，搭出你自己的传动机器！把齿轮拖到一起，它们就会互相咬住转起来！',
     '修理小机器人！机器人坏了，不能走也不能挥手。把合适的齿轮装到它肚子里，就能修好它！手臂要中齿轮，腿要大齿轮！',
     '小测验时间到！看看你记住了多少？选一个答案吧！',
@@ -789,28 +853,358 @@ function setGearSpeed(d){
 // ========== PAGE 2: TRAIN ==========
 function changeTrainSpeed(v){document.getElementById('gtBig').style.animationDuration=(v*0.6+1)+'s';document.getElementById('gtSmall').style.animationDuration=(v*0.3+0.8)+'s';}
 
-// ========== PAGE 3: CHAIN ==========
-document.addEventListener('DOMContentLoaded',function(){
-  const belt=document.getElementById('chainBelt');
-  belt.addEventListener('click',function(){
-    belt.classList.toggle('moving');
-    const sl=document.getElementById('sprocketL'),sr=document.getElementById('sprocketR');
-    if(belt.classList.contains('moving')){
-      sl.style.animation='spin-cw 2s linear infinite';
-      sr.style.animation='spin-cw 2.5s linear infinite';
-      showSpeechBubble('链条动起来啦！↔️ 踩踏板→链条转→轮子转！');
-    }else{
-      sl.style.animation='none';sr.style.animation='none';
-    }
-  });
-  // add spokes to sprockets
-  [document.getElementById('sprocketL'),document.getElementById('sprocketR')].forEach(s=>{
-    const isBig=s.classList.contains('big');
-    for(let i=0;i<8;i++){const sp=document.createElement('div');sp.className='spoke';sp.style.transform='translate(-50%,-50%) rotate('+(i*45)+'deg)';s.appendChild(sp);}
-  });
-});
+// ========== PAGE 3: CHAIN (SVG) ==========
+let chainRunning = false;
+let chainTension = 80;
+let chainAnimId = null;
+let chainOffset = 0;
 
-// ========== PAGE 4: PLAYGROUND ==========
+function initChainSVG() {
+  const svg = document.getElementById('chainSvg');
+  if (!svg) return;
+  svg.innerHTML = '';
+  
+  // Sprocket positions (in viewBox coords: 0 0 480 200)
+  const lx = 100, ly = 100, lr = 38;  // left sprocket
+  const rx = 370, ry = 100, rr = 55;  // right sprocket (bigger)
+  
+  // Draw sprockets in SVG
+  function drawSprocket(cx, cy, r, color, isBig) {
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    // Main circle
+    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy);
+    circle.setAttribute('r', r);
+    circle.setAttribute('fill', color);
+    circle.setAttribute('stroke', isBig ? '#A0826A' : '#8B6F57');
+    circle.setAttribute('stroke-width', '4');
+    g.appendChild(circle);
+    // Inner hub
+    const hub = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    hub.setAttribute('cx', cx); hub.setAttribute('cy', cy);
+    hub.setAttribute('r', r * 0.3);
+    hub.setAttribute('fill', '#8B6F57');
+    hub.setAttribute('stroke', '#5C4838');
+    hub.setAttribute('stroke-width', '3');
+    g.appendChild(hub);
+    // Teeth
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const tooth = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      const tx = cx + Math.cos(angle) * (r - 3);
+      const ty = cy + Math.sin(angle) * (r - 3);
+      tooth.setAttribute('x', tx - 4);
+      tooth.setAttribute('y', ty - 5);
+      tooth.setAttribute('width', '8');
+      tooth.setAttribute('height', '10');
+      tooth.setAttribute('fill', isBig ? '#A0826A' : '#8B6F57');
+      tooth.setAttribute('transform', 'rotate(' + (angle * 180 / Math.PI) + ',' + (tx) + ',' + (ty) + ')');
+      g.appendChild(tooth);
+    }
+    svg.appendChild(g);
+  }
+  
+  drawSprocket(lx, ly, lr, '#C4A882', false);
+  drawSprocket(rx, ry, rr, '#C4A882', true);
+  
+  // Build chain path
+  // Top tangent: from (lx, ly-lr) to (rx, ry-rr)
+  // Right arc: around right sprocket
+  // Bottom tangent: from (rx, ry+rr) to (lx, ly+lr)
+  // Left arc: around left sprocket
+  
+  renderChain(lx, ly, lr, rx, ry, rr);
+  
+  // Store positions for animation
+  svg.dataset.lx = lx; svg.dataset.ly = ly; svg.dataset.lr = lr;
+  svg.dataset.rx = rx; svg.dataset.ry = ry; svg.dataset.rr = rr;
+}
+
+function renderChain(lx, ly, lr, rx, ry, rr) {
+  const svg = document.getElementById('chainSvg');
+  // Remove old chain path
+  const old = svg.querySelector('.chain-path-group');
+  if (old) old.remove();
+  
+  const tension = chainTension / 100; // 0 = loose, 1 = tight
+  
+  // Calculate bottom sag
+  const sag = (1 - tension) * 60; // max 60px sag
+  
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('class', 'chain-path-group');
+  
+  // Build chain path
+  const d = [
+    'M', lx, ly - lr,                          // Start: top of left sprocket
+    'L', rx, ry - rr,                           // Top tangent
+    'A', rr, rr, 0, 1, 1, rx, ry + rr,         // Right arc (clockwise)
+    'Q', (lx+rx)/2, ry + rr + sag,             // Bottom curve with sag
+    'L', lx, ly + lr,                           // Back to bottom of left sprocket
+    'A', lr, lr, 0, 1, 0, lx, ly - lr          // Left arc (counter-clockwise)
+  ].join(' ');
+  
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', d);
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke', '#666');
+  path.setAttribute('stroke-width', '8');
+  path.setAttribute('stroke-dasharray', '10, 6');
+  path.setAttribute('stroke-linecap', 'round');
+  path.setAttribute('class', 'chain-path');
+  
+  // Inner chain line
+  const pathInner = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  pathInner.setAttribute('d', d);
+  pathInner.setAttribute('fill', 'none');
+  pathInner.setAttribute('stroke', '#888');
+  pathInner.setAttribute('stroke-width', '4');
+  pathInner.setAttribute('stroke-dasharray', '4, 12');
+  pathInner.setAttribute('class', 'chain-path-inner');
+  
+  if (chainRunning && tension > 0.3) {
+    path.style.animation = 'chainDash 0.5s linear infinite';
+    pathInner.style.animation = 'chainDash 0.5s linear infinite';
+  }
+  
+  g.appendChild(pathInner);
+  g.appendChild(path);
+  svg.appendChild(g);
+  
+  // Update status
+  const status = document.getElementById('chainStatus');
+  const sl = document.getElementById('sprocketL');
+  const sr = document.getElementById('sprocketR');
+  
+  if (tension < 0.3) {
+    status.innerHTML = '链条🔴太松了！';
+    // Stop sprockets when chain is too loose
+    sl.style.animation = 'none';
+    sr.style.animation = 'none';
+    chainRunning = false;
+  } else if (chainRunning) {
+    status.innerHTML = '链条🟢紧了 传动力气中！';
+    sl.style.animation = 'spin-cw 2s linear infinite';
+    sr.style.animation = 'spin-cw 2.5s linear infinite';
+  } else {
+    status.innerHTML = '链条🟡紧了 但没在转';
+    sl.style.animation = 'none';
+    sr.style.animation = 'none';
+  }
+}
+
+function updateChainTension(val) {
+  chainTension = parseInt(val);
+  const svg = document.getElementById('chainSvg');
+  const lx = parseFloat(svg.dataset.lx);
+  const ly = parseFloat(svg.dataset.ly);
+  const lr = parseFloat(svg.dataset.lr);
+  const rx = parseFloat(svg.dataset.rx);
+  const ry = parseFloat(svg.dataset.ry);
+  const rr = parseFloat(svg.dataset.rr);
+  renderChain(lx, ly, lr, rx, ry, rr);
+  
+  if (chainTension < 30) {
+    showSpeechBubble('😰 链条太松了！传不动力气了…调紧一点吧！💪');
+  } else if (!chainRunning) {
+    showSpeechBubble('✅ 链条紧了！点"转/停"让它动起来！');
+  }
+}
+
+function toggleChain() {
+  chainRunning = !chainRunning;
+  updateChainTension(chainTension);
+  if (chainRunning) {
+    showSpeechBubble('链条转起来啦！⛓️ 力气从左边传到右边！');
+  }
+}
+
+// Add chain dash animation keyframes if not exists
+(function(){
+  if (!document.getElementById('chainDashStyle')) {
+    const style = document.createElement('style');
+    style.id = 'chainDashStyle';
+    style.textContent = '@keyframes chainDash { to { stroke-dashoffset: -32; } }';
+    document.head.appendChild(style);
+  }
+})();
+
+
+// ========== PAGE 4: CONNECTING ROD ==========
+let rodRunning = false;
+let rodAngle = 0;
+let rodSpeed = 0.02;
+let rodAnimId = null;
+
+function initRodSVG() {
+  const svg = document.getElementById('rodSvg');
+  if (!svg) return;
+  svg.innerHTML = '';
+  
+  const cx = 140, cy = 140, cr = 60;   // Driver gear center + radius
+  const dx = 320, dy = 140, dr = 40;   // Driven gear
+  
+  // Driver gear (big)
+  const driverG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const dCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dCircle.setAttribute('cx', cx); dCircle.setAttribute('cy', cy);
+  dCircle.setAttribute('r', cr);
+  dCircle.setAttribute('fill', 'url(#gearGrad1)');
+  dCircle.setAttribute('stroke', '#E64A19');
+  dCircle.setAttribute('stroke-width', '4');
+  driverG.appendChild(dCircle);
+  
+  const dHub = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dHub.setAttribute('cx', cx); dHub.setAttribute('cy', cy);
+  dHub.setAttribute('r', 14); dHub.setAttribute('fill', '#BF360C');
+  dHub.setAttribute('stroke', '#FFF'); dHub.setAttribute('stroke-width', '3');
+  driverG.appendChild(dHub);
+  svg.appendChild(driverG);
+  
+  // Driven gear (smaller)
+  const drivenG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  const dnCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dnCircle.setAttribute('cx', dx); dnCircle.setAttribute('cy', dy);
+  dnCircle.setAttribute('r', dr);
+  dnCircle.setAttribute('fill', 'url(#gearGrad2)');
+  dnCircle.setAttribute('stroke', '#1565C0');
+  dnCircle.setAttribute('stroke-width', '4');
+  drivenG.appendChild(dnCircle);
+  
+  const dHub2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dHub2.setAttribute('cx', dx); dHub2.setAttribute('cy', dy);
+  dHub2.setAttribute('r', 10); dHub2.setAttribute('fill', '#0D47A1');
+  dHub2.setAttribute('stroke', '#FFF'); dHub2.setAttribute('stroke-width', '2');
+  drivenG.appendChild(dHub2);
+  svg.appendChild(drivenG);
+  
+  // Gradients
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  defs.innerHTML = '<radialGradient id="gearGrad1"><stop offset="0%" stop-color="#FF8A65"/><stop offset="100%" stop-color="#E64A19"/></radialGradient><radialGradient id="gearGrad2"><stop offset="0%" stop-color="#64B5F6"/><stop offset="100%" stop-color="#1565C0"/></radialGradient>';
+  svg.insertBefore(defs, svg.firstChild);
+  
+  // Pin on driver (offset from center)
+  const pin1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  pin1.setAttribute('id', 'rodPin1');
+  pin1.setAttribute('r', '8');
+  pin1.setAttribute('fill', '#FFD600');
+  pin1.setAttribute('stroke', '#F9A825');
+  pin1.setAttribute('stroke-width', '2');
+  svg.appendChild(pin1);
+  
+  // Pin on driven (offset from center)
+  const pin2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  pin2.setAttribute('id', 'rodPin2');
+  pin2.setAttribute('r', '6');
+  pin2.setAttribute('fill', '#FFD600');
+  pin2.setAttribute('stroke', '#F9A825');
+  pin2.setAttribute('stroke-width', '2');
+  svg.appendChild(pin2);
+  
+  // Connecting rod (line between pins)
+  const rod = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  rod.setAttribute('id', 'connectingRod');
+  rod.setAttribute('stroke', '#6A1B9A');
+  rod.setAttribute('stroke-width', '8');
+  rod.setAttribute('stroke-linecap', 'round');
+  rod.setAttribute('stroke-linejoin', 'round');
+  svg.appendChild(rod);
+  
+  // Machine indicator at driven gear
+  const machine = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  machine.setAttribute('id', 'rodMachineText');
+  machine.setAttribute('x', dx); machine.setAttribute('y', dy + dr + 35);
+  machine.setAttribute('text-anchor', 'middle');
+  machine.setAttribute('font-size', '18');
+  machine.setAttribute('font-weight', 'bold');
+  svg.appendChild(machine);
+  
+  svg.dataset.cx = cx; svg.dataset.cy = cy; svg.dataset.cr = cr;
+  svg.dataset.dx = dx; svg.dataset.dy = dy; svg.dataset.dr = dr;
+  
+  // Draw machine base
+  const base = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  base.setAttribute('x', dx - 50); base.setAttribute('y', dy + dr + 5);
+  base.setAttribute('width', '100'); base.setAttribute('height', '15');
+  base.setAttribute('rx', '5'); base.setAttribute('fill', '#78909C');
+  svg.appendChild(base);
+  
+  rodRunning = true;
+  updateRod();
+}
+
+function updateRod() {
+  const svg = document.getElementById('rodSvg');
+  if (!svg) return;
+  
+  const cx = parseFloat(svg.dataset.cx);
+  const cy = parseFloat(svg.dataset.cy);
+  const cr = parseFloat(svg.dataset.cr);
+  const dx = parseFloat(svg.dataset.dx);
+  const dy = parseFloat(svg.dataset.dy);
+  const dr = parseFloat(svg.dataset.dr);
+  
+  // Pin 1: rotates around driver gear center at offset radius
+  const offset1 = 35;
+  const px = cx + Math.cos(rodAngle) * offset1;
+  const py = cy + Math.sin(rodAngle) * offset1;
+  
+  // Pin 2: slides on driven gear - constrained to arc
+  const rodLen = Math.sqrt((dx-cx)**2 + (dy-cy)**2) * 0.85;
+  const targetAngle = rodAngle * 0.6; // driven gear rotates slower
+  const qx = dx + Math.cos(targetAngle + Math.PI) * (dr * 0.5);
+  const qy = dy + Math.sin(targetAngle + Math.PI) * (dr * 0.5);
+  
+  // Update pins
+  const pin1 = document.getElementById('rodPin1');
+  pin1.setAttribute('cx', px); pin1.setAttribute('cy', py);
+  
+  const pin2 = document.getElementById('rodPin2');
+  pin2.setAttribute('cx', qx); pin2.setAttribute('cy', qy);
+  
+  // Update rod
+  const rod = document.getElementById('connectingRod');
+  rod.setAttribute('x1', px); rod.setAttribute('y1', py);
+  rod.setAttribute('x2', qx); rod.setAttribute('y2', qy);
+  
+  // Machine animation
+  const machineEl = document.getElementById('rodMachineText');
+  const machineSpan = document.getElementById('rodMachine');
+  if (rodRunning) {
+    const hammerY = 160 + Math.sin(rodAngle * 3) * 15;
+    machineEl.setAttribute('y', hammerY);
+    machineEl.textContent = '🔨 咚咚咚！';
+    if (machineSpan) machineSpan.textContent = '小锤子🔨 咚咚咚！';
+  } else {
+    machineEl.textContent = '⏸️ 停了';
+    if (machineSpan) machineSpan.textContent = '⏸️ 停了';
+  }
+  
+  if (rodRunning) {
+    rodAngle += rodSpeed;
+  }
+  
+  // Continue animation
+  if (rodRunning || rodAnimId) {
+    rodAnimId = requestAnimationFrame(updateRod);
+  }
+}
+
+function toggleRod() {
+  rodRunning = !rodRunning;
+  if (rodRunning) {
+    updateRod();
+    showSpeechBubble('连杆动起来啦！齿轮转圈圈，变成锤子前后摆动！🔨');
+  }
+}
+
+function changeRodSpeed() {
+  rodSpeed = rodSpeed === 0.02 ? 0.05 : rodSpeed === 0.05 ? 0.01 : 0.02;
+  const labels = {0.01:'🐢 慢速', 0.02:'🏃 中速', 0.05:'🐇 快速'};
+  showSpeechBubble('连杆速度：' + (labels[rodSpeed] || '中速'));
+}
+
+// ========== PAGE 5: PLAYGROUND ==========
 let gears=[];
 let gearIdCounter=0;
 let dragState=null;
