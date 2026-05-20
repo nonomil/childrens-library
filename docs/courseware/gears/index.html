@@ -674,9 +674,45 @@
     .nav-btn { width: 46px; height: 46px; font-size: 22px; }
     .read-btn { font-size: 16px; padding: 8px 16px; }
     .quiz-opt { font-size: 17px; padding: 12px; }
+    .speech-bubble { font-size: 18px; padding: 14px 18px; bottom: 100px; left: 16px; right: 16px; }
   }
 
   .hidden { display: none !important; }
+
+  /* Speech Bubble */
+  .speech-bubble {
+    position: fixed;
+    bottom: 120px;
+    left: 20px;
+    right: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.95);
+    border: 3px solid #FFB347;
+    border-radius: 24px;
+    padding: 18px 24px;
+    font-size: 22px;
+    color: #5C4033;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 99999;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+    line-height: 1.6;
+  }
+  .speech-bubble::before {
+    content: '🔊';
+    display: block;
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+  .speech-bubble.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 </style>
 </head>
 <body>
@@ -916,14 +952,70 @@
   }
 
   // ========== SPEECH ==========
+  let speechSupported = false;
+  let speechReady = false;
+
+  // Check and prepare speech
+  function initSpeech() {
+    if (!window.speechSynthesis) {
+      speechSupported = false;
+      return;
+    }
+    speechSupported = true;
+    // Try to load voices
+    const tryVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        speechReady = true;
+        return true;
+      }
+      return false;
+    };
+    if (tryVoices()) return;
+    window.speechSynthesis.onvoiceschanged = () => { tryVoices(); };
+    // Fallback: mark as ready even without voices (some browsers work anyway)
+    setTimeout(() => { speechReady = true; }, 1500);
+  }
+
   function speak(text) {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.85;
-    u.pitch = 1.1;
-    window.speechSynthesis.speak(u);
+    if (!speechSupported) {
+      showSpeechBubble(text);
+      return;
+    }
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      u.rate = 0.85;
+      u.pitch = 1.1;
+      // Pick a Chinese voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+      if (zhVoice) u.voice = zhVoice;
+      u.onerror = () => showSpeechBubble(text);
+      window.speechSynthesis.speak(u);
+    } catch(e) {
+      showSpeechBubble(text);
+    }
+    // Always show visual bubble for clarity
+    showSpeechBubble(text);
+  }
+
+  // Visual speech bubble
+  function showSpeechBubble(text) {
+    const existing = document.querySelector('.speech-bubble');
+    if (existing) existing.remove();
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'speech-bubble';
+    bubble.textContent = text;
+    document.querySelector('.book').appendChild(bubble);
+    
+    setTimeout(() => { bubble.classList.add('show'); }, 10);
+    setTimeout(() => {
+      bubble.classList.remove('show');
+      setTimeout(() => bubble.remove(), 500);
+    }, text.length * 80 + 1000);
   }
 
   function speakCurrentPage() {
@@ -1147,10 +1239,13 @@
 
   // ========== INIT ==========
   renderDots();
-  // Start cover auto-speak after a moment
-  setTimeout(() => {
+  initSpeech();
+  // Auto-speak after page loads (some browsers need user gesture first)
+  document.addEventListener('click', function firstClick() {
+    if (!speechReady) return;
     speak('咕噜咕噜转！齿轮、传动和链条的小秘密！小朋友，让我们一起探索会转圈的秘密吧！');
-  }, 800);
+    document.removeEventListener('click', firstClick);
+  }, { once: true });
 </script>
 </body>
 </html>
