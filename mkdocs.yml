@@ -1,5 +1,5 @@
-site_name: 儿童英语绘本图书馆
-site_description: 幼小衔接英语故事绘本精选 - 8本经典PDF在线阅读
+site_name: 🎪 小朋友的互动学习乐园
+site_description: 互动课件 · 幼儿启蒙 · 在玩中学
 theme:
   name: material
   language: zh
@@ -38,6 +38,7 @@ nav:
     - The Day the Crayons Quit: books/crayons_quit.md
   - 🎯 互动课件:
     - courseware/index.md
+    - ⚙️ 齿轮传动小世界: courseware/gears-transmission.html
     - 🐱 Fat Cat on a Mat - Phonics: courseware/phonics-fat-cat.html
     - 🐵 Five Little Monkeys: courseware/five-little-monkeys.html
     - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html

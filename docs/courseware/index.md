@@ -6,6 +6,10 @@
 
 ## 课件列表
 
+- **⚙️ 齿轮传动小世界** — 机械 · 齿轮 · 链条  
+  点击齿轮转动，观察链条传动，修理小机器人 🛠️  
+  [→ 开始玩](gears-transmission.html)
+
 - **🐱 Fat Cat on a Mat** — 自然拼读 · Short Vowel `a`  
   原创 Usborne 风格拼读故事，每页拼词互动 🔊  
   [→ 开始学习](phonics-fat-cat.html)
