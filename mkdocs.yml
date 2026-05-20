@@ -13,8 +13,10 @@ theme:
 
 markdown_extensions:
   - admonition
+  - attr_list
   - pymdownx.details
   - pymdownx.emoji
+  - pymdownx.superfences
 
 extra:
   social:
