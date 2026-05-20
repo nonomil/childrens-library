@@ -286,6 +286,175 @@ body {
 .slide-in { animation:slideIn 0.4s ease-out; }
 
 /* ===== RESPONSIVE ===== */
+/* ====== ROBOT GAME ====== */
+.robot-page-inner {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.robot-status {
+  font-size:18px; font-weight:bold; text-align:center; padding:6px 16px;
+  border-radius:16px; transition:all 0.3s;
+}
+.robot-status.broken { background:#FFE0E0; color:#C62828; }
+.robot-status.fixed { background:#E8F5E9; color:#2E7D32; animation:popIn 0.5s ease-out; }
+
+.robot-area {
+  position:relative; width:100%; max-width:480px; margin:0 auto;
+  background:linear-gradient(180deg,#E3F2FD,#BBDEFB);
+  border-radius:30px; padding:16px 12px; min-height:320px;
+  border:3px solid #90CAF9;
+}
+
+/* Robot body */
+.robot-body {
+  position:relative; width:200px; height:240px; margin:0 auto;
+}
+.robot-head {
+  width:80px; height:70px; background:#90A4AE; border-radius:30px 30px 20px 20px;
+  margin:0 auto; position:relative; z-index:3;
+  border:3px solid #607D8B;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.robot-eye {
+  width:16px; height:16px; border-radius:50%; background:#FFF; position:relative;
+  transition:all 0.3s;
+}
+.robot-eye::after {
+  content:''; position:absolute; top:4px; left:4px; width:8px; height:8px; border-radius:50%; background:#263238;
+}
+.robot-eye.lit { background:#FFE082; box-shadow:0 0 12px #FFD54F; }
+.robot-eye.lit::after { background:#E65100; }
+.robot-eye.happy { background:#A5D6A7; }
+.robot-eye.happy::after { background:#2E7D32; width:10px; height:6px; border-radius:0 0 10px 10px; top:6px; left:3px; }
+
+.robot-mouth {
+  position:absolute; bottom:8px; font-size:14px;
+}
+.robot-mouth.sad { content:'😢'; }
+.robot-mouth.happy { content:'😊'; }
+
+.robot-torso {
+  width:140px; height:100px; background:rgba(255,255,255,0.85); border:3px solid #78909C;
+  border-radius:16px; margin:-10px auto 0; position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:center;
+}
+
+.robot-engine {
+  width:44px; height:44px; border-radius:50%; background:#FF8A65; border:4px solid #E64A19;
+  display:flex; align-items:center; justify-content:center; font-size:20px;
+  box-shadow:0 0 16px rgba(255,138,101,0.5); z-index:5;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+
+/* Arms & Legs */
+.robot-arm {
+  position:absolute; width:20px; height:60px; background:#78909C; border-radius:10px;
+  top:40px; z-index:1; transition:all 0.3s;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; transform-origin:top center;
+}
+.robot-arm.left { left:-24px; }
+.robot-arm.right { right:-24px; }
+.robot-arm.waving { animation:wave 0.5s ease-in-out infinite alternate; }
+
+.robot-leg {
+  position:absolute; width:22px; height:50px; background:#78909C; border-radius:10px;
+  bottom:-30px; z-index:1; transition:all 0.3s;
+  display:flex; align-items:flex-end; justify-content:center;
+  font-size:12px; padding-bottom:4px;
+}
+.robot-leg.left { left:30px; }
+.robot-leg.right { right:30px; }
+
+/* Drop zones inside body */
+.gear-drop-zone {
+  position:absolute; border-radius:50%; border:3px dashed #B0BEC5;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.3); transition:all 0.3s; z-index:4;
+}
+.gear-drop-zone.highlight { border-color:#FFB347; background:rgba(255,179,71,0.15); transform:scale(1.08); }
+.gear-drop-zone.filled { border-style:solid; border-color:#66BB6A; background:rgba(102,187,106,0.15); }
+.gear-drop-zone.wrong { border-color:#FF6B6B; background:rgba(255,107,107,0.15); animation:shake 0.4s ease-out; }
+
+.gear-drop-zone .zone-label {
+  font-size:10px; color:#78909C; font-weight:bold; pointer-events:none;
+  position:absolute; bottom:-18px; white-space:nowrap;
+}
+
+/* Drop zone sizes */
+.zone-sm { width:42px; height:42px; }
+.zone-md { width:56px; height:56px; }
+.zone-lg { width:70px; height:70px; }
+
+/* Positoning of drop zones relative to torso */
+.zone-arm-l { top:-18px; left:-18px; }
+.zone-arm-r { top:-18px; right:-18px; }
+.zone-leg-l { bottom:-18px; left:-10px; }
+.zone-leg-r { bottom:-18px; right:-10px; }
+
+/* Gear tray */
+.gear-tray {
+  display:flex; justify-content:center; gap:10px; margin:8px 0; flex-wrap:wrap;
+  padding:8px; background:rgba(255,255,255,0.6); border-radius:20px;
+}
+.gear-tray-item {
+  width:52px; height:52px; border-radius:50%; cursor:grab;
+  display:flex; align-items:center; justify-content:center;
+  border:3px solid; transition:all 0.15s; touch-action:none;
+  font-size:20px; user-select:none;
+}
+.gear-tray-item:active { cursor:grabbing; }
+.gear-tray-item:hover { transform:scale(1.1); }
+.gear-tray-item.used { opacity:0.3; cursor:default; pointer-events:none; transform:scale(0.8); }
+.gear-tray-item .tray-hub {
+  width:14px; height:14px; border-radius:50%; background:#FFF;
+  border:2px solid; position:absolute;
+}
+.gear-tray-item.g-sm { background:conic-gradient(#FFE66D 0deg 30deg,#FFF0A0 30deg 60deg,#FFE66D 60deg 90deg,#FFF0A0 90deg 120deg,#FFE66D 120deg 150deg,#FFF0A0 150deg 180deg,#FFE66D 180deg 210deg,#FFF0A0 210deg 240deg,#FFE66D 240deg 270deg,#FFF0A0 270deg 300deg,#FFE66D 300deg 330deg,#FFF0A0 330deg 360deg); border-color:#D4B83C; width:38px; height:38px; }
+.gear-tray-item.g-md { background:conic-gradient(#4ECDC4 0deg 30deg,#7EDDD6 30deg 60deg,#4ECDC4 60deg 90deg,#7EDDD6 90deg 120deg,#4ECDC4 120deg 150deg,#7EDDD6 150deg 180deg,#4ECDC4 180deg 210deg,#7EDDD6 210deg 240deg,#4ECDC4 240deg 270deg,#7EDDD6 270deg 300deg,#4ECDC4 300deg 330deg,#7EDDD6 330deg 360deg); border-color:#2EAD9E; width:46px; height:46px; }
+.gear-tray-item.g-lg { background:conic-gradient(#FF6B6B 0deg 30deg,#FF8E8E 30deg 60deg,#FF6B6B 60deg 90deg,#FF8E8E 90deg 120deg,#FF6B6B 120deg 150deg,#FF8E8E 150deg 180deg,#FF6B6B 180deg 210deg,#FF8E8E 210deg 240deg,#FF6B6B 240deg 270deg,#FF8E8E 270deg 300deg,#FF6B6B 300deg 330deg,#FF8E8E 330deg 360deg); border-color:#D94F4F; width:54px; height:54px; }
+
+/* Power flow connector lines */
+.power-flow {
+  position:absolute; height:4px; border-radius:2px; background:#FFB347;
+  z-index:3; opacity:0; transition:opacity 0.5s; transform-origin:left center;
+  pointer-events:none; box-shadow:0 0 8px #FFB347;
+}
+.power-flow.active { opacity:1; animation:pulse 0.8s ease-in-out infinite; }
+
+/* Victory robot */
+.robot-victory {
+  display:none; flex-direction:column; align-items:center; gap:8px;
+  animation:popIn 0.6s ease-out;
+}
+.robot-victory.show { display:flex; }
+.robot-victory .walking-robot {
+  font-size:80px; animation:walk-cycle 0.6s ease-in-out infinite;
+}
+
+/* Tool tray labels */
+.tray-labels { display:flex; justify-content:center; gap:10px; font-size:11px; color:#78909C; margin-top:-4px; }
+.tray-labels span { width:38px; text-align:center; }
+.tray-labels span:nth-child(2) { width:46px; }
+.tray-labels span:nth-child(3) { width:54px; }
+
+@keyframes wave {
+  0% { transform:rotate(-15deg); }
+  100% { transform:rotate(15deg); }
+}
+@keyframes walk-cycle {
+  0% { transform:translateX(-5px) rotate(-2deg); }
+  50% { transform:translateX(5px) rotate(2deg); }
+  100% { transform:translateX(-5px) rotate(-2deg); }
+}
+
+.robot-btn-row { display:flex; justify-content:center; gap:10px; margin:6px 0; flex-wrap:wrap; }
+.robot-btn-row button {
+  background:#42A5F5; border:none; color:#FFF; font-size:15px; padding:7px 18px; border-radius:30px;
+  cursor:pointer; font-family:inherit; font-weight:bold; transition:all 0.15s;
+}
+.robot-btn-row button:hover { transform:scale(1.05); }
+.robot-btn-row button.green { background:#66BB6A; }
+
 @media(max-width:600px) {
   .book { padding:16px 12px; border-radius:28px; min-height:auto; }
   #page-cover h1 { font-size:30px; }
@@ -415,8 +584,84 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 5: QUIZ ====== -->
+<!-- ====== PAGE 5: ROBOT GAME ====== -->
 <div class="page" id="page-5">
+  <span class="page-title-icon">🤖</span>
+  <div class="page-title">修理小机器人！</div>
+  <div class="page-desc">机器人坏了，不能走也不能挥手 😢<br>给它肚子里装上<strong>合适的齿轮</strong>，就能修好它！</div>
+
+  <div class="robot-page-inner">
+    <div class="robot-status broken" id="robotStatus">😢 机器人坏了，需要齿轮！</div>
+
+    <div class="robot-area" id="robotArea">
+      <div class="robot-body">
+        <!-- Head -->
+        <div class="robot-head" id="robotHead">
+          <div class="robot-eye" id="robotEyeL"></div>
+          <div class="robot-eye" id="robotEyeR"></div>
+          <div class="robot-mouth sad" id="robotMouth">😢</div>
+        </div>
+        <!-- Arms -->
+        <div class="robot-arm left" id="robotArmL">🤚</div>
+        <div class="robot-arm right" id="robotArmR">🤚</div>
+        <!-- Legs -->
+        <div class="robot-leg left" id="robotLegL">🦶</div>
+        <div class="robot-leg right" id="robotLegR">🦶</div>
+        <!-- Torso with internal gears -->
+        <div class="robot-torso" id="robotTorso">
+          <div class="robot-engine" id="robotEngine">⚡</div>
+          <!-- Drop zones -->
+          <div class="gear-drop-zone zone-md zone-arm-l" id="zone-arm-l" data-zone="arm-l" data-required="medium">
+            <span class="zone-label">左臂</span>
+          </div>
+          <div class="gear-drop-zone zone-md zone-arm-r" id="zone-arm-r" data-zone="arm-r" data-required="medium">
+            <span class="zone-label">右臂</span>
+          </div>
+          <div class="gear-drop-zone zone-lg zone-leg-l" id="zone-leg-l" data-zone="leg-l" data-required="large">
+            <span class="zone-label">左腿</span>
+          </div>
+          <div class="gear-drop-zone zone-lg zone-leg-r" id="zone-leg-r" data-zone="leg-r" data-required="large">
+            <span class="zone-label">右腿</span>
+          </div>
+          <!-- Power flow lines (JS generated) -->
+        </div>
+      </div>
+
+      <div style="text-align:center;font-size:14px;color:#1565C0;font-weight:bold;margin:2px 0;">
+        ⚡ 发动机 ── <span id="gearCount">0</span>/4 齿轮装好了
+      </div>
+    </div>
+
+    <!-- Victory display -->
+    <div class="robot-victory" id="robotVictory">
+      <div class="walking-robot">🤖</div>
+      <div style="font-size:28px;color:#E8751A;font-weight:bold;">修好啦！🎉</div>
+      <div style="font-size:16px;color:#6B4F3A;">机器人能走啦！👋 看它在挥手耶！</div>
+    </div>
+
+    <!-- Gear tray -->
+    <div style="font-size:14px;color:#6B4F3A;font-weight:bold;text-align:center;">👇 把齿轮拖到机器人身上</div>
+    <div class="gear-tray" id="gearTray"></div>
+    <div class="tray-labels">
+      <span>小齿轮</span>
+      <span>中齿轮</span>
+      <span>大齿轮</span>
+    </div>
+    <div class="tray-labels" style="font-size:10px;color:#B0BEC5;">
+      <span>❌ 太小</span>
+      <span>✅ 适合手臂</span>
+      <span>✅ 适合腿</span>
+    </div>
+
+    <div class="robot-btn-row">
+      <button onclick="resetRobotPuzzle()">🔄 重新开始</button>
+      <button class="green" onclick="showRobotHint()">💡 提示</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== PAGE 6: QUIZ ====== -->
+<div class="page" id="page-6">
   <span class="page-title-icon">❓</span>
   <div class="page-title">小测验</div>
   <div class="page-desc">看看你记住了多少？选一个答案吧！</div>
@@ -438,8 +683,8 @@ body {
   </div>
 </div>
 
-<!-- ====== PAGE 6: END ====== -->
-<div class="page" id="page-6">
+<!-- ====== PAGE 7: END ====== -->
+<div class="page" id="page-7">
   <div class="end-page">
     <div class="big">🎉</div>
     <div class="title">你太棒啦！</div>
@@ -471,12 +716,13 @@ body {
 <script>
 // ========== NAVIGATION ==========
 let currentPage = 0;
-const TOTAL_PAGES = 7;
+const TOTAL_PAGES = 8;
 function goToPage(n) {
   document.querySelectorAll('.page').forEach((p,i)=>p.classList.toggle('active',i===n));
   currentPage=n;
   renderDots();
-  if(n===5&&!quizDone)initQuiz();
+  if(n===5)initRobotGame();
+  if(n===6&&!quizDone)initQuiz();
 }
 function nextPage(){if(currentPage<TOTAL_PAGES-1)goToPage(currentPage+1);}
 function prevPage(){if(currentPage>0)goToPage(currentPage-1);}
@@ -493,8 +739,9 @@ function renderDots(){
 // ========== SPEECH ==========
 const AUDIO_FILES={
   0:'audio/cover.mp3',1:'audio/page1.mp3',2:'audio/page2.mp3',
-  3:'audio/page3.mp3',4:'audio/page4.mp3',5:'audio/page5.mp3',
-  6:'audio/page5.mp3',correct:'audio/correct.mp3',wrong:'audio/wrong.mp3',
+  3:'audio/page3.mp3',4:'audio/page4.mp3',5:'audio/robot.mp3',
+  6:'audio/page5.mp3',7:'audio/page6.mp3',
+  correct:'audio/correct.mp3',wrong:'audio/wrong.mp3',
   congrats:'audio/congrats.mp3',great:'audio/great.mp3'
 };
 let currentAudio=null;
@@ -513,6 +760,7 @@ function speakPage(n){
     '大小齿轮搭配！大齿轮转得慢，小齿轮转得快！它们牙齿咬牙齿，方向是相反的！大齿轮转一圈，小齿轮能转好几圈！',
     '链条传动！链条就像一条长长的小铁链，把两个齿轮连起来，力气就能传好远！自行车就是靠链条传动的！踩踏板，链条转，轮子就转啦！',
     '搭一搭齿轮！从下面选齿轮拖到绿地上，搭出你自己的传动机器！把齿轮拖到一起，它们就会互相咬住转起来！',
+    '修理小机器人！机器人坏了，不能走也不能挥手。把合适的齿轮装到它肚子里，就能修好它！手臂要中齿轮，腿要大齿轮！',
     '小测验时间到！看看你记住了多少？选一个答案吧！',
     '你太棒啦！今天学会了齿轮会转圈、大小齿轮搭配和链条传动！下次看到自行车，想想链条是怎么工作的吧！'];
   if(AUDIO_FILES[n])playAudio(AUDIO_FILES[n],texts[n]||'');
@@ -818,6 +1066,238 @@ function animationLoop(){
   animFrame=requestAnimationFrame(animationLoop);
 }
 animationLoop();
+
+// ========== ROBOT GAME ==========
+const ROBOT_SOLUTION = { 'arm-l':'medium', 'arm-r':'medium', 'leg-l':'large', 'leg-r':'large' };
+let robotGearCount = 0;
+let robotSlots = {};
+
+function initRobotGame() {
+  robotGearCount = 0;
+  robotSlots = {};
+  
+  // Reset zones
+  document.querySelectorAll('.gear-drop-zone').forEach(z => {
+    z.classList.remove('filled','wrong','highlight');
+    z.innerHTML = '<span class="zone-label">'+z.dataset.zone.replace('arm-l','左臂').replace('arm-r','右臂').replace('leg-l','左腿').replace('leg-r','右腿')+'</span>';
+  });
+  
+  // Reset robot
+  document.getElementById('robotStatus').className = 'robot-status broken';
+  document.getElementById('robotStatus').textContent = '😢 机器人坏了，需要齿轮！';
+  document.getElementById('robotVictory').classList.remove('show');
+  document.getElementById('robotEyeL').className = 'robot-eye';
+  document.getElementById('robotEyeR').className = 'robot-eye';
+  document.getElementById('robotMouth').textContent = '😢';
+  document.getElementById('robotArmL').classList.remove('waving');
+  document.getElementById('robotArmR').classList.remove('waving');
+  
+  // Remove power flow lines
+  document.querySelectorAll('.power-flow').forEach(el => el.remove());
+  
+  // Build gear tray: 2 small, 2 medium, 2 large
+  const tray = document.getElementById('gearTray');
+  tray.innerHTML = '';
+  const gears = [
+    {size:'small', cls:'g-sm', label:'🔸'},
+    {size:'small', cls:'g-sm', label:'🔸'},
+    {size:'medium', cls:'g-md', label:'🔹'},
+    {size:'medium', cls:'g-md', label:'🔹'},
+    {size:'large', cls:'g-lg', label:'🔴'},
+    {size:'large', cls:'g-lg', label:'🔴'}
+  ];
+  // Shuffle
+  for(let i=gears.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[gears[i],gears[j]]=[gears[j],gears[i]];}
+  
+  gears.forEach((g,idx)=>{
+    const el = document.createElement('div');
+    el.className = 'gear-tray-item '+g.cls;
+    el.dataset.gearSize = g.size;
+    el.dataset.trayIdx = idx;
+    el.textContent = g.label;
+    
+    // Drag start - create clone that follows cursor
+    el.addEventListener('mousedown', function(e) { startTrayDrag(e, el); });
+    el.addEventListener('touchstart', function(e) { startTrayDrag(e, el); }, {passive:true});
+    
+    tray.appendChild(el);
+  });
+  
+  document.getElementById('gearCount').textContent = '0';
+  document.querySelectorAll('.power-flow').forEach(el=>el.remove());
+}
+
+function startTrayDrag(e, el) {
+  if(el.classList.contains('used')) return;
+  e.preventDefault();
+  
+  const touch = e.touches ? e.touches[0] : e;
+  const size = el.dataset.gearSize;
+  
+  // Create drag ghost
+  const ghost = document.createElement('div');
+  ghost.className = 'gear-tray-item ' + (size==='small'?'g-sm':size==='medium'?'g-md':'g-lg');
+  ghost.style.position = 'fixed';
+  ghost.style.zIndex = '99999';
+  ghost.style.pointerEvents = 'none';
+  ghost.style.opacity = '0.8';
+  ghost.style.transform = 'scale(1.2)';
+  ghost.textContent = size==='small'?'🔸':size==='medium'?'🔹':'🔴';
+  ghost.style.left = (touch.clientX - 25) + 'px';
+  ghost.style.top = (touch.clientY - 25) + 'px';
+  document.body.appendChild(ghost);
+  
+  // Highlight matching zones
+  document.querySelectorAll('.gear-drop-zone').forEach(z => {
+    if(!z.classList.contains('filled')) {
+      if(z.dataset.required === size) z.classList.add('highlight');
+    }
+  });
+  
+  function onMove(ev) {
+    const t = ev.touches ? ev.touches[0] : ev;
+    ghost.style.left = (t.clientX - 25) + 'px';
+    ghost.style.top = (t.clientY - 25) + 'px';
+    ev.preventDefault();
+  }
+  
+  function onEnd(ev) {
+    const t = ev.changedTouches ? ev.changedTouches[0] : ev;
+    ghost.remove();
+    document.querySelectorAll('.gear-drop-zone').forEach(z => z.classList.remove('highlight'));
+    
+    // Check if dropped on a zone
+    let droppedOn = null;
+    document.querySelectorAll('.gear-drop-zone').forEach(z => {
+      if(z.classList.contains('filled')) return;
+      const r = z.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const dist = Math.sqrt((t.clientX-cx)**2 + (t.clientY-cy)**2);
+      if(dist < 50) droppedOn = z;
+    });
+    
+    if(droppedOn) {
+      attemptPlaceGear(el, droppedOn, size);
+    }
+    
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onEnd);
+    document.removeEventListener('touchmove', onMove);
+    document.removeEventListener('touchend', onEnd);
+  }
+  
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('touchend', onEnd);
+}
+
+function attemptPlaceGear(trayEl, zoneEl, size) {
+  const zoneId = zoneEl.dataset.zone;
+  const required = zoneEl.dataset.required;
+  
+  if(size === required) {
+    // Correct!
+    zoneEl.classList.add('filled');
+    zoneEl.innerHTML = ''; // clear label
+    
+    // Place gear visual
+    const gearVis = document.createElement('div');
+    gearVis.style.width = '80%';
+    gearVis.style.height = '80%';
+    gearVis.style.borderRadius = '50%';
+    gearVis.style.animation = 'spin-cw 3s linear infinite';
+    if(size === 'medium') {
+      gearVis.style.background = 'conic-gradient(#4ECDC4 0deg 30deg,#7EDDD6 30deg 60deg,#4ECDC4 60deg 90deg,#7EDDD6 90deg 120deg,#4ECDC4 120deg 150deg,#7EDDD6 150deg 180deg,#4ECDC4 180deg 210deg,#7EDDD6 210deg 240deg,#4ECDC4 240deg 270deg,#7EDDD6 270deg 300deg,#4ECDC4 300deg 330deg,#7EDDD6 330deg 360deg)';
+      gearVis.style.border = '3px solid #2EAD9E';
+    } else {
+      gearVis.style.background = 'conic-gradient(#FF6B6B 0deg 30deg,#FF8E8E 30deg 60deg,#FF6B6B 60deg 90deg,#FF8E8E 90deg 120deg,#FF6B6B 120deg 150deg,#FF8E8E 150deg 180deg,#FF6B6B 180deg 210deg,#FF8E8E 210deg 240deg,#FF6B6B 240deg 270deg,#FF8E8E 270deg 300deg,#FF6B6B 300deg 330deg,#FF8E8E 330deg 360deg)';
+      gearVis.style.border = '3px solid #D94F4F';
+    }
+    const hub = document.createElement('div');
+    hub.style.width = '30%'; hub.style.height = '30%';
+    hub.style.borderRadius = '50%'; hub.style.background = '#FFF';
+    hub.style.border = '2px solid rgba(0,0,0,0.2)';
+    gearVis.appendChild(hub);
+    zoneEl.appendChild(gearVis);
+    
+    // Mark tray item as used
+    trayEl.classList.add('used');
+    
+    // Add power flow line from engine
+    const torso = document.getElementById('robotTorso');
+    const engine = document.getElementById('robotEngine');
+    const er = engine.getBoundingClientRect();
+    const zr = zoneEl.getBoundingClientRect();
+    const tr = torso.getBoundingClientRect();
+    
+    const flow = document.createElement('div');
+    flow.className = 'power-flow active';
+    
+    const ex = er.left - tr.left + er.width/2;
+    const ey = er.top - tr.top + er.height/2;
+    const zx = zr.left - tr.left + zr.width/2;
+    const zy = zr.top - tr.top + zr.height/2;
+    const dx = zx - ex, dy = zy - ey;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx);
+    
+    flow.style.width = dist + 'px';
+    flow.style.left = ex + 'px';
+    flow.style.top = (ey - 2) + 'px';
+    flow.style.transform = 'rotate('+angle+'rad)';
+    torso.appendChild(flow);
+    
+    robotGearCount++;
+    robotSlots[zoneId] = size;
+    document.getElementById('gearCount').textContent = robotGearCount;
+    
+    // Check if all correct
+    if(robotGearCount === 4) {
+      robotWin();
+    } else {
+      showSpeechBubble('✅ 装对了！继续把剩下的齿轮装好吧！');
+    }
+  } else {
+    // Wrong size!
+    zoneEl.classList.add('wrong');
+    setTimeout(function(){ zoneEl.classList.remove('wrong'); }, 500);
+    showSpeechBubble('❌ 这个齿轮大小不对哦～试试别的！');
+  }
+}
+
+function robotWin() {
+  // Happy robot!
+  document.getElementById('robotEyeL').className = 'robot-eye happy';
+  document.getElementById('robotEyeR').className = 'robot-eye happy';
+  document.getElementById('robotMouth').textContent = '😊';
+  document.getElementById('robotStatus').className = 'robot-status fixed';
+  document.getElementById('robotStatus').textContent = '🎉 修好啦！机器人能动啦！';
+  
+  // Wave arms
+  document.getElementById('robotArmL').classList.add('waving');
+  document.getElementById('robotArmR').classList.add('waving');
+  
+  // Show victory overlay
+  document.getElementById('robotVictory').classList.add('show');
+  
+  // Play sounds
+  playAudio(AUDIO_FILES.congrats, '太棒啦！机器人修好了！它能走路也能挥手啦！🎉');
+  launchConfetti();
+}
+
+function resetRobotPuzzle() {
+  // Return all gears to tray
+  document.querySelectorAll('.gear-tray-item.used').forEach(el => {
+    el.classList.remove('used');
+  });
+  initRobotGame();
+  showSpeechBubble('🔄 重新开始！把合适的齿轮拖到机器人身上吧！');
+}
+
+function showRobotHint() {
+  showSpeechBubble('💡 手臂需要中齿轮🔹，腿需要大齿轮🔴！把正确的齿轮拖到对应的位置！');
+}
 
 // ========== QUIZ ==========
 const quizData=[
