@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐵 Five Little Monkeys Jumping on the Bed!</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    min-height: 100vh; display: flex; justify-content: center;
+    align-items: center; padding: 20px;
+  }
+  .book {
+    max-width: 800px; width: 100%; background: #fff;
+    border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    color: #333; padding: 20px 30px; text-align: center;
+  }
+  .header h1 { font-size: 22px; }
+  .header .sub { font-size: 13px; opacity: 0.8; }
+  .page-area { padding: 20px 30px 10px; min-height: 400px; }
+  .page { display: none; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
+  .page.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* Bed scene */
+  .bed-scene {
+    width: 100%; max-width: 400px; height: 220px;
+    background: linear-gradient(180deg, #e8d5b7 0%, #d4a574 100%);
+    border-radius: 20px; position: relative; margin-bottom: 16px;
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
+    cursor: pointer; overflow: hidden;
+  }
+  .bed-frame {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    background: #8B4513; border-radius: 0 0 20px 20px;
+  }
+  .pillow {
+    position: absolute; left: 20px; bottom: 50px;
+    width: 60px; height: 30px; background: #fff;
+    border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  .monkey {
+    position: absolute; font-size: 40px; cursor: pointer;
+    transition: all 0.3s ease; user-select: none;
+    animation: bounce 1s ease-in-out infinite;
+  }
+  .monkey.jumping { animation: bigJump 0.6s ease-in-out; }
+  .monkey.fallen {
+    bottom: 10px !important; animation: none !important;
+    opacity: 0.6; filter: grayscale(0.5);
+    pointer-events: none;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes bigJump {
+    0% { transform: translateY(0) scale(1); }
+    30% { transform: translateY(-60px) scale(1.2); }
+    60% { transform: translateY(0) scale(0.9); }
+    100% { transform: translateY(0) scale(1); }
+  }
+  
+  .sentence {
+    font-size: 22px; line-height: 1.6; text-align: center;
+    padding: 14px 20px; background: #f0fff0; border-radius: 16px;
+    width: 100%; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .sentence .num { color: #e65100; font-weight: bold; font-size: 28px; }
+  .sentence .bump { color: #f5576c; font-weight: bold; }
+
+  .game-area {
+    width: 100%; padding: 12px 16px; background: #fff3e0;
+    border-radius: 16px; text-align: center; margin-top: 8px;
+  }
+  .game-area h3 { font-size: 14px; color: #e65100; margin-bottom: 8px; }
+  .count-btns { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .count-btn {
+    padding: 10px 24px; border-radius: 14px; border: 3px solid #ddd;
+    background: white; font-size: 22px; font-weight: bold; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .count-btn:hover { border-color: #fa709a; background: #fce4ec; transform: scale(1.1); }
+  .count-btn.correct { border-color: #4caf50; background: #e8f5e9; }
+  .count-btn.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.3s; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .controls {
+    display: flex; gap: 12px; justify-content: center; align-items: center; padding: 0 30px 15px;
+  }
+  .btn {
+    padding: 12px 28px; border: none; border-radius: 30px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .btn:active { transform: scale(0.95); }
+  .btn-primary { background: #667eea; color: white; }
+  .btn-sound { background: #fa709a; color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 22px; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .btn-prev, .btn-next { background: #eee; color: #333; }
+  .btn-prev:disabled, .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+  .page-counter { font-size: 14px; color: #999; text-align: center; }
+  .progress { display: flex; gap: 6px; justify-content: center; padding: 0 30px 18px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.2s; }
+  .dot.active { background: #fa709a; transform: scale(1.3); }
+  .dot.done { background: #4caf50; }
+
+  .celebration {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+  }
+  .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: confettiFall 2s ease-out forwards; }
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(500px) rotate(720deg); }
+  }
+  .cover-page { text-align: center; padding: 30px 20px; }
+  .cover-page .big-icon { font-size: 120px; margin-bottom: 20px; }
+  .cover-page h2 { font-size: 32px; color: #333; }
+  .cover-page p { font-size: 18px; color: #999; margin-top: 8px; }
+
+  @media (max-width: 500px) {
+    .sentence { font-size: 18px; }
+    .monkey { font-size: 32px; }
+    .bed-scene { height: 180px; }
+    .header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+  <div class="header">
+    <h1>🐵 Five Little Monkeys 🛏️</h1>
+    <div class="sub">Jumping on the Bed! · Tap the monkeys to make them jump!</div>
+  </div>
+
+  <div class="page-area" id="pageArea"></div>
+
+  <div class="controls">
+    <button class="btn btn-prev" id="prevBtn" onclick="prevPage()">⬅</button>
+    <button class="btn btn-sound" onclick="speakPage()">🔊</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextPage()">Next ➡</button>
+  </div>
+  <div class="page-counter" id="pageCounter">1 / 8</div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<script>
+const pages = [
+  {
+    cover: true, icon: '🐵', title: 'Five Little Monkeys',
+    subtitle: 'Jumping on the Bed! 🛏️ A counting rhyme!'
+  },
+  { count: 5, emoji: '🐵' },
+  { count: 4, emoji: '🐵', fallen: 1 },
+  { count: 3, emoji: '🐵', fallen: 2 },
+  { count: 2, emoji: '🐵', fallen: 3 },
+  { count: 1, emoji: '🐵', fallen: 4 },
+  { count: 0, emoji: '😴', fallen: 5, done: true },
+  { count: -1, final: true, emoji: '⭐', sentence: '🎉 No more monkeys jumping on the bed! ★★★' }
+];
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+
+function renderPage(idx) {
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+
+  if (p.cover) {
+    area.innerHTML = `
+      <div class="page active cover-page">
+        <div class="big-icon">${p.icon}</div>
+        <h2>${p.title}</h2>
+        <p>${p.subtitle}</p>
+        <p style="margin-top:16px;font-size:14px;color:#aaa">👆 Click "Next" to start!</p>
+      </div>
+    `;
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('prevBtn').style.opacity = '0.4';
+    return;
+  }
+
+  if (p.final) {
+    area.innerHTML = `
+      <div class="page active" style="padding:40px 20px;text-align:center">
+        <div style="font-size:100px;margin-bottom:20px">${p.emoji}</div>
+        <div class="sentence" style="font-size:28px">${p.sentence}</div>
+        <div style="margin-top:20px;font-size:48px">⭐ ⭐ ⭐</div>
+        <div class="game-area" style="background:#e8f5e9;margin-top:20px">
+          <h3>📖 You read the whole story!</h3>
+          <p style="margin-top:8px;color:#4caf50">Great counting, little monkey! 🎉</p>
+        </div>
+      </div>
+    `;
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = false;
+    document.getElementById('prevBtn').style.opacity = '1';
+    return;
+  }
+
+  const count = p.count;
+  const fallen = p.fallen || 0;
+  const isDone = gameDone[idx];
+
+  // Generate monkey positions
+  let monkeysHTML = '';
+  const positions = [];
+  for (let i = 0; i < count + fallen; i++) {
+    const row = Math.floor(i / 4);
+    const col = i % 4;
+    const left = 40 + col * 90;
+    const top = 65 + row * 55;
+    const isFallen = i >= count;
+    positions.push({ left, top, isFallen });
+  }
+
+  positions.forEach((pos, i) => {
+    const isLast = i === count - 1 && count > 0;
+    monkeysHTML += `<div class="monkey ${pos.isFallen ? 'fallen' : ''} ${isLast && !isDone && count > 0 ? 'jumping' : ''}" 
+      style="left:${pos.left}px;top:${pos.isFallen ? 50 : pos.top}px" 
+      onclick="${!pos.isFallen && count > 0 && !isDone ? 'jumpMonkey(this, ' + idx + ')' : ''}">🐵</div>`;
+  });
+
+  const storyText = count > 0
+    ? `<span class="num">${count}</span> little monkey${count > 1 ? 's' : ''} jumping on the bed!<br>One fell off and <span class="bump">bumped</span> his head!`
+    : `😴 No more monkeys jumping on the bed!<br>Mama said, "Time for bed!"`;
+
+  let gameHTML = '';
+  if (count > 0 && !isDone) {
+    const answers = [count - 1, count, count + 1].filter(n => n >= 0 && n <= 5);
+    const correct = count - 1;
+    gameHTML = `
+      <div class="game-area">
+        <h3>🔢 How many monkeys are left?</h3>
+        <div class="count-btns">
+          ${answers.map(n => `<div class="count-btn" onclick="checkAnswer(${idx}, ${correct}, ${n}, this)">${n}</div>`).join('')}
+        </div>
+      </div>
+    `;
+  } else if (isDone && count > 0) {
+    gameHTML = `<div class="game-area" style="background:#e8f5e9"><h3>✅ ${count - 1} monkey${count - 1 !== 1 ? 's' : ''} left!</h3><p style="color:#4caf50;font-size:24px">★</p></div>`;
+  }
+
+  area.innerHTML = `
+    <div class="page active">
+      <div class="bed-scene" id="bedScene">
+        ${monkeysHTML}
+        <div class="pillow"></div>
+        <div class="bed-frame"></div>
+      </div>
+      <div class="sentence">${storyText}</div>
+      ${gameHTML}
+    </div>
+  `;
+
+  updateUI(idx);
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('prevBtn').style.opacity = idx === 0 ? '0.4' : '1';
+}
+
+function jumpMonkey(el, idx) {
+  if (gameDone[idx]) return;
+  el.classList.remove('jumping');
+  void el.offsetWidth;
+  el.classList.add('jumping');
+  setTimeout(() => {
+    el.classList.remove('jumping');
+    el.classList.add('fallen');
+    el.style.top = '50px';
+    // Check if all monkeys fallen
+    const monkeys = document.querySelectorAll('.monkey:not(.fallen)');
+    if (monkeys.length === 0) {
+      gameDone[idx] = true;
+      setTimeout(() => {
+        celebrate();
+        renderPage(idx);
+      }, 600);
+    }
+  }, 600);
+  speakText('Bump!');
+}
+
+function checkAnswer(idx, correct, chosen, el) {
+  if (gameDone[idx]) return;
+  if (chosen === correct) {
+    el.classList.add('correct');
+    gameDone[idx] = true;
+    setTimeout(() => {
+      celebrate();
+      renderPage(idx);
+    }, 600);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 400);
+  }
+}
+
+function speakPage() {
+  const p = pages[currentPage];
+  if (p.cover) {
+    speakText('Five Little Monkeys Jumping on the Bed!');
+  } else if (p.final) {
+    speakText('No more monkeys jumping on the bed!');
+  } else if (p.count > 0) {
+    speakText(`${p.count} little monkey${p.count > 1 ? 's' : ''} jumping on the bed. One fell off and bumped his head!`);
+  } else {
+    speakText('No more monkeys jumping on the bed!');
+  }
+}
+
+function speakText(text) {
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+function nextPage() {
+  const p = pages[currentPage];
+  if (p.count > 0 && !gameDone[currentPage] && !p.cover) return;
+  if (currentPage < pages.length - 1) { currentPage++; renderPage(currentPage); }
+}
+
+function prevPage() {
+  if (currentPage > 0) { currentPage--; renderPage(currentPage); }
+}
+
+function celebrate() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#43e97b'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.top = '20%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 0.6 + 's';
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2500);
+}
+
+function updateUI(idx) {
+  document.getElementById('pageCounter').textContent = `Page ${idx+1} / ${pages.length}`;
+  const dots = document.getElementById('progress');
+  dots.innerHTML = pages.map((_, i) =>
+    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] ? 'done' : ''}" onclick="currentPage=${i};renderPage(${i})"></div>`
+  ).join('');
+}
+
+renderPage(0);
+</script>
+</body>
+</html>

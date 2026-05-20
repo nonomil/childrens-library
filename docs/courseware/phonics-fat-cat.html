@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐱 Fat Cat on a Mat - Phonics Reader</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+    min-height: 100vh; display: flex; justify-content: center;
+    align-items: center; padding: 20px;
+  }
+  .book {
+    max-width: 800px; width: 100%; background: #fffaf0;
+    border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white; padding: 20px 30px; text-align: center;
+  }
+  .header h1 { font-size: 24px; }
+  .header .sub { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+  .header .phonics {
+    margin-top: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  }
+  .sound-tag {
+    background: rgba(255,255,255,0.25); padding: 4px 14px;
+    border-radius: 20px; font-size: 16px; font-weight: bold;
+    cursor: pointer; transition: transform 0.15s;
+  }
+  .sound-tag:hover { transform: scale(1.1); }
+  .page-area { padding: 24px 30px 10px; min-height: 360px; }
+  .page { display: none; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
+  .page.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .illustration {
+    width: 200px; height: 180px; border-radius: 20px;
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 90px; margin-bottom: 16px; position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+  .sentence {
+    font-size: 26px; line-height: 1.6; text-align: center;
+    padding: 14px 20px; background: #fff; border-radius: 16px;
+    width: 100%; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .sentence .ph-word { color: #e65100; font-weight: bold; cursor: pointer; border-bottom: 3px solid #ffb74d; }
+  .sentence .ph-word:hover { background: #fff3e0; }
+  .controls {
+    display: flex; gap: 12px; justify-content: center; align-items: center; padding: 0 30px 15px;
+  }
+  .btn {
+    padding: 12px 28px; border: none; border-radius: 30px;
+    font-size: 16px; font-weight: 600; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+  .btn:active { transform: scale(0.95); }
+  .btn-primary { background: #667eea; color: white; }
+  .btn-sound { background: #f093fb; color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 22px; padding: 0; display: flex; align-items: center; justify-content: center; }
+  .btn-prev, .btn-next { background: #eee; color: #333; }
+  .btn-prev:disabled, .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+  .page-counter { font-size: 14px; color: #999; text-align: center; padding-bottom: 5px; }
+  .progress { display: flex; gap: 6px; justify-content: center; padding: 0 30px 18px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.2s; }
+  .dot.active { background: #f5576c; transform: scale(1.3); }
+  .dot.done { background: #4caf50; }
+
+  /* Phonics Game */
+  .game-area {
+    width: 100%; margin-top: 8px; padding: 16px;
+    background: #fff8e1; border-radius: 16px; text-align: center;
+  }
+  .game-area h3 { font-size: 14px; color: #e65100; margin-bottom: 10px; }
+  .letter-tiles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .letter-tile {
+    width: 52px; height: 52px; border-radius: 12px; border: 3px solid #ddd;
+    background: white; font-size: 28px; font-weight: bold; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; user-select: none;
+  }
+  .letter-tile:hover { border-color: #f5576c; background: #fce4ec; transform: scale(1.1); }
+  .letter-tile.correct { border-color: #4caf50; background: #e8f5e9; }
+  .letter-tile.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.3s; }
+  .letter-tile.used { opacity: 0.4; pointer-events: none; }
+  .word-build {
+    display: flex; gap: 4px; justify-content: center; margin-bottom: 12px;
+    min-height: 48px;
+  }
+  .word-slot {
+    width: 48px; height: 48px; border-bottom: 4px solid #f5576c;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; font-weight: bold; color: #e65100;
+  }
+  .word-slot.filled { border-bottom-color: #4caf50; }
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  .star { color: #ffc107; font-size: 24px; }
+  .celebration {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+  }
+  .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: confettiFall 2s ease-out forwards; }
+  @keyframes confettiFall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(500px) rotate(720deg); }
+  }
+  .cover-page { text-align: center; padding: 30px 20px; }
+  .cover-page .big-icon { font-size: 120px; margin-bottom: 20px; }
+  .cover-page h2 { font-size: 32px; color: #333; }
+  .cover-page p { font-size: 18px; color: #999; margin-top: 8px; }
+  .back-link {
+    display: inline-block; margin-top: 10px; padding: 8px 20px;
+    background: #eee; border-radius: 10px; color: #666; text-decoration: none;
+    font-size: 13px; transition: background 0.2s;
+  }
+  .back-link:hover { background: #ddd; }
+  @media (max-width: 500px) {
+    .illustration { width: 140px; height: 130px; font-size: 60px; }
+    .sentence { font-size: 20px; }
+    .letter-tile { width: 44px; height: 44px; font-size: 22px; }
+    .word-slot { width: 40px; height: 40px; font-size: 22px; }
+    .header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="book">
+  <div class="header">
+    <h1>🐱 Fat Cat on a Mat</h1>
+    <div class="sub">Usborne Phonics Reader · Short Vowel <strong>a</strong></div>
+    <div class="phonics">
+      <span class="sound-tag" onclick="speakText('at')">🔊 at</span>
+      <span class="sound-tag" onclick="speakText('an')">🔊 an</span>
+      <span class="sound-tag" onclick="speakText('ap')">🔊 ap</span>
+      <span class="sound-tag" onclick="speakText('ad')">🔊 ad</span>
+    </div>
+  </div>
+
+  <div class="page-area" id="pageArea"></div>
+
+  <div class="controls">
+    <button class="btn btn-prev" id="prevBtn" onclick="prevPage()">⬅</button>
+    <button class="btn btn-sound" onclick="speakPage()">🔊</button>
+    <button class="btn btn-primary" id="nextBtn" onclick="nextPage()">Next ➡</button>
+  </div>
+  <div class="page-counter" id="pageCounter">1 / 9</div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<script>
+// === COVER + 8 STORY PAGES ===
+const pages = [
+  // Page 0: Cover
+  {
+    cover: true,
+    icon: '🐱',
+    title: 'Fat Cat on a Mat',
+    subtitle: 'A phonics story about a cat, a rat, and a hat!',
+    sentence: ''
+  },
+  // Page 1
+  {
+    emoji: '🐱', sentence: 'A <span class="ph-word">fat</span> cat sat on a <span class="ph-word">mat</span>.',
+    game: { word: 'fat', letters: ['f', 'a', 't', 'c', 'r', 'h'] }
+  },
+  // Page 2
+  {
+    emoji: '🐭', sentence: 'A <span class="ph-word">rat</span> ran to the <span class="ph-word">cat</span>.',
+    game: { word: 'rat', letters: ['r', 'a', 't', 'm', 's', 'p'] }
+  },
+  // Page 3
+  {
+    emoji: '🎩', sentence: '"<span class="ph-word">Hat</span> on the <span class="ph-word">mat</span>!" said the cat.',
+    game: { word: 'hat', letters: ['h', 'a', 't', 'b', 'f', 'm'] }
+  },
+  // Page 4
+  {
+    emoji: '🦇', sentence: 'A <span class="ph-word">bat</span> flew to the <span class="ph-word">mat</span>.',
+    game: { word: 'bat', letters: ['b', 'a', 't', 'r', 'l', 'p'] }
+  },
+  // Page 5
+  {
+    emoji: '🧢', sentence: '"<span class="ph-word">Pat</span> the <span class="ph-word">cat</span>!" said the rat.',
+    game: { word: 'pat', letters: ['p', 'a', 't', 'd', 'c', 'b'] }
+  },
+  // Page 6
+  {
+    emoji: '😺', sentence: 'The cat had a <span class="ph-word">nap</span> on the <span class="ph-word">mat</span>.',
+    game: { word: 'nap', letters: ['n', 'a', 'p', 't', 'c', 'f'] }
+  },
+  // Page 7
+  {
+    emoji: '🐱', sentence: 'The <span class="ph-word">cat</span> was <span class="ph-word">fat</span> and <span class="ph-word">happy</span>!',
+    game: { word: 'cat', letters: ['c', 'a', 't', 'f', 'n', 'p'] }
+  },
+  // Page 8: Completion
+  {
+    emoji: '⭐', sentence: '🎉 You read the whole story! Great <span class="ph-word">reading</span>!',
+    game: null
+  }
+];
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+let buildingWord = [];
+let currentTarget = [];
+
+function renderPage(idx) {
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+  
+  if (p.cover) {
+    area.innerHTML = `
+      <div class="page active cover-page">
+        <div class="big-icon">${p.icon}</div>
+        <h2>${p.title}</h2>
+        <p>${p.subtitle}</p>
+        <p style="margin-top:16px;font-size:14px;color:#aaa">👆 Click "Next" to start reading!</p>
+      </div>
+    `;
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = true;
+    document.getElementById('prevBtn').style.opacity = '0.4';
+    return;
+  }
+
+  const isDone = !p.game || gameDone[idx];
+  let gameHTML = '';
+  if (p.game && !gameDone[idx]) {
+    const shuffled = [...p.game.letters].sort(() => Math.random() - 0.5);
+    currentTarget = p.game.word.split('');
+    buildingWord = [];
+    gameHTML = `
+      <div class="game-area" id="game-${idx}">
+        <h3>🔤 Build the word: <strong>"${p.game.word}"</strong></h3>
+        <div class="word-build" id="wordBuild-${idx}">
+          ${p.game.word.split('').map(() => `<div class="word-slot" id="slot-${idx}-"></div>`).join('')}
+        </div>
+        <div class="letter-tiles" id="tiles-${idx}">
+          ${shuffled.map((l, i) => `<div class="letter-tile" data-letter="${l}" onclick="pickLetter(${idx}, '${l}', this)">${l}</div>`).join('')}
+        </div>
+      </div>
+    `;
+    gameDone[idx] = false;
+  } else if (isDone && p.game) {
+    gameHTML = `<div class="game-area" style="background:#e8f5e9"><h3>✅ Word built!</h3><p style="color:#4caf50;font-size:30px">⭐</p></div>`;
+  } else {
+    gameHTML = `<div class="game-area" style="background:#fff3e0"><h3>🎉 ${p.emoji} All done! ★★★</h3></div>`;
+  }
+
+  area.innerHTML = `
+    <div class="page active">
+      <div class="illustration">${p.emoji}</div>
+      <div class="sentence">${p.sentence}</div>
+      ${gameHTML}
+    </div>
+  `;
+  updateUI(idx);
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('prevBtn').style.opacity = idx === 0 ? '0.4' : '1';
+}
+
+function pickLetter(idx, letter, el) {
+  if (gameDone[idx]) return;
+  if (el.classList.contains('used')) return;
+
+  const target = pages[idx].game.word;
+  const slotIdx = buildingWord.length;
+  if (slotIdx >= target.length) return;
+
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  if (letter === target[slotIdx]) {
+    // Correct!
+    buildingWord.push(letter);
+    slots[slotIdx].textContent = letter;
+    slots[slotIdx].classList.add('filled');
+    el.classList.add('correct');
+    el.classList.add('used');
+
+    // Check if word completed
+    if (buildingWord.length === target.length) {
+      gameDone[idx] = true;
+      setTimeout(() => {
+        celebrate();
+        renderPage(idx);
+      }, 600);
+    }
+  } else {
+    el.classList.add('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 400);
+  }
+}
+
+function speakPage() {
+  const p = pages[currentPage];
+  let txt = '';
+  if (p.cover) {
+    txt = p.title + '. ' + p.subtitle;
+  } else {
+    txt = p.sentence.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+  }
+  speakText(txt);
+}
+
+function speakText(text) {
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+function nextPage() {
+  const p = pages[currentPage];
+  if (p.game && !gameDone[currentPage]) return;
+  if (currentPage < pages.length - 1) { currentPage++; renderPage(currentPage); }
+}
+
+function prevPage() {
+  if (currentPage > 0) { currentPage--; renderPage(currentPage); }
+}
+
+function celebrate() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#ffd700'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.top = '20%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.animationDelay = Math.random() * 0.6 + 's';
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 2500);
+}
+
+function updateUI(idx) {
+  document.getElementById('pageCounter').textContent = `Page ${idx+1} / ${pages.length}`;
+  const dots = document.getElementById('progress');
+  dots.innerHTML = pages.map((_, i) =>
+    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] ? 'done' : ''}" onclick="currentPage=${i};renderPage(${i})"></div>`
+  ).join('');
+}
+
+renderPage(0);
+</script>
+</body>
+</html>
