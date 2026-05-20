@@ -213,7 +213,12 @@ body {
 .quiz-area { padding:6px 0; }
 .quiz-question { background:#FFF3E0; border-radius:24px; padding:18px 20px; margin-bottom:12px; text-align:center; }
 .quiz-question .q-num { display:inline-block; background:#FFB347; color:#FFF; font-size:16px; padding:3px 14px; border-radius:30px; margin-bottom:8px; }
-.quiz-question .q-text { font-size:22px; color:#5C4033; font-weight:bold; }
+.quiz-question .q-text { font-size:22px; color:#5C4033; font-weight:bold; display:flex; align-items:center; justify-content:center; gap:8px; }
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.speak-btn:active { transform:scale(0.9); }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
 .quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
 .quiz-opt {
   background:#FFFCF5; border:3px solid #E8DCC8; border-radius:18px; padding:14px 10px;
@@ -939,8 +944,7 @@ function renderChain(lx, ly, lr, rx, ry, rr) {
     'M', lx, ly - lr,                          // Start: top of left sprocket
     'L', rx, ry - rr,                           // Top tangent
     'A', rr, rr, 0, 1, 1, rx, ry + rr,         // Right arc (clockwise)
-    'Q', (lx+rx)/2, ry + rr + sag,             // Bottom curve with sag
-    'L', lx, ly + lr,                           // Back to bottom of left sprocket
+    'Q', (lx+rx)/2, (ry + rr + sag), lx, ly + lr,  // Bottom curve with sag → back to left sprocket bottom
     'A', lr, lr, 0, 1, 0, lx, ly - lr          // Left arc (counter-clockwise)
   ].join(' ');
   
@@ -1724,11 +1728,23 @@ function showQuestion(){
   if(quizIndex>=quizData.length){finishQuiz();return;}
   const q=quizData[quizIndex];
   document.getElementById('qNum').textContent='第 '+(quizIndex+1)+' 题 / 共 '+quizData.length+' 题';
-  document.getElementById('qText').textContent=q.question;
+  // Add speaker button to question
+  const qText=document.getElementById('qText');
+  qText.innerHTML=q.question+' <button class="speak-btn" onclick="event.stopPropagation();speakText(\''+q.question.replace(/['"]/g,'')+'\')" title="朗读题目">🔊</button>';
   const c=document.getElementById('quizOptions');c.innerHTML='';
   q.options.forEach((opt,i)=>{
     const b=document.createElement('button');b.className='quiz-opt';b.textContent=opt;
-    b.onclick=function(){answerQuiz(i);};c.appendChild(b);
+    // Add speaker for option
+    const optText=opt.replace(/['"]/g,'');
+    b.onclick=function(){answerQuiz(i);};
+    const wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:center;gap:4px;width:100%';
+    const labelSpan=document.createElement('span');labelSpan.textContent=opt;
+    const speakBtn=document.createElement('button');speakBtn.className='quiz-opt-speak';speakBtn.textContent='🔊';
+    speakBtn.onclick=function(e){e.stopPropagation();speakText(optText);};
+    speakBtn.title='朗读这个选项';
+    wrap.appendChild(labelSpan);wrap.appendChild(speakBtn);
+    b.innerHTML='';b.appendChild(wrap);
+    c.appendChild(b);
   });
   document.getElementById('quizFeedback').textContent='';document.getElementById('quizFeedback').className='quiz-feedback';
   quizAnswered=false;updateQuizProgress();
@@ -1770,6 +1786,16 @@ function finishQuiz(){
   document.getElementById('resultMsg').textContent=msg;
 }
 function restartQuiz(){initQuiz();}
+
+// ========== QUIZ SPEAK ==========
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='zh-CN';u.rate=0.85;u.pitch=1.1;
+    window.speechSynthesis.speak(u);
+  }
+}
 
 // ========== CONFETTI ==========
 function launchConfetti(){
