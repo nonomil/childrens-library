@@ -256,7 +256,7 @@ function renderPage(idx) {
   }
 
   // Character scene
-  const chars = p.scene.split('');
+  const chars = Array.from(p.scene);
   const charHTML = chars.map(c => {
     const isElephant = c === '🐘';
     const isPig = c === '🐷';
