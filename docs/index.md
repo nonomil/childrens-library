@@ -175,8 +175,8 @@
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
 
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>13</strong> 堂课</span>
-    <span class="stat-item">🎵 <strong>5</strong> 首童谣</span>
+    <span class="stat-item">📚 共 <strong>20</strong> 堂课</span>
+    <span class="stat-item">🎵 <strong>12</strong> 首童谣</span>
     <span class="stat-item">🔤 <strong>4</strong> 个英语课</span>
     <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
     <span class="stat-item">🀄 <strong>1</strong> 个语文课</span>
@@ -247,6 +247,102 @@
         <span class="tag tag-green">🎵 童谣</span>
       </div>
       <p>小蜘蛛爬水管！🕷️ 下雨冲走太阳晒干<br>🎵 拼读 spider/rain/sun/again</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/row-your-boat.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-green card-new">
+      <div class="icon">🚣</div>
+      <h3>Row Row Row Your Boat</h3>
+      <div class="tags">
+        <span class="tag tag-green">🎵 童谣</span>
+      </div>
+      <p>划呀划呀划小船！🚣 轻轻顺着溪流下<br>🎵 拼读 row/boat/stream/merrily/dream</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/bingo.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-yellow card-new">
+      <div class="icon">🐶</div>
+      <h3>BINGO</h3>
+      <div class="tags">
+        <span class="tag tag-yellow">🎵 童谣</span>
+      </div>
+      <p>农夫有只小狗叫BINGO！🐶 边拍手边拼名字<br>🎵 B-I-N-G-O 字母拼读</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/abc-song.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-red card-new">
+      <div class="icon">🔤</div>
+      <h3>ABC Song</h3>
+      <div class="tags">
+        <span class="tag tag-red">🎵 童谣</span>
+      </div>
+      <p>A-B-C-D-E-F-G！字母歌唱起来<br>🎵 从A唱到Z，每页字母拼读练习</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/head-shoulders.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-pink card-new">
+      <div class="icon">🧍</div>
+      <h3>Head, Shoulders, Knees &amp; Toes</h3>
+      <div class="tags">
+        <span class="tag tag-pink">🎵 童谣</span>
+      </div>
+      <p>头肩膀膝盖脚趾！🧍 认识身体部位<br>🎵 拼读 eyes/ears/mouth/nose</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/humpty-dumpty.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-purple card-new">
+      <div class="icon">🥚</div>
+      <h3>Humpty Dumpty</h3>
+      <div class="tags">
+        <span class="tag tag-purple">🎵 童谣</span>
+      </div>
+      <p>蛋头先生坐墙上！🥚 摔下来还能拼回去吗？<br>🎵 拼读 Humpty/great/king/again</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/if-youre-happy.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-orange card-new">
+      <div class="icon">😊</div>
+      <h3>If You're Happy and You Know It</h3>
+      <div class="tags">
+        <span class="tag tag-orange">🎵 童谣</span>
+      </div>
+      <p>开心就拍拍手跺跺脚！😊 大声喊Hurray<br>🎵 拼读 clap/stomp/shout/three</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/london-bridge.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-blue card-new">
+      <div class="icon">🌉</div>
+      <h3>London Bridge</h3>
+      <div class="tags">
+        <span class="tag tag-blue">🎵 童谣</span>
+      </div>
+      <p>伦敦桥要倒啦！🌉 用铁棍修好它<br>🎵 拼读 London/Build/Iron/Break</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="courseware/mary-lamb.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-pink card-new">
+      <div class="icon">🐑</div>
+      <h3>Mary Had a Little Lamb</h3>
+      <div class="tags">
+        <span class="tag tag-pink">🎵 童谣</span>
+      </div>
+      <p>玛莉的小羊羔！🐑 白毛毛像雪一样<br>🎵 拼读 Mary/fleece/followed/school</p>
       <span class="btn-start">🎵 听儿歌</span>
     </div>
   </a>

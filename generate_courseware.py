@@ -9,53 +9,23 @@ AUDIO = os.path.join(OUT, "audio")
 
 TEMPLATE = open(os.path.join(OUT, "old-macdonald.html"), encoding="utf-8").read()
 
+def make_scene_svg(element, colors, page_idx=0):
+    c0, c1 = colors.split(",")
+    svgs = {
+        "bus": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>''',
+        "boat": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect y="160" width="460" height="60" fill="#4FC3F7" opacity="0.4"/><path d="M100 160 L120 130 L340 130 L360 160 Z" fill="#8D6E63" stroke="#5D4037" stroke-width="3"/><rect x="200" y="90" width="20" height="40" rx="3" fill="#795548"/><polygon points="220,95 300,120 220,140" fill="#FFF" opacity="0.8" stroke="#90CAF9" stroke-width="2"/><ellipse cx="80" cy="50" rx="30" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="350" cy="60" rx="25" ry="10" fill="#FFF" opacity="0.2"/></svg>''',
+        "spider": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect x="210" y="40" width="40" height="140" rx="20" fill="#8D6E63"/><ellipse cx="230" cy="40" rx="30" ry="15" fill="#FFF9C4"/><circle cx="230" cy="80" r="10" fill="#5D4037"/><circle cx="226" cy="78" r="2" fill="#FFF"/><circle cx="234" cy="78" r="2" fill="#FFF"/><ellipse cx="230" cy="95" rx="8" ry="6" fill="#5D4037"/><path d="M210 85 Q195 75 200 65" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M220 88 Q205 85 205 75" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M250 85 Q265 75 260 65" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M240 88 Q255 85 255 75" stroke="#5D4037" stroke-width="2" fill="none"/><ellipse cx="80" cy="40" rx="50" ry="20" fill="#FFF" opacity="0.3"/></svg>''',
+        "dog": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect y="160" width="460" height="60" fill="#81C784" opacity="0.3"/><ellipse cx="200" cy="80" rx="40" ry="30" fill="#FFCC80"/><ellipse cx="200" cy="95" rx="25" ry="20" fill="#FFE0B2"/><ellipse cx="230" cy="55" rx="28" ry="25" fill="#FFCC80" transform="rotate(15,230,55)"/><circle cx="240" cy="50" r="4" fill="#5D4037"/><circle cx="238" cy="48" r="1.5" fill="#FFF"/><ellipse cx="255" cy="60" rx="10" ry="6" fill="#5D4037"/><circle cx="220" cy="95" r="3" fill="#5D4037"/><ellipse cx="190" cy="80" rx="15" ry="10" fill="#A1887F"/><ellipse cx="260" cy="58" rx="8" ry="4" fill="#FFAB91"/><ellipse cx="80" cy="50" rx="30" ry="12" fill="#FFF" opacity="0.3"/></svg>''',
+        "abc": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>''',
+        "star": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect y="180" width="460" height="40" fill="#1B5E20" opacity="0.15"/><ellipse cx="80" cy="35" rx="50" ry="15" fill="#FFF" opacity="0.3"/><text x="80" y="110" font-size="28" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><text x="160" y="95" font-size="22" font-weight="bold" fill="#FFF" font-family="sans-serif">★</text><text x="230" y="110" font-size="32" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><text x="310" y="90" font-size="20" font-weight="bold" fill="#FFF" font-family="sans-serif">★</text><text x="370" y="105" font-size="26" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><ellipse cx="130" cy="45" rx="4" ry="4" fill="#FFF" opacity="0.5"/><ellipse cx="300" cy="50" rx="3" ry="3" fill="#FFF" opacity="0.4"/><rect x="210" y="140" width="40" height="45" rx="3" fill="#A1887F"/></svg>''',
+        "egg": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><rect x="220" y="30" width="20" height="140" rx="4" fill="#A1887F"/><ellipse cx="230" cy="30" rx="30" ry="12" fill="#8D6E63"/><ellipse cx="230" cy="95" rx="28" ry="35" fill="#FFCC80"/><ellipse cx="230" cy="95" rx="24" ry="30" fill="#FFE0B2"/><circle cx="222" cy="88" r="2.5" fill="#5D4037"/><circle cx="238" cy="88" r="2.5" fill="#5D4037"/><path d="M222,95 Q230,102 238,95" fill="none" stroke="#5D4037" stroke-width="1.5"/></svg>''',
+        "happy": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><ellipse cx="80" cy="40" rx="50" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="55" rx="40" ry="12" fill="#FFF" opacity="0.2"/><rect y="175" width="460" height="45" fill="#66BB6A" opacity="0.25"/><circle cx="150" cy="100" r="45" fill="#FFCC80"/><circle cx="135" cy="90" r="4" fill="#5D4037"/><circle cx="165" cy="90" r="4" fill="#5D4037"/><circle cx="148" cy="98" r="1.5" fill="#FFF"/><circle cx="162" cy="98" r="1.5" fill="#FFF"/><path d="M133,108 Q145,120 158,110" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/><circle cx="148" cy="108" r="4" fill="#E91E63"/><path d="M135,105 L130,80" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/><path d="M165,105 L170,80" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/><circle cx="130" cy="80" r="6" fill="#FFCC80"/><circle cx="170" cy="80" r="6" fill="#FFCC80"/><circle cx="130" cy="78" r="2" fill="#5D4037"/><circle cx="170" cy="78" r="2" fill="#5D4037"/><circle cx="300" cy="100" r="35" fill="#FFCC80"/><circle cx="290" cy="93" r="3" fill="#5D4037"/><circle cx="310" cy="93" r="3" fill="#5D4037"/><path d="M290,103 Q300,112 310,103" fill="none" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/></svg>''',
+        "bridge": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><ellipse cx="80" cy="40" rx="45" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#4FC3F7" opacity="0.3"/><path d="M0 120 Q115 60 230 80 Q345 60 460 120" fill="none" stroke="#8D6E63" stroke-width="8" stroke-linecap="round"/><path d="M0 140 Q115 80 230 100 Q345 80 460 140" fill="none" stroke="#A1887F" stroke-width="6" stroke-linecap="round"/><rect x="105" y="70" width="8" height="50" fill="#795548"/><rect x="345" y="70" width="8" height="50" fill="#795548"/><rect x="225" y="80" width="10" height="40" fill="#795548"/><ellipse cx="230" cy="160" rx="12" ry="8" fill="#FFF" opacity="0.5"/></svg>''',
+        "lamb": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{c0}"/><stop offset="100%" stop-color="{c1}"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>''',
+    }
+    return svgs.get(element, svgs["bus"])
+
 SONGS = [
-    {
-        "id": "wheels-on-bus",
-        "title": "🚌 The Wheels on the Bus",
-        "mp3": "wheels.mp3",
-        "cover_subtitle": "✏️ 公车的轮子转啊转！",
-        "pages": [
-            {"sentence": 'The <span class="hl" data-word="wheels">wheels</span> on the <span class="hl" data-word="bus">bus</span> go <span class="hl" data-word="round">round</span> and <span class="hl" data-word="round">round</span>', "desc": "公车的轮子转啊转", "game": "wheels"},
-            {"sentence": 'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl" data-word="up">up</span> and <span class="hl" data-word="down">down</span>', "desc": "公车的人们上上下下", "game": "people"},
-            {"sentence": 'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span>, swish, swish', "desc": "公车的雨刷刷刷刷", "game": "wipers"},
-            {"sentence": 'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span>, beep, beep', "desc": "公车的喇叭哔哔哔", "game": "horn"},
-            {"sentence": 'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>', "desc": "公车的门开了关", "game": "door"},
-        ],
-        "core_words": ["wheels", "bus", "round", "up", "down", "open", "shut"],
-        "svg_bg": "#87CEEB,#E0F7FA",
-        "svg_element": "bus",
-    },
-    {
-        "id": "row-your-boat",
-        "title": "🚣 Row Row Row Your Boat",
-        "mp3": "rowyourboat.mp3",
-        "cover_subtitle": "✏️ 划呀划呀划小船！",
-        "pages": [
-            {"sentence": '<span class="hl" data-word="Row">Row</span>, <span class="hl" data-word="row">row</span>, <span class="hl" data-word="row">row</span> your <span class="hl" data-word="boat">boat</span>', "desc": "划呀划呀划你的船", "game": "row"},
-            {"sentence": '<span class="hl" data-word="Gently">Gently</span> down the <span class="hl" data-word="stream">stream</span>', "desc": "轻轻顺着溪流而下", "game": "gently"},
-            {"sentence": '<span class="hl" data-word="Merrily">Merrily</span>, merrily, merrily, merrily', "desc": "快快乐乐地划呀划", "game": "merrily"},
-            {"sentence": '<span class="hl" data-word="Life">Life</span> is but a <span class="hl" data-word="dream">dream</span>', "desc": "人生不过是一场梦", "game": "dream"},
-        ],
-        "core_words": ["row", "boat", "stream", "merrily", "dream"],
-        "svg_bg": "#81D4FA,#B3E5FC",
-        "svg_element": "boat",
-    },
-    {
-        "id": "itsy-bitsy-spider",
-        "title": "🕷️ Itsy Bitsy Spider",
-        "mp3": "itsybitsy.mp3",
-        "cover_subtitle": "✏️ 小蜘蛛爬水管！",
-        "pages": [
-            {"sentence": 'The <span class="hl" data-word="itsy">itsy</span> <span class="hl" data-word="bitsy">bitsy</span> <span class="hl" data-word="spider">spider</span> went up the water <span class="hl" data-word="spout">spout</span>', "desc": "小蜘蛛爬上了水管", "game": "spider"},
-            {"sentence": 'Down came the <span class="hl" data-word="rain">rain</span> and washed the spider <span class="hl" data-word="out">out</span>', "desc": "下雨了把蜘蛛冲出来", "game": "rain"},
-            {"sentence": 'Out came the <span class="hl" data-word="sun">sun</span> and dried up all the <span class="hl" data-word="rain">rain</span>', "desc": "太阳出来晒干了雨水", "game": "sun"},
-            {"sentence": 'And the itsy bitsy spider went up the spout <span class="hl" data-word="again">again</span>', "desc": "小蜘蛛又爬上了水管", "game": "again"},
-        ],
-        "core_words": ["spider", "rain", "sun", "out", "again"],
-        "svg_bg": "#A5D6A7,#C8E6C9",
-        "svg_element": "spider",
-    },
     {
         "id": "bingo",
         "title": "🐶 BINGO",
@@ -64,42 +34,129 @@ SONGS = [
         "pages": [
             {"sentence": 'There was a <span class="hl" data-word="farmer">farmer</span> had a <span class="hl" data-word="dog">dog</span>', "desc": "农夫有一只小狗", "game": "farmer"},
             {"sentence": 'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o', "desc": "Bingo是它的名字", "game": "bingo"},
-            {"sentence": 'B-I-N-G-O, B-I-N-G-O, B-I-N-G-O', "desc": "拼出BINGO的名字", "game": "bingo2"},
-            {"sentence": 'And Bingo was his name-o!', "desc": "Bingo就是它的名字！", "game": "bingo3"},
+            {"sentence": 'B-I-N-G-O, <span class="hl" data-word="B">B</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="G">G</span>-<span class="hl" data-word="O">O</span>', "desc": "拼出BINGO的名字", "game": "bingo"},
+            {"sentence": 'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o!', "desc": "Bingo就是它的名字！", "game": "name"},
         ],
-        "core_words": ["farmer", "dog", "Bingo", "name"],
         "svg_bg": "#FFE0B2,#FFF3E0",
         "svg_element": "dog",
     },
+    {
+        "id": "abc-song",
+        "title": "🔤 ABC Song",
+        "mp3": "abcsong.mp3",
+        "cover_subtitle": "✏️ 一起来学英文字母歌！",
+        "pages": [
+            {"sentence": '<span class="hl" data-word="A">A</span>-<span class="hl" data-word="B">B</span>-<span class="hl" data-word="C">C</span>-<span class="hl" data-word="D">D</span>-<span class="hl" data-word="E">E</span>-<span class="hl" data-word="F">F</span>-<span class="hl" data-word="G">G</span>', "desc": "字母 A B C D E F G", "game": "abcdefg"},
+            {"sentence": '<span class="hl" data-word="H">H</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="J">J</span>-<span class="hl" data-word="K">K</span>-<span class="hl" data-word="L">L</span>-<span class="hl" data-word="M">M</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="O">O</span>-<span class="hl" data-word="P">P</span>', "desc": "字母 H I J K L M N O P", "game": "hijklmnop"},
+            {"sentence": '<span class="hl" data-word="Q">Q</span>-<span class="hl" data-word="R">R</span>-<span class="hl" data-word="S">S</span>-<span class="hl" data-word="T">T</span>-<span class="hl" data-word="U">U</span>-<span class="hl" data-word="V">V</span>', "desc": "字母 Q R S T U V", "game": "qrstuv"},
+            {"sentence": '<span class="hl" data-word="W">W</span>-<span class="hl" data-word="X">X</span>-<span class="hl" data-word="Y">Y</span>-<span class="hl" data-word="Z">Z</span>', "desc": "字母 W X Y Z", "game": "wxyz"},
+            {"sentence": 'Now I know my <span class="hl" data-word="ABC">ABC</span>s, next time won\'t you <span class="hl" data-word="sing">sing</span> with <span class="hl" data-word="me">me</span>!', "desc": "我会唱字母歌了！", "game": "abcs"},
+        ],
+        "svg_bg": "#E8EAF6,#C5CAE9",
+        "svg_element": "abc",
+    },
+    {
+        "id": "head-shoulders",
+        "title": "🧍 Head, Shoulders, Knees & Toes",
+        "mp3": "headshoulders.mp3",
+        "cover_subtitle": "✏️ 一起来认识身体部位！",
+        "pages": [
+            {"sentence": '<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', "desc": "头、肩膀、膝盖和脚趾", "game": "head"},
+            {"sentence": '<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', "desc": "眼睛、耳朵、嘴巴和鼻子", "game": "eyes"},
+            {"sentence": '<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', "desc": "我们再来一遍！", "game": "knees"},
+            {"sentence": '<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', "desc": "我们都认识身体部位啦！", "game": "mouth"},
+        ],
+        "svg_bg": "#FFF8E1,#FFECB3",
+        "svg_element": "star",
+    },
+    {
+        "id": "humpty-dumpty",
+        "title": "🥚 Humpty Dumpty",
+        "mp3": "humptydumpty.mp3",
+        "cover_subtitle": "✏️ 蛋头先生坐在墙头上！",
+        "pages": [
+            {"sentence": '<span class="hl" data-word="Humpty">Humpty</span> <span class="hl" data-word="Dumpty">Dumpty</span> sat on a <span class="hl" data-word="wall">wall</span>', "desc": "蛋头先生坐在墙头上", "game": "humpty"},
+            {"sentence": 'Humpty Dumpty had a <span class="hl" data-word="great">great</span> <span class="hl" data-word="fall">fall</span>', "desc": "蛋头先生摔了一大跤", "game": "great"},
+            {"sentence": 'All the <span class="hl" data-word="king">king</span>\'s <span class="hl" data-word="horses">horses</span> and all the king\'s <span class="hl" data-word="men">men</span>', "desc": "国王所有的马和士兵", "game": "king"},
+            {"sentence": 'Couldn\'t put <span class="hl" data-word="Humpty">Humpty</span> together <span class="hl" data-word="again">again</span>', "desc": "都没法把蛋头拼回去", "game": "again2"},
+        ],
+        "svg_bg": "#E3F2FD,#BBDEFB",
+        "svg_element": "egg",
+    },
+    {
+        "id": "if-youre-happy",
+        "title": "😊 If You\'re Happy and You Know It",
+        "mp3": "if_happy.mp3",
+        "cover_subtitle": "✏️ 如果你开心你就拍拍手！",
+        "pages": [
+            {"sentence": 'If you\'re <span class="hl" data-word="happy">happy</span> and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="clap">clap</span> your <span class="hl" data-word="hands">hands</span>!', "desc": "如果你开心就拍拍手", "game": "happy"},
+            {"sentence": 'If you\'re <span class="hl" data-word="happy">happy</span> and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="stomp">stomp</span> your <span class="hl" data-word="feet">feet</span>!', "desc": "如果你开心就跺跺脚", "game": "stomp"},
+            {"sentence": 'If you\'re <span class="hl" data-word="happy">happy</span> and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="shout">shout</span> "<span class="hl" data-word="Hurray">Hurray</span>"!', "desc": "如果你开心就喊Hurray", "game": "shout"},
+            {"sentence": 'If you\'re <span class="hl" data-word="happy">happy</span> and you <span class="hl" data-word="know">know</span> it, do <span class="hl" data-word="all">all</span> <span class="hl" data-word="three">three</span>!', "desc": "如果你开心就全做一遍", "game": "three"},
+        ],
+        "svg_bg": "#FFF9C4,#FFF59D",
+        "svg_element": "happy",
+    },
+    {
+        "id": "london-bridge",
+        "title": "🌉 London Bridge",
+        "mp3": "london_bridge.mp3",
+        "cover_subtitle": "✏️ 伦敦桥要倒啦！",
+        "pages": [
+            {"sentence": '<span class="hl" data-word="London">London</span> <span class="hl" data-word="Bridge">Bridge</span> is <span class="hl" data-word="falling">falling</span> <span class="hl" data-word="down">down</span>, falling down, falling down', "desc": "伦敦桥要倒了", "game": "london"},
+            {"sentence": 'London Bridge is falling <span class="hl" data-word="down">down</span>, my <span class="hl" data-word="fair">fair</span> <span class="hl" data-word="lady">lady</span>', "desc": "伦敦桥要倒了，我美丽的淑女", "game": "fair"},
+            {"sentence": '<span class="hl" data-word="Build">Build</span> it <span class="hl" data-word="up">up</span> with <span class="hl" data-word="iron">iron</span> <span class="hl" data-word="bars">bars</span>', "desc": "用铁棍把桥修好", "game": "build"},
+            {"sentence": 'Iron bars will <span class="hl" data-word="bend">bend</span> and <span class="hl" data-word="break">break</span>, my fair lady', "desc": "铁棍也会弯会断", "game": "break"},
+        ],
+        "svg_bg": "#E0F7FA,#B2EBF2",
+        "svg_element": "bridge",
+    },
+    {
+        "id": "mary-lamb",
+        "title": "🐑 Mary Had a Little Lamb",
+        "mp3": "mary_lamb.mp3",
+        "cover_subtitle": "✏️ 玛丽有一只小羊羔！",
+        "pages": [
+            {"sentence": '<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>, little lamb, little lamb', "desc": "玛丽有只小羊羔", "game": "mary"},
+            {"sentence": 'Mary had a little <span class="hl" data-word="lamb">lamb</span>, its <span class="hl" data-word="fleece">fleece</span> was <span class="hl" data-word="white">white</span> as <span class="hl" data-word="snow">snow</span>', "desc": "羊毛白如雪", "game": "fleece"},
+            {"sentence": 'And <span class="hl" data-word="everywhere">everywhere</span> that <span class="hl" data-word="Mary">Mary</span> <span class="hl" data-word="went">went</span>, the lamb was sure to <span class="hl" data-word="go">go</span>', "desc": "玛莉走到哪羊羔就跟到哪", "game": "everywhere"},
+            {"sentence": 'It <span class="hl" data-word="followed">followed</span> her to <span class="hl" data-word="school">school</span> one <span class="hl" data-word="day">day</span>, which was against the <span class="hl" data-word="rules">rules</span>', "desc": "有一天它跟着去了学校", "game": "followed"},
+        ],
+        "svg_bg": "#F3E5F5,#E1BEE7",
+        "svg_element": "lamb",
+    },
 ]
 
+
 def make_scene(song_data, page_idx):
-    """Generate appropriate SVG scene based on song"""
-    e = song_data["svg_element"]
+    element = song_data["svg_element"]
     bg = song_data["svg_bg"]
-    colors = bg.split(",")
-    
-    svgs = {
-        "bus": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{colors[0]}"/><stop offset="100%" stop-color="{colors[1]}"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>''',
-        "boat": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{colors[0]}"/><stop offset="100%" stop-color="{colors[1]}"/></linearGradient></defs><rect y="160" width="460" height="60" fill="#4FC3F7" opacity="0.4"/><path d="M100 160 L120 130 L340 130 L360 160 Z" fill="#8D6E63" stroke="#5D4037" stroke-width="3"/><rect x="200" y="90" width="20" height="40" rx="3" fill="#795548"/><polygon points="220,95 300,120 220,140" fill="#FFF" opacity="0.8" stroke="#90CAF9" stroke-width="2"/><ellipse cx="80" cy="50" rx="30" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="350" cy="60" rx="25" ry="10" fill="#FFF" opacity="0.2"/></svg>''',
-        "spider": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{colors[0]}"/><stop offset="100%" stop-color="{colors[1]}"/></linearGradient></defs><rect x="210" y="40" width="40" height="140" rx="20" fill="#8D6E63"/><ellipse cx="230" cy="40" rx="30" ry="15" fill="#FFF9C4"/><circle cx="230" cy="80" r="10" fill="#5D4037"/><circle cx="226" cy="78" r="2" fill="#FFF"/><circle cx="234" cy="78" r="2" fill="#FFF"/><ellipse cx="230" cy="95" rx="8" ry="6" fill="#5D4037"/><path d="M210 85 Q195 75 200 65" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M220 88 Q205 85 205 75" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M250 85 Q265 75 260 65" stroke="#5D4037" stroke-width="2" fill="none"/><path d="M240 88 Q255 85 255 75" stroke="#5D4037" stroke-width="2" fill="none"/><ellipse cx="80" cy="40" rx="50" ry="20" fill="#FFF" opacity="0.3"/></svg>''',
-        "dog": f'''<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#sky)"/><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="{colors[0]}"/><stop offset="100%" stop-color="{colors[1]}"/></linearGradient></defs><rect y="160" width="460" height="60" fill="#81C784" opacity="0.3"/><ellipse cx="200" cy="80" rx="40" ry="30" fill="#FFCC80"/><ellipse cx="200" cy="95" rx="25" ry="20" fill="#FFE0B2"/><ellipse cx="230" cy="55" rx="28" ry="25" fill="#FFCC80" transform="rotate(15,230,55)"/><circle cx="240" cy="50" r="4" fill="#5D4037"/><circle cx="238" cy="48" r="1.5" fill="#FFF"/><ellipse cx="255" cy="60" rx="10" ry="6" fill="#5D4037"/><circle cx="220" cy="95" r="3" fill="#5D4037"/><ellipse cx="190" cy="80" rx="15" ry="10" fill="#A1887F"/><ellipse cx="260" cy="58" rx="8" ry="4" fill="#FFAB91"/><ellipse cx="80" cy="50" rx="30" ry="12" fill="#FFF" opacity="0.3"/></svg>''',
-    }
-    return svgs.get(e, svgs["bus"])
+    return make_scene_svg(element, bg, page_idx)
+
 
 def generate(song):
-    """Generate one courseware HTML file"""
     song_id = song["id"]
+    pages = song["pages"]
+    n_pages = len(pages) + 3  # cover + pages + match + final
+    mp3file = song["mp3"]
+
+    # Collect unique match animals/items
+    match_items = []
+    seen = set()
+    for p in pages:
+        words = p["game"]
+        if words and words not in seen:
+            seen.add(words)
+
     html = f'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>{song["title"]}</title>
+<title>{song["title"]} - 互动课件</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
 * {{ margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }}
 body {{
@@ -146,6 +203,16 @@ body {{
 .letter-tile.wrong {{ border-color:#F44336; background:#FFEBEE; animation:shake .3s; }}
 .letter-tile.used {{ opacity:0.35; pointer-events:none; }}
 .letter-tile.dragging {{ opacity:0.5; }}
+/* Sound match game */
+.match-game {{ width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }}
+.match-game h3 {{ font-size:18px; color:#2E7D32; margin-bottom:12px; }}
+.sound-btn {{ width:100px; height:100px; border-radius:50%; border:4px solid #FFB347; background:#FFF; font-size:36px; cursor:pointer; transition:all .15s; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; }}
+.sound-btn:active {{ transform:scale(1.1); background:#FFF8E7; }}
+.word-choices {{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }}
+.word-choice {{ padding:10px 20px; border-radius:20px; border:3px solid #E0D5C7; background:white; cursor:pointer; transition:all .15s; font-size:18px; font-weight:bold; color:#6B4F3A; font-family:inherit; }}
+.word-choice:hover {{ border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }}
+.word-choice.correct {{ border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }}
+.word-choice.wrong {{ border-color:#F44336; background:#FFEBEE; animation:shake .3s; }}
 .speech-bubble {{ position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }}
 .speech-bubble.show {{ opacity:1; transform:translateX(-50%) scale(1); }}
 .speech-bubble::before {{ content:'🔊'; display:block; font-size:22px; margin-bottom:4px; }}
@@ -166,6 +233,8 @@ body {{
 .big-start-btn:active {{ transform:scale(0.95); }}
 .big-start-btn.smaller {{ width:90px; height:90px; font-size:28px; }}
 .cover-svg {{ width:100%; max-width:400px; margin:0 auto; }}
+.final-grid {{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0; }}
+.final-word {{ padding:8px 16px; border-radius:16px; background:#FFF8E7; border:2px solid #FFE8C8; font-size:18px; font-weight:bold; color:#E8751A; }}
 .home-link {{ color:#FFB347; text-decoration:none; font-size:18px; font-weight:bold; margin-top:10px; display:inline-block; }}
 .home-link:hover {{ text-decoration:underline; }}
 .celebration {{ position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }}
@@ -178,10 +247,12 @@ body {{
   .nav-btn {{ width:50px; height:50px; font-size:24px; }}
   .nav-btn.small {{ width:40px; height:40px; font-size:18px; }}
   .read-btn {{ font-size:14px; padding:8px 14px; }}
+  .sound-btn {{ width:80px; height:80px; font-size:28px; }}
+  .word-choice {{ font-size:16px; padding:8px 14px; }}
   .big-start-btn {{ width:90px; height:90px; font-size:26px; }}
-  .big-start-btn.smaller {{ width:70px; height:70px; font-size:22px; }}
 }}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 <div class="book">
@@ -196,233 +267,279 @@ body {{
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
   <div class="page-dots" id="progressDots"></div>
-  <div class="page-counter" id="pageCounter"></div>
+  <div class="page-counter" id="pageCounter">第1页 / 共{n_pages}页</div>
 </div>
 <div class="speech-bubble" id="speechBubble"></div>
 
 <script>
 // ====== PAGE DATA ======
-var pages = [
+const pages = [
   {{ cover:true, title:'{song["title"]}', subtitle:'{song["cover_subtitle"]}' }},
 '''
 
-    for i, p in enumerate(song["pages"]):
-        comma = "," if i < len(song["pages"]) - 1 else ""
+    for i, p in enumerate(pages):
+        comma = "," if i < len(pages) - 1 else ""
         html += f'''  {{ sentence:'{p["sentence"]}', desc:'{p["desc"]}', game:'{p["game"]}', svg:'{i}' }}{comma}
 '''
 
-    html += '''];
+    html += '''  { match:true, title:'🔊 听声音找单词' },
+  { final:true, title:'🎉 太棒了！' }
+];
 
-var currentPage = 0;
-var gameDone = new Array(pages.length).fill(false);
-var buildingWord = [];
-var currentAudio = null;
-var songAudio = null;
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+let buildingWord = [];
+let dragData = null;
 
-// ====== SVG SCENES ======
-function getSVG(idx) {
-  var scenes = [
-'''
-    for i, p in enumerate(song["pages"]):
-        scene = make_scene(song, i)
-        comma = "," if i < len(song["pages"]) - 1 else ""
-        html += f'    `{scene}`{comma}\n'
-
-    html += '''  ];
-  return scenes[idx] || scenes[0];
-}
-function svgCoverScene() { return `'''
-    html += make_scene(song, 0)
-    html += '''`; }
-
-// ====== MELODY ENGINE ======
+// ====== WEB AUDIO API ======
 const NOTE = { C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88, C5:523.25 };
+function playMelody(notes) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  let t = ctx.currentTime;
+  notes.forEach(function(n){var f=n[0],d=n[1];if(f>0){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=f;o.type='triangle';g.gain.setValueAtTime(0.25,t);g.gain.exponentialRampToValueAtTime(0.001,t+d);o.start(t);o.stop(t+d);t+=d+0.05;}});
+}
 
 // ===== PLAY FULL SONG MP3 =====
+var songAudio = null;
 function playSong() {
   if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
-  songAudio = new Audio('audio/''' + song["mp3"] + '''');
+  songAudio = new Audio('audio/{mp3file}');
   songAudio.volume = 0.8;
   songAudio.play().catch(function(){});
 }
 function showMusicNotes() {
-  var scene = document.querySelector('.scene-wrap');
-  if(!scene) return;
-  var notes = ['♪','♫','♩','♬'];
-  for(var i=0;i<8;i++){
-    var n=document.createElement('div');
-    n.textContent=notes[i%notes.length];
-    n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';
-    scene.appendChild(n);
-    setTimeout(function(e){e.remove()},3000,n);
-  }
+  const scene=document.querySelector('.scene-wrap'); if(!scene) return;
+  const notes=['♪','♫','♩','♬'];
+  for(let i=0;i<8;i++){const n=document.createElement('div');n.textContent=notes[i%notes.length];n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';scene.appendChild(n);setTimeout(function(e){e.remove()},3000,n);}
 }
 function speakText(text) {
-  if('speechSynthesis' in window){window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;window.speechSynthesis.speak(u);}
+  if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;window.speechSynthesis.speak(u);}
 }
 function showBubble(text) {
-  var b=document.getElementById('speechBubble');b.textContent=text;b.classList.add('show');
-  setTimeout(function(){b.classList.remove('show')},3000);
+  const b=document.getElementById('speechBubble');b.textContent=text;b.classList.add('show');
+  clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('show')},3000);
 }
-function speakPage() {
-  var p=pages[currentPage];
-  if(p.cover) { showBubble('''' + song["title"] + '''!'); speakText('''' + song["title"].replace(/[^a-zA-Z\s]/g,'').trim() + '''); return; }
-  if(p.final) { showBubble('You did it! Super English Star! 🌟'); speakText('You did it! Super English Star!'); return; }
-  var txt=p.sentence.replace(/<[^>]+>/g,'');
-  showBubble('🔊 '+txt);
-  speakText(txt);
+
+// ====== SVG SCENES ======
+function svgCoverScene() { return `{make_scene(song, 0)}`; }
+
+function getSVG(idx) {
+  if(idx===0) return svgCoverScene();
+  const p=pages[idx];
+  const scenes = [
+'''
+    for i, p in enumerate(pages):
+        scene = make_scene(song, i)
+        comma = "," if i < len(pages) - 1 else ""
+        html += f'''    `{scene}`{comma}
+'''
+
+    html += '''  ];
+  if(p.match) return `''' + make_scene(song, 0) + '''`;
+  if(p.final) return `''' + make_scene(song, 0).replace('height="220"', 'height="180"') + '''`;
+  return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== WORD GAME ======
+function startWordGame(idx,word) {
+  if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>✅ 完成！</h3></div>';
+  const letters=[...word].sort(()=>Math.random()-0.5);
+  buildingWord=[];
+  return '<div class="word-game">'+
+    '<h3>⚙️ 拼单词: <strong>"'+word+'"</strong> 🔊</h3>'+
+    '<div class="word-slots" id="ws-'+idx+'" ondragover="onDragOver(event,'+idx+')" ondrop="onDrop(event,'+idx+')" ondragleave="onDragLeave(event,'+idx+')">'+
+    word.split('').map(function(_,i){return '<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>';}).join('')+
+    '</div>'+
+    '<div class="letter-tiles">'+
+    letters.map(function(l){return '<div class="letter-tile" draggable="true" ondragstart="onDragStart(event,'+idx+',\\''+l+'\\')" ondragend="onDragEnd(event)" onclick="pickLetter('+idx+',\\''+l+'\\',this)">'+l+'</div>';}).join('')+
+    '</div>'+
+  '</div>';
+}
+
+function pickLetter(idx,letter,el) {
+  if(gameDone[idx]||el.classList.contains('used')) return;
+  const p=pages[idx]; const word=p.game; const slot=buildingWord.length;
+  if(slot>=word.length) return;
+  const slots=document.querySelectorAll('#ws-'+idx+' .word-slot');
+  if(letter===word[slot]){
+    buildingWord.push(letter); slots[slot].textContent=letter; slots[slot].classList.add('filled');
+    el.classList.add('correct','used');
+    if(buildingWord.length===word.length){gameDone[idx]=true;setTimeout(function(){showBubble('Great! 🎉');launchConfetti();renderPage(idx);},500);}
+  } else { el.classList.add('wrong'); setTimeout(()=>el.classList.remove('wrong'),400); }
+}
+
+function onDragStart(e,idx,letter){dragData={idx,letter,el:e.target};e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.word-slot.drag-over').forEach(s=>s.classList.remove('drag-over'));}
+function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)').forEach(s=>s.classList.add('drag-over'));}
+function onDragLeave(e,idx){document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));}
+function onDrop(e,idx){
+  e.preventDefault();document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));
+  if(!dragData||dragData.idx!==idx||gameDone[idx]) return;
+  pickLetter(idx,dragData.letter,dragData.el);dragData=null;
+}
+
+// ====== MATCH GAME ======
+// Words to match based on song content
+const MATCH_WORDS = ['''
+
+    # Generate match words from the song
+    game_words = list(seen)
+    for i, w in enumerate(game_words):
+        comma = "," if i < len(game_words) - 1 else ""
+        html += f'"{w}"{comma}'
+
+    html += '''];
+let matchRound = 0;
+let matchDone = [];
+
+function renderMatchGame() {
+  if(matchDone.length>=MATCH_WORDS.length) return '<div class="match-game" style="background:#E8F5E9"><h3>🎉 全部找到！太棒了！</h3></div>';
+  const word = MATCH_WORDS[matchRound];
+  const shuffled = [...MATCH_WORDS].sort(()=>Math.random()-0.5);
+  let optsHTML = shuffled.map(function(w){
+    const disabled = matchDone.includes(w) ? 'style="opacity:0.5"' : '';
+    return '<div class="word-choice" data-word="'+w+'" onclick="checkMatch(\\''+w+'\\',this)" '+disabled+'>'+w+'</div>';
+  }).join('');
+  return '<div class="match-game">'+
+    '<h3>🔊 听单词：<strong>"'+word+'"</strong></h3>'+
+    '<button class="sound-btn" onclick="speakMatchWord()">🔊</button>'+
+    '<p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p>'+
+    '<div class="word-choices">'+optsHTML+'</div>'+
+  '</div>';
+}
+
+function speakMatchWord() {
+  if(matchRound>=MATCH_WORDS.length) return;
+  speakText(MATCH_WORDS[matchRound]);
+  showBubble('🔊 '+MATCH_WORDS[matchRound]);
+}
+
+function checkMatch(word,el) {
+  if(matchRound>=MATCH_WORDS.length||matchDone.includes(word)) return;
+  if(word===MATCH_WORDS[matchRound]){
+    el.classList.add('correct'); matchDone.push(word);
+    showBubble('Great! Wonderful! 🎉');
+    matchRound++;
+    var matchIdx = pages.length-2; setTimeout(()=>renderPage(matchIdx),600);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),400);
+    showBubble('再试试~ Try again!');
+  }
 }
 
 // ====== RENDER ======
 function renderPage(idx) {
-  var area=document.getElementById('pageArea');
-  var p=pages[idx];
+  const area=document.getElementById('pageArea');
+  const p=pages[idx];
 
-  if(p.cover) {
-    area.innerHTML =
-      '<div class="page active">'+
-      '<div class="cover-svg">'+svgCoverScene()+'</div>'+
+  if(p.cover){
+    area.innerHTML='<div class="page active cover-page">'+
+      '<div class="cover-svg">'+getSVG(0)+'</div>'+
       '<div class="page-title">'+p.title+'</div>'+
       '<div class="page-desc">'+p.subtitle+'</div>'+
       '<div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px">'+
         '<button class="big-start-btn smaller" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>'+
         '<button class="big-start-btn" onclick="nextPage()">▶</button>'+
       '</div>'+
-      '<div style="font-size:14px;color:#8D6E63;text-align:center;margin-top:6px">点击 ▶ 开始 · 🎵 听歌曲</div>'+
-      '</div>';
+    '</div>';
     updateUI(idx); return;
   }
-  if(p.final) {
-    var starsHtml = '';
-    for(var i=0;i<10;i++) starsHtml += '<div class="final-star-cell'+(i<7?' lit':'')+'">⭐</div>';
-    area.innerHTML =
-      '<div class="page active" style="text-align:center;padding:20px 10px">'+
-      '<div class="completion-title">🌟 超级英语小明星！</div>'+
-      '<div class="completion-sub">Great job! You sang the whole song! 🎉</div>'+
-      '<div style="font-size:60px;margin:10px 0">🎉🎊⭐</div>'+
-      '<div class="star-final-grid">'+starsHtml+'</div>'+
-      '<button class="big-start-btn smaller" onclick="goToPage(0)" style="animation:bounce 2s ease-in-out infinite">🏠 再唱一次</button>'+
-      '</div>';
-    updateUI(idx); launchConfetti(); return;
+
+  if(p.final){
+    let finalWords=MATCH_WORDS.map(function(w){return '<div class="final-word">✅ '+w+'</div>';}).join('');
+    area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px">'+
+      '<div class="page-title">'+p.title+'</div>'+
+      '<div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+
+      '<div style="font-size:24px;margin:10px 0">🎉 ⭐ ⭐ ⭐ 🎉</div>'+
+      '<div class="final-grid">'+finalWords+'</div>'+
+      '<a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">🏠 回课件列表</a>'+
+    '</div>';
+    launchConfetti(); updateUI(idx); return;
   }
 
-  var sceneIdx = p.svg !== undefined ? parseInt(p.svg) : idx-1;
-  var svgHtml = getSVG(sceneIdx);
-  var gameWord = p.game || '';
-
-  var slotsHtml = '';
-  for(var s=0;s<gameWord.length;s++) slotsHtml += '<div class="word-slot" id="ws-'+idx+'-'+s+'"></div>';
-
-  var shuffled = gameWord.split('').sort(function(){return Math.random()-0.5}).join('');
-  var tilesHtml = '';
-  for(var t=0;t<shuffled.length;t++) {
-    var letter = shuffled[t];
-    tilesHtml += '<div class="letter-tile" draggable="true" onclick="pickLetter('+idx+',\\''+letter+'\\',this)" ondragstart="onDragStart(event,\\''+letter+'\\','+idx+')" ondragend="onDragEnd(event)">'+letter+'</div>';
+  if(p.match){
+    area.innerHTML='<div class="page active">'+
+      '<div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+
+      renderMatchGame()+
+    '</div>';
+    updateUI(idx); return;
   }
 
-  area.innerHTML =
-    '<div class="page active">'+
-    '<div class="scene-wrap" style="position:relative">'+svgHtml+'</div>'+
+  let gameHTML='';
+  if(p.game){
+    gameHTML=startWordGame(idx,p.game);
+    buildingWord=[];
+  }
+
+  area.innerHTML='<div class="page active">'+
+    '<div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+
     '<div class="lyrics">'+p.sentence+'</div>'+
     '<div class="page-desc">'+p.desc+'</div>'+
-    '<div class="word-game">'+
-      '<h3>✏️ 拼单词 <span class="speak-btn" onclick="event.stopPropagation();speakText(\\''+gameWord+'\\')" style="background:#FFB347;border:none;color:#FFF;font-size:12px;width:24px;height:24px;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center">🔊</span></h3>'+
-      '<div class="word-slots" id="ws-area-'+idx+'">'+slotsHtml+'</div>'+
-      '<div class="letter-tiles" id="tiles-'+idx+'">'+tilesHtml+'</div>'+
-      '<div style="font-size:13px;color:#8D6E63;margin-top:6px" id="status-'+idx+'">点击或拖拽字母拼出单词</div>'+
-    '</div>'+
-    '<div style="font-size:12px;color:#AAA;text-align:center">第'+(idx+1)+'页 / 共'+pages.length+'页</div>'+
-    '</div>';
+    gameHTML+
+  '</div>';
 
-  buildingWord = [];
+  // Make clickable words speak
+  area.querySelectorAll('.hl[data-word]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      speakText(this.getAttribute('data-word'));
+      showBubble('🔊 '+this.getAttribute('data-word'));
+    });
+  });
+
   updateUI(idx);
 }
 
 function updateUI(idx) {
-  document.getElementById('prevBtn').disabled = idx===0;
-  document.getElementById('nextBtn').disabled = idx===pages.length-1;
-  var dots = document.getElementById('progressDots');
-  dots.innerHTML = '';
-  for(var i=0;i<pages.length;i++) {
-    var d = document.createElement('span'); d.className = 'dot';
-    if(i===idx) d.classList.add('active');
-    if(gameDone[i]) d.classList.add('done');
-    d.onclick = function(n){return function(){goToPage(n)}}(i);
-    dots.appendChild(d);
-  }
-  document.getElementById('pageCounter').textContent = '第'+(idx+1)+'页 / 共'+pages.length+'页';
+  const dots=document.getElementById('progressDots');
+  dots.innerHTML=pages.map(function(_,i){return '<div class="dot '+(i===idx?'active':'')+(gameDone[i]?' done':'')+'" onclick="goToPage('+i+')"></div>';}).join('');
+  document.getElementById('prevBtn').disabled=idx===0;
+  document.getElementById('nextBtn').disabled=idx===pages.length-1;
+  document.getElementById('pageCounter').textContent='第'+(idx+1)+'页 / 共'+pages.length+'页';
+  document.getElementById('nextBtn').style.display=idx===pages.length-1?'none':'';
+  currentPage=idx;
 }
 
-// ====== WORD GAME ======
-var dragData = null;
-function onDragStart(e,letter,idx) {
-  dragData = {letter:letter, idx:idx};
-  e.dataTransfer.effectAllowed = 'move';
-  setTimeout(function(){e.target.classList.add('dragging');},0);
-}
-function onDragEnd(e) { e.target.classList.remove('dragging'); dragData=null; }
-
-function pickLetter(idx,letter,el) {
-  if(gameDone[idx]||el.classList.contains('used')) return;
-  var p=pages[idx]; var word=p.game;
-  var slot = buildingWord.length;
-  if(slot>=word.length) return;
-  var slots = document.querySelectorAll('#ws-area-'+idx+' .word-slot');
-  if(word[slot]===letter) {
-    slots[slot].textContent = letter; slots[slot].classList.add('filled');
-    buildingWord.push(letter); el.classList.add('used');
-    document.getElementById('status-'+idx).textContent = '✅ 对了！继续拼下一个字母';
-    speakText(letter);
-    if(buildingWord.length===word.length) {
-      gameDone[idx]=true;
-      document.getElementById('status-'+idx).textContent = '🎉 太棒了！单词拼好了！';
-      document.querySelector('#tiles-'+idx).style.display='none';
-      updateUI(idx);
-      if(idx===pages.length-2) setTimeout(function(){nextPage()},800);
-    }
-  } else {
-    el.classList.add('wrong');
-    document.getElementById('status-'+idx).textContent = '💪 再试试这个字母';
-    setTimeout(function(){el.classList.remove('wrong');},400);
-  }
-}
-
-// ====== NAVIGATION ======
 function prevPage(){if(currentPage>0)goToPage(currentPage-1);}
 function nextPage(){if(currentPage<pages.length-1)goToPage(currentPage+1);}
-function goToPage(idx){currentPage=idx;renderPage(idx);}
+function goToPage(idx){renderPage(idx);}
+
+function speakPage() {
+  const p=pages[currentPage];
+  if(p.cover) { showBubble('{song["title"]}!'); speakText('{song["title"].replace(/[^a-zA-Z\\s]/g,"").strip()}'); return; }
+  if(p.final) { showBubble('You did it! Super English Star! 🌟'); speakText('You did it! Super English Star!'); return; }
+  if(p.match) { showBubble('Listen to the words!'); speakText('Listen to the words!'); return; }
+  const txt=p.sentence.replace(/<[^>]+>/g,'');
+  showBubble('🔊 '+txt);
+  speakText(txt);
+}
 
 // ====== CONFETTI ======
 function launchConfetti() {
-  var c=document.createElement('div');c.className='celebration';
-  var colors=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];
-  for(var i=0;i<60;i++) {
-    var p=document.createElement('div');
-    p.style.cssText='position:absolute;top:-10px;left:'+Math.random()*100+'%;width:'+(6+Math.random()*6)+'px;height:'+(6+Math.random()*6)+'px;background:'+colors[Math.floor(Math.random()*colors.length)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confetti-fall '+(2+Math.random()*2)+'s ease-out forwards;animation-delay:'+(Math.random()*0.5)+'s;';
-    c.appendChild(p);
-  }
-  document.body.appendChild(c);
-  setTimeout(function(){c.remove()},5000);
+  const d=document.createElement('div');d.className='celebration';
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
+  for(let i=0;i<40;i++){const c=document.createElement('div');c.style.cssText='position:absolute;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;border-radius:50%;left:'+(Math.random()*100)+'%;top:10%;background:'+colors[i%colors.length]+';animation:confetti-fall '+(1.5+Math.random())+'s ease-out forwards;animation-delay:'+(Math.random()*0.5)+'s;';d.appendChild(c);}
+  document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
 }
 
-// ====== INIT ======
-document.addEventListener('click', function(e) {
-  var hl = e.target.closest ? e.target.closest('.hl') : null;
-  if(hl && hl.getAttribute('data-word')) {
-    speakText(hl.getAttribute('data-word'));
-    hl.style.transform='scale(1.3)';
-    setTimeout(function(){hl.style.transform='scale(1)';},300);
-  }
+// ====== KEYBOARD ======
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowLeft') prevPage();
+  if(e.key==='ArrowRight') nextPage();
 });
-goToPage(0);
+
+// ====== INIT ======
+renderPage(0);
 </script>
 </body>
 </html>'''
-    
+
     outpath = os.path.join(OUT, f"{song_id}.html")
     with open(outpath, "w", encoding="utf-8") as f:
         f.write(html)
     print(f"✅ {song_id}.html ({len(html)} bytes)")
+
 
 # Generate all
 for s in SONGS:
