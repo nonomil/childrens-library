@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Twinkle Twinkle Little Star - 互动课件</title>
+<style>
+/* === RESET & BASE === */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden}
+body{
+  font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:#FFF8E7;color:#5D4037;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100vh;padding:0;margin:0;
+  -webkit-user-select:none;user-select:none;
+}
+
+/* === MAIN CONTAINER === */
+.app-container{
+  width:100%;max-width:800px;height:100vh;max-height:900px;
+  display:flex;flex-direction:column;position:relative;
+  overflow:hidden;
+}
+
+/* === PAGES === */
+.page{
+  display:none;flex-direction:column;align-items:center;
+  justify-content:center;flex:1;padding:20px 20px 80px;
+  width:100%;height:100%;position:absolute;top:0;left:0;
+  transition:opacity .4s ease;animation:fadeIn .4s ease;
+  overflow-y:auto;
+}
+.page.active{display:flex;position:relative;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* === SCROLLBAR === */
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:#FFB347;border-radius:4px}
+
+/* === COVER PAGE === */
+.cover-title{
+  font-size:2.8rem;font-weight:700;color:#FF8C00;
+  text-shadow:0 2px 4px rgba(255,179,71,.3);
+  margin:10px 0 5px;
+}
+.cover-subtitle{
+  font-size:1.2rem;color:#8D6E63;margin-bottom:15px;
+}
+.cover-svg-wrap{width:100%;max-width:400px;margin:10px auto}
+
+/* === CONTENT TYPOGRAPHY === */
+h2.page-title{
+  font-size:1.8rem;color:#FF8C00;margin:5px 0;
+  text-align:center;
+}
+.lyrics-text{
+  font-size:2.4rem;font-weight:600;color:#5D4037;
+  text-align:center;margin:10px 0;line-height:1.3;
+  letter-spacing:1px;
+}
+.lyrics-sub{
+  font-size:1rem;color:#8D6E63;margin-bottom:8px;
+}
+
+/* === SVG SCENE CONTAINER === */
+.svg-scene{
+  width:100%;max-width:380px;margin:8px auto;
+  background:linear-gradient(180deg,#0B0B3B 0%,#1A1A4E 40%,#2D1B69 70%,#4A2C7A 100%);
+  border-radius:20px;border:3px solid #FFB347;
+  overflow:hidden;position:relative;
+}
+.svg-scene svg{display:block;width:100%;height:auto;}
+
+/* === GAME CONTAINERS === */
+.game-area{
+  width:100%;max-width:380px;margin:10px auto;
+  padding:12px;background:#FFF5E1;
+  border:2px dashed #FFB347;border-radius:16px;
+  text-align:center;
+}
+.game-area h3{
+  font-size:1rem;color:#FF8C00;margin-bottom:8px;
+}
+.word-blocks{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  margin:8px 0;
+}
+.word-block{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:8px 16px;background:#FFE0B2;border:2px solid #FFB347;
+  border-radius:12px;font-size:1.2rem;font-weight:600;
+  color:#5D4037;cursor:pointer;transition:all .2s ease;
+}
+.word-block:hover{transform:scale(1.08);background:#FFD54F;}
+.word-block.correct{background:#81C784;border-color:#4CAF50;cursor:default;transform:none;}
+.word-block.wrong{animation:shake .4s;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-6px)}}
+
+/* === SPEECH BUBBLE === */
+.speech-bubble{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:#FFFDF5;border:2px solid #FFB347;
+  border-radius:24px 24px 24px 4px;
+  padding:12px 24px;font-size:1.1rem;color:#5D4037;
+  box-shadow:0 4px 15px rgba(255,179,71,.3);
+  max-width:500px;width:90%;text-align:center;
+  z-index:100;display:none;cursor:pointer;
+  animation:bubbleIn .3s ease;
+}
+.speech-bubble.show{display:block;}
+.speech-bubble::after{
+  content:'';position:absolute;bottom:-12px;left:30px;
+  width:12px;height:12px;background:#FFFDF5;
+  border-right:2px solid #FFB347;border-bottom:2px solid #FFB347;
+  transform:rotate(45deg);
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* === NAVIGATION === */
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;
+  gap:10px;padding:10px 16px;
+  background:#FFF8E7;border-top:2px solid #FFB347;
+  z-index:200;flex-shrink:0;
+}
+.nav-btn{
+  background:#FFE0B2;border:2px solid #FFB347;
+  border-radius:30px;padding:8px 16px;
+  font-size:1rem;color:#5D4037;cursor:pointer;
+  transition:all .2s ease;display:flex;align-items:center;gap:4px;
+  font-family:inherit;
+}
+.nav-btn:hover{background:#FFD54F;transform:scale(1.05);}
+.nav-btn:active{transform:scale(.95);}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+.nav-btn.read-btn{background:#B3E5FC;border-color:#4FC3F7;}
+.nav-btn.read-btn:hover{background:#81D4FA;}
+.nav-btn.sing-btn{background:#FFCCBC;border-color:#FF8A65;}
+.nav-btn.sing-btn:hover{background:#FFAB91;}
+.nav-dots{
+  display:flex;gap:6px;align-items:center;
+}
+.nav-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#FFE0B2;border:2px solid #FFB347;
+  cursor:pointer;transition:all .2s ease;
+}
+.nav-dot.active{background:#FFB347;transform:scale(1.3);}
+
+/* === STAR ANIMATION === */
+@keyframes twinkle{
+  0%,100%{opacity:.4;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.15)}
+}
+.twinkle-star{animation:twinkle 1.5s ease-in-out infinite;}
+.twinkle-star.d1{animation-delay:.1s}
+.twinkle-star.d2{animation-delay:.3s}
+.twinkle-star.d3{animation-delay:.5s}
+.twinkle-star.d4{animation-delay:.7s}
+.twinkle-star.d5{animation-delay:.9s}
+
+/* === DRAG QUIZ === */
+.drop-zone{
+  width:100%;max-width:360px;min-height:60px;
+  margin:10px auto;padding:12px;
+  background:#FFFDF5;border:3px dashed #FFB347;
+  border-radius:16px;display:flex;flex-wrap:wrap;
+  gap:8px;align-items:center;justify-content:center;
+  transition:all .2s ease;
+}
+.drop-zone.drag-over{background:#FFF1D6;border-color:#FF8C00;}
+.draggable-item{
+  padding:8px 16px;background:#FFE0B2;border:2px solid #FFB347;
+  border-radius:12px;font-size:1rem;font-weight:600;
+  color:#5D4037;cursor:grab;transition:all .2s ease;
+  display:inline-block;
+}
+.draggable-item:hover{transform:scale(1.05);background:#FFD54F;}
+.draggable-item:active{cursor:grabbing;transform:scale(.95);}
+.draggable-item.dropped{background:#81C784;border-color:#4CAF50;cursor:default;}
+.draggable-item.wrong-drop{animation:shake .4s;background:#EF9A9A;border-color:#E53935;}
+
+.quiz-question{
+  font-size:1.05rem;font-weight:600;color:#5D4037;
+  margin:8px 0;text-align:center;
+}
+.quiz-options{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0;}
+.quiz-btn{
+  padding:8px 20px;background:#FFE0B2;border:2px solid #FFB347;
+  border-radius:30px;font-size:1rem;font-weight:600;
+  color:#5D4037;cursor:pointer;transition:all .2s ease;
+  font-family:inherit;
+}
+.quiz-btn:hover{transform:scale(1.05);background:#FFD54F;}
+.quiz-btn.correct{background:#81C784;border-color:#4CAF50;cursor:default;}
+.quiz-btn.wrong{background:#EF9A9A;border-color:#E53935;}
+.quiz-feedback{
+  margin:8px 0;font-size:.95rem;font-weight:600;
+  min-height:1.4em;text-align:center;
+}
+
+/* === STAR FIND GAME === */
+.star-find-area{
+  position:relative;width:100%;max-width:380px;
+  margin:8px auto;cursor:pointer;
+}
+.star-find-count{
+  font-size:1.1rem;font-weight:600;color:#FF8C00;
+  text-align:center;margin:5px 0;
+}
+.clickable-star{cursor:pointer;transition:all .2s ease;}
+.clickable-star:hover{opacity:.7;}
+.clickable-star.found{opacity:1;animation:foundStar .5s ease;}
+@keyframes foundStar{
+  0%{r:3;opacity:0}
+  50%{r:7;opacity:1;filter:drop-shadow(0 0 6px #FFD700)}
+  100%{r:5;opacity:.8}
+}
+.star-find-msg{
+  text-align:center;font-size:1.1rem;font-weight:600;
+  color:#4CAF50;margin:5px 0;min-height:1.5em;
+}
+
+/* === COMPLETION PAGE === */
+.completion-title{
+  font-size:2.4rem;font-weight:700;color:#FF8C00;
+  text-align:center;margin:10px 0;
+}
+.completion-sub{
+  font-size:1.1rem;color:#8D6E63;text-align:center;
+  margin:5px 0 15px;
+}
+.confetti-container{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:999;overflow:hidden;
+}
+.confetti-piece{
+  position:absolute;top:-20px;width:10px;height:10px;
+  border-radius:2px;animation:confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+}
+.star-final-grid{
+  width:100%;max-width:360px;margin:15px auto;
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:8px;
+}
+.final-star-cell{
+  aspect-ratio:1;display:flex;align-items:center;
+  justify-content:center;font-size:1.5rem;
+  background:#FFF5E1;border:2px solid #FFB347;
+  border-radius:12px;transition:all .3s ease;
+}
+.final-star-cell.lit{
+  background:#FFD54F;border-color:#FF8C00;
+  box-shadow:0 0 12px rgba(255,179,71,.5);
+  animation:starPulse 1s ease infinite;
+}
+@keyframes starPulse{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+}
+.final-replay-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;background:#FFB347;border:none;
+  border-radius:30px;font-size:1.1rem;font-weight:600;
+  color:#FFF;cursor:pointer;transition:all .2s ease;
+  margin:10px auto;font-family:inherit;
+}
+.final-replay-btn:hover{transform:scale(1.05);background:#FF8C00;}
+
+/* === RESPONSIVE === */
+@media(max-width:600px){
+  .cover-title{font-size:2rem}
+  .lyrics-text{font-size:1.6rem}
+  h2.page-title{font-size:1.3rem}
+  .nav-btn{padding:6px 12px;font-size:.85rem}
+  .speech-bubble{font-size:.95rem;padding:10px 16px;width:85%}
+  .page{padding:15px 15px 75px}
+}
+@media(max-height:700px){
+  .cover-title{font-size:1.8rem}
+  .lyrics-text{font-size:1.3rem}
+  .svg-scene{max-width:280px}
+}
+</style>
+</head>
+<body>
+<div class="app-container" id="app">
+
+  <!-- ===== PAGE 0: COVER ===== -->
+  <div class="page active" data-page="0">
+    <div class="cover-title">Twinkle Twinkle<br>Little Star</div>
+    <div class="cover-subtitle">✦ 一首关于星星的英语儿歌 ✦</div>
+    <div class="cover-svg-wrap svg-scene">
+      <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="moonGlow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#FFF9C4"/><stop offset="60%" stop-color="#FFE082"/><stop offset="100%" stop-color="#FFB30000"/></radialGradient>
+        </defs>
+        <!-- bg -->
+        <rect width="400" height="260" fill="#0B0B3B"/>
+        <rect y="180" width="400" height="80" fill="#1A1A4E" opacity=".6"/>
+        <!-- moon -->
+        <circle cx="320" cy="60" r="50" fill="url(#moonGlow)" opacity=".3"/>
+        <circle cx="320" cy="60" r="22" fill="#FFF9C4"/>
+        <circle cx="312" cy="55" r="20" fill="#0B0B3B"/>
+        <circle cx="328" cy="65" r="4" fill="#FFF9C4" opacity=".3"/>
+        <!-- big star -->
+        <g transform="translate(200,90)">
+          <polygon points="0,-20 5,-7 20,-7 8,3 12,18 0,10 -12,18 -8,3 -20,-7 -5,-7" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <!-- stars -->
+        <circle cx="50" cy="40" r="2.5" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="120" cy="30" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="180" cy="50" r="2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="250" cy="25" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="80" cy="80" r="1.8" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="350" cy="35" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="30" cy="120" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="370" cy="110" r="2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="100" cy="150" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="300" cy="140" r="2.2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="160" cy="130" r="1.2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="230" cy="150" r="1.8" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="380" cy="70" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <!-- small clouds -->
+        <ellipse cx="80" cy="195" rx="50" ry="12" fill="#2D1B69" opacity=".4"/>
+        <ellipse cx="280" cy="205" rx="40" ry="10" fill="#2D1B69" opacity=".3"/>
+        <ellipse cx="350" cy="190" rx="35" ry="8" fill="#2D1B69" opacity=".35"/>
+        <!-- ground -->
+        <ellipse cx="200" cy="240" rx="200" ry="25" fill="#1A1A4E"/>
+      </svg>
+    </div>
+    <div style="font-size:.85rem;color:#8D6E63;text-align:center;margin-top:5px;">点击 ◀ ▶ 翻页 · 🔊 听朗读 · 🎵 听歌曲</div>
+  </div>
+
+  <!-- ===== PAGE 1: "Twinkle, twinkle, little star" ===== -->
+  <div class="page" data-page="1">
+    <h2 class="page-title">🌟 第一句</h2>
+    <div class="lyrics-text">Twinkle, twinkle,<br>little star</div>
+    <div class="lyrics-sub">— 一闪一闪小星星 —</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0E0E42"/>
+        <ellipse cx="300" cy="50" rx="40" ry="40" fill="#FFF9C4" opacity=".15"/>
+        <circle cx="300" cy="50" r="18" fill="#FFF9C4"/>
+        <circle cx="293" cy="46" r="16" fill="#0E0E42"/>
+        <!-- twinkling star -->
+        <g transform="translate(190,90)">
+          <polygon points="0,-25 6,-8 24,-8 10,4 15,22 0,12 -15,22 -10,4 -24,-8 -6,-8" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <circle cx="60" cy="40" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="140" cy="30" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="250" cy="25" r="2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="330" cy="100" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="40" cy="120" r="2.5" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="100" cy="90" r="1.2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="360" cy="35" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="200" cy="40" r="1" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="320" cy="150" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="70" cy="170" r="1.2" fill="#FFF" class="twinkle-star d5"/>
+        <!-- ground -->
+        <rect y="195" width="380" height="25" fill="#151550" opacity=".5"/>
+        <ellipse cx="190" cy="210" rx="190" ry="15" fill="#1A1A5E" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "twinkle"</h3>
+      <div class="word-blocks" id="game1" data-word="twinkle"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game1-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 2: "How I wonder what you are" ===== -->
+  <div class="page" data-page="2">
+    <h2 class="page-title">🌟 第二句</h2>
+    <div class="lyrics-text">How I wonder<br>what you are</div>
+    <div class="lyrics-sub">— 我真想知道你是什么 —</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0F0F45"/>
+        <!-- stars -->
+        <circle cx="50" cy="35" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="150" cy="25" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="280" cy="30" r="2.2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="350" cy="55" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="80" cy="90" r="1.2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="300" cy="100" r="1.8" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="200" cy="70" r="2" fill="#FFF" class="twinkle-star d2"/>
+        <!-- moon -->
+        <ellipse cx="310" cy="45" rx="30" ry="30" fill="#FFF9C4" opacity=".1"/>
+        <circle cx="310" cy="45" r="16" fill="#FFF9C4"/>
+        <circle cx="304" cy="41" r="14" fill="#0F0F45"/>
+        <!-- kid silhouette looking up -->
+        <g transform="translate(190,150)">
+          <ellipse cx="0" cy="0" rx="18" ry="22" fill="#2D1B69"/>
+          <circle cx="0" cy="-18" r="10" fill="#2D1B69"/>
+          <line x1="-15" y1="22" x2="-20" y2="45" stroke="#2D1B69" stroke-width="3" stroke-linecap="round"/>
+          <line x1="15" y1="22" x2="20" y2="45" stroke="#2D1B69" stroke-width="3" stroke-linecap="round"/>
+          <!-- arm pointing up -->
+          <line x1="15" y1="5" x2="30" y2="-20" stroke="#2D1B69" stroke-width="2.5" stroke-linecap="round"/>
+        </g>
+        <!-- ground -->
+        <ellipse cx="190" cy="200" rx="190" ry="25" fill="#1A1A5E"/>
+        <ellipse cx="190" cy="208" rx="190" ry="15" fill="#151550" opacity=".5"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "wonder"</h3>
+      <div class="word-blocks" id="game2" data-word="wonder"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game2-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 3: "Up above the world so high" ===== -->
+  <div class="page" data-page="3">
+    <h2 class="page-title">🌟 第三句</h2>
+    <div class="lyrics-text">Up above the world<br>so high</div>
+    <div class="lyrics-sub">— 在世界上方那么高 —</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0A0A3A"/>
+        <!-- earth curve at bottom -->
+        <ellipse cx="190" cy="280" rx="250" ry="150" fill="#1B5E20" opacity=".3"/>
+        <ellipse cx="190" cy="260" rx="220" ry="120" fill="#2E7D32" opacity=".2"/>
+        <ellipse cx="190" cy="290" rx="260" ry="130" fill="#1565C0" opacity=".15"/>
+        <!-- clouds below -->
+        <ellipse cx="80" cy="175" rx="60" ry="15" fill="#FFF" opacity=".08"/>
+        <ellipse cx="300" cy="185" rx="70" ry="12" fill="#FFF" opacity=".06"/>
+        <ellipse cx="190" cy="180" rx="50" ry="10" fill="#FFF" opacity=".07"/>
+        <!-- stars upper -->
+        <circle cx="40" cy="30" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="120" cy="20" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="200" cy="15" r="2.2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="300" cy="25" r="1.8" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="360" cy="45" r="2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="70" cy="60" r="1.2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="250" cy="50" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="340" cy="80" r="1.8" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="150" cy="55" r="1.3" fill="#FFF" class="twinkle-star d4"/>
+        <!-- big star top center -->
+        <g transform="translate(190,65)">
+          <polygon points="0,-18 4,-6 18,-6 7,3 11,16 0,9 -11,16 -7,3 -18,-6 -4,-6" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <!-- moon -->
+        <circle cx="330" cy="35" r="14" fill="#FFF9C4"/>
+        <circle cx="324" cy="31" r="12" fill="#0A0A3A"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "high"</h3>
+      <div class="word-blocks" id="game3" data-word="high"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game3-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 4: "Like a diamond in the sky" ===== -->
+  <div class="page" data-page="4">
+    <h2 class="page-title">🌟 第四句</h2>
+    <div class="lyrics-text">Like a diamond<br>in the sky</div>
+    <div class="lyrics-sub">— 像天空中的钻石 —</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0C0C40"/>
+        <!-- diamond star -->
+        <g transform="translate(190,80)">
+          <polygon points="0,-30 12,-10 30,0 12,10 0,30 -12,10 -30,0 -12,-10" fill="#B3E5FC" opacity=".6"/>
+          <polygon points="0,-22 9,-7 22,0 9,7 0,22 -9,7 -22,0 -9,-7" fill="#E1F5FE" opacity=".8"/>
+          <polygon points="0,-14 6,-4 14,0 6,4 0,14 -6,4 -14,0 -6,-4" fill="#FFF" class="twinkle-star"/>
+          <line x1="0" y1="-30" x2="0" y2="30" stroke="#FFF" stroke-width=".5" opacity=".3"/>
+          <line x1="-30" y1="0" x2="30" y2="0" stroke="#FFF" stroke-width=".5" opacity=".3"/>
+        </g>
+        <circle cx="60" cy="35" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="140" cy="25" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="250" cy="20" r="2.2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="350" cy="40" r="1.8" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="80" cy="100" r="1.2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="300" cy="110" r="1.5" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="40" cy="140" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="340" cy="150" r="1.3" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="200" cy="40" r="1" fill="#FFF" class="twinkle-star d4"/>
+        <!-- small sparkles around diamond -->
+        <circle cx="160" cy="65" r="1.5" fill="#FFD700" opacity=".6" class="twinkle-star d5"/>
+        <circle cx="220" cy="55" r="1" fill="#FFD700" opacity=".5" class="twinkle-star d1"/>
+        <circle cx="170" cy="100" r="1.2" fill="#FFD700" opacity=".4" class="twinkle-star d2"/>
+        <circle cx="210" cy="105" r="1" fill="#FFD700" opacity=".5" class="twinkle-star d3"/>
+        <!-- ground -->
+        <ellipse cx="190" cy="210" rx="210" ry="20" fill="#151550" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "diamond"</h3>
+      <div class="word-blocks" id="game4" data-word="diamond"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game4-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 5: "Twinkle, twinkle, little star" (repeat) ===== -->
+  <div class="page" data-page="5">
+    <h2 class="page-title">🌟 第五句</h2>
+    <div class="lyrics-text">Twinkle, twinkle,<br>little star</div>
+    <div class="lyrics-sub">— 一闪一闪小星星（重复）—</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0D0D3D"/>
+        <!-- multiple twinkling stars -->
+        <g transform="translate(100,55)">
+          <polygon points="0,-18 4,-6 18,-6 7,3 11,16 0,9 -11,16 -7,3 -18,-6 -4,-6" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <g transform="translate(280,45)">
+          <polygon points="0,-15 3,-5 15,-5 6,2 9,13 0,7 -9,13 -6,2 -15,-5 -3,-5" fill="#FFD700" class="twinkle-star d2"/>
+        </g>
+        <g transform="translate(190,100)">
+          <polygon points="0,-22 5,-7 22,-7 9,3 13,18 0,11 -13,18 -9,3 -22,-7 -5,-7" fill="#FFD700" class="twinkle-star d3"/>
+        </g>
+        <circle cx="40" cy="30" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="160" cy="20" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="340" cy="30" r="2.2" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="60" cy="80" r="1.2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="320" cy="90" r="1.8" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="50" cy="140" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="330" cy="140" r="1.3" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="150" cy="140" r="1" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="230" cy="30" r="1.8" fill="#FFF" class="twinkle-star d5"/>
+        <!-- moon -->
+        <ellipse cx="50" cy="40" rx="25" ry="25" fill="#FFF9C4" opacity=".1"/>
+        <circle cx="50" cy="40" r="12" fill="#FFF9C4"/>
+        <circle cx="44" cy="36" r="10" fill="#0D0D3D"/>
+        <!-- ground -->
+        <ellipse cx="190" cy="210" rx="200" ry="18" fill="#151550" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "little"</h3>
+      <div class="word-blocks" id="game5" data-word="little"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game5-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 6: "How I wonder what you are" (repeat) ===== -->
+  <div class="page" data-page="6">
+    <h2 class="page-title">🌟 第六句</h2>
+    <div class="lyrics-text">How I wonder<br>what you are</div>
+    <div class="lyrics-sub">— 我真想知道你是什么（重复）—</div>
+    <div class="svg-scene">
+      <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
+        <rect width="380" height="220" fill="#0E0E42"/>
+        <!-- full starry sky -->
+        <g transform="translate(190,60)">
+          <polygon points="0,-22 5,-7 22,-7 9,3 13,18 0,11 -13,18 -9,3 -22,-7 -5,-7" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <circle cx="30" cy="25" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="90" cy="15" r="1.5" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="150" cy="30" r="2.2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="220" cy="20" r="1.8" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="290" cy="15" r="2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="350" cy="30" r="1.5" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="60" cy="60" r="1.2" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="320" cy="60" r="1.8" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="120" cy="90" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="260" cy="85" r="1.3" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="40" cy="120" r="1.8" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="340" cy="120" r="1.2" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="80" cy="150" r="1.5" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="300" cy="145" r="2" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="180" cy="130" r="1" fill="#FFF" class="twinkle-star d5"/>
+        <!-- moon -->
+        <ellipse cx="320" cy="45" rx="28" ry="28" fill="#FFF9C4" opacity=".1"/>
+        <circle cx="320" cy="45" r="14" fill="#FFF9C4"/>
+        <circle cx="314" cy="41" r="12" fill="#0E0E42"/>
+        <!-- ground hills -->
+        <ellipse cx="100" cy="210" rx="120" ry="20" fill="#151550" opacity=".4"/>
+        <ellipse cx="280" cy="215" rx="130" ry="18" fill="#151550" opacity=".35"/>
+      </svg>
+    </div>
+    <div class="game-area">
+      <h3>✏️ 拼单词游戏 — 点击正确字母块拼出 "star"</h3>
+      <div class="word-blocks" id="game6" data-word="star"></div>
+      <div style="font-size:.85rem;color:#8D6E63;margin-top:5px;" id="game6-status">按顺序点击字母拼出单词</div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 7: Knowledge Quiz ===== -->
+  <div class="page" data-page="7">
+    <h2 class="page-title">✨ 知识小问答</h2>
+    <div style="text-align:center;font-size:.95rem;color:#8D6E63;margin-bottom:5px;">关于星星的小知识，选一选 !</div>
+    <div class="svg-scene" style="max-width:320px;">
+      <svg viewBox="0 0 320 140" xmlns="http://www.w3.org/2000/svg">
+        <rect width="320" height="140" fill="#0B0B3B"/>
+        <circle cx="50" cy="30" r="1.5" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="120" cy="20" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="200" cy="25" r="2" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="280" cy="30" r="1.5" fill="#FFF" class="twinkle-star d4"/>
+        <circle cx="80" cy="60" r="1.2" fill="#FFF" class="twinkle-star d5"/>
+        <circle cx="250" cy="65" r="1.5" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="160" cy="50" r="1.8" fill="#FFF" class="twinkle-star d2"/>
+        <g transform="translate(160,80)">
+          <polygon points="0,-15 3,-5 15,-5 6,2 9,13 0,7 -9,13 -6,2 -15,-5 -3,-5" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <ellipse cx="160" cy="130" rx="170" ry="18" fill="#151550" opacity=".4"/>
+      </svg>
+    </div>
+    <div id="quiz-area" style="width:100%;max-width:380px;margin:8px auto;">
+      <div class="quiz-question" id="q-text">Q1: 星星为什么会发光？</div>
+      <div class="quiz-options" id="q-options"></div>
+      <div class="quiz-feedback" id="q-feedback"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE 8: Star Finding Game ===== -->
+  <div class="page" data-page="8">
+    <h2 class="page-title">🔭 找星星游戏</h2>
+    <div style="text-align:center;font-size:.95rem;color:#8D6E63;margin-bottom:3px;">点击夜空中的星星 🌟 找到全部10颗!</div>
+    <div class="star-find-count">已找到: <span id="star-found-count">0</span> / 10</div>
+    <div class="svg-scene star-find-area" id="star-find-scene">
+      <svg viewBox="0 0 380 230" xmlns="http://www.w3.org/2000/svg" id="star-find-svg">
+        <rect width="380" height="230" fill="#0A0A3A"/>
+        <!-- moon -->
+        <ellipse cx="320" cy="40" rx="30" ry="30" fill="#FFF9C4" opacity=".1"/>
+        <circle cx="320" cy="40" r="16" fill="#FFF9C4"/>
+        <circle cx="313" cy="36" r="14" fill="#0A0A3A"/>
+        <!-- 10 clickable stars placed -->
+        <circle cx="50" cy="45" r="4" fill="#FFD700" class="clickable-star" data-idx="0" style="cursor:pointer"/>
+        <circle cx="130" cy="30" r="3.5" fill="#FFD700" class="clickable-star" data-idx="1" style="cursor:pointer"/>
+        <circle cx="220" cy="50" r="4" fill="#FFD700" class="clickable-star" data-idx="2" style="cursor:pointer"/>
+        <circle cx="310" cy="60" r="3.5" fill="#FFD700" class="clickable-star" data-idx="3" style="cursor:pointer"/>
+        <circle cx="80" cy="90" r="3" fill="#FFD700" class="clickable-star" data-idx="4" style="cursor:pointer"/>
+        <circle cx="200" cy="100" r="4.5" fill="#FFD700" class="clickable-star" data-idx="5" style="cursor:pointer"/>
+        <circle cx="300" cy="110" r="3.5" fill="#FFD700" class="clickable-star" data-idx="6" style="cursor:pointer"/>
+        <circle cx="60" cy="150" r="3" fill="#FFD700" class="clickable-star" data-idx="7" style="cursor:pointer"/>
+        <circle cx="160" cy="140" r="4" fill="#FFD700" class="clickable-star" data-idx="8" style="cursor:pointer"/>
+        <circle cx="270" cy="150" r="3.5" fill="#FFD700" class="clickable-star" data-idx="9" style="cursor:pointer"/>
+        <!-- ground -->
+        <ellipse cx="190" cy="220" rx="210" ry="18" fill="#151550" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="star-find-msg" id="star-find-msg"></div>
+  </div>
+
+  <!-- ===== PAGE 9: Completion ===== -->
+  <div class="page" data-page="9">
+    <div class="completion-title">🎉 太棒了!</div>
+    <div class="completion-sub">你已经完成了 Twinkle Twinkle Little Star 的学习!</div>
+    <div class="svg-scene" style="max-width:340px;">
+      <svg viewBox="0 0 340 180" xmlns="http://www.w3.org/2000/svg">
+        <rect width="340" height="180" fill="#0B0B3B"/>
+        <!-- all stars lit -->
+        <g transform="translate(80,50)">
+          <polygon points="0,-15 3,-5 15,-5 6,2 9,13 0,7 -9,13 -6,2 -15,-5 -3,-5" fill="#FFD700" class="twinkle-star"/>
+        </g>
+        <g transform="translate(170,40)">
+          <polygon points="0,-18 4,-6 18,-6 7,3 11,16 0,9 -11,16 -7,3 -18,-6 -4,-6" fill="#FFD700" class="twinkle-star d2"/>
+        </g>
+        <g transform="translate(260,50)">
+          <polygon points="0,-15 3,-5 15,-5 6,2 9,13 0,7 -9,13 -6,2 -15,-5 -3,-5" fill="#FFD700" class="twinkle-star d3"/>
+        </g>
+        <g transform="translate(125,90)">
+          <polygon points="0,-12 3,-4 12,-4 5,2 7,10 0,6 -7,10 -5,2 -12,-4 -3,-4" fill="#FFD700" class="twinkle-star d4"/>
+        </g>
+        <g transform="translate(215,85)">
+          <polygon points="0,-14 3,-5 14,-5 6,2 8,12 0,7 -8,12 -6,2 -14,-5 -3,-5" fill="#FFD700" class="twinkle-star d5"/>
+        </g>
+        <circle cx="40" cy="30" r="2" fill="#FFF" class="twinkle-star d1"/>
+        <circle cx="300" cy="25" r="2" fill="#FFF" class="twinkle-star d2"/>
+        <circle cx="30" cy="120" r="1.5" fill="#FFF" class="twinkle-star d3"/>
+        <circle cx="310" cy="130" r="1.8" fill="#FFF" class="twinkle-star d4"/>
+        <!-- moon -->
+        <circle cx="300" cy="40" r="14" fill="#FFF9C4"/>
+        <circle cx="294" cy="36" r="12" fill="#0B0B3B"/>
+        <!-- ground -->
+        <ellipse cx="170" cy="170" rx="180" ry="20" fill="#151550" opacity=".4"/>
+      </svg>
+    </div>
+    <div class="star-final-grid" id="star-grid"></div>
+    <button class="final-replay-btn" onclick="goToPage(0); stopSinging();">↺ 重新学习</button>
+  </div>
+
+  <!-- === SPEECH BUBBLE === -->
+  <div class="speech-bubble" id="speechBubble" onclick="hideSpeech()">
+    <span id="speechText">Twinkle, twinkle, little star~</span>
+  </div>
+
+  <!-- === NAVIGATION BAR === -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀ 上一页</button>
+    <button class="nav-btn read-btn" onclick="readAloud()">🔊 读给我听</button>
+    <button class="nav-btn sing-btn" onclick="toggleSing()">🎵 <span id="singBtnLabel">唱</span></button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">下一页 ▶</button>
+  </div>
+
+</div>
+
+<script>
+// ===== CONFIG =====
+const TOTAL_PAGES = 10; // 0-9
+let currentPage = 0;
+let isSinging = false;
+let singTimeout = null;
+let audioCtx = null;
+
+// ===== LYRICS FOR READ ALOUD =====
+const lyricsRead = [
+  "封面页 — Twinkle Twinkle Little Star，一首关于星星的英语儿歌",
+  "Twinkle, twinkle, little star — 一闪一闪小星星",
+  "How I wonder what you are — 我真想知道你是什么",
+  "Up above the world so high — 在世界上方那么高",
+  "Like a diamond in the sky — 像天空中的钻石",
+  "Twinkle, twinkle, little star — 一闪一闪小星星",
+  "How I wonder what you are — 我真想知道你是什么",
+  "知识问答 — 关于星星的小知识",
+  "找星星游戏 — 在夜空中找到所有的星星",
+  "完成页 — 恭喜你完成了所有学习！"
+];
+
+// ===== NAVIGATION =====
+function initNav(){
+  const dots = document.getElementById('navDots');
+  dots.innerHTML = '';
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const dot = document.createElement('span');
+    dot.className = 'nav-dot' + (i===0?' active':'');
+    dot.onclick = ()=>goToPage(i);
+    dots.appendChild(dot);
+  }
+}
+
+function goToPage(idx){
+  if(idx<0||idx>=TOTAL_PAGES) return;
+  stopSinging();
+  hideSpeech();
+  const pages = document.querySelectorAll('.page');
+  pages.forEach(p=>p.classList.remove('active'));
+  document.querySelector(`.page[data-page="${idx}"]`).classList.add('active');
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===idx);
+  });
+  currentPage = idx;
+  document.getElementById('prevBtn').disabled = (idx===0);
+  document.getElementById('nextBtn').disabled = (idx===TOTAL_PAGES-1);
+
+  // refresh games
+  if(idx>=1&&idx<=6) initSpellingGame(idx);
+  if(idx===7) initQuiz();
+  if(idx===8) initStarFind();
+  if(idx===9) initCompletion();
+}
+
+function nextPage(){
+  if(currentPage<TOTAL_PAGES-1) goToPage(currentPage+1);
+}
+function prevPage(){
+  if(currentPage>0) goToPage(currentPage-1);
+}
+
+// ===== SPEECH BUBBLE =====
+function showSpeech(text){
+  document.getElementById('speechText').textContent = text;
+  document.getElementById('speechBubble').classList.add('show');
+}
+function hideSpeech(){
+  document.getElementById('speechBubble').classList.remove('show');
+}
+
+// ===== READ ALOUD =====
+function readAloud(){
+  if(currentPage>=0&&currentPage<lyricsRead.length){
+    showSpeech(lyricsRead[currentPage]);
+    setTimeout(hideSpeech,3000);
+  }
+}
+
+// ===== WEB AUDIO API - SING =====
+function getAudioCtx(){
+  if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playNote(freq,duration,startTime,type='triangle'){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq,startTime);
+  gain.gain.setValueAtTime(.3,startTime);
+  gain.gain.exponentialRampToValueAtTime(.01,startTime+duration-.05);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(startTime);
+  osc.stop(startTime+duration);
+}
+
+// Melody notes: C4 C4 G4 G4 A4 A4 G4 - F4 F4 E4 E4 D4 D4 C4 - G4 G4 F4 F4 E4 E4 D4 - G4 G4 F4 F4 E4 E4 D4 - C4 C4 G4 G4 A4 A4 G4 - F4 F4 E4 E4 D4 D4 C4
+const melodyNotes = [
+  261.63,261.63,392,392,440,440,392,
+  349.23,349.23,329.63,329.63,293.66,293.66,261.63,
+  392,392,349.23,349.23,329.63,329.63,293.66,
+  392,392,349.23,349.23,329.63,329.63,293.66,
+  261.63,261.63,392,392,440,440,392,
+  349.23,349.23,329.63,329.63,293.66,293.66,261.63
+];
+const NOTE_LEN = 0.35;
+
+function playMelody(){
+  stopSinging();
+  const ctx = getAudioCtx();
+  if(ctx.state==='suspended') ctx.resume();
+  const start = ctx.currentTime + 0.1;
+  melodyNotes.forEach((freq,i)=>{
+    playNote(freq,NOTE_LEN,start+i*NOTE_LEN,'triangle');
+  });
+  const totalTime = melodyNotes.length*NOTE_LEN;
+  isSinging = true;
+  document.getElementById('singBtnLabel').textContent = '播放中...';
+  singTimeout = setTimeout(()=>{
+    isSinging = false;
+    document.getElementById('singBtnLabel').textContent = '唱';
+  },totalTime*1000+500);
+}
+
+function toggleSing(){
+  if(isSinging){
+    stopSinging();
+  }else{
+    playMelody();
+  }
+}
+
+function stopSinging(){
+  if(singTimeout){
+    clearTimeout(singTimeout);
+    singTimeout = null;
+  }
+  isSinging = false;
+  document.getElementById('singBtnLabel').textContent = '唱';
+  // We can't stop individual notes once started, but we can close and recreate context
+  if(audioCtx){
+    audioCtx.close().catch(()=>{});
+    audioCtx = null;
+  }
+}
+
+// ===== SPELLING GAMES (Pages 1-6) =====
+function initSpellingGame(pageIdx){
+  const container = document.getElementById('game'+pageIdx);
+  if(!container) return;
+  const target = container.dataset.word;
+  // If already completed and correct, skip reset
+  if(container.dataset.completed==='true') return;
+  // Shuffle letters
+  const letters = target.split('');
+  const shuffled = [...letters];
+  for(let i=shuffled.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  container.innerHTML = '';
+  const status = document.getElementById('game'+pageIdx+'-status');
+  if(status) status.textContent = '按顺序点击字母拼出单词';
+  let currentIdx = 0;
+  shuffled.forEach((ch,idx)=>{
+    const block = document.createElement('span');
+    block.className = 'word-block';
+    block.textContent = ch;
+    block.dataset.letter = ch;
+    block.dataset.origIdx = idx;
+    block.addEventListener('click',function(e){
+      if(this.classList.contains('correct')) return;
+      const expected = target[currentIdx];
+      if(this.dataset.letter===expected){
+        this.classList.add('correct');
+        currentIdx++;
+        if(currentIdx===target.length){
+          if(status) status.textContent = '✅ 拼写正确! 太棒了!';
+          container.dataset.completed = 'true';
+        }
+      }else{
+        this.classList.add('wrong');
+        setTimeout(()=>this.classList.remove('wrong'),400);
+        if(status) status.textContent = '❌ 顺序不对，再试试!';
+      }
+    });
+    container.appendChild(block);
+  });
+}
+
+// ===== QUIZ (Page 7) =====
+const quizData = [
+  {
+    q:'星星为什么会发光？',
+    options:['因为它们在燃烧气体','因为它们是镜子','因为月亮照亮的'],
+    correct:0
+  },
+  {
+    q:'离我们最近的恒星是什么？',
+    options:['北极星','太阳','天狼星'],
+    correct:1
+  },
+  {
+    q:'星星为什么晚上才看到？',
+    options:['它们晚上才出来','白天太阳光太强','它们在睡觉'],
+    correct:1
+  },
+  {
+    q:'北斗七星有多少颗星？',
+    options:['5颗','7颗','9颗'],
+    correct:1
+  }
+];
+let quizIdx = 0;
+let quizAnswered = false;
+
+function initQuiz(){
+  quizIdx = 0;
+  quizAnswered = false;
+  showQuizQuestion();
+}
+
+function showQuizQuestion(){
+  if(quizIdx>=quizData.length){
+    document.getElementById('q-text').textContent = '🎉 全部答对！你真是小天文家！';
+    document.getElementById('q-options').innerHTML = '';
+    document.getElementById('q-feedback').textContent = '✅ 知识问答完成!';
+    return;
+  }
+  const q = quizData[quizIdx];
+  document.getElementById('q-text').textContent = 'Q'+(quizIdx+1)+': '+q.q;
+  const optContainer = document.getElementById('q-options');
+  optContainer.innerHTML = '';
+  document.getElementById('q-feedback').textContent = '';
+  quizAnswered = false;
+  q.options.forEach((opt,idx)=>{
+    const btn = document.createElement('button');
+    btn.className = 'quiz-btn';
+    btn.textContent = opt;
+    btn.addEventListener('click',function(){
+      if(quizAnswered) return;
+      quizAnswered = true;
+      if(idx===q.correct){
+        this.classList.add('correct');
+        document.getElementById('q-feedback').textContent = '✅ 正确! '+(idx===0?'星星内部发生核聚变反应发光发热。':'');
+        setTimeout(()=>{
+          quizIdx++;
+          showQuizQuestion();
+        },1500);
+      }else{
+        this.classList.add('wrong');
+        document.getElementById('q-feedback').textContent = '❌ 再想想哦!';
+        setTimeout(()=>{
+          this.classList.remove('wrong');
+          quizAnswered = false;
+        },800);
+      }
+    });
+    optContainer.appendChild(btn);
+  });
+}
+
+// ===== STAR FIND GAME (Page 8) =====
+let starsFound = 0;
+let starFindCompleted = false;
+
+function initStarFind(){
+  starsFound = 0;
+  starFindCompleted = false;
+  document.getElementById('star-found-count').textContent = '0';
+  document.getElementById('star-find-msg').textContent = '';
+  document.querySelectorAll('.clickable-star').forEach(s=>{
+    s.classList.remove('found');
+    s.setAttribute('fill','#FFD700');
+    s.style.pointerEvents = 'auto';
+  });
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('star-find-svg').addEventListener('click',function(e){
+    if(starFindCompleted) return;
+    const target = e.target;
+    if(target.classList.contains('clickable-star') && !target.classList.contains('found')){
+      target.classList.add('found');
+      target.setAttribute('fill','#FFD700');
+      target.style.pointerEvents = 'none';
+      starsFound++;
+      document.getElementById('star-found-count').textContent = starsFound;
+      if(starsFound>=10){
+        starFindCompleted = true;
+        document.getElementById('star-find-msg').textContent = '🎉 太棒了！你找到了所有的星星！';
+      }
+    }
+  });
+});
+
+// ===== COMPLETION (Page 9) =====
+function initCompletion(){
+  const grid = document.getElementById('star-grid');
+  grid.innerHTML = '';
+  for(let i=0;i<15;i++){
+    const cell = document.createElement('div');
+    cell.className = 'final-star-cell';
+    cell.textContent = '☆';
+    cell.style.cursor = 'pointer';
+    cell.addEventListener('click',function(){
+      this.classList.toggle('lit');
+      this.textContent = this.classList.contains('lit')?'★':'☆';
+    });
+    grid.appendChild(cell);
+  }
+  // Start confetti
+  launchConfetti();
+}
+
+function launchConfetti(){
+  const container = document.querySelector('.confetti-container')||(()=>{
+    const c = document.createElement('div');
+    c.className = 'confetti-container';
+    document.body.appendChild(c);
+    return c;
+  })();
+  container.innerHTML = '';
+  const colors = ['#FFB347','#FFD700','#FF6B6B','#4FC3F7','#81C784','#CE93D8','#FF8A65'];
+  for(let i=0;i<50;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100+'%';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = (Math.random()*6+4)+'px';
+    piece.style.height = (Math.random()*6+4)+'px';
+    piece.style.animationDuration = (Math.random()*2+2)+'s';
+    piece.style.animationDelay = (Math.random()*2)+'s';
+    piece.style.borderRadius = Math.random()>.5?'50%':'2px';
+    container.appendChild(piece);
+  }
+  setTimeout(()=>container.innerHTML='',5000);
+}
+
+// ===== KEYBOARD NAV =====
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowRight') nextPage();
+  if(e.key==='ArrowLeft') prevPage();
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',function(){
+  initNav();
+  goToPage(0);
+});
+</script>
+</body>
+</html>
