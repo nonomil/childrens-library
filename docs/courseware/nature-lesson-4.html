@@ -14,11 +14,10 @@ body{font-family:'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;backgroun
 .dot{width:10px;height:10px;border-radius:50%;background:#E0E0E0;transition:.3s}
 .dot.active{background:#FFB347;transform:scale(1.3)}
 .dot.done{background:#6BCB77}
-.content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;padding:10px 0}
+.content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px 0}
 .content.hidden{display:none}
 .story-text{font-size:20px;color:#5D4037;line-height:1.8;text-align:center;max-width:650px}
 .story-text .highlight{color:#E8751A;font-weight:bold;font-size:26px}
-.story-text .pinyin{font-size:16px;color:#999;display:block}
 .char-big{font-size:80px;color:#E8751A;font-weight:bold;text-shadow:2px 2px 0 #FFE0B2;margin:5px 0}
 .char-info{text-align:center;font-size:18px;color:#6B4F3A}
 .char-info .pinyin{font-size:24px;color:#E8751A}
@@ -38,7 +37,7 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 .sound-btn:hover{transform:translateY(-2px)}
 .sound-btn:active{transform:translateY(2px)}
 .quiz-options{display:flex;flex-direction:column;gap:10px;width:100%;max-width:400px}
-.quiz-btn{background:#FFF8E1;border:3px solid #FFE0B2;border-radius:15px;padding:15px;font-size:20px;cursor:pointer;transition:.3s;font-family:inherit;text-align:left;color:#5D4037}
+.quiz-btn{background:#FFF8E1;border:3px solid #FFE0B2;border-radius:15px;padding:15px;font-size:20px;cursor:pointer;transition:.3s;font-family:inherit;text-align:left;color:#5D4037;display:flex;align-items:center;gap:8px}
 .quiz-btn:hover{background:#FFE0B2;border-color:#FFB347}
 .quiz-btn.correct{background:#C8E6C9;border-color:#6BCB77;color:#2E7D32}
 .quiz-btn.wrong{background:#FFCDD2;border-color:#E57373;color:#C62828}
@@ -51,7 +50,6 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;text-align:center;flex:1}
 .cover h1{font-size:48px;color:#E8751A;text-shadow:3px 3px 0 #FFE0B2}
 .cover .subtitle{font-size:22px;color:#6B4F3A}
-.cover .mc-theme{font-size:16px;color:#999;margin-top:5px}
 .start-btn{background:#FFB347;border:none;border-radius:50px;padding:18px 50px;font-size:28px;color:#fff;cursor:pointer;transition:.2s;font-family:inherit;box-shadow:0 6px 0 #E8751A;margin-top:20px}
 .start-btn:hover{transform:translateY(-3px)}
 .char-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%;max-width:450px}
@@ -61,6 +59,11 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 .char-grid-item .small{font-size:14px;color:#6B4F3A}
 .review-sentence{font-size:22px;color:#5D4037;line-height:2;text-align:center;padding:15px;background:#FFF8E1;border-radius:20px}
 .review-sentence .ch{font-size:30px;color:#E8751A;font-weight:bold}
+.speech-bubble{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) scale(0.8);background:#FFB347;color:#fff;font-size:20px;padding:16px 24px;border-radius:20px;max-width:85%;text-align:center;opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);z-index:999;box-shadow:0 6px 20px rgba(255,179,71,0.4);pointer-events:none;line-height:1.6}
+.speech-bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.speech-bubble::after{content:'';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);border:10px solid transparent;border-top-color:#FFB347}
+.q-sound{background:#E8D5C4;border:none;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:auto}
+.q-sound:hover{background:#D4B89C}
 @media(max-width:600px){
 .book{padding:20px;border-radius:25px}
 .cover h1{font-size:36px}
@@ -82,7 +85,7 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
     <div class="cover">
       <h1>🌿 大自然</h1>
       <div class="subtitle">和Steve、Alex一起认识大自然</div>
-      <div class="mc-theme">⛏️ Minecraft方块世界</div>
+      <div class="subtitle" style="font-size:16px;color:#999">⛏️ Minecraft方块世界</div>
       <div style="font-size:60px;margin:15px 0">☁️🌧️🌬️❄️⭐🌸🌿🐛🐦</div>
       <div style="color:#6B4F3A;font-size:18px">认识9个新字：云雨风雪星花草虫鸟</div>
       <button class="start-btn" onclick="goPage(1)">开始学习 🚀</button>
@@ -231,15 +234,15 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
     <p class="story-text" style="font-size:22px">🎯 字卡复习</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-14.png" alt="字卡汇总">
     <div class="char-grid">
-      <div class="char-grid-item" onclick="speak('云')"><div class="big">云</div><div class="small">yún</div></div>
-      <div class="char-grid-item" onclick="speak('雨')"><div class="big">雨</div><div class="small">yǔ</div></div>
-      <div class="char-grid-item" onclick="speak('风')"><div class="big">风</div><div class="small">fēng</div></div>
-      <div class="char-grid-item" onclick="speak('雪')"><div class="big">雪</div><div class="small">xuě</div></div>
-      <div class="char-grid-item" onclick="speak('星')"><div class="big">星</div><div class="small">xīng</div></div>
-      <div class="char-grid-item" onclick="speak('花')"><div class="big">花</div><div class="small">huā</div></div>
-      <div class="char-grid-item" onclick="speak('草')"><div class="big">草</div><div class="small">cǎo</div></div>
-      <div class="char-grid-item" onclick="speak('虫')"><div class="big">虫</div><div class="small">chóng</div></div>
-      <div class="char-grid-item" onclick="speak('鸟')"><div class="big">鸟</div><div class="small">niǎo</div></div>
+      <div class="char-grid-item" onclick="playChar('云','yun')"><div class="big">云</div><div class="small">yún 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('雨','yu')"><div class="big">雨</div><div class="small">yǔ 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('风','feng')"><div class="big">风</div><div class="small">fēng 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('雪','xue')"><div class="big">雪</div><div class="small">xuě 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('星','xing')"><div class="big">星</div><div class="small">xīng 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('花','hua')"><div class="big">花</div><div class="small">huā 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('草','cao')"><div class="big">草</div><div class="small">cǎo 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('虫','chong')"><div class="big">虫</div><div class="small">chóng 🔊</div></div>
+      <div class="char-grid-item" onclick="playChar('鸟','niao')"><div class="big">鸟</div><div class="small">niǎo 🔊</div></div>
     </div>
     <p style="color:#999;font-size:14px;margin-top:5px">👆 点击卡片听发音</p>
   </div>
@@ -272,7 +275,7 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 
   <div class="nav">
     <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀ 上一页</button>
-    <button class="sound-btn" id="soundBtn" onclick="speakPage()">🔊</button>
+    <button class="sound-btn" id="soundBtn" onclick="playPageAudio()">🔊</button>
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">下一页 ▶</button>
   </div>
 </div>
@@ -280,6 +283,83 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 <script>
 const TOTAL_PAGES = 16;
 let currentPage = 0;
+let currentAudio = null;
+
+// Audio file mapping
+const PAGE_AUDIO = {
+  0:'audio/page0.ogg',1:'audio/page1.ogg',2:'audio/page2.ogg',
+  3:'audio/page3.ogg',4:'audio/page4.ogg',5:'audio/page5.ogg',
+  6:'audio/page6.ogg',7:'audio/page7.ogg',8:'audio/page8.ogg',
+  9:'audio/page9.ogg',10:'audio/page10.ogg',11:'audio/page11.ogg',
+  12:'audio/page12.ogg',13:'audio/page13.ogg',
+  15:'audio/page15.ogg',16:'audio/page16.ogg'
+};
+
+const QUIZ_AUDIO = ['audio/quiz1.ogg','audio/quiz2.ogg','audio/quiz3.ogg',
+  'audio/quiz4.ogg','audio/quiz5.ogg','audio/quiz6.ogg',
+  'audio/quiz7.ogg','audio/quiz8.ogg','audio/quiz9.ogg'];
+
+function showSpeechBubble(text){
+  const old=document.querySelector('.speech-bubble');
+  if(old)old.remove();
+  const b=document.createElement('div');
+  b.className='speech-bubble';
+  b.textContent=text;
+  document.body.appendChild(b);
+  void b.offsetWidth;
+  b.classList.add('show');
+  setTimeout(()=>{b.classList.remove('show');setTimeout(()=>b.remove(),400);},4000);
+}
+
+function playAudio(src, text){
+  showSpeechBubble(text||'');
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  try{
+    const a=new Audio(src);
+    currentAudio=a;
+    a.volume=1;
+    a.play().catch(()=>{});
+  }catch(e){}
+}
+
+function playPageAudio(){
+  const n=currentPage;
+  if(PAGE_AUDIO[n]){
+    const texts={
+      0:'第4课 大自然。认识9个新字：云雨风雪星花草虫鸟。',
+      1:'Steve和Alex在村庄安顿下来...看，那是云！',
+      2:'云，yun，4画。白云，云朵。白云在天上。',
+      3:'云越来越黑...这是雨！快躲起来！',
+      4:'雨，yu，8画。下雨，雨水。下雨了，天上有很多云。',
+      5:'雨停了...好大的风！',
+      6:'风，feng，4画。雪，xue，11画。下雪了。',
+      7:'傍晚...那是星星！',
+      8:'星，xing，9画。星星，星空。天上有很多星星。',
+      9:'太阳出来了！开了好多花！旁边一大片是草。',
+      10:'花，hua，7画。草，cao，9画。',
+      11:'草丛里有动静！虫在地上爬，鸟在天上飞！',
+      12:'虫，chong，6画。鸟，niao，5画。',
+      13:'大自然的宝藏。云雨风雪星花草虫鸟。',
+      15:'小测验时间！看看你学会了几个字。',
+      16:'古诗角，风。唐，李峤。'
+    };
+    playAudio(PAGE_AUDIO[n], texts[n]||'');
+  }
+}
+
+function playChar(ch, py){
+  const text = ch + '，' + py;
+  showSpeechBubble(text);
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  try{
+    const u=new SpeechSynthesisUtterance(ch);
+    u.lang='zh-CN';u.rate=0.7;
+    const voices=window.speechSynthesis.getVoices();
+    const zh=voices.find(v=>v.lang.startsWith('zh'));
+    if(zh)u.voice=zh;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
 
 // Quiz data
 const quizData = [
@@ -297,12 +377,11 @@ let quizIndex = 0;
 let quizScore = 0;
 
 function initProgress(){
-  const p = document.getElementById('progress');
-  p.innerHTML = '';
+  const p=document.getElementById('progress');
+  p.innerHTML='';
   for(let i=0;i<=TOTAL_PAGES;i++){
-    const d = document.createElement('span');
-    d.className='dot';
-    d.id='dot_'+i;
+    const d=document.createElement('span');
+    d.className='dot';d.id='dot_'+i;
     p.appendChild(d);
   }
 }
@@ -310,116 +389,99 @@ function initProgress(){
 function goPage(n){
   document.querySelectorAll('.content').forEach(c=>c.classList.add('hidden'));
   document.getElementById('page'+n).classList.remove('hidden');
-  currentPage = n;
-  document.getElementById('pageNum').textContent = n===0?'📖 第4课':`📄 ${n}/${TOTAL_PAGES}`;
-  document.getElementById('prevBtn').disabled = n===0;
-  document.getElementById('nextBtn').disabled = n===TOTAL_PAGES;
-  // Update dots
+  currentPage=n;
+  document.getElementById('pageNum').textContent=n===0?'📖 第4课':`📄 ${n}/${TOTAL_PAGES}`;
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===TOTAL_PAGES;
   for(let i=0;i<=TOTAL_PAGES;i++){
-    const d = document.getElementById('dot_'+i);
+    const d=document.getElementById('dot_'+i);
     d.classList.remove('active','done');
-    if(i===n) d.classList.add('active');
-    else if(i<n) d.classList.add('done');
+    if(i===n)d.classList.add('active');
+    else if(i<n)d.classList.add('done');
   }
-  // Init quiz if page 15
-  if(n===15) initQuiz();
+  if(n===15)initQuiz();
 }
 
 function nextPage(){
-  if(currentPage < TOTAL_PAGES) goPage(currentPage+1);
+  if(currentPage<TOTAL_PAGES)goPage(currentPage+1);
 }
-
 function prevPage(){
-  if(currentPage > 0) goPage(currentPage-1);
-}
-
-function speak(text){
-  if(!window.speechSynthesis) return;
-  // Cancel any ongoing speech
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'zh-CN';
-  u.rate = 0.8;
-  u.pitch = 1.1;
-  // Try to find a Chinese voice
-  const voices = window.speechSynthesis.getVoices();
-  const zh = voices.find(v=>v.lang.startsWith('zh'));
-  if(zh) u.voice = zh;
-  window.speechSynthesis.speak(u);
-}
-
-function speakPage(){
-  // Get visible page text
-  const visible = document.querySelector('.content:not(.hidden)');
-  if(!visible) return;
-  const txt = visible.textContent.trim().substring(0,200);
-  speak(txt);
+  if(currentPage>0)goPage(currentPage-1);
 }
 
 function initQuiz(){
-  quizIndex = 0;
-  quizScore = 0;
+  quizIndex=0;quizScore=0;
   showQuizQuestion();
 }
 
 function showQuizQuestion(){
-  if(quizIndex >= quizData.length){
-    document.getElementById('quizQuestion').textContent = `🎉 答对了 ${quizScore}/${quizData.length} 题！太棒了！`;
-    document.getElementById('quizOptions').innerHTML = '';
+  if(quizIndex>=quizData.length){
+    document.getElementById('quizQuestion').textContent='🎉 答对了 '+quizScore+'/'+quizData.length+' 题！太棒了！';
+    document.getElementById('quizOptions').innerHTML='';
     document.getElementById('quizFeedback').classList.add('hidden');
-    document.getElementById('quizScore').textContent = '';
+    document.getElementById('quizScore').textContent='';
     return;
   }
-  const q = quizData[quizIndex];
-  document.getElementById('quizQuestion').textContent = `${quizIndex+1}. ${q.q}`;
-  const opts = document.getElementById('quizOptions');
-  opts.innerHTML = '';
+  const q=quizData[quizIndex];
+  const qi=quizIndex;
+  document.getElementById('quizQuestion').textContent=(quizIndex+1)+'. '+q.q;
+  const opts=document.getElementById('quizOptions');
+  opts.innerHTML='';
   q.options.forEach((opt,i)=>{
-    const btn = document.createElement('button');
-    btn.className = 'quiz-btn';
-    btn.textContent = opt;
-    btn.onclick = ()=>checkAnswer(i);
+    const btn=document.createElement('button');
+    btn.className='quiz-btn';
+    const span=document.createElement('span');
+    span.textContent=opt;
+    btn.appendChild(span);
+    const snd=document.createElement('button');
+    snd.className='q-sound';
+    snd.textContent='🔊';
+    snd.onclick=function(e){e.stopPropagation();showSpeechBubble(opt);try{const u=new SpeechSynthesisUtterance(opt);u.lang='zh-CN';u.rate=0.7;window.speechSynthesis.speak(u);}catch(e){}};
+    btn.appendChild(snd);
+    btn.onclick=function(){checkAnswer(i);};
     opts.appendChild(btn);
   });
   document.getElementById('quizFeedback').classList.add('hidden');
-  document.getElementById('quizScore').textContent = `✅ ${quizScore}/${quizIndex} 题正确`;
+  document.getElementById('quizScore').textContent='✅ '+quizScore+'/'+quizIndex+' 题正确';
+  // Play quiz audio
+  if(QUIZ_AUDIO[quizIndex]){
+    playAudio(QUIZ_AUDIO[quizIndex], q.q);
+  }
 }
 
 function checkAnswer(selected){
-  const q = quizData[quizIndex];
-  const btns = document.querySelectorAll('.quiz-btn');
+  const q=quizData[quizIndex];
+  const btns=document.querySelectorAll('.quiz-btn');
   btns.forEach((b,i)=>{
-    b.style.pointerEvents = 'none';
-    if(i === q.answer) b.classList.add('correct');
-    else if(i === selected && i !== q.answer) b.classList.add('wrong');
+    b.style.pointerEvents='none';
+    if(i===q.answer)b.classList.add('correct');
+    else if(i===selected&&i!==q.answer)b.classList.add('wrong');
   });
-  const fb = document.getElementById('quizFeedback');
+  const fb=document.getElementById('quizFeedback');
   fb.classList.remove('hidden','good','bad');
-  if(selected === q.answer){
-    fb.textContent = '✅ 答对了！好棒！';
+  if(selected===q.answer){
+    fb.textContent='✅ 答对了！好棒！';
     fb.classList.add('good');
     quizScore++;
-  } else {
-    fb.textContent = `❌ 答案是「${q.options[q.answer]}」哦～再记一次！`;
+  }else{
+    fb.textContent='❌ 答案是「'+q.options[q.answer]+'」哦～再记一次！';
     fb.classList.add('bad');
   }
   quizIndex++;
-  setTimeout(showQuizQuestion,2000);
+  setTimeout(showQuizQuestion,2500);
 }
 
-// Load voices
-window.speechSynthesis.onvoiceschanged = ()=>{
-  window.speechSynthesis.getVoices();
-};
+// Preload voices
+window.speechSynthesis.onvoiceschanged=()=>{window.speechSynthesis.getVoices();};
 
 // Init
 initProgress();
 goPage(0);
 
-// Keyboard navigation
+// Keyboard nav
 document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key===' ') nextPage();
-  if(e.key==='ArrowLeft') prevPage();
+  if(e.key==='ArrowRight'||e.key===' ')nextPage();
+  if(e.key==='ArrowLeft')prevPage();
 });
 </script>
 </body>
