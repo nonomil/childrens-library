@@ -7,7 +7,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
     background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
     min-height: 100vh; display: flex; justify-content: center;
     align-items: center; padding: 20px;
@@ -30,6 +30,8 @@
   @keyframes confetti-fall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(500px) rotate(720deg); } }
   @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
   @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+  @keyframes grow-apple { 0% { r: 5; opacity: 0.3; } 100% { r: 18; opacity: 1; } }
 
   .page-title {
     font-size: 34px;
@@ -49,16 +51,63 @@
     margin-bottom: 10px;
   }
 
+  /* --- SVG Illustration Container --- */
   .illustration {
-    width: 200px; height: 180px; border-radius: 24px;
+    width: 220px; height: 200px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 90px; margin-bottom: 14px; position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 14px; position: relative;
   }
+  .illustration svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.12));
+    border-radius: 24px;
+  }
+
+  /* --- Speech Bubble (齿轮风格) --- */
+  .speech-bubble {
+    display: none;
+    background: #FFF8E7;
+    border: 3px dashed #FFB347;
+    border-radius: 24px;
+    padding: 16px 22px;
+    margin: 4px 0 10px;
+    font-size: 19px;
+    line-height: 1.6;
+    text-align: center;
+    position: relative;
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(255,179,71,0.25);
+    color: #6B4F3A;
+  }
+  .speech-bubble.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  /* Gear corner decorations */
+  .speech-bubble .gear-corner {
+    position: absolute;
+    font-size: 22px;
+    opacity: 0.5;
+    animation: spin-cw 4s linear infinite;
+  }
+  .speech-bubble .gear-corner.tl { top: -13px; left: -13px; }
+  .speech-bubble .gear-corner.tr { top: -13px; right: -13px; animation-direction: reverse; }
+  .speech-bubble .gear-corner.bl { bottom: -13px; left: -13px; animation-direction: reverse; }
+  .speech-bubble .gear-corner.br { bottom: -13px; right: -13px; }
+  /* Gear notch border effect */
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 2px solid #FFB347;
+    border-radius: 28px;
+    opacity: 0.3;
+  }
+
   .i-am-text {
     font-size: 26px; line-height: 1.6; text-align: center;
     padding: 14px 20px; background: #FFF8E7; border-radius: 20px;
-    width: 100%; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    width: 100%; margin-bottom: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   }
   .i-am-text .highlight { color: #E8751A; font-weight: bold; }
   .i-am-text .word {
@@ -69,46 +118,64 @@
 
   .lifecycle {
     display: flex; align-items: center; gap: 5px; justify-content: center;
-    flex-wrap: wrap; margin: 8px 0;
+    flex-wrap: wrap; margin: 6px 0;
   }
   .lifecycle-item {
-    width: 60px; height: 60px; border-radius: 50%;
+    width: 56px; height: 56px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 30px; background: #FFF8E7; border: 3px solid #E0D5C7;
+    font-size: 28px; background: #FFF8E7; border: 3px solid #E0D5C7;
     transition: all 0.3s; cursor: pointer;
   }
   .lifecycle-item:hover { border-color: #FFB347; transform: scale(1.1); }
   .lifecycle-item.active { border-color: #FFB347; background: #FFF0D0; }
   .lifecycle-arrow { font-size: 20px; color: #999; }
 
+  /* --- Quiz Area (齿轮风格) --- */
   .quiz-area {
-    background: #F3E5F5; border-radius: 20px; padding: 16px;
-    text-align: center; margin: 10px 0; width: 100%;
+    background: #FFF3E0;
+    border: 3px dashed #FFB347;
+    border-radius: 24px;
+    padding: 16px;
+    text-align: center;
+    margin: 8px 0;
+    width: 100%;
+    position: relative;
   }
-  .quiz-area h3 { font-size: 18px; color: #7B1FA2; margin-bottom: 12px; }
-  .quiz-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .quiz-area .gear-corner {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0.4;
+    animation: spin-cw 4s linear infinite;
+  }
+  .quiz-area .gear-corner.tl { top: -10px; left: -10px; }
+  .quiz-area .gear-corner.tr { top: -10px; right: -10px; animation-direction: reverse; }
+  .quiz-area .gear-corner.bl { bottom: -10px; left: -10px; animation-direction: reverse; }
+  .quiz-area .gear-corner.br { bottom: -10px; right: -10px; }
+  .quiz-area h3 { font-size: 17px; color: #E8751A; margin-bottom: 10px; }
+  .quiz-options { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .quiz-opt {
-    padding: 12px 22px; border-radius: 16px; border: 3px solid #ddd;
-    background: white; font-size: 19px; cursor: pointer;
+    padding: 10px 20px; border-radius: 16px; border: 3px solid #E0D5C7;
+    background: white; font-size: 17px; cursor: pointer;
     transition: all 0.15s; font-family: inherit;
   }
-  .quiz-opt:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.08); }
+  .quiz-opt:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.06); }
   .quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; }
   .quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
 
   .fact-area {
     font-size: 15px; color: #6B4F3A; text-align: center;
-    margin-bottom: 6px; background: #FFF8E7; padding: 8px 14px;
+    margin-bottom: 4px; background: #FFF8E7; padding: 6px 14px;
     border-radius: 14px; width: 100%;
   }
 
   /* Cover page */
   .cover-page { text-align: center; padding: 20px; }
-  .cover-icon {
-    font-size: 120px; margin-bottom: 16px;
+  .cover-illustration {
+    width: 180px; height: 160px;
+    margin: 0 auto 16px;
     animation: float 2.5s ease-in-out infinite;
-    display: inline-block;
   }
+  .cover-illustration svg { width: 100%; height: 100%; }
   .cover-page .page-title { margin-top: 8px; }
   .cover-hint {
     font-size: 15px; color: #bbb; margin-top: 14px;
@@ -160,24 +227,162 @@
     padding: 2px 0 8px;
   }
 
+  /* Final area / Sorting game */
   .final-area {
-    background: #F3E5F5; border-radius: 20px; padding: 16px;
-    text-align: center; margin: 10px 0; width: 100%;
+    background: #FFF3E0;
+    border: 3px dashed #FFB347;
+    border-radius: 24px;
+    padding: 16px;
+    text-align: center;
+    margin: 8px 0;
+    width: 100%;
+    position: relative;
   }
-  .final-area h3 { font-size: 18px; color: #7B1FA2; margin-bottom: 8px; }
+  .final-area h3 { font-size: 18px; color: #E8751A; margin-bottom: 8px; }
+
+  /* --- Drag-and-Drop Sorting Game --- */
+  .sort-game {
+    background: #FFF3E0;
+    border: 3px dashed #FFB347;
+    border-radius: 24px;
+    padding: 16px;
+    margin: 8px 0;
+    width: 100%;
+    position: relative;
+  }
+  .sort-game h3 {
+    font-size: 18px;
+    color: #E8751A;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .sort-game .gear-corner {
+    position: absolute;
+    font-size: 18px;
+    opacity: 0.4;
+    animation: spin-cw 4s linear infinite;
+  }
+  .sort-game .gear-corner.tl { top: -10px; left: -10px; }
+  .sort-game .gear-corner.tr { top: -10px; right: -10px; animation-direction: reverse; }
+  .sort-game .gear-corner.bl { bottom: -10px; left: -10px; animation-direction: reverse; }
+  .sort-game .gear-corner.br { bottom: -10px; right: -10px; }
+  .sort-areas {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .sort-slot {
+    width: 90px;
+    min-height: 90px;
+    border: 3px dashed #E0D5C7;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.6);
+    transition: all 0.2s;
+    padding: 6px;
+  }
+  .sort-slot.drag-over {
+    border-color: #FFB347;
+    background: #FFF8E7;
+    transform: scale(1.05);
+  }
+  .sort-slot.filled {
+    border-style: solid;
+    border-color: #4CAF50;
+    background: #E8F5E9;
+  }
+  .sort-slot .slot-num {
+    font-size: 13px;
+    color: #bbb;
+    font-weight: bold;
+  }
+  .sort-slot .slot-item {
+    font-size: 32px;
+    cursor: grab;
+    user-select: none;
+  }
+  .sort-slot .slot-item:active { cursor: grabbing; }
+  .sort-pool {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 8px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 16px;
+    min-height: 70px;
+    margin-bottom: 10px;
+  }
+  .sort-card {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #FFF8E7;
+    border: 3px solid #E0D5C7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    cursor: grab;
+    user-select: none;
+    transition: all 0.15s;
+  }
+  .sort-card:active { cursor: grabbing; }
+  .sort-card:hover { border-color: #FFB347; transform: scale(1.08); }
+  .sort-card.dragging { opacity: 0.4; }
+  .sort-card.placed { display: none; }
+  .sort-btn {
+    padding: 8px 24px;
+    border-radius: 20px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    margin: 2px 4px;
+  }
+  .sort-btn.check {
+    background: #FFB347;
+    color: white;
+  }
+  .sort-btn.check:hover { transform: scale(1.05); }
+  .sort-btn.check:active { transform: scale(0.95); }
+  .sort-btn.reset {
+    background: #E0D5C7;
+    color: #6B4F3A;
+  }
+  .sort-btn.reset:hover { transform: scale(1.05); }
+  .sort-result {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 8px;
+    min-height: 30px;
+  }
+  .sort-result.success { color: #4CAF50; }
+  .sort-result.error { color: #F44336; }
 
   @media (max-width: 500px) {
     body { padding: 10px; }
     .book { padding: 16px 12px; border-radius: 28px; }
-    .illustration { width: 150px; height: 140px; font-size: 60px; }
+    .illustration { width: 170px; height: 155px; }
     .i-am-text { font-size: 20px; }
-    .lifecycle-item { width: 50px; height: 50px; font-size: 24px; }
+    .speech-bubble { font-size: 16px; padding: 12px 16px; }
+    .lifecycle-item { width: 46px; height: 46px; font-size: 22px; }
     .page-title { font-size: 26px; }
     .page-title-icon { font-size: 36px; }
     .page-desc { font-size: 16px; }
     .nav-btn { width: 44px; height: 44px; font-size: 18px; }
     .read-btn { font-size: 14px; padding: 6px 14px; }
-    .cover-icon { font-size: 90px; }
+    .cover-illustration { width: 140px; height: 125px; }
+    .sort-slot { width: 70px; min-height: 70px; }
+    .sort-card { width: 58px; height: 58px; font-size: 22px; }
+    .sort-slot .slot-item { font-size: 26px; }
   }
 </style>
 </head>
@@ -194,55 +399,316 @@
 </div>
 
 <script>
+// ============================================================
+// SVG ILLUSTRATIONS
+// ============================================================
+
+function svgApple() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="ag1" cx="40%" cy="35%">
+        <stop offset="0%" stop-color="#FF5252"/>
+        <stop offset="100%" stop-color="#C62828"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="110" cy="105" rx="62" ry="56" fill="url(#ag1)"/>
+    <path d="M110 50 Q108 28 118 20" stroke="#5D4037" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="118" cy="22" rx="10" ry="5.5" fill="#4CAF50"/>
+    <path d="M118 22 Q126 12 122 8" stroke="#388E3C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="86" cy="82" rx="14" ry="20" fill="rgba(255,255,255,0.2)" transform="rotate(-18,86,82)"/>
+    <ellipse cx="72" cy="110" rx="6" ry="8" fill="rgba(255,255,255,0.12)" transform="rotate(-25,72,110)"/>
+  </svg>`;
+}
+
+function svgSeed() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="sg" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#8D6E63"/>
+        <stop offset="100%" stop-color="#4E342E"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="110" cy="95" rx="38" ry="24" fill="url(#sg)"/>
+    <ellipse cx="110" cy="97" rx="30" ry="16" fill="#3E2723" opacity="0.3"/>
+    <path d="M130 85 Q138 80 135 74" stroke="#6D4C41" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <!-- soil -->
+    <ellipse cx="110" cy="130" rx="80" ry="12" fill="#795548" opacity="0.4"/>
+    <ellipse cx="110" cy="128" rx="70" ry="8" fill="#5D4037" opacity="0.3"/>
+    <!-- water drops -->
+    <path d="M160 60 Q163 50 166 60 Q163 66 160 60Z" fill="#64B5F6" opacity="0.6"/>
+    <path d="M175 75 Q178 65 181 75 Q178 81 175 75Z" fill="#64B5F6" opacity="0.5"/>
+    <!-- sun -->
+    <circle cx="185" cy="30" r="16" fill="#FFD54F"/>
+    <g stroke="#FFD54F" stroke-width="2" stroke-linecap="round">
+      <line x1="185" y1="8" x2="185" y2="2"/>
+      <line x1="185" y1="52" x2="185" y2="58"/>
+      <line x1="163" y1="30" x2="157" y2="30"/>
+      <line x1="207" y1="30" x2="213" y2="30"/>
+      <line x1="170" y1="15" x2="165" y2="10"/>
+      <line x1="200" y1="45" x2="205" y2="50"/>
+      <line x1="200" y1="15" x2="205" y2="10"/>
+      <line x1="170" y1="45" x2="165" y2="50"/>
+    </g>
+  </svg>`;
+}
+
+function svgSprout() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- soil -->
+    <ellipse cx="110" cy="170" rx="85" ry="18" fill="#795548" opacity="0.5"/>
+    <ellipse cx="110" cy="168" rx="75" ry="12" fill="#5D4037" opacity="0.3"/>
+    <!-- stem -->
+    <path d="M110 165 Q108 130 110 95" stroke="#4CAF50" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <!-- leaves -->
+    <path d="M110 115 Q95 100 80 108 Q95 112 110 115Z" fill="#66BB6A"/>
+    <path d="M110 105 Q125 88 140 96 Q125 100 110 105Z" fill="#43A047"/>
+    <path d="M110 130 Q95 118 82 124 Q95 128 110 130Z" fill="#81C784"/>
+    <!-- small leaves at top -->
+    <path d="M110 95 Q102 82 96 86 Q102 90 110 95Z" fill="#A5D6A7"/>
+    <path d="M110 95 Q118 82 124 86 Q118 90 110 95Z" fill="#A5D6A7"/>
+    <!-- sun -->
+    <circle cx="180" cy="35" r="18" fill="#FFD54F"/>
+    <g stroke="#FFD54F" stroke-width="2.5" stroke-linecap="round">
+      <line x1="180" y1="10" x2="180" y2="3"/>
+      <line x1="180" y1="60" x2="180" y2="67"/>
+      <line x1="155" y1="35" x2="148" y2="35"/>
+      <line x1="205" y1="35" x2="212" y2="35"/>
+      <line x1="162" y1="17" x2="157" y2="12"/>
+      <line x1="198" y1="53" x2="203" y2="58"/>
+      <line x1="198" y1="17" x2="203" y2="12"/>
+      <line x1="162" y1="53" x2="157" y2="58"/>
+    </g>
+  </svg>`;
+}
+
+function svgTree() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- trunk -->
+    <rect x="95" y="90" width="30" height="85" rx="6" fill="#6D4C41"/>
+    <rect x="100" y="90" width="8" height="85" fill="#5D4037" opacity="0.3"/>
+    <!-- ground -->
+    <rect x="10" y="172" width="200" height="18" rx="5" fill="#8BC34A" opacity="0.5"/>
+    <rect x="0" y="175" width="220" height="15" fill="#689F38" opacity="0.3"/>
+    <!-- crown - green circles -->
+    <circle cx="110" cy="65" r="50" fill="#43A047"/>
+    <circle cx="80" cy="80" r="35" fill="#388E3C"/>
+    <circle cx="140" cy="80" r="35" fill="#388E3C"/>
+    <circle cx="95" cy="50" r="30" fill="#66BB6A"/>
+    <circle cx="125" cy="50" r="30" fill="#66BB6A"/>
+    <circle cx="110" cy="40" r="28" fill="#81C784"/>
+    <!-- blossoms -->
+    <g>
+      <!-- blossom 1 -->
+      <circle cx="85" cy="62" r="7" fill="#F8BBD0"/>
+      <circle cx="85" cy="62" r="4" fill="#F06292"/>
+      <circle cx="82" cy="59" r="4" fill="#F48FB1"/>
+      <circle cx="88" cy="59" r="4" fill="#F48FB1"/>
+      <circle cx="82" cy="65" r="4" fill="#F48FB1"/>
+      <circle cx="88" cy="65" r="4" fill="#F48FB1"/>
+      <!-- blossom 2 -->
+      <circle cx="130" cy="58" r="7" fill="#F8BBD0"/>
+      <circle cx="130" cy="58" r="4" fill="#F06292"/>
+      <circle cx="127" cy="55" r="4" fill="#F48FB1"/>
+      <circle cx="133" cy="55" r="4" fill="#F48FB1"/>
+      <circle cx="127" cy="61" r="4" fill="#F48FB1"/>
+      <circle cx="133" cy="61" r="4" fill="#F48FB1"/>
+      <!-- blossom 3 -->
+      <circle cx="108" cy="48" r="6" fill="#F8BBD0"/>
+      <circle cx="108" cy="48" r="3" fill="#F06292"/>
+      <circle cx="105" cy="45" r="3.5" fill="#F48FB1"/>
+      <circle cx="111" cy="45" r="3.5" fill="#F48FB1"/>
+      <circle cx="105" cy="51" r="3.5" fill="#F48FB1"/>
+      <circle cx="111" cy="51" r="3.5" fill="#F48FB1"/>
+    </g>
+    <!-- apples on tree -->
+    <circle cx="95" cy="85" r="9" fill="#E53935"/>
+    <circle cx="95" cy="85" r="4" fill="#C62828" opacity="0.3"/>
+    <circle cx="125" cy="88" r="8" fill="#E53935"/>
+    <circle cx="125" cy="88" r="3.5" fill="#C62828" opacity="0.3"/>
+    <circle cx="140" cy="75" r="7" fill="#E53935"/>
+    <circle cx="78" cy="78" r="8" fill="#E53935"/>
+    <!-- bee -->
+    <g transform="translate(145,42)">
+      <ellipse cx="0" cy="0" rx="6" ry="4" fill="#FFD54F"/>
+      <line x1="-3" y1="-4" x2="-3" y2="4" stroke="#333" stroke-width="1.5"/>
+      <line x1="0" y1="-4" x2="0" y2="4" stroke="#333" stroke-width="1.5"/>
+      <line x1="3" y1="-4" x2="3" y2="4" stroke="#333" stroke-width="1.5"/>
+      <ellipse cx="-5" cy="-1" rx="3" ry="2.5" fill="rgba(255,255,255,0.5)" opacity="0.6"/>
+    </g>
+  </svg>`;
+}
+
+function svgRipeApple() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="ag2" cx="38%" cy="30%">
+        <stop offset="0%" stop-color="#FF5252"/>
+        <stop offset="60%" stop-color="#E53935"/>
+        <stop offset="100%" stop-color="#B71C1C"/>
+      </radialGradient>
+    </defs>
+    <ellipse cx="110" cy="108" rx="70" ry="62" fill="url(#ag2)"/>
+    <path d="M110 48 Q108 24 120 15" stroke="#5D4037" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <ellipse cx="120" cy="18" rx="12" ry="6" fill="#4CAF50"/>
+    <path d="M120 18 Q128 8 124 4" stroke="#388E3C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    <ellipse cx="84" cy="84" rx="16" ry="24" fill="rgba(255,255,255,0.2)" transform="rotate(-20,84,84)"/>
+    <ellipse cx="68" cy="116" rx="7" ry="10" fill="rgba(255,255,255,0.1)" transform="rotate(-25,68,116)"/>
+    <!-- shine dots -->
+    <circle cx="78" cy="78" r="3" fill="rgba(255,255,255,0.25)"/>
+    <circle cx="90" cy="92" r="2" fill="rgba(255,255,255,0.18)"/>
+  </svg>`;
+}
+
+function svgPie() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- pie dish -->
+    <ellipse cx="110" cy="145" rx="80" ry="16" fill="#D7CCC8"/>
+    <ellipse cx="110" cy="140" rx="80" ry="16" fill="#EFEBE9"/>
+    <!-- pie body -->
+    <path d="M30 140 Q30 90 110 85 Q190 90 190 140Z" fill="#FFCC80"/>
+    <path d="M30 140 Q30 90 110 85 Q190 90 190 140Z" fill="#FFE0B2" opacity="0.5"/>
+    <!-- lattice top -->
+    <path d="M50 120 L170 120 M60 110 L160 110 M70 100 L150 100 M80 92 L140 92" stroke="#FFB74D" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path d="M90 140 L90 88 M110 140 L110 86 M130 140 L130 88 M150 138 L150 92" stroke="#FFB74D" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <!-- steam -->
+    <path d="M90 82 Q85 72 90 62 Q95 52 90 42" stroke="#B0BEC5" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <path d="M130 82 Q125 70 130 58 Q135 48 130 38" stroke="#B0BEC5" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+    <!-- label -->
+    <text x="110" y="178" text-anchor="middle" font-size="13" fill="#8D6E63" font-weight="bold">🥧 Apple Pie!</text>
+  </svg>`;
+}
+
+function svgCrossSection() {
+  return `<svg viewBox="0 0 220 200" xmlns="http://www.w3.org/2000/svg">
+    <!-- outer ring (skin) -->
+    <circle cx="110" cy="100" r="70" fill="#E53935"/>
+    <!-- flesh -->
+    <circle cx="110" cy="100" r="64" fill="#FFF9C4"/>
+    <!-- flesh gradient hint -->
+    <circle cx="110" cy="100" r="60" fill="#FFFDE7" opacity="0.5"/>
+    <!-- core -->
+    <circle cx="110" cy="100" r="20" fill="#FFECB3"/>
+    <circle cx="110" cy="100" r="16" fill="#FFE082"/>
+    <!-- star core shape -->
+    <path d="M110 84 L114 96 L126 96 L117 104 L120 116 L110 108 L100 116 L103 104 L94 96 L106 96Z" fill="#FFD54F"/>
+    <!-- seeds -->
+    <ellipse cx="110" cy="88" rx="5" ry="3" fill="#5D4037" transform="rotate(30,110,88)"/>
+    <ellipse cx="120" cy="94" rx="5" ry="3" fill="#5D4037" transform="rotate(80,120,94)"/>
+    <ellipse cx="120" cy="106" rx="5" ry="3" fill="#5D4037" transform="rotate(100,120,106)"/>
+    <ellipse cx="110" cy="112" rx="5" ry="3" fill="#5D4037" transform="rotate(150,110,112)"/>
+    <ellipse cx="100" cy="106" rx="5" ry="3" fill="#5D4037" transform="rotate(260,100,106)"/>
+    <ellipse cx="100" cy="94" rx="5" ry="3" fill="#5D4037" transform="rotate(280,100,94)"/>
+    <!-- highlight arc -->
+    <path d="M70 70 A55 55 0 0 1 100 50" stroke="rgba(255,255,255,0.25)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- label -->
+    <text x="110" y="188" text-anchor="middle" font-size="12" fill="#8D6E63" font-weight="bold">🍎 Inside an Apple</text>
+  </svg>`;
+}
+
+function svgGrowthSequence() {
+  return `<svg viewBox="0 0 220 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Seed -->
+    <ellipse cx="22" cy="60" rx="10" ry="6" fill="#795548"/>
+    <text x="22" y="82" text-anchor="middle" font-size="10" fill="#8D6E63">种子</text>
+    <!-- Arrow -->
+    <text x="40" y="60" text-anchor="middle" font-size="18" fill="#ccc">→</text>
+    <!-- Sprout -->
+    <path d="M58 65 Q56 50 58 40" stroke="#4CAF50" stroke-width="2.5" fill="none"/>
+    <path d="M58 45 Q50 38 48 42 Q52 46 58 45Z" fill="#66BB6A"/>
+    <path d="M58 40 Q64 33 66 37 Q62 41 58 40Z" fill="#66BB6A"/>
+    <text x="58" y="82" text-anchor="middle" font-size="10" fill="#8D6E63">嫩芽</text>
+    <!-- Arrow -->
+    <text x="76" y="60" text-anchor="middle" font-size="18" fill="#ccc">→</text>
+    <!-- Tree -->
+    <rect x="88" y="42" width="8" height="28" rx="2" fill="#6D4C41"/>
+    <circle cx="92" cy="32" r="18" fill="#43A047"/>
+    <circle cx="84" cy="38" r="12" fill="#388E3C"/>
+    <circle cx="100" cy="38" r="12" fill="#388E3C"/>
+    <text x="92" y="82" text-anchor="middle" font-size="10" fill="#8D6E63">树</text>
+    <!-- Arrow -->
+    <text x="112" y="60" text-anchor="middle" font-size="18" fill="#ccc">→</text>
+    <!-- Blossom -->
+    <circle cx="132" cy="52" r="8" fill="#F8BBD0"/>
+    <circle cx="132" cy="52" r="4" fill="#F06292"/>
+    <circle cx="128" cy="49" r="4" fill="#F48FB1"/>
+    <circle cx="136" cy="49" r="4" fill="#F48FB1"/>
+    <circle cx="128" cy="55" r="4" fill="#F48FB1"/>
+    <circle cx="136" cy="55" r="4" fill="#F48FB1"/>
+    <text x="132" y="82" text-anchor="middle" font-size="10" fill="#8D6E63">花</text>
+    <!-- Arrow -->
+    <text x="150" y="60" text-anchor="middle" font-size="18" fill="#ccc">→</text>
+    <!-- Apple -->
+    <circle cx="174" cy="55" r="16" fill="#E53935"/>
+    <path d="M174 40 Q173 32 177 28" stroke="#5D4037" stroke-width="2" fill="none"/>
+    <ellipse cx="177" cy="29" rx="4" ry="2" fill="#4CAF50"/>
+    <ellipse cx="166" cy="48" rx="4" ry="6" fill="rgba(255,255,255,0.2)" transform="rotate(-15,166,48)"/>
+    <text x="174" y="82" text-anchor="middle" font-size="10" fill="#8D6E63">苹果</text>
+  </svg>`;
+}
+
+// ============================================================
+// PAGE DATA
+// ============================================================
+
 const pages = [
   {
-    cover: true, icon: '🍎', title: 'I Am an Apple',
+    cover: true,
+    svg: svgApple,
+    title: 'I Am an Apple',
     subtitle: 'Learn about apples and how they grow! 🌱'
   },
   {
-    emoji: '🍎', bg: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    svg: svgApple,
+    speechText: 'I am an apple. I am a fruit! Apples grow on trees. There are thousands of different kinds of apples in the world.',
     text: 'I am an <span class="highlight">apple</span>. I am a <span class="word" onclick="speakText(\'fruit\')">🍎 fruit</span>!',
     fact: 'Apples grow on trees. There are thousands of kinds!',
     game: { question: 'Where do apples grow?', correct: '🌳 On trees', options: ['🌳 On trees', '🌱 Underground', '🌊 In water'] }
   },
   {
-    emoji: '🌱', bg: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
+    svg: svgSeed,
+    speechText: 'I start as a tiny seed. I am planted in the soil. A seed needs sun, water, and soil to grow.',
     text: 'I start as a tiny <span class="highlight">seed</span>. I am planted in the <span class="word" onclick="speakText(\'soil\')">🌍 soil</span>.',
     fact: 'A seed needs sun, water, and soil to grow!',
     game: { question: 'What does a seed need?', correct: '☀️ Sun, 💧 Water, 🌍 Soil', options: ['☀️ Sun, 💧 Water, 🌍 Soil', '🍪 Cookies, 🥛 Milk', '📚 Books, ✏️ Pencil'] }
   },
   {
-    emoji: '🌿', bg: 'linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%)',
+    svg: svgSprout,
+    speechText: 'I grow into a small sprout. Look at my little green leaves! The sprout reaches up toward the sun.',
     text: 'I grow into a small <span class="highlight">sprout</span>. Look at my little <span class="word" onclick="speakText(\'leaves\')">🍃 leaves</span>!',
     fact: 'The sprout reaches up toward the sun!',
     game: { question: 'What does the sprout reach for?', correct: '☀️ The sun', options: ['☀️ The sun', '🌙 The moon', '⭐ The stars'] }
   },
   {
-    emoji: '🌳', bg: 'linear-gradient(135deg, #a5d6a7 0%, #66bb6a 100%)',
+    svg: svgTree,
+    speechText: 'I become a big apple tree. I have beautiful pink blossoms. Bees help the blossoms turn into apples!',
     text: 'I become a big <span class="highlight">apple tree</span>. I have beautiful <span class="word" onclick="speakText(\'blossoms\')">🌸 blossoms</span>!',
     fact: 'Bees help the blossoms turn into apples!',
     game: { question: 'Who helps blossoms become apples?', correct: '🐝 Bees', options: ['🐝 Bees', '🐦 Birds', '🐛 Worms'] }
   },
   {
-    emoji: '🍎', bg: 'linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%)',
+    svg: svgRipeApple,
+    speechText: 'Now I am a ripe red apple! Ready to be picked. Some apples are red, green, or yellow!',
     text: 'Now I am a <span class="highlight">ripe red apple</span>! Ready to be <span class="word" onclick="speakText(\'picked\')">🤲 picked</span>!',
     fact: 'Some apples are red, green, or yellow!',
     game: { question: 'What colors can apples be?', correct: '🔴 Red, 🟢 Green, 🟡 Yellow', options: ['🔴 Red, 🟢 Green, 🟡 Yellow', '🔵 Blue, 🟣 Purple', '⚫ Black, ⚪ White'] }
   },
   {
-    emoji: '🥧', bg: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)',
+    svg: svgPie,
+    speechText: 'People use apples to make apple pie, apple juice, and more! Apple pie is a favorite dessert.',
     text: 'People use me to make <span class="highlight">apple pie</span>, <span class="word" onclick="speakText(\'juice\')">🧃 juice</span>, and more!',
     fact: 'Apple pie is a favorite dessert!',
     game: { question: 'What can you make with apples?', correct: '🥧 Apple pie', options: ['🥧 Apple pie', '🍕 Pizza', '🍝 Pasta'] }
   },
   {
-    emoji: '🌱', bg: 'linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%)',
+    svg: svgCrossSection,
+    speechText: 'Inside me there are seeds. Plant them and I can grow again! The apple life cycle goes round and round.',
     text: 'Inside me there are <span class="highlight">seeds</span>. Plant them and I can <span class="word" onclick="speakText(\'grow\')">🌱 grow again</span>!',
     fact: 'The apple life cycle goes round and round!',
     game: { question: 'What is inside an apple?', correct: '🌱 Seeds', options: ['🌱 Seeds', '🍬 Candy', '🧸 Toys'] }
   },
   {
-    emoji: '🍎', bg: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    svg: svgGrowthSequence,
+    speechText: 'Now you know all about apples! I am an apple, a delicious fruit! From seed to tree to apple — the journey is amazing!',
     text: 'Now you know all about <span class="highlight">apples</span>! I am an apple, a <span class="word" onclick="speakText(\'delicious\')">😋 delicious</span> fruit!',
     fact: '',
     game: null,
@@ -262,9 +728,32 @@ const pageTitles = [
   '苹果树',
   '成熟啦',
   '苹果美食',
-  '新的开始',
+  '苹果内部',
   '苹果专家'
 ];
+
+// ============================================================
+// SPEECH BUBBLE
+// ============================================================
+
+function showSpeechBubble(text) {
+  const bubble = document.getElementById('speechBubble');
+  if (!bubble) return;
+  if (text) {
+    bubble.innerHTML = `<span class="gear-corner tl">⚙</span>
+      <span class="gear-corner tr">⚙</span>
+      <span class="gear-corner bl">⚙</span>
+      <span class="gear-corner br">⚙</span>
+      ${text}`;
+    bubble.classList.add('show');
+  } else {
+    bubble.classList.remove('show');
+  }
+}
+
+// ============================================================
+// RENDER
+// ============================================================
 
 function renderPage(idx) {
   const area = document.getElementById('pageArea');
@@ -273,10 +762,12 @@ function renderPage(idx) {
   if (p.cover) {
     area.innerHTML = `
       <div class="page active cover-page" id="page-${idx}">
-        <div class="cover-icon">${p.icon}</div>
+        <div class="cover-illustration">${p.svg()}</div>
         <div class="page-title">${p.title}</div>
         <div class="page-desc">${p.subtitle}</div>
         <div class="cover-hint">👆 点击 "▶" 开始学习！</div>
+        <!-- Speech bubble on cover too -->
+        <div class="speech-bubble" id="speechBubble"></div>
       </div>
     `;
     updateNav(idx);
@@ -289,12 +780,17 @@ function renderPage(idx) {
   // Lifecycle timeline
   let lifecycleHTML = '';
   if (!p.final) {
-    const stages = ['🌱','🌿','🌳','🌸','🍎'];
-    const stageLabels = ['Seed', 'Sprout', 'Tree', 'Blossom', 'Apple'];
+    const stages = [
+      { emoji: '🌱', label: 'Seed' },
+      { emoji: '🌿', label: 'Sprout' },
+      { emoji: '🌳', label: 'Tree' },
+      { emoji: '🌸', label: 'Blossom' },
+      { emoji: '🍎', label: 'Apple' }
+    ];
     lifecycleHTML = `
       <div class="lifecycle">
         ${stages.map((s, i) => `
-          <div class="lifecycle-item" onclick="speakText('${stageLabels[i]}')">${s}</div>
+          <div class="lifecycle-item" onclick="speakText('${s.label}')">${s.emoji}</div>
           ${i < stages.length - 1 ? '<span class="lifecycle-arrow">→</span>' : ''}
         `).join('')}
       </div>
@@ -306,6 +802,10 @@ function renderPage(idx) {
   if (p.game && !gameDone[idx]) {
     gameHTML = `
       <div class="quiz-area">
+        <span class="gear-corner tl">⚙</span>
+        <span class="gear-corner tr">⚙</span>
+        <span class="gear-corner bl">⚙</span>
+        <span class="gear-corner br">⚙</span>
         <h3>🤔 ${p.game.question}</h3>
         <div class="quiz-options">
           ${p.game.options.map(opt => {
@@ -318,6 +818,10 @@ function renderPage(idx) {
   } else if (p.final) {
     gameHTML = `
       <div class="final-area">
+        <span class="gear-corner tl">⚙</span>
+        <span class="gear-corner tr">⚙</span>
+        <span class="gear-corner bl">⚙</span>
+        <span class="gear-corner br">⚙</span>
         <h3>🎉 你真是苹果小专家！</h3>
         <div class="lifecycle" style="margin-top:8px">
           <div class="lifecycle-item active">🌱</div><span class="lifecycle-arrow">→</span>
@@ -326,18 +830,25 @@ function renderPage(idx) {
           <div class="lifecycle-item active">🌸</div><span class="lifecycle-arrow">→</span>
           <div class="lifecycle-item active">🍎</div>
         </div>
-        <p style="color:#7B1FA2;font-size:28px;margin-top:8px">⭐ ⭐ ⭐</p>
       </div>
+      <!-- Sorting Game -->
+      ${renderSortGame()}
     `;
   } else if (isDone && p.game) {
-    gameHTML = `<div class="quiz-area"><h3>✅ 答对了！</h3><p style="color:#4CAF50;font-size:24px">★</p></div>`;
+    gameHTML = `<div class="quiz-area"><span class="gear-corner tl">⚙</span><span class="gear-corner tr">⚙</span><span class="gear-corner bl">⚙</span><span class="gear-corner br">⚙</span><h3>✅ 答对了！</h3><p style="color:#4CAF50;font-size:28px">★ ★ ★</p></div>`;
   }
 
   area.innerHTML = `
     <div class="page active" id="page-${idx}">
-      <div class="page-title-icon">${p.emoji}</div>
+      <div class="page-title-icon">${p.text.match(/<span class="highlight">([^<]+)<\/span>/) ? p.text.match(/<span class="highlight">([^<]+)<\/span>/)[1].charAt(0).toUpperCase() : ''}</div>
       <div class="page-title">${pageTitles[idx]}</div>
-      <div class="illustration" style="background:${p.bg || '#FFF8E7'}">${p.emoji}</div>
+      <div class="illustration">${p.svg()}</div>
+      <div class="speech-bubble" id="speechBubble">
+        <span class="gear-corner tl">⚙</span>
+        <span class="gear-corner tr">⚙</span>
+        <span class="gear-corner bl">⚙</span>
+        <span class="gear-corner br">⚙</span>
+      </div>
       <div class="i-am-text">${p.text}</div>
       ${p.fact ? `<div class="fact-area">💡 ${p.fact}</div>` : ''}
       ${lifecycleHTML}
@@ -347,6 +858,215 @@ function renderPage(idx) {
   updateNav(idx);
   document.getElementById('prevBtn').disabled = idx === 0;
 }
+
+// ============================================================
+// SORTING GAME (Drag & Drop)
+// ============================================================
+
+const SORT_ITEMS = [
+  { id: 'seed', emoji: '🌱', label: '种子' },
+  { id: 'sprout', emoji: '🌿', label: '嫩芽' },
+  { id: 'tree', emoji: '🌳', label: '树' },
+  { id: 'blossom', emoji: '🌸', label: '花' },
+  { id: 'apple', emoji: '🍎', label: '苹果' }
+];
+
+const CORRECT_ORDER = ['seed', 'sprout', 'tree', 'blossom', 'apple'];
+
+let sortState = {
+  slots: [null, null, null, null, null],
+  pool: [...SORT_ITEMS],
+  checked: false
+};
+
+function renderSortGame() {
+  const poolIds = sortState.pool.map(i => i.id);
+  return `
+    <div class="sort-game" id="sortGame">
+      <span class="gear-corner tl">⚙</span>
+      <span class="gear-corner tr">⚙</span>
+      <span class="gear-corner bl">⚙</span>
+      <span class="gear-corner br">⚙</span>
+      <h3>🧩 苹果生长顺序 — 把图片拖到正确的位置！</h3>
+      <div class="sort-areas" id="sortSlots">
+        ${sortState.slots.map((item, i) => `
+          <div class="sort-slot ${item ? 'filled' : ''}" data-slot="${i}"
+               ondragover="onSortDragOver(event)" ondrop="onSortDrop(event, ${i})"
+               ondragleave="onSortDragLeave(event)"
+               onclick="onSortSlotClick(${i})">
+            <span class="slot-num">第${i+1}步</span>
+            ${item ? `<div class="slot-item" draggable="true" data-item-id="${item.id}"
+                        ondragstart="onSortDragStart(event, 'slot', ${i})">${item.emoji}</div>` : '<div class="slot-item" style="opacity:0.3">⬜</div>'}
+          </div>
+        `).join('')}
+      </div>
+      <div class="sort-pool" id="sortPool"
+           ondragover="onSortDragOver(event)" ondrop="onSortPoolDrop(event)"
+           ondragleave="onSortDragLeave(event)">
+        ${sortState.pool.map(item => `
+          <div class="sort-card" draggable="true" data-item-id="${item.id}"
+               ondragstart="onSortDragStart(event, 'pool', '${item.id}')"
+               onclick="onPoolCardClick('${item.id}')">
+            ${item.emoji}
+          </div>
+        `).join('')}
+      </div>
+      <div style="text-align:center">
+        <button class="sort-btn check" onclick="checkSortOrder()">✅ 检查答案</button>
+        <button class="sort-btn reset" onclick="resetSortGame()">🔄 重新开始</button>
+      </div>
+      <div class="sort-result" id="sortResult"></div>
+    </div>
+  `;
+}
+
+let dragData = null;
+
+function onSortDragStart(e, source, id) {
+  dragData = { source, id };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', id);
+  setTimeout(() => {
+    if (e.target.classList) e.target.classList.add('dragging');
+  }, 0);
+}
+
+function onSortDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const slot = e.currentTarget.closest('.sort-slot');
+  if (slot) slot.classList.add('drag-over');
+}
+
+function onSortDragLeave(e) {
+  const slot = e.currentTarget.closest('.sort-slot');
+  if (slot) slot.classList.remove('drag-over');
+}
+
+function onSortDrop(e, slotIdx) {
+  e.preventDefault();
+  const slot = e.currentTarget.closest('.sort-slot');
+  if (slot) slot.classList.remove('drag-over');
+  if (!dragData) return;
+  const { source, id } = dragData;
+  dragData = null;
+
+  if (source === 'slot' && id === slotIdx.toString()) {
+    // Moving within same slot - do nothing
+    return;
+  }
+
+  // Remove from current location
+  let item = null;
+  if (source === 'pool') {
+    const poolIdx = sortState.pool.findIndex(i => i.id === id);
+    if (poolIdx === -1) return;
+    item = sortState.pool.splice(poolIdx, 1)[0];
+  } else if (source === 'slot') {
+    const fromSlot = parseInt(id);
+    if (sortState.slots[fromSlot]) {
+      item = sortState.slots[fromSlot];
+      sortState.slots[fromSlot] = null;
+    }
+  }
+
+  if (!item) return;
+
+  // If target slot is occupied, swap back to pool
+  if (sortState.slots[slotIdx]) {
+    sortState.pool.push(sortState.slots[slotIdx]);
+  }
+  sortState.slots[slotIdx] = item;
+  sortState.checked = false;
+  document.getElementById('sortResult').innerHTML = '';
+  document.getElementById('sortResult').className = 'sort-result';
+  renderSortGameOnly();
+}
+
+function onSortPoolDrop(e) {
+  e.preventDefault();
+  if (!dragData) return;
+  const { source, id } = dragData;
+  dragData = null;
+
+  if (source === 'slot') {
+    const fromSlot = parseInt(id);
+    if (sortState.slots[fromSlot]) {
+      sortState.pool.push(sortState.slots[fromSlot]);
+      sortState.slots[fromSlot] = null;
+      sortState.checked = false;
+      document.getElementById('sortResult').innerHTML = '';
+      document.getElementById('sortResult').className = 'sort-result';
+      renderSortGameOnly();
+    }
+  }
+}
+
+function onSortSlotClick(slotIdx) {
+  // If slot is filled, click to return item to pool
+  if (sortState.slots[slotIdx]) {
+    sortState.pool.push(sortState.slots[slotIdx]);
+    sortState.slots[slotIdx] = null;
+    sortState.checked = false;
+    document.getElementById('sortResult').innerHTML = '';
+    document.getElementById('sortResult').className = 'sort-result';
+    renderSortGameOnly();
+  }
+}
+
+function onPoolCardClick(itemId) {
+  // Find first empty slot and place item there
+  const poolIdx = sortState.pool.findIndex(i => i.id === itemId);
+  if (poolIdx === -1) return;
+  const emptySlot = sortState.slots.findIndex(s => s === null);
+  if (emptySlot === -1) return; // all slots full
+  const item = sortState.pool.splice(poolIdx, 1)[0];
+  sortState.slots[emptySlot] = item;
+  sortState.checked = false;
+  document.getElementById('sortResult').innerHTML = '';
+  document.getElementById('sortResult').className = 'sort-result';
+  renderSortGameOnly();
+}
+
+function renderSortGameOnly() {
+  const container = document.getElementById('sortGame');
+  if (!container) return;
+  container.outerHTML = renderSortGame();
+}
+
+function checkSortOrder() {
+  const result = document.getElementById('sortResult');
+  const filledCount = sortState.slots.filter(s => s !== null).length;
+  if (filledCount < 5) {
+    result.innerHTML = '⚠️ 请把所有图片放到位置上！';
+    result.className = 'sort-result error';
+    return;
+  }
+  const order = sortState.slots.map(s => s.id);
+  const correct = order.every((id, i) => id === CORRECT_ORDER[i]);
+  if (correct) {
+    result.innerHTML = '🎉 太棒了！你正确排列了苹果的生长顺序！ ⭐⭐⭐';
+    result.className = 'sort-result success';
+    sortState.checked = true;
+    launchConfetti();
+  } else {
+    result.innerHTML = '🤔 还不太对哦，再试试吧！提示：从种子开始，到苹果结束。';
+    result.className = 'sort-result error';
+  }
+}
+
+function resetSortGame() {
+  sortState = {
+    slots: [null, null, null, null, null],
+    pool: [...SORT_ITEMS],
+    checked: false
+  };
+  renderSortGameOnly();
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
 
 function checkAnswer(idx, isCorrect, el) {
   if (gameDone[idx]) return;
@@ -363,31 +1083,55 @@ function checkAnswer(idx, isCorrect, el) {
   }
 }
 
+// ============================================================
+// SPEECH
+// ============================================================
+
 function speakPage() {
   const p = pages[currentPage];
   if (p.cover) {
-    speakText('I am an Apple! Learn about apples and how they grow!');
+    const txt = 'I am an Apple! Learn about apples and how they grow!';
+    showSpeechBubble(txt);
+    speakText(txt, true);
   } else {
-    const txt = p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
-    speakText(txt + '. ' + p.fact);
+    const txt = p.speechText || p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+    showSpeechBubble(txt);
+    speakText(txt, true);
   }
 }
 
-function speakText(text) {
+function speakText(text, keepBubble) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.1;
+  u.onend = function() {
+    if (!keepBubble) {
+      // Only hide if not keepBubble (speakPage keeps it, word clicks don't)
+    }
+  };
   window.speechSynthesis.speak(u);
 }
+
+// ============================================================
+// NAVIGATION
+// ============================================================
 
 function nextPage() {
   const p = pages[currentPage];
   if (p.game && !gameDone[currentPage]) return;
-  if (currentPage < totalPages - 1) { currentPage++; renderPage(currentPage); }
+  if (currentPage < totalPages - 1) {
+    showSpeechBubble('');
+    currentPage++;
+    renderPage(currentPage);
+  }
 }
 
 function prevPage() {
-  if (currentPage > 0) { currentPage--; renderPage(currentPage); }
+  if (currentPage > 0) {
+    showSpeechBubble('');
+    currentPage--;
+    renderPage(currentPage);
+  }
 }
 
 function launchConfetti() {
@@ -407,7 +1151,7 @@ function updateNav(idx) {
   document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${totalPages}页`;
   const dots = document.getElementById('progress');
   dots.innerHTML = pages.map((_, i) =>
-    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] ? 'done' : ''}" onclick="currentPage=${i};renderPage(${i})"></div>`
+    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] ? 'done' : ''}" onclick="currentPage=${i};showSpeechBubble('');renderPage(${i})"></div>`
   ).join('');
 }
 

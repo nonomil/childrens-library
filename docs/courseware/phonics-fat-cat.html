@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🐱 Fat Cat on a Mat - Phonics Reader</title>
 <style>
-/* === Gears Style Template === */
+/* === Gears Style Template (No Cursive) === */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'Comic Sans MS','Chalkboard SE','Segoe UI',cursive,sans-serif;
+  font-family: 'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;
   background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
   min-height: 100vh; display: flex; justify-content: center;
   align-items: center; padding: 20px;
@@ -31,6 +31,7 @@ body {
 @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 @keyframes popIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
 /* === Pages === */
 .page-area { min-height: 360px; }
@@ -42,8 +43,9 @@ body {
 
 /* Cover Page */
 .cover-page { text-align: center; padding: 20px 10px; }
-.cover-page .big-icon {
-  font-size: 120px; margin-bottom: 20px;
+.cover-page .svg-illustration {
+  width: 200px; height: 180px;
+  margin: 0 auto 20px;
   animation: float 3s ease-in-out infinite;
 }
 .cover-page .page-title {
@@ -64,10 +66,6 @@ body {
   margin-bottom: 6px;
   font-weight: bold;
 }
-.page-title-icon {
-  font-size: 48px;
-  margin-bottom: 4px;
-}
 .page-desc {
   color: #6B4F3A;
   font-size: 19px;
@@ -76,13 +74,22 @@ body {
   line-height: 1.5;
 }
 
-/* Illustration */
-.illustration {
-  width: 200px; height: 180px; border-radius: 20px;
+/* SVG Illustration */
+.svg-illustration {
+  width: 220px; height: 200px;
+  margin-bottom: 14px;
+  border-radius: 20px;
   background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 90px; margin-bottom: 14px;
+  padding: 16px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.svg-illustration svg {
+  width: 100%; height: 100%;
+}
+.svg-illustration svg .anim-float {
+  animation: float 3s ease-in-out infinite;
 }
 
 /* Sentence */
@@ -115,24 +122,34 @@ body {
   box-shadow: 0 4px 12px rgba(255,179,71,0.5);
 }
 
-/* Game Area */
+/* Game Area with Gear Theme */
 .game-area {
   width: 100%; margin-top: 6px; padding: 16px;
   background: #FFF8E7; border-radius: 20px; text-align: center;
   border: 2px solid #FFE8C8;
+  position: relative;
 }
-.game-area h3 { font-size: 16px; color: #E8751A; margin-bottom: 10px; }
+.game-area h3 {
+  font-size: 16px; color: #E8751A; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.gear-spin {
+  display: inline-block;
+  animation: spin-cw 4s linear infinite;
+  font-size: 20px;
+}
 .letter-tiles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .letter-tile {
   width: 52px; height: 52px; border-radius: 12px; border: 3px solid #E0D5C7;
   background: white; font-size: 28px; font-weight: bold; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.15s; user-select: none;
+  position: relative;
 }
 .letter-tile:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.1); }
 .letter-tile.correct {
   border-color: #4CAF50; background: #E8F5E9;
-  animation: popIn 0.3s ease;
+  animation: popIn 0.3s ease, spin-cw 0.4s ease;
 }
 .letter-tile.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
 .letter-tile.used { opacity: 0.35; pointer-events: none; }
@@ -145,11 +162,46 @@ body {
   display: flex; align-items: center; justify-content: center;
   font-size: 28px; font-weight: bold; color: #E8751A;
   transition: all 0.2s;
+  border-radius: 8px 8px 0 0;
+  background: rgba(255,248,231,0.5);
 }
-.word-slot.filled { border-bottom-color: #4CAF50; animation: popIn 0.2s ease; }
+.word-slot.filled {
+  border-bottom-color: #4CAF50;
+  background: rgba(232,245,233,0.5);
+  animation: popIn 0.2s ease, spin-ccw 0.3s ease;
+}
 
-/* Star */
-.star { color: #FFB347; font-size: 24px; }
+/* === Speech Bubble === */
+.speech-bubble {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 3px solid #FFB347;
+  border-radius: 24px;
+  padding: 18px 28px 18px 58px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  font-size: 20px;
+  color: #6B4F3A;
+  display: none;
+  align-items: center;
+  z-index: 999;
+  max-width: 85%;
+  animation: popIn 0.3s ease;
+  line-height: 1.4;
+}
+.speech-bubble::before {
+  content: '🔊';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+}
+.speech-bubble.show {
+  display: flex;
+}
 
 /* === Navigation Bar === */
 .nav-bar {
@@ -171,8 +223,6 @@ body {
 }
 .nav-btn:active:not(:disabled) { transform: scale(0.95); }
 .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.nav-btn-prev { /* keeps default styles */ }
-.nav-btn-next { /* keeps default styles */ }
 
 .read-btn {
   background: #6BCB77; color: white; border: none;
@@ -227,18 +277,19 @@ body {
 
 /* === Responsive === */
 @media (max-width: 500px) {
-  .illustration { width: 140px; height: 130px; font-size: 60px; }
+  .svg-illustration { width: 160px; height: 145px; }
   .sentence { font-size: 20px; }
   .page-title { font-size: 26px; }
-  .page-title-icon { font-size: 38px; }
   .page-desc { font-size: 16px; }
   .letter-tile { width: 44px; height: 44px; font-size: 22px; }
   .word-slot { width: 40px; height: 40px; font-size: 22px; }
   .nav-btn { width: 42px; height: 42px; font-size: 18px; }
   .read-btn { padding: 6px 14px; font-size: 13px; }
   .book { padding: 16px 12px; }
-  .cover-page .big-icon { font-size: 80px; }
+  .cover-page .svg-illustration { width: 140px; height: 126px; }
   .cover-page .page-title { font-size: 26px; }
+  .speech-bubble { font-size: 16px; padding: 14px 20px 14px 46px; bottom: 100px; }
+  .speech-bubble::before { font-size: 22px; left: 12px; }
 }
 </style>
 </head>
@@ -257,72 +308,261 @@ body {
   <div class="page-counter" id="pageCounter">第1页 / 共9页</div>
 </div>
 
+<!-- Speech Bubble -->
+<div class="speech-bubble" id="speechBubble">
+  <span class="speech-bubble-text" id="speechBubbleText"></span>
+</div>
+
 <script>
+// === SVG ILLUSTRATIONS ===
+
+function svgCat(extra) {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Ears -->
+      <polygon points="60,70 80,15 100,70" fill="#F9A825"/>
+      <polygon points="120,70 140,15 160,70" fill="#F9A825"/>
+      <polygon points="66,64 80,28 93,64" fill="#FFB74D"/>
+      <polygon points="127,64 140,28 154,64" fill="#FFB74D"/>
+      <!-- Face -->
+      <circle cx="110" cy="110" r="65" fill="#F9A825"/>
+      <circle cx="110" cy="110" r="60" fill="none" stroke="#E8751A" stroke-width="2"/>
+      <!-- Eyes -->
+      <ellipse cx="90" cy="100" rx="9" ry="12" fill="#333"/>
+      <ellipse cx="130" cy="100" rx="9" ry="12" fill="#333"/>
+      <ellipse cx="90" cy="97" rx="4" ry="5" fill="white"/>
+      <ellipse cx="130" cy="97" rx="4" ry="5" fill="white"/>
+      <!-- Nose -->
+      <polygon points="110,115 105,123 115,123" fill="#E91E63"/>
+      <!-- Mouth -->
+      <path d="M100,128 Q110,138 120,128" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Whiskers -->
+      <line x1="45" y1="110" x2="83" y2="118" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+      <line x1="43" y1="122" x2="82" y2="124" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+      <line x1="175" y1="110" x2="137" y2="118" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+      <line x1="177" y1="122" x2="138" y2="124" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
+      ${extra || ''}
+    </g>
+  </svg>`;
+}
+
+function svgSleepingCat() {
+  return svgCat(`
+    <!-- Closed sleepy eyes -->
+    <path d="M80,98 Q90,92 100,98" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+    <path d="M120,98 Q130,92 140,98" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
+    <!-- Zzz -->
+    <text x="155" y="55" font-size="22" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">Z</text>
+    <text x="172" y="38" font-size="18" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">z</text>
+    <text x="184" y="24" font-size="14" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">z</text>
+  `);
+}
+
+function svgHappyCat() {
+  return svgCat(`
+    <!-- Happy mouth -->
+    <path d="M92,128 Q110,148 128,128" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Blush -->
+    <ellipse cx="78" cy="120" rx="10" ry="5" fill="#FFCDD2" opacity="0.7"/>
+    <ellipse cx="142" cy="120" rx="10" ry="5" fill="#FFCDD2" opacity="0.7"/>
+  `);
+}
+
+function svgRat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Big round ears -->
+      <circle cx="70" cy="60" r="24" fill="#B0BEC5"/>
+      <circle cx="70" cy="60" r="14" fill="#FFCDD2"/>
+      <circle cx="150" cy="60" r="24" fill="#B0BEC5"/>
+      <circle cx="150" cy="60" r="14" fill="#FFCDD2"/>
+      <!-- Body / face -->
+      <ellipse cx="110" cy="115" rx="60" ry="55" fill="#90A4AE"/>
+      <ellipse cx="110" cy="115" rx="55" ry="50" fill="#B0BEC5"/>
+      <!-- Eyes -->
+      <circle cx="92" cy="100" r="8" fill="#333"/>
+      <circle cx="128" cy="100" r="8" fill="#333"/>
+      <circle cx="94" cy="98" r="3" fill="white"/>
+      <circle cx="130" cy="98" r="3" fill="white"/>
+      <!-- Nose -->
+      <circle cx="110" cy="118" r="6" fill="#F48FB1"/>
+      <!-- Whiskers -->
+      <line x1="40" y1="110" x2="88" y2="118" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="38" y1="122" x2="86" y2="124" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="180" y1="110" x2="132" y2="118" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
+      <line x1="182" y1="122" x2="134" y2="124" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
+      <!-- Tail -->
+      <path d="M110,168 Q140,190 175,175 Q195,165 190,150" fill="none" stroke="#F48FB1" stroke-width="4" stroke-linecap="round"/>
+      <!-- Teeth -->
+      <rect x="105" y="120" width="4" height="6" rx="1" fill="white"/>
+      <rect x="111" y="120" width="4" height="6" rx="1" fill="white"/>
+    </g>
+  </svg>`;
+}
+
+function svgHat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Brim -->
+      <ellipse cx="110" cy="145" rx="90" ry="18" fill="#D7CCC8"/>
+      <ellipse cx="110" cy="143" rx="85" ry="14" fill="#EFEBE9"/>
+      <!-- Hat body -->
+      <rect x="60" y="45" width="100" height="100" rx="6" fill="#FF6B6B"/>
+      <!-- Colorful stripes -->
+      <rect x="60" y="60" width="100" height="16" rx="2" fill="#FFB347"/>
+      <rect x="60" y="85" width="100" height="16" rx="2" fill="#4ECDC4"/>
+      <rect x="60" y="110" width="100" height="16" rx="2" fill="#A78BFA"/>
+      <!-- Band -->
+      <rect x="60" y="133" width="100" height="14" rx="2" fill="#D7CCC8"/>
+      <!-- Top knob -->
+      <circle cx="110" cy="45" r="9" fill="#FFB347"/>
+      <!-- Highlight -->
+      <rect x="65" y="48" width="12" height="80" rx="6" fill="white" opacity="0.15"/>
+    </g>
+  </svg>`;
+}
+
+function svgBat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Left wing -->
+      <path d="M110,70 Q75,45 40,90 Q60,80 70,100 Q55,95 30,125 Q65,108 80,120 Q68,115 50,145 Q85,125 95,130 Q90,125 85,140" fill="#455A64"/>
+      <!-- Right wing -->
+      <path d="M110,70 Q145,45 180,90 Q160,80 150,100 Q165,95 190,125 Q155,108 140,120 Q152,115 170,145 Q135,125 125,130 Q130,125 135,140" fill="#455A64"/>
+      <!-- Body -->
+      <ellipse cx="110" cy="100" rx="35" ry="45" fill="#37474F"/>
+      <!-- Ears -->
+      <polygon points="88,55 82,32 98,52" fill="#37474F"/>
+      <polygon points="132,55 138,32 122,52" fill="#37474F"/>
+      <!-- Inner ears -->
+      <polygon points="88,55 86,42 96,53" fill="#FFE0B2"/>
+      <polygon points="132,55 134,42 124,53" fill="#FFE0B2"/>
+      <!-- Eyes -->
+      <circle cx="98" cy="92" r="8" fill="#FFEB3B"/>
+      <circle cx="122" cy="92" r="8" fill="#FFEB3B"/>
+      <circle cx="100" cy="92" r="4" fill="#333"/>
+      <circle cx="124" cy="92" r="4" fill="#333"/>
+      <!-- Mouth / fangs -->
+      <path d="M104,108 Q110,115 116,108" fill="none" stroke="#FFCDD2" stroke-width="2"/>
+      <polygon points="107,110 108,116 109,110" fill="white"/>
+      <polygon points="113,110 114,116 115,110" fill="white"/>
+    </g>
+  </svg>`;
+}
+
+function svgCap() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Brim -->
+      <ellipse cx="135" cy="145" rx="70" ry="22" fill="#E91E63"/>
+      <ellipse cx="135" cy="143" rx="65" ry="18" fill="#F06292"/>
+      <!-- Cap crown -->
+      <path d="M55,90 Q55,55 110,48 Q165,55 165,90 Q165,115 140,135 L80,135 Q55,115 55,90 Z" fill="#2196F3"/>
+      <!-- Cap panels (stitching lines) -->
+      <path d="M110,48 Q110,90 110,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <path d="M82,52 Q85,90 88,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <path d="M138,52 Q135,90 132,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <!-- Top button -->
+      <circle cx="110" cy="50" r="7" fill="#1565C0"/>
+      <circle cx="110" cy="50" r="4" fill="#1976D2"/>
+      <!-- Visor stitching -->
+      <path d="M140,135 Q160,140 180,143" fill="none" stroke="#C62828" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+  </svg>`;
+}
+
+function svgStar() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      <!-- Glow -->
+      <circle cx="110" cy="95" r="70" fill="#FFF8E1" opacity="0.4"/>
+      <circle cx="110" cy="95" r="55" fill="#FFECB3" opacity="0.3"/>
+      <!-- Star -->
+      <polygon points="110,15 132,75 198,75 145,115 168,178 110,142 52,178 75,115 22,75 88,75" 
+               fill="#FFB347" stroke="#E8751A" stroke-width="3" stroke-linejoin="round"/>
+      <!-- Inner star highlight -->
+      <polygon points="110,48 122,78 155,78 128,98 138,130 110,110 82,130 92,98 65,78 98,78" 
+               fill="white" opacity="0.25"/>
+      <!-- Sparkles -->
+      <circle cx="55" cy="45" r="4" fill="#FFE082"/>
+      <circle cx="170" cy="40" r="3" fill="#FFE082"/>
+      <circle cx="40" cy="140" r="3" fill="#FFE082"/>
+      <circle cx="185" cy="130" r="4" fill="#FFE082"/>
+    </g>
+  </svg>`;
+}
+
+function getSVG(pageIdx) {
+  const svgMap = {
+    0: svgCat(''),
+    1: svgCat(''),
+    2: svgRat(),
+    3: svgHat(),
+    4: svgBat(),
+    5: svgCap(),
+    6: svgSleepingCat(),
+    7: svgHappyCat(),
+    8: svgStar()
+  };
+  return svgMap[pageIdx] || svgCat('');
+}
+
 // === COVER + 8 STORY PAGES ===
 const pages = [
   // Page 0: Cover
   {
     cover: true,
-    icon: '🐱',
     title: 'Fat Cat on a Mat',
     subtitle: 'A phonics story about a cat, a rat, and a hat!',
     sentence: ''
   },
   // Page 1
   {
-    emoji: '🐱', sentence: 'A <span class="ph-word">fat</span> cat sat on a <span class="ph-word">mat</span>.',
+    sentence: 'A <span class="ph-word">fat</span> cat sat on a <span class="ph-word">mat</span>.',
     game: { word: 'fat', letters: ['f', 'a', 't', 'c', 'r', 'h'] },
-    pageTitle: 'Fat Cat',
-    pageIcon: '🐱'
+    pageTitle: 'Fat Cat'
   },
   // Page 2
   {
-    emoji: '🐭', sentence: 'A <span class="ph-word">rat</span> ran to the <span class="ph-word">cat</span>.',
+    sentence: 'A <span class="ph-word">rat</span> ran to the <span class="ph-word">cat</span>.',
     game: { word: 'rat', letters: ['r', 'a', 't', 'm', 's', 'p'] },
-    pageTitle: 'Rat and Cat',
-    pageIcon: '🐭'
+    pageTitle: 'Rat and Cat'
   },
   // Page 3
   {
-    emoji: '🎩', sentence: '"<span class="ph-word">Hat</span> on the <span class="ph-word">mat</span>!" said the cat.',
+    sentence: '"<span class="ph-word">Hat</span> on the <span class="ph-word">mat</span>!" said the cat.',
     game: { word: 'hat', letters: ['h', 'a', 't', 'b', 'f', 'm'] },
-    pageTitle: 'Hat on the Mat',
-    pageIcon: '🎩'
+    pageTitle: 'Hat on the Mat'
   },
   // Page 4
   {
-    emoji: '🦇', sentence: 'A <span class="ph-word">bat</span> flew to the <span class="ph-word">mat</span>.',
+    sentence: 'A <span class="ph-word">bat</span> flew to the <span class="ph-word">mat</span>.',
     game: { word: 'bat', letters: ['b', 'a', 't', 'r', 'l', 'p'] },
-    pageTitle: 'Bat and Mat',
-    pageIcon: '🦇'
+    pageTitle: 'Bat and Mat'
   },
   // Page 5
   {
-    emoji: '🧢', sentence: '"<span class="ph-word">Pat</span> the <span class="ph-word">cat</span>!" said the rat.',
+    sentence: '"<span class="ph-word">Pat</span> the <span class="ph-word">cat</span>!" said the rat.',
     game: { word: 'pat', letters: ['p', 'a', 't', 'd', 'c', 'b'] },
-    pageTitle: 'Pat the Cat',
-    pageIcon: '🧢'
+    pageTitle: 'Pat the Cat'
   },
   // Page 6
   {
-    emoji: '😺', sentence: 'The cat had a <span class="ph-word">nap</span> on the <span class="ph-word">mat</span>.',
+    sentence: 'The cat had a <span class="ph-word">nap</span> on the <span class="ph-word">mat</span>.',
     game: { word: 'nap', letters: ['n', 'a', 'p', 't', 'c', 'f'] },
-    pageTitle: 'Nap Time',
-    pageIcon: '😺'
+    pageTitle: 'Nap Time'
   },
   // Page 7
   {
-    emoji: '🐱', sentence: 'The <span class="ph-word">cat</span> was <span class="ph-word">fat</span> and <span class="ph-word">happy</span>!',
+    sentence: 'The <span class="ph-word">cat</span> was <span class="ph-word">fat</span> and <span class="ph-word">happy</span>!',
     game: { word: 'cat', letters: ['c', 'a', 't', 'f', 'n', 'p'] },
-    pageTitle: 'Happy Cat',
-    pageIcon: '🐱'
+    pageTitle: 'Happy Cat'
   },
   // Page 8: Completion
   {
-    emoji: '⭐', sentence: '🎉 You read the whole story! Great <span class="ph-word">reading</span>!',
+    sentence: '🎉 You read the whole story! Great <span class="ph-word">reading</span>!',
     game: null,
-    pageTitle: 'Great Reading!',
-    pageIcon: '⭐'
+    pageTitle: 'Great Reading!'
   }
 ];
 
@@ -330,6 +570,18 @@ let currentPage = 0;
 let gameDone = new Array(pages.length).fill(false);
 let buildingWord = [];
 let currentTarget = [];
+
+// ===== Speech Bubble =====
+function showSpeechBubble(text) {
+  const bubble = document.getElementById('speechBubble');
+  const textEl = document.getElementById('speechBubbleText');
+  textEl.textContent = text;
+  bubble.classList.add('show');
+  clearTimeout(bubble._hideTimeout);
+  bubble._hideTimeout = setTimeout(() => {
+    bubble.classList.remove('show');
+  }, 3500);
+}
 
 // ===== Gears-Style launchConfetti =====
 function launchConfetti() {
@@ -353,7 +605,7 @@ function renderPage(idx) {
   if (p.cover) {
     area.innerHTML = `
       <div class="page active cover-page" id="page-${idx}">
-        <div class="big-icon">${p.icon}</div>
+        <div class="svg-illustration">${getSVG(idx)}</div>
         <div class="page-title">${p.title}</div>
         <div class="page-desc">${p.subtitle}</div>
         <div class="cover-hint">👆 点击 "▶" 开始阅读！</div>
@@ -372,9 +624,9 @@ function renderPage(idx) {
     buildingWord = [];
     gameHTML = `
       <div class="game-area" id="game-${idx}">
-        <h3>🔤 拼单词: <strong>"${p.game.word}"</strong></h3>
+        <h3><span class="gear-spin">⚙️</span> 拼单词: <strong>"${p.game.word}"</strong></h3>
         <div class="word-build" id="wordBuild-${idx}">
-          ${p.game.word.split('').map(() => '<div class="word-slot" id="slot-${idx}-"></div>').join('')}
+          ${p.game.word.split('').map((_, i) => `<div class="word-slot" id="slot-${idx}-${i}"></div>`).join('')}
         </div>
         <div class="letter-tiles" id="tiles-${idx}">
           ${shuffled.map((l, i) => `<div class="letter-tile" data-letter="${l}" onclick="pickLetter(${idx}, '${l}', this)">${l}</div>`).join('')}
@@ -385,26 +637,25 @@ function renderPage(idx) {
   } else if (isDone && p.game) {
     gameHTML = `<div class="game-area" style="background:#E8F5E9"><h3>✅ 拼词完成！</h3><p style="color:#4CAF50;font-size:30px">⭐ ⭐ ⭐</p></div>`;
   } else {
-    gameHTML = `<div class="game-area" style="background:#FFF8E7"><h3>🎉 ${p.emoji} 太棒了！★★★</h3></div>`;
+    gameHTML = `<div class="game-area" style="background:#FFF8E7"><h3>🎉 太棒了！★★★</h3></div>`;
   }
 
-  // Phonics word family bar (always show the 4 families)
+  // Phonics word family bar
   const phonicsBar = `
     <div class="phonics-bar">
-      <span class="sound-tag" onclick="speakText('at')">🔊 at</span>
-      <span class="sound-tag" onclick="speakText('an')">🔊 an</span>
-      <span class="sound-tag" onclick="speakText('ap')">🔊 ap</span>
-      <span class="sound-tag" onclick="speakText('ad')">🔊 ad</span>
+      <span class="sound-tag" onclick="speakPhonics('at')">🔊 at</span>
+      <span class="sound-tag" onclick="speakPhonics('an')">🔊 an</span>
+      <span class="sound-tag" onclick="speakPhonics('ap')">🔊 ap</span>
+      <span class="sound-tag" onclick="speakPhonics('ad')">🔊 ad</span>
     </div>
   `;
 
   area.innerHTML = `
     <div class="page active" id="page-${idx}">
-      <div class="page-title-icon">${p.pageIcon || p.emoji}</div>
       <div class="page-title">${p.pageTitle || ''}</div>
       <div class="page-desc">${p.sentence.replace(/<[^>]+>/g, '')}</div>
       ${phonicsBar}
-      <div class="illustration">${p.emoji}</div>
+      <div class="svg-illustration">${getSVG(idx)}</div>
       <div class="sentence">${p.sentence}</div>
       ${gameHTML}
     </div>
@@ -446,22 +697,35 @@ function pickLetter(idx, letter, el) {
 }
 
 // ===== Text-to-Speech =====
-function speakText(text) {
+function speakPage() {
+  const p = pages[currentPage];
+  let text = '';
+  if (p.cover) {
+    text = p.title + '. ' + p.subtitle;
+  } else {
+    const div = document.createElement('div');
+    div.innerHTML = p.sentence;
+    text = div.textContent || div.innerText || '';
+  }
+  showSpeechBubble(text);
+
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.7; u.pitch = 1.0;
+  u.lang = 'en-US';
+  u.rate = 0.7;
+  u.pitch = 1.0;
   window.speechSynthesis.speak(u);
 }
 
-function speakPage() {
-  const p = pages[currentPage];
-  let txt = '';
-  if (p.cover) {
-    txt = p.title + '. ' + p.subtitle;
-  } else {
-    txt = p.sentence.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
-  }
-  speakText(txt);
+function speakPhonics(text) {
+  showSpeechBubble(text + ' — ' + text + '!');
+
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.7;
+  u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
 }
 
 // ===== Navigation =====
@@ -488,16 +752,13 @@ function goToPage(idx) {
 
 // ===== Update UI =====
 function updateUI(idx) {
-  // Page counter: 第X页 / 共Y页
   document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${pages.length}页`;
 
-  // Progress dots
   const dotsContainer = document.getElementById('progressDots');
   dotsContainer.innerHTML = pages.map((_, i) =>
     `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] && !pages[i].cover ? 'done' : ''}" onclick="goToPage(${i})"></div>`
   ).join('');
 
-  // Prev/Next buttons
   document.getElementById('prevBtn').disabled = idx === 0;
   document.getElementById('nextBtn').disabled = idx === pages.length - 1;
 }

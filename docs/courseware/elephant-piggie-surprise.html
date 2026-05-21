@@ -7,7 +7,7 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'Comic Sans MS','Chalkboard SE','Segoe UI',cursive,sans-serif;
+  font-family: 'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;
   background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
   min-height: 100vh; display: flex; justify-content: center;
   align-items: center; padding: 20px;
@@ -20,37 +20,43 @@ body {
   padding: 24px 20px;
 }
 
-.page-area { position: relative; min-height: 400px; }
+.page-area { position: relative; min-height: 420px; }
 .page { display: none; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
 .page.active { display: flex; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Page title - gears style */
+/* Page title */
 .page-title { font-size: 34px; color: #E8751A; text-align: center; margin: 6px 0 10px; }
 .page-title-icon { font-size: 48px; text-align: center; }
 .page-desc { color: #6B4F3A; font-size: 19px; text-align: center; }
 
 /* Cover page */
-.cover-page { text-align: center; padding: 30px 20px; }
-.cover-big-icon { font-size: 120px; animation: float 2s ease-in-out infinite; margin-bottom: 16px; }
-@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.cover-page { text-align: center; padding: 20px; }
+.cover-characters { display: flex; justify-content: center; align-items: flex-end; gap: 10px; margin-bottom: 12px; }
+.cover-characters svg { cursor: pointer; transition: transform 0.3s; }
+.cover-characters svg:hover { transform: scale(1.08) translateY(-4px); }
 .cover-page h2 { font-size: 28px; color: #E8751A; margin: 10px 0; }
 .cover-page .page-desc { margin-top: 8px; }
 
-/* Scene */
+/* Scene with SVG */
 .scene {
-  width: 100%; max-width: 350px; height: 200px; position: relative;
-  background: #FFF8E7; border-radius: 20px; margin-bottom: 12px;
+  width: 100%; max-width: 380px; min-height: 200px; position: relative;
+  background: #FFF8E7; border-radius: 20px; margin-bottom: 10px;
   display: flex; align-items: flex-end; justify-content: center;
-  padding-bottom: 20px; gap: 20px;
+  padding: 12px 10px 8px; gap: 8px;
   box-shadow: inset 0 -5px 15px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04);
 }
-.character { font-size: 80px; cursor: pointer; transition: transform 0.2s; user-select: none; }
-.character:hover { transform: scale(1.1); }
-@keyframes speakPulse { 0%,100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.1) translateY(-8px); } }
-.character.speaking { animation: speakPulse 0.5s ease infinite; }
-.character.left { transform-origin: bottom right; }
-.character.right { transform-origin: bottom left; }
+.scene-character {
+  cursor: pointer; transition: transform 0.2s; user-select: none;
+}
+.scene-character:hover { transform: scale(1.08); }
+.scene-character svg { display: block; }
+@keyframes bounceChar {
+  0%,100% { transform: translateY(0); }
+  30% { transform: translateY(-12px); }
+  50% { transform: translateY(-5px); }
+}
+.scene-character.bouncing { animation: bounceChar 0.6s ease; }
 
 /* Dialog bubble */
 .dialog-bubble {
@@ -61,21 +67,58 @@ body {
 }
 .bubble-gerald { background: #e8eaf6; color: #283593; border: 3px solid #7986cb; }
 .bubble-piggie { background: #fce4ec; color: #880e4f; border: 3px solid #f48fb1; }
+.bubble-both { background: #fff3e0; color: #e65100; border: 3px solid #ffb74d; }
 .dialog-bubble::before {
   content: ''; position: absolute; width: 20px; height: 20px;
   top: -10px; transform: rotate(45deg);
 }
 .bubble-gerald::before { left: 30px; background: #e8eaf6; border-top: 3px solid #7986cb; border-left: 3px solid #7986cb; }
 .bubble-piggie::before { right: 30px; background: #fce4ec; border-top: 3px solid #f48fb1; border-right: 3px solid #f48fb1; }
+.bubble-both::before { left: 50%; margin-left: -10px; background: #fff3e0; border-top: 3px solid #ffb74d; border-left: 3px solid #ffb74d; }
 .dialog-bubble:hover { transform: scale(1.02); }
 .dialog-bubble .name { font-size: 13px; font-weight: bold; opacity: 0.7; }
 .dialog-bubble .highlight { background: #ffeb3b; padding: 0 4px; }
+
+/* Speech bubble (fixed overlay) */
+.speech-bubble {
+  position: fixed;
+  left: 50%;
+  bottom: 120px;
+  transform: translateX(-50%);
+  border-radius: 24px;
+  background: rgba(255,255,255,0.96);
+  border: 3px solid #FFB347;
+  padding: 16px 28px;
+  max-width: 85%;
+  font-size: 22px;
+  line-height: 1.5;
+  text-align: center;
+  z-index: 10000;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+  animation: speechIn 0.35s ease;
+  font-family: inherit;
+  color: #4A3728;
+}
+.speech-bubble::before {
+  content: '🔊 ';
+  font-size: 20px;
+}
+@keyframes speechIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes speechOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(20px); }
+}
 
 /* Quiz area - gears style */
 .quiz-area {
   background: #F3E5F5; border-radius: 20px; padding: 16px;
   text-align: center; margin: 8px 0; width: 100%;
+  animation: quizIn 0.3s ease;
 }
+@keyframes quizIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 .quiz-area h3 { font-size: 18px; color: #7B1FA2; margin-bottom: 12px; }
 .quiz-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 .quiz-opt {
@@ -84,7 +127,8 @@ body {
   transition: all 0.15s; font-family: inherit;
 }
 .quiz-opt:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.08); }
-.quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; }
+.quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; animation: popCorrect 0.4s ease; }
+@keyframes popCorrect { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 .quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
 @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
@@ -148,13 +192,12 @@ body {
 .final-badge { font-size: 42px; margin-top: 8px; }
 
 @media (max-width: 500px) {
-  .character { font-size: 60px; }
   .dialog-bubble { font-size: 18px; }
-  .scene { height: 160px; }
+  .scene { max-width: 100%; }
   .page-title { font-size: 26px; }
-  .cover-big-icon { font-size: 90px; }
   .nav-btn { width: 44px; height: 44px; font-size: 18px; }
   .read-btn { font-size: 14px; padding: 7px 14px; }
+  .speech-bubble { font-size: 18px; padding: 12px 20px; max-width: 90%; bottom: 100px; }
 }
 </style>
 </head>
@@ -172,72 +215,216 @@ body {
 </div>
 
 <script>
+// ===== SVG Generators =====
+
+function svgElephant(emotion, size) {
+  if (!emotion) emotion = 'happy';
+  if (!size) size = 130;
+  const s = size;
+  // Eye expression
+  const eyeEx = emotion === 'surprised' ? 'M 38 62 Q 42 58 46 62' : (emotion === 'confused' ? 'M 38 62 Q 42 64 46 62' : '');
+  const pupilY = emotion === 'surprised' ? 58 : 62;
+  const mouthD = emotion === 'happy' ? 'M 22 96 Q 32 104 44 96' :
+                 emotion === 'surprised' ? 'M 24 94 Q 33 108 44 94' :
+                 emotion === 'confused' ? 'M 24 100 Q 33 96 44 100' : 'M 22 96 Q 32 104 44 96';
+  const mouthColor = emotion === 'surprised' ? '#D84315' : '#546E7A';
+
+  return `<svg viewBox="0 0 160 160" width="${s}" height="${s}" style="overflow:visible">
+    <g transform="translate(4,4)">
+      <!-- tail -->
+      <path d="M 134 98 Q 148 88 145 72" fill="none" stroke="#90A4AE" stroke-width="4" stroke-linecap="round"/>
+      <!-- body -->
+      <ellipse cx="92" cy="112" rx="50" ry="40" fill="#90A4AE" stroke="#78909C" stroke-width="2"/>
+      <!-- back legs -->
+      <rect x="58" y="142" width="18" height="24" rx="7" fill="#90A4AE" stroke="#78909C" stroke-width="1.5"/>
+      <rect x="108" y="142" width="18" height="24" rx="7" fill="#90A4AE" stroke="#78909C" stroke-width="1.5"/>
+      <!-- back feet -->
+      <ellipse cx="67" cy="166" rx="12" ry="5" fill="#78909C"/>
+      <ellipse cx="117" cy="166" rx="12" ry="5" fill="#78909C"/>
+      <!-- head -->
+      <circle cx="55" cy="75" r="38" fill="#90A4AE" stroke="#78909C" stroke-width="2"/>
+      <!-- ear (back) -->
+      <ellipse cx="85" cy="68" rx="22" ry="34" fill="#90A4AE" stroke="#78909C" stroke-width="2"/>
+      <ellipse cx="85" cy="68" rx="14" ry="24" fill="#B0BEC5"/>
+      <!-- trunk -->
+      <path d="M 26 82 Q 18 132 50 138" fill="none" stroke="#90A4AE" stroke-width="12" stroke-linecap="round"/>
+      <path d="M 26 82 Q 18 132 50 138" fill="none" stroke="#78909C" stroke-width="12" stroke-dasharray="0 200" stroke-linecap="round" opacity="0.15"/>
+      <!-- eye -->
+      <circle cx="42" cy="64" r="6" fill="white"/>
+      <circle cx="42" cy="${pupilY}" r="3.5" fill="#37474F"/>
+      <circle cx="41" cy="${pupilY-1}" r="1.5" fill="white"/>
+      ${eyeEx ? `<path d="${eyeEx}" fill="none" stroke="#37474F" stroke-width="1.5" stroke-linecap="round"/>` : ''}
+      <!-- eyebrow expression -->
+      ${emotion === 'confused' ? `<path d="M 30 52 Q 36 48 46 50" fill="none" stroke="#546E7A" stroke-width="2" stroke-linecap="round"/>` : ''}
+      ${emotion === 'surprised' ? `<path d="M 30 52 Q 36 56 46 54" fill="none" stroke="#546E7A" stroke-width="2" stroke-linecap="round"/>` : ''}
+      <!-- mouth -->
+      <path d="${mouthD}" fill="none" stroke="${mouthColor}" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- cheek blush -->
+      <circle cx="30" cy="84" r="6" fill="#FFAB91" opacity="0.35"/>
+    </g>
+  </svg>`;
+}
+
+function svgPig(emotion, size) {
+  if (!emotion) emotion = 'happy';
+  if (!size) size = 120;
+  const s = size;
+  const mouthD = emotion === 'happy' ? 'M 108 96 Q 118 106 130 96' :
+                 emotion === 'surprised' ? 'M 108 94 Q 119 110 132 94' :
+                 emotion === 'confused' ? 'M 110 102 Q 120 96 132 102' : 'M 108 96 Q 118 106 130 96';
+  const pupilY = emotion === 'surprised' ? '58' : '62';
+  const eyeEx = emotion === 'surprised' ? 'M 118 56 Q 122 52 126 56' : (emotion === 'confused' ? 'M 118 58 Q 122 60 126 58' : '');
+
+  return `<svg viewBox="0 0 160 160" width="${s}" height="${s}" style="overflow:visible">
+    <g transform="translate(0,4)">
+      <!-- curly tail -->
+      <path d="M 30 108 Q 20 108 18 98 Q 16 88 24 86 Q 32 84 30 92" fill="none" stroke="#F48FB1" stroke-width="4" stroke-linecap="round"/>
+      <!-- body -->
+      <ellipse cx="75" cy="112" rx="52" ry="40" fill="#F48FB1" stroke="#E91E63" stroke-width="2" opacity="0.9"/>
+      <!-- back legs -->
+      <rect x="42" y="140" width="18" height="24" rx="7" fill="#F48FB1" stroke="#E91E63" stroke-width="1.5"/>
+      <rect x="92" y="140" width="18" height="24" rx="7" fill="#F48FB1" stroke="#E91E63" stroke-width="1.5"/>
+      <!-- back feet -->
+      <ellipse cx="51" cy="164" rx="12" ry="5" fill="#E91E63" opacity="0.5"/>
+      <ellipse cx="101" cy="164" rx="12" ry="5" fill="#E91E63" opacity="0.5"/>
+      <!-- head -->
+      <circle cx="108" cy="75" r="36" fill="#F48FB1" stroke="#E91E63" stroke-width="2"/>
+      <!-- ear left -->
+      <ellipse cx="94" cy="44" rx="8" ry="14" fill="#F48FB1" stroke="#E91E63" stroke-width="1.5" transform="rotate(-20 94 44)"/>
+      <ellipse cx="94" cy="46" rx="4" ry="9" fill="#FCE4EC" transform="rotate(-20 94 46)"/>
+      <!-- ear right -->
+      <ellipse cx="120" cy="46" rx="8" ry="14" fill="#F48FB1" stroke="#E91E63" stroke-width="1.5" transform="rotate(15 120 46)"/>
+      <ellipse cx="120" cy="48" rx="4" ry="9" fill="#FCE4EC" transform="rotate(15 120 48)"/>
+      <!-- snout -->
+      <ellipse cx="140" cy="82" rx="18" ry="14" fill="#F8BBD0" stroke="#E91E63" stroke-width="2"/>
+      <ellipse cx="140" cy="82" rx="12" ry="10" fill="#FCE4EC"/>
+      <!-- nose dots -->
+      <circle cx="135" cy="82" r="3" fill="#E91E63" opacity="0.5"/>
+      <circle cx="145" cy="82" r="3" fill="#E91E63" opacity="0.5"/>
+      <!-- eye -->
+      <circle cx="116" cy="64" r="6" fill="white"/>
+      <circle cx="116" cy="${pupilY}" r="3.5" fill="#37474F"/>
+      <circle cx="115" cy="${pupilY-1}" r="1.5" fill="white"/>
+      ${eyeEx ? `<path d="${eyeEx}" fill="none" stroke="#37474F" stroke-width="1.5" stroke-linecap="round"/>` : ''}
+      <!-- eyebrow -->
+      ${emotion === 'confused' ? `<path d="M 108 50 Q 118 46 128 50" fill="none" stroke="#880E4F" stroke-width="2" stroke-linecap="round"/>` : ''}
+      ${emotion === 'surprised' ? `<path d="M 108 50 Q 118 54 128 50" fill="none" stroke="#880E4F" stroke-width="2" stroke-linecap="round"/>` : ''}
+      <!-- mouth -->
+      <path d="${mouthD}" fill="none" stroke="#880E4F" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- cheek blush -->
+      <circle cx="98" cy="86" r="6" fill="#F48FB1" opacity="0.4"/>
+    </g>
+  </svg>`;
+}
+
+function svgSurpriseBox(size) {
+  if (!size) size = 120;
+  const s = size;
+  return `<svg viewBox="0 0 140 140" width="${s}" height="${s}" style="overflow:visible">
+    <!-- box body -->
+    <rect x="25" y="55" width="90" height="75" rx="6" fill="#FF8A65" stroke="#E64A19" stroke-width="2.5"/>
+    <!-- box panel -->
+    <rect x="35" y="65" width="70" height="55" rx="4" fill="#FFAB91" stroke="#E64A19" stroke-width="1.5"/>
+    <!-- ribbon vertical -->
+    <rect x="62" y="55" width="16" height="75" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5"/>
+    <!-- ribbon horizontal -->
+    <rect x="25" y="82" width="90" height="10" fill="#FFD54F" stroke="#FFA000" stroke-width="1"/>
+    <!-- lid -->
+    <rect x="20" y="45" width="100" height="16" rx="5" fill="#FF7043" stroke="#E64A19" stroke-width="2.5"/>
+    <!-- bow left -->
+    <path d="M 70 30 Q 48 18 38 32 Q 48 38 70 35" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5"/>
+    <!-- bow right -->
+    <path d="M 70 30 Q 92 18 102 32 Q 92 38 70 35" fill="#FFD54F" stroke="#FFA000" stroke-width="1.5"/>
+    <!-- bow center -->
+    <circle cx="70" cy="32" r="8" fill="#FFCA28" stroke="#FFA000" stroke-width="1.5"/>
+    <!-- sparkles -->
+    <path d="M 30 38 L 32 34 L 34 38 L 38 40 L 34 42 L 32 46 L 30 42 L 26 40 Z" fill="#FFF176"/>
+    <path d="M 108 22 L 110 18 L 112 22 L 116 24 L 112 26 L 110 30 L 108 26 L 104 24 Z" fill="#FFF176"/>
+    <!-- question mark on box -->
+    <text x="70" y="100" font-size="28" font-weight="bold" fill="#BF360C" text-anchor="middle" font-family="Arial">?</text>
+  </svg>`;
+}
+
+
+// ===== Page Data =====
+
 const pages = [
   {
-    cover: true, icon: '🐘🐷', title: '我要给朋友一个惊喜！',
+    cover: true, title: '我要给朋友一个惊喜！',
     subtitle: '小猪小象系列故事 · 关于友谊的故事！'
   },
   {
-    scene: '🐘🐷',
     speaker: 'Gerald',
     pageTitle: '🐘 Gerald 想要',
     text: '<span class="name">🐘 Gerald:</span> I will surprise my <span class="highlight">friend</span>!',
     bubble: 'bubble-gerald',
-    emoji: '😊',
+    emotion: 'happy',
+    chars: [{ type: 'elephant', emotion: 'happy', label: 'Gerald' }],
     game: { question: 'Gerald 感觉怎么样？', correct: '😊 开心', options: ['😊 开心', '😢 难过', '😡 生气'] }
   },
   {
-    scene: '🐷🐘',
     speaker: 'Piggie',
     pageTitle: '🐷 Piggie 也想要',
     text: '<span class="name">🐷 Piggie:</span> I will surprise my <span class="highlight">friend</span> too!',
     bubble: 'bubble-piggie',
-    emoji: '😄',
+    emotion: 'happy',
+    chars: [{ type: 'pig', emotion: 'happy', label: 'Piggie' }],
     game: { question: 'Piggie 感觉怎么样？', correct: '😄 兴奋', options: ['😄 兴奋', '😴 累了', '😱 害怕'] }
   },
   {
-    scene: '🐘',
     speaker: 'Gerald',
     pageTitle: '🐘 Gerald 的计划',
     text: '<span class="name">🐘 Gerald:</span> I will hide behind this <span class="highlight">bush</span>. Then... SURPRISE!',
     bubble: 'bubble-gerald',
-    emoji: '🌿',
+    emotion: 'happy',
+    chars: [{ type: 'elephant', emotion: 'happy', label: 'Gerald' }],
     game: { question: 'Gerald 躲在哪里？', correct: '🌿 灌木丛后面', options: ['🌿 灌木丛后面', '🏠 房子里面', '🌳 树上面'] }
   },
   {
-    scene: '🐷',
     speaker: 'Piggie',
     pageTitle: '🐷 Piggie 的计划',
     text: '<span class="name">🐷 Piggie:</span> I will hide behind this <span class="highlight">tree</span>. Then... SURPRISE!',
     bubble: 'bubble-piggie',
-    emoji: '🌳',
+    emotion: 'happy',
+    chars: [{ type: 'pig', emotion: 'happy', label: 'Piggie' }],
     game: { question: 'Piggie 躲在哪里？', correct: '🌳 大树后面', options: ['🌳 大树后面', '🚗 汽车里面', '📦 箱子里面'] }
   },
   {
-    scene: '🐘❓🐷❓',
     speaker: 'Both',
     pageTitle: '🤔 都找不到对方',
     text: '<span class="name">🤔 Gerald & Piggie:</span> Where <span class="highlight">is</span> my friend? I <span class="highlight">cannot</span> find them!',
-    bubble: 'bubble-gerald',
-    emoji: '🤔',
+    bubble: 'bubble-both',
+    emotion: 'confused',
+    chars: [
+      { type: 'elephant', emotion: 'confused', label: 'Gerald' },
+      { type: 'pig', emotion: 'confused', label: 'Piggie' }
+    ],
     game: { question: '他们找到对方了吗？', correct: '❌ 还没有！', options: ['✅ 找到了！', '❌ 还没有！', '🤷 不知道'] }
   },
   {
-    scene: '🐘👀🐷',
     speaker: 'Both',
-    pageTitle: '😲 终于见面了！',
+    pageTitle: '😲 惊喜见面！',
     text: '<span class="name">😲 Gerald & Piggie:</span> There you <span class="highlight">are</span>! You surprised <span class="highlight">me</span>!',
-    bubble: 'bubble-piggie',
-    emoji: '😲',
+    bubble: 'bubble-both',
+    emotion: 'surprised',
+    chars: [
+      { type: 'elephant', emotion: 'surprised', label: 'Gerald' },
+      { type: 'pig', emotion: 'surprised', label: 'Piggie' }
+    ],
+    showBox: true,
     game: { question: '他们惊喜吗？', correct: '✅ 是的！惊喜！', options: ['✅ 是的！惊喜！', '❌ 不是', '😐 也许吧'] }
   },
   {
-    scene: '🐘🤝🐷',
     speaker: 'Both',
     pageTitle: '🥰 最好的朋友',
     text: '<span class="name">🥰 Gerald & Piggie:</span> Friends <span class="highlight">surprise</span> each other! What a good <span class="highlight">friend</span>!',
-    bubble: 'bubble-gerald',
-    emoji: '🥰',
+    bubble: 'bubble-both',
+    emotion: 'happy',
+    chars: [
+      { type: 'elephant', emotion: 'happy', label: 'Gerald' },
+      { type: 'pig', emotion: 'happy', label: 'Piggie' }
+    ],
+    showBox: true,
     game: null,
     final: true
   }
@@ -246,11 +433,72 @@ const pages = [
 let currentPage = 0;
 let gameDone = new Array(pages.length).fill(false);
 
+// ===== Speech Bubble =====
+
+function showSpeechBubble(text) {
+  const existing = document.querySelector('.speech-bubble');
+  if (existing) {
+    existing.style.animation = 'speechOut 0.25s ease forwards';
+    setTimeout(() => existing.remove(), 300);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.className = 'speech-bubble';
+  bubble.textContent = text;
+  document.body.appendChild(bubble);
+
+  // Auto-remove after duration proportional to text length
+  const duration = Math.max(2500, text.length * 80 + 1500);
+  setTimeout(() => {
+    if (bubble.parentNode) {
+      bubble.style.animation = 'speechOut 0.25s ease forwards';
+      setTimeout(() => bubble.remove(), 300);
+    }
+  }, duration);
+}
+
+// ===== Text-to-Speech =====
+
+function speakText(text) {
+  window.speechSynthesis.cancel();
+  const clean = text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, '').trim();
+  showSpeechBubble(clean);
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+function speakPage() {
+  const p = pages[currentPage];
+  if (p.cover) {
+    speakText('I Will Surprise My Friend! An Elephant and Piggie story.');
+  } else {
+    speakText(p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '));
+  }
+}
+
+// ===== Character Click Animation =====
+
+let bounceTimer = null;
+function bounceCharacter(el) {
+  if (bounceTimer) clearTimeout(bounceTimer);
+  el.classList.remove('bouncing');
+  void el.offsetWidth;
+  el.classList.add('bouncing');
+  bounceTimer = setTimeout(() => el.classList.remove('bouncing'), 700);
+  // Also say the character name
+  const label = el.dataset.name || '';
+  if (label) {
+    speakText(label + ' says hello!');
+  }
+}
+
+// ===== Rendering =====
+
 function renderPage(idx) {
   const area = document.getElementById('pageArea');
   const p = pages[idx];
 
-  // Remove old pages
   area.innerHTML = '';
 
   const pageDiv = document.createElement('div');
@@ -260,14 +508,17 @@ function renderPage(idx) {
   if (p.cover) {
     pageDiv.innerHTML = `
       <div class="cover-page">
-        <div class="cover-big-icon">${p.icon}</div>
+        <div class="cover-characters">
+          ${svgElephant('happy', 120)}
+          ${svgSurpriseBox(80)}
+          ${svgPig('happy', 110)}
+        </div>
         <h2>${p.title}</h2>
         <p class="page-desc">${p.subtitle}</p>
         <p style="margin-top:20px;font-size:15px;color:#aaa">👆 点击 ▶ 开始阅读！</p>
       </div>
     `;
   } else {
-    // Story page
     let contentHTML = '';
 
     // Page title
@@ -275,22 +526,26 @@ function renderPage(idx) {
       contentHTML += `<div class="page-title">${p.pageTitle}</div>`;
     }
 
-    // Character scene
-    if (p.scene) {
-      const chars = Array.from(p.scene);
-      const charHTML = chars.map(c => {
-        const isElephant = c === '🐘';
-        const isPig = c === '🐷';
-        const cls = isElephant ? 'character left' : isPig ? 'character right' : 'character';
-        return `<div class="${cls}" onclick="speakText('${isElephant ? 'Gerald' : isPig ? 'Piggie' : ''}')">${c}</div>`;
-      }).join('');
-      contentHTML += `<div class="scene">${charHTML}</div>`;
+    // Character scene with SVG
+    if (p.chars && p.chars.length > 0) {
+      let sceneHTML = '<div class="scene">';
+      p.chars.forEach((ch, ci) => {
+        const svgFn = ch.type === 'elephant' ? svgElephant : svgPig;
+        const svgStr = svgFn(ch.emotion, 130);
+        const name = ch.label || '';
+        sceneHTML += `<div class="scene-character" data-name="${name}" data-idx="${ci}" onclick="bounceCharacter(this)">${svgStr}</div>`;
+      });
+      // Surprise box if needed
+      if (p.showBox) {
+        sceneHTML += `<div class="scene-character" onclick="bounceCharacter(this)">${svgSurpriseBox(90)}</div>`;
+      }
+      sceneHTML += '</div>';
+      contentHTML += sceneHTML;
     }
 
     // Dialog bubble
     if (p.text) {
-      const cleanText = p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/'/g, "\\'");
-      contentHTML += `<div class="dialog-bubble ${p.bubble}" onclick="speakText('${cleanText}')">${p.text}</div>`;
+      contentHTML += `<div class="dialog-bubble ${p.bubble}" onclick="speakText('${p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/'/g, "\\'")}')">${p.text}</div>`;
     }
 
     // Quiz or final area
@@ -301,7 +556,7 @@ function renderPage(idx) {
           <div class="quiz-options">
             ${p.game.options.map((opt, oi) => {
               const isCorrect = opt === p.game.correct;
-              return `<div class="quiz-opt" onclick="checkEmotion(${idx}, ${isCorrect}, this)">${opt}</div>`;
+              return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt}</div>`;
             }).join('')}
           </div>
         </div>
@@ -325,48 +580,38 @@ function renderPage(idx) {
   document.getElementById('nextBtn').disabled = false;
 }
 
-function checkEmotion(idx, isCorrect, el) {
+function checkAnswer(idx, isCorrect, el) {
   if (gameDone[idx]) return;
   if (isCorrect) {
     el.classList.add('correct');
     gameDone[idx] = true;
     launchConfetti();
-    setTimeout(() => renderPage(idx), 800);
+    setTimeout(() => renderPage(idx), 900);
   } else {
     el.classList.add('wrong');
     setTimeout(() => el.classList.remove('wrong'), 400);
   }
 }
 
+// ===== Confetti =====
+
 function launchConfetti() {
   const div = document.createElement('div');
   div.className = 'celebration';
-  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
-  for (let i = 0; i < 40; i++) {
+  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3','#FF8A65','#81C784'];
+  for (let i = 0; i < 50; i++) {
     const c = document.createElement('div');
     c.className = 'confetti-piece';
-    c.style.cssText = `width:${8+Math.random()*10}px;height:${8+Math.random()*10}px;left:${Math.random()*100}%;top:15%;background:${colors[i%colors.length]};animation-duration:${1.5+Math.random()}s;animation-delay:${Math.random()*0.6}s;`;
+    const size = 6 + Math.random() * 12;
+    const shapes = ['50%','0%','30%'];
+    c.style.cssText = `width:${size}px;height:${size * (0.5 + Math.random())}px;left:${Math.random()*100}%;top:-5%;background:${colors[i%colors.length]};border-radius:${shapes[i%3]};animation-duration:${1.5+Math.random()}s;animation-delay:${Math.random()*0.8}s;`;
     div.appendChild(c);
   }
   document.body.appendChild(div);
-  setTimeout(() => div.remove(), 3000);
+  setTimeout(() => div.remove(), 3500);
 }
 
-function speakPage() {
-  const p = pages[currentPage];
-  if (p.cover) {
-    speakText('I Will Surprise My Friend! An Elephant and Piggie story.');
-  } else {
-    speakText(p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '));
-  }
-}
-
-function speakText(text) {
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
-}
+// ===== Navigation =====
 
 function nextPage() {
   const p = pages[currentPage];
@@ -386,6 +631,7 @@ function updateUI(idx) {
   ).join('');
 }
 
+// ===== Init =====
 renderPage(0);
 </script>
 </body>

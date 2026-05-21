@@ -7,7 +7,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', cursive, sans-serif;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
     background: linear-gradient(145deg, #FFF8E7 0%, #FFE8C8 100%);
     min-height: 100vh; display: flex; justify-content: center;
     align-items: center; padding: 20px;
@@ -16,9 +16,9 @@
     max-width: 800px; width: 100%; background: #FFFCF5;
     border-radius: 40px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 4px #FFF, 0 0 0 8px #FFB347;
-    padding: 24px 20px;
+    padding: 24px 20px; position: relative;
   }
-  .page-area { min-height: 400px; }
+  .page-area { min-height: 420px; }
   .page {
     display: none; flex-direction: column; align-items: center;
     animation: fadeIn 0.4s ease;
@@ -33,9 +33,6 @@
     font-size: 34px; color: #E8751A; text-align: center; margin-bottom: 8px;
   }
   .page-title-icon { font-size: 48px; text-align: center; margin-bottom: 4px; }
-  .page-desc {
-    font-size: 19px; color: #6B4F3A; text-align: center; margin-bottom: 16px;
-  }
 
   /* Float animation for cover icon */
   @keyframes float {
@@ -44,45 +41,58 @@
   }
   .float-icon { animation: float 2s ease-in-out infinite; display: inline-block; }
 
-  /* Bed scene */
+  /* SVG Bed Scene */
   .bed-scene {
-    width: 100%; max-width: 400px; height: 220px;
-    background: linear-gradient(180deg, #e8d5b7 0%, #d4a574 100%);
-    border-radius: 20px; position: relative; margin-bottom: 16px;
-    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
+    width: 100%; max-width: 420px; height: 230px;
+    border-radius: 20px; position: relative; margin-bottom: 12px;
     cursor: pointer; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
   }
-  .bed-frame {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
-    background: #8B4513; border-radius: 0 0 20px 20px;
+  .bed-scene svg {
+    display: block; width: 100%; height: 100%;
   }
-  .pillow {
-    position: absolute; left: 20px; bottom: 50px;
-    width: 60px; height: 30px; background: #fff;
-    border-radius: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .monkey {
-    position: absolute; font-size: 40px; cursor: pointer;
-    transition: all 0.3s ease; user-select: none;
+
+  /* Monkey SVG styles */
+  .monkey-svg { cursor: pointer; }
+  .monkey-svg .monkey-body {
+    transform-origin: center;
     animation: bounce 1s ease-in-out infinite;
   }
-  .monkey.jumping { animation: bigJump 0.6s ease-in-out; }
-  .monkey.fallen {
-    bottom: 10px !important; animation: none !important;
-    opacity: 0.6; filter: grayscale(0.5);
-    pointer-events: none;
+  .monkey-svg.big-jump .monkey-body {
+    animation: svgJump 0.6s ease-in-out !important;
   }
+  .monkey-svg.fallen {
+    cursor: default;
+  }
+  .monkey-svg.fallen .monkey-body {
+    animation: none !important;
+    filter: grayscale(0.6) brightness(0.8);
+  }
+  .monkey-svg.fallen .monkey-face {
+    opacity: 0.7;
+  }
+
   @keyframes bounce {
     0%,100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
   }
-  @keyframes bigJump {
-    0% { transform: translateY(0) scale(1); }
-    30% { transform: translateY(-60px) scale(1.2); }
-    60% { transform: translateY(0) scale(0.9); }
-    100% { transform: translateY(0) scale(1); }
+
+  @keyframes svgJump {
+    0%   { transform: translateY(0)    scale(1)   rotate(0deg); }
+    25%  { transform: translateY(-45px) scale(1.15) rotate(-8deg); }
+    50%  { transform: translateY(0)    scale(0.92) rotate(4deg); }
+    75%  { transform: translateY(-10px) scale(1.05) rotate(-2deg); }
+    100% { transform: translateY(0)    scale(1)   rotate(0deg); }
   }
 
+  /* Cover SVG */
+  .cover-scene {
+    width: 100%; max-width: 420px; height: 200px;
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+
+  /* Story text */
   .sentence {
     font-size: 22px; line-height: 1.6; text-align: center;
     padding: 14px 20px; background: #FFF8E7; border-radius: 16px;
@@ -91,35 +101,140 @@
   .sentence .num { color: #E8751A; font-weight: bold; font-size: 28px; }
   .sentence .bump { color: #f5576c; font-weight: bold; }
 
+  /* Speech Bubble - Gears style */
+  .speech-bubble {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 3px solid #FFB347;
+    padding: 18px 28px;
+    font-size: 22px;
+    font-weight: 600;
+    max-width: 82%;
+    text-align: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: 0 10px 40px rgba(255, 179, 71, 0.35), 0 0 0 2px rgba(255, 179, 71, 0.15);
+    transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: #5A3E2B;
+    line-height: 1.5;
+  }
+  .speech-bubble.show {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  .speech-bubble::before {
+    content: '⚙';
+    position: absolute;
+    top: -14px;
+    left: -8px;
+    font-size: 22px;
+    animation: gearSpin 4s linear infinite;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid transparent;
+    border-top-color: #FFB347;
+  }
+  .speech-bubble .bubble-inner::before {
+    content: '⚙';
+    position: absolute;
+    bottom: -10px;
+    right: -6px;
+    font-size: 16px;
+    animation: gearSpin 3s linear infinite reverse;
+  }
+  .bubble-inner { position: relative; display: inline; }
+  @keyframes gearSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
   /* Quiz area - gears style */
   .game-area, .quiz-area {
-    width: 100%; padding: 16px; background: #F3E5F5;
+    width: 100%; padding: 16px 16px 12px; background: #F3E5F5;
     border-radius: 20px; text-align: center; margin: 10px 0;
+    position: relative; overflow: hidden;
   }
   .game-area h3, .quiz-area h3 {
     font-size: 18px; color: #7B1FA2; margin-bottom: 12px;
   }
-  .count-btns, .quiz-options {
-    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  .quiz-options {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
   }
-  .count-btn, .quiz-opt {
-    padding: 12px 22px; border-radius: 16px; border: 3px solid #ddd;
-    background: white; font-size: 19px; font-weight: bold; cursor: pointer;
-    transition: all 0.15s; font-family: inherit;
+  .quiz-opt {
+    padding: 14px 26px; border-radius: 18px; border: 3px solid #DDB8E8;
+    background: white; font-size: 22px; font-weight: bold; cursor: pointer;
+    transition: all 0.15s; font-family: inherit; color: #5A3E2B;
+    min-width: 60px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
   }
-  .count-btn:hover, .quiz-opt:hover {
-    border-color: #FFB347; background: #FFF8E7; transform: scale(1.08);
+  .quiz-opt:hover {
+    border-color: #FFB347; background: #FFF8E7; transform: scale(1.1) translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255,179,71,0.3);
   }
-  .count-btn.correct, .quiz-opt.correct {
-    border-color: #4CAF50; background: #E8F5E9;
+  .quiz-opt.correct {
+    border-color: #4CAF50; background: #E8F5E9; transform: scale(1.12);
+    box-shadow: 0 0 0 4px rgba(76,175,80,0.3);
+    animation: correctPop 0.5s ease-out;
   }
-  .count-btn.wrong, .quiz-opt.wrong {
-    border-color: #F44336; background: #FFEBEE; animation: shake 0.3s;
+  .quiz-opt.wrong {
+    border-color: #F44336; background: #FFEBEE; animation: shake 0.4s;
+    box-shadow: 0 0 0 4px rgba(244,67,54,0.25);
+  }
+  @keyframes correctPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.25); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1.12); }
   }
   @keyframes shake {
     0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
+    20% { transform: translateX(-8px) rotate(-2deg); }
+    40% { transform: translateX(8px) rotate(2deg); }
+    60% { transform: translateX(-6px) rotate(-1deg); }
+    80% { transform: translateX(6px) rotate(1deg); }
+  }
+
+  /* Quiz done state */
+  .quiz-done {
+    background: #E8F5E9 !important;
+  }
+  .quiz-done h3 { color: #4CAF50 !important; }
+
+  /* Progress dots - gear style */
+  .progress {
+    display: flex; gap: 8px; justify-content: center; padding: 12px 0 4px;
+    flex-wrap: wrap;
+  }
+  .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #E0D5C7; cursor: pointer; transition: all 0.25s;
+    border: 2px solid transparent;
+    position: relative;
+  }
+  .dot:hover { transform: scale(1.3); }
+  .dot.active {
+    background: #FFB347; transform: scale(1.4);
+    border-color: #E8751A; box-shadow: 0 0 0 3px rgba(255,179,71,0.3);
+  }
+  .dot.done {
+    background: #4CAF50; border-color: #388E3C;
+  }
+  .dot.done::after {
+    content: '✓';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: white; font-size: 10px; font-weight: bold;
   }
 
   /* Navigation - gears style */
@@ -128,41 +243,34 @@
     padding: 16px 0 0;
   }
   .nav-btn {
-    width: 50px; height: 50px; border: none; border-radius: 50%;
-    background: #FFB347; color: white; font-size: 20px;
+    width: 52px; height: 52px; border: none; border-radius: 50%;
+    background: #FFB347; color: white; font-size: 22px;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 12px rgba(255,179,71,0.4);
     transition: transform 0.15s, box-shadow 0.15s;
     font-family: inherit;
   }
   .nav-btn:hover {
-    transform: scale(1.1); box-shadow: 0 6px 18px rgba(255,179,71,0.5);
+    transform: scale(1.12) rotate(5deg); box-shadow: 0 6px 20px rgba(255,179,71,0.5);
   }
-  .nav-btn:active { transform: scale(0.95); }
-  .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .nav-btn:active { transform: scale(0.92); }
+  .nav-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
   .read-btn {
-    border: none; border-radius: 30px; background: #6BCB77;
-    color: white; font-size: 16px; font-weight: 600; padding: 10px 18px;
+    border: none; border-radius: 30px; background: linear-gradient(135deg, #6BCB77, #4CAF50);
+    color: white; font-size: 17px; font-weight: 600; padding: 12px 22px;
     cursor: pointer; font-family: inherit;
-    box-shadow: 0 4px 12px rgba(107,203,119,0.4);
+    box-shadow: 0 4px 16px rgba(107,203,119,0.4);
     transition: transform 0.15s, box-shadow 0.15s;
+    display: inline-flex; align-items: center; gap: 6px;
   }
   .read-btn:hover {
-    transform: scale(1.05); box-shadow: 0 6px 18px rgba(107,203,119,0.5);
+    transform: scale(1.06); box-shadow: 0 6px 22px rgba(107,203,119,0.5);
   }
   .read-btn:active { transform: scale(0.95); }
   .page-counter {
     font-size: 14px; color: #999; text-align: center; margin-top: 8px;
+    font-weight: 500;
   }
-  .progress {
-    display: flex; gap: 6px; justify-content: center; padding: 10px 0 0;
-  }
-  .dot {
-    width: 12px; height: 12px; border-radius: 50%;
-    background: #E0D5C7; cursor: pointer; transition: all 0.2s;
-  }
-  .dot.active { background: #FFB347; transform: scale(1.3); }
-  .dot.done { background: #4CAF50; }
 
   /* Confetti celebration */
   .celebration {
@@ -172,19 +280,34 @@
   .confetti { position: absolute; border-radius: 50%; animation: confetti-fall ease-out forwards; }
   @keyframes confetti-fall {
     0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-    100% { opacity: 0; transform: translateY(500px) rotate(720deg); }
+    100% { opacity: 0; transform: translateY(600px) rotate(1080deg); }
   }
 
-  .cover-page { text-align: center; padding: 30px 20px; }
-  .cover-page .big-icon { font-size: 120px; margin-bottom: 20px; }
-  .cover-page h2 { font-size: 32px; color: #E8751A; }
+  /* Cover page */
+  .cover-page { text-align: center; padding: 20px 20px 10px; }
+  .cover-page .cover-scene { margin: 0 auto 16px; }
+  .cover-page h2 { font-size: 32px; color: #E8751A; margin-top: 8px; }
   .cover-page p { font-size: 18px; color: #6B4F3A; margin-top: 8px; }
+
+  /* Final page */
+  .final-stars {
+    font-size: 48px; letter-spacing: 8px; margin: 12px 0;
+    animation: starPulse 1.5s ease-in-out infinite;
+  }
+  @keyframes starPulse {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
 
   @media (max-width: 500px) {
     .sentence { font-size: 18px; }
-    .monkey { font-size: 32px; }
-    .bed-scene { height: 180px; }
+    .bed-scene { height: 190px; }
     .page-title { font-size: 26px; }
+    .speech-bubble { font-size: 18px; padding: 14px 20px; bottom: 100px; max-width: 90%; }
+    .nav-btn { width: 44px; height: 44px; font-size: 18px; }
+    .quiz-opt { padding: 12px 20px; font-size: 18px; min-width: 50px; }
+    .cover-scene { height: 160px; }
+    .cover-page h2 { font-size: 26px; }
   }
 </style>
 </head>
@@ -202,6 +325,7 @@
 </div>
 
 <script>
+// ======== PAGE DATA ========
 const pages = [
   {
     cover: true, icon: '🐵', title: 'Five Little Monkeys',
@@ -219,6 +343,216 @@ const pages = [
 let currentPage = 0;
 let gameDone = new Array(pages.length).fill(false);
 
+// ======== SPEECH BUBBLE ========
+function showSpeechBubble(text) {
+  const existing = document.querySelector('.speech-bubble');
+  if (existing) existing.remove();
+
+  const bubble = document.createElement('div');
+  bubble.className = 'speech-bubble';
+  bubble.innerHTML = `<span class="bubble-inner">${text}</span>`;
+
+  document.body.appendChild(bubble);
+  // Trigger reflow for transition
+  void bubble.offsetWidth;
+  bubble.classList.add('show');
+
+  setTimeout(() => {
+    bubble.classList.remove('show');
+    setTimeout(() => bubble.remove(), 400);
+  }, 2500);
+}
+
+// ======== SVG MONKEY GENERATOR ========
+function createMonkeySVG(x, y, isFallen, id) {
+  const cls = `monkey-svg${isFallen ? ' fallen' : ''}`;
+  const faceCls = isFallen ? 'monkey-face' : 'monkey-face';
+  const bodyColor = '#8B5E3C';
+  const faceColor = '#D4A574';
+  const darkColor = '#6B3A2A';
+  const eyeWhite = '#fff';
+
+  // Fallen monkeys: closed eyes
+  const eyeL = isFallen
+    ? `<line x1="-5" y1="-3" x2="-2" y2="-3" stroke="${darkColor}" stroke-width="1.8" stroke-linecap="round"/>`
+    : `<circle cx="-3.5" cy="-3" r="2.5" fill="${eyeWhite}"/><circle cx="-3.5" cy="-3" r="1.2" fill="${darkColor}"/>`;
+  const eyeR = isFallen
+    ? `<line x1="2" y1="-3" x2="5" y2="-3" stroke="${darkColor}" stroke-width="1.8" stroke-linecap="round"/>`
+    : `<circle cx="3.5" cy="-3" r="2.5" fill="${eyeWhite}"/><circle cx="3.5" cy="-3" r="1.2" fill="${darkColor}"/>`;
+
+  // Fallen monkeys: sad mouth
+  const mouth = isFallen
+    ? `<path d="M-3,4 Q0,1.5 3,4" stroke="${darkColor}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`
+    : `<path d="M-2.5,1.5 Q0,4.5 2.5,1.5" stroke="${darkColor}" stroke-width="1.3" fill="none" stroke-linecap="round"/>`;
+
+  return `
+    <g class="${cls}" id="monkey-${id}" data-fallen="${isFallen}" transform="translate(${x}, ${y})">
+      <g class="monkey-body">
+        <!-- Tail -->
+        <path d="M6,12 Q18,2 16,-8" stroke="${bodyColor}" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Left arm -->
+        <ellipse cx="-12" cy="3" rx="8" ry="3.5" fill="${bodyColor}" transform="rotate(-25,-12,3)"/>
+        <!-- Right arm -->
+        <ellipse cx="12" cy="3" rx="8" ry="3.5" fill="${bodyColor}" transform="rotate(25,12,3)"/>
+        <!-- Left leg -->
+        <ellipse cx="-5" cy="18" rx="4.5" ry="6" fill="${bodyColor}"/>
+        <!-- Right leg -->
+        <ellipse cx="5" cy="18" rx="4.5" ry="6" fill="${bodyColor}"/>
+        <!-- Body -->
+        <ellipse cx="0" cy="8" rx="9" ry="11" fill="${bodyColor}"/>
+        <!-- Ears -->
+        <circle cx="-10" cy="-6" r="4.5" fill="${bodyColor}"/>
+        <circle cx="10" cy="-6" r="4.5" fill="${bodyColor}"/>
+        <circle cx="-10" cy="-6" r="3" fill="${faceColor}"/>
+        <circle cx="10" cy="-6" r="3" fill="${faceColor}"/>
+        <!-- Head -->
+        <circle cx="0" cy="-3" r="11" fill="${bodyColor}"/>
+        <!-- Face -->
+        <ellipse cx="0" cy="-1" rx="7.5" ry="6.5" fill="${faceColor}" class="${faceCls}"/>
+        <!-- Eyes -->
+        ${eyeL}
+        ${eyeR}
+        <!-- Mouth -->
+        ${mouth}
+        <!-- Nose -->
+        <circle cx="0" cy="0" r="1.8" fill="${darkColor}"/>
+      </g>
+    </g>
+  `;
+}
+
+// ======== COVER SVG BED SCENE ========
+function renderCoverSVG() {
+  return `
+    <svg viewBox="0 0 420 200" width="100%" height="100%" style="border-radius: 20px;">
+      <defs>
+        <linearGradient id="coverBg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B3D9FF"/>
+          <stop offset="70%" stop-color="#FFE0B2"/>
+          <stop offset="100%" stop-color="#D4A574"/>
+        </linearGradient>
+        <linearGradient id="wallGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFF8E1"/>
+          <stop offset="100%" stop-color="#FFECB3"/>
+        </linearGradient>
+      </defs>
+      <!-- Wall background -->
+      <rect width="420" height="200" fill="url(#coverBg)"/>
+      <!-- Floor -->
+      <rect x="0" y="140" width="420" height="60" fill="#D4A574" rx="0"/>
+      <!-- Headboard -->
+      <rect x="8" y="15" width="404" height="18" rx="5" fill="#6B3A2A"/>
+      <rect x="5" y="10" width="8" height="8" rx="3" fill="#8B4513"/>
+      <rect x="407" y="10" width="8" height="8" rx="3" fill="#8B4513"/>
+      <!-- Side rails -->
+      <rect x="8" y="33" width="404" height="6" rx="2" fill="#8B4513"/>
+      <!-- Mattress -->
+      <rect x="15" y="40" width="390" height="100" rx="8" fill="#FFF8E7" stroke="#E8D5B7" stroke-width="2"/>
+      <!-- Sheet line -->
+      <path d="M15,80 Q105,90 210,82 Q315,74 405,85" stroke="#E8D5B7" stroke-width="1.5" fill="none" opacity="0.5"/>
+      <!-- Pillow -->
+      <rect x="28" y="46" width="65" height="34" rx="17" fill="white" stroke="#E0D5C7" stroke-width="1.5"/>
+      <line x1="60" y1="48" x2="60" y2="78" stroke="#E0D5C7" stroke-width="1" opacity="0.4"/>
+      <!-- Blanket -->
+      <path d="M100,48 Q200,90 405,50 L408,100 Q200,130 100,100 Z" fill="#FFB347" opacity="0.25"/>
+      <!-- Bed frame bottom -->
+      <rect x="0" y="138" width="420" height="34" rx="4" fill="#8B4513"/>
+      <!-- Wood grain -->
+      <line x1="20" y1="145" x2="80" y2="145" stroke="#7A3E1A" stroke-width="1" opacity="0.3"/>
+      <line x1="120" y1="150" x2="200" y2="150" stroke="#7A3E1A" stroke-width="1" opacity="0.3"/>
+      <line x1="250" y1="142" x2="350" y2="142" stroke="#7A3E1A" stroke-width="1" opacity="0.3"/>
+      <!-- Bed legs -->
+      <rect x="10" y="168" width="10" height="12" rx="2" fill="#6B3A2A"/>
+      <rect x="400" y="168" width="10" height="12" rx="2" fill="#6B3A2A"/>
+      <!-- 5 little monkeys on the cover -->
+      ${createMonkeySVG(60, 95, false, 'c0')}
+      ${createMonkeySVG(140, 85, false, 'c1')}
+      ${createMonkeySVG(215, 78, false, 'c2')}
+      ${createMonkeySVG(290, 88, false, 'c3')}
+      ${createMonkeySVG(355, 98, false, 'c4')}
+    </svg>
+  `;
+}
+
+// ======== BED SCENE SVG GENERATOR ========
+function renderBedScene(count, fallen, isDone) {
+  const total = count + fallen;
+  const positions = [];
+  for (let i = 0; i < total; i++) {
+    const row = Math.floor(i / 4);
+    const col = i % 4;
+    const left = 45 + col * 90;
+    const top = 70 + row * 52;
+    const isFallen = i >= count;
+    positions.push({ left, top, isFallen });
+  }
+
+  let monkeysSVG = '';
+  positions.forEach((pos, i) => {
+    const isFallen = i >= count;
+    const mid = `m${i}-${count}-${fallen}`;
+    const clickable = !pos.isFallen && count > 0 && !isDone;
+
+    let monkey = createMonkeySVG(pos.left, pos.top, pos.isFallen, mid);
+
+    // Wrap in click handler group if clickable
+    if (clickable) {
+      monkey = `<g onclick="jumpMonkey('${mid}', ${currentPage})" style="cursor:pointer;">${monkey}</g>`;
+    }
+
+    monkeysSVG += monkey;
+  });
+
+  return `
+    <svg viewBox="0 0 420 230" width="100%" height="100%" style="border-radius: 20px;">
+      <defs>
+        <linearGradient id="bedBg${currentPage}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B3D9FF"/>
+          <stop offset="55%" stop-color="#FFE0B2"/>
+          <stop offset="100%" stop-color="#D4A574"/>
+        </linearGradient>
+      </defs>
+      <!-- Wall & floor -->
+      <rect width="420" height="230" fill="url(#bedBg${currentPage})"/>
+      <!-- Headboard -->
+      <rect x="8" y="18" width="404" height="18" rx="5" fill="#6B3A2A"/>
+      <rect x="5" y="12" width="10" height="10" rx="3" fill="#8B4513"/>
+      <rect x="405" y="12" width="10" height="10" rx="3" fill="#8B4513"/>
+      <!-- Side rails -->
+      <rect x="8" y="36" width="404" height="6" rx="2" fill="#8B4513"/>
+      <rect x="8" y="42" width="404" height="3" rx="1" fill="#7A3E1A"/>
+      <!-- Mattress -->
+      <rect x="15" y="46" width="390" height="120" rx="10" fill="#FFF8E7" stroke="#E8D5B7" stroke-width="2"/>
+      <!-- Sheet detail -->
+      <path d="M15,85 Q110,98 210,88 Q310,78 405,92" stroke="#E8D5B7" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <!-- Pillow -->
+      <rect x="28" y="52" width="70" height="36" rx="18" fill="white" stroke="#E0D5C7" stroke-width="1.5"/>
+      <line x1="63" y1="54" x2="63" y2="86" stroke="#E0D5C7" stroke-width="1" opacity="0.3"/>
+      <!-- Blanket edge -->
+      <path d="M110,52 Q220,95 410,54 L410,92 Q220,135 110,100 Z" fill="#FFB347" opacity="0.2"/>
+      <!-- Bed frame bottom -->
+      <rect x="0" y="162" width="420" height="36" rx="4" fill="#8B4513"/>
+      <line x1="15" y1="170" x2="90" y2="170" stroke="#7A3E1A" stroke-width="1" opacity="0.25"/>
+      <line x1="130" y1="175" x2="220" y2="175" stroke="#7A3E1A" stroke-width="1" opacity="0.25"/>
+      <line x1="260" y1="168" x2="370" y2="168" stroke="#7A3E1A" stroke-width="1" opacity="0.25"/>
+      <!-- Bed legs -->
+      <rect x="12" y="195" width="12" height="14" rx="2" fill="#6B3A2A"/>
+      <rect x="396" y="195" width="12" height="14" rx="2" fill="#6B3A2A"/>
+      <!-- Monkeys -->
+      ${count > 0 ? monkeysSVG : ''}
+      <!-- Zero monkeys: show Zzz -->
+      ${count === 0 ? `
+        <g transform="translate(210, 90)">
+          <text text-anchor="middle" font-size="76" font-family="'Comic Sans MS','Chalkboard SE',sans-serif">😴</text>
+          <text x="-45" y="-50" font-size="28" fill="#6B3A2A" opacity="0.6" font-family="'Comic Sans MS','Chalkboard SE',sans-serif">💤</text>
+          <text x="30" y="-65" font-size="22" fill="#6B3A2A" opacity="0.4" font-family="'Comic Sans MS','Chalkboard SE',sans-serif">💤</text>
+        </g>
+      ` : ''}
+    </svg>
+  `;
+}
+
+// ======== RENDER PAGE ========
 function renderPage(idx) {
   const area = document.getElementById('pageArea');
   const p = pages[idx];
@@ -226,10 +560,10 @@ function renderPage(idx) {
   if (p.cover) {
     area.innerHTML = `
       <div class="page active cover-page" id="page-${idx}">
-        <div class="big-icon float-icon">${p.icon}</div>
+        <div class="cover-scene float-icon">${renderCoverSVG()}</div>
         <div class="page-title">${p.title}</div>
         <div class="page-desc">${p.subtitle}</div>
-        <p style="margin-top:16px;font-size:14px;color:#aaa">👆 点击 "▶" 开始阅读！</p>
+        <p style="margin-top:14px;font-size:15px;color:#aaa">👆 点击 "▶" 开始阅读！</p>
       </div>
     `;
     updateUI(idx);
@@ -241,12 +575,12 @@ function renderPage(idx) {
     area.innerHTML = `
       <div class="page active" id="page-${idx}" style="padding:40px 20px;text-align:center">
         <div style="font-size:100px;margin-bottom:20px">${p.emoji}</div>
-        <div class="page-title" style="margin-bottom:16px">故事结束啦！🎉</div>
-        <div class="sentence" style="font-size:28px">${p.sentence}</div>
-        <div style="margin-top:20px;font-size:48px">⭐ ⭐ ⭐</div>
-        <div class="quiz-area" style="background:#E8F5E9">
-          <h3 style="color:#4CAF50">📖 你读完了整个故事！</h3>
-          <p style="margin-top:8px;color:#4CAF50;font-size:18px">数数小能手，真棒！🎉</p>
+        <div class="page-title" style="margin-bottom:12px">故事结束啦！🎉</div>
+        <div class="sentence" style="font-size:26px;background:#FFF3E0">${p.sentence}</div>
+        <div class="final-stars">⭐ ⭐ ⭐</div>
+        <div class="quiz-area quiz-done">
+          <h3>📖 你读完了整个故事！</h3>
+          <p style="margin-top:8px;color:#4CAF50;font-size:20px">数数小能手，真棒！🎉</p>
         </div>
       </div>
     `;
@@ -259,32 +593,19 @@ function renderPage(idx) {
   const fallen = p.fallen || 0;
   const isDone = gameDone[idx];
 
-  // Generate monkey positions
-  let monkeysHTML = '';
-  const positions = [];
-  for (let i = 0; i < count + fallen; i++) {
-    const row = Math.floor(i / 4);
-    const col = i % 4;
-    const left = 40 + col * 90;
-    const top = 65 + row * 55;
-    const isFallen = i >= count;
-    positions.push({ left, top, isFallen });
-  }
-
-  positions.forEach((pos, i) => {
-    const isLast = i === count - 1 && count > 0;
-    monkeysHTML += `<div class="monkey ${pos.isFallen ? 'fallen' : ''} ${isLast && !isDone && count > 0 ? 'jumping' : ''}" 
-      style="left:${pos.left}px;top:${pos.isFallen ? 50 : pos.top}px" 
-      onclick="${!pos.isFallen && count > 0 && !isDone ? 'jumpMonkey(this, ' + idx + ')' : ''}">🐵</div>`;
-  });
-
   const storyText = count > 0
     ? `<span class="num">${count}</span> little monkey${count > 1 ? 's' : ''} jumping on the bed!<br>One fell off and <span class="bump">bumped</span> his head!`
     : `😴 No more monkeys jumping on the bed!<br>Mama said, "Time for bed!"`;
 
+  // Quiz
   let gameHTML = '';
   if (count > 0 && !isDone) {
     const answers = [count - 1, count, count + 1].filter(n => n >= 0 && n <= 5);
+    // Shuffle answers
+    for (let i = answers.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [answers[i], answers[j]] = [answers[j], answers[i]];
+    }
     const correct = count - 1;
     gameHTML = `
       <div class="quiz-area">
@@ -295,16 +616,15 @@ function renderPage(idx) {
       </div>
     `;
   } else if (isDone && count > 0) {
-    gameHTML = `<div class="quiz-area" style="background:#E8F5E9"><h3 style="color:#4CAF50">✅ 还剩 ${count - 1} 只猴子！</h3><p style="color:#4CAF50;font-size:24px">⭐</p></div>`;
+    const left = count - 1;
+    gameHTML = `<div class="quiz-area quiz-done"><h3>✅ 还剩 ${left} 只猴子！</h3><p style="color:#4CAF50;font-size:28px">⭐ 回答正确！</p></div>`;
   }
 
   area.innerHTML = `
     <div class="page active" id="page-${idx}">
       <div class="page-title">🐵 第 ${Math.min(count, 5)} 只猴子</div>
       <div class="bed-scene" id="bedScene">
-        ${monkeysHTML}
-        <div class="pillow"></div>
-        <div class="bed-frame"></div>
+        ${renderBedScene(count, fallen, isDone)}
       </div>
       <div class="sentence">${storyText}</div>
       ${gameHTML}
@@ -315,54 +635,73 @@ function renderPage(idx) {
   document.getElementById('prevBtn').disabled = idx === 0;
 }
 
-function jumpMonkey(el, idx) {
+// ======== MONKEY JUMP ========
+function jumpMonkey(id, idx) {
   if (gameDone[idx]) return;
-  el.classList.remove('jumping');
-  void el.offsetWidth;
-  el.classList.add('jumping');
+
+  const el = document.getElementById('monkey-' + id);
+  if (!el) return;
+  if (el.dataset.fallen === 'true') return;
+
+  // Trigger big jump animation
+  el.classList.add('big-jump');
+
+  // After jump, mark as fallen
   setTimeout(() => {
-    el.classList.remove('jumping');
+    el.classList.remove('big-jump');
     el.classList.add('fallen');
-    el.style.top = '50px';
-    // Check if all monkeys fallen
-    const monkeys = document.querySelectorAll('.monkey:not(.fallen)');
-    if (monkeys.length === 0) {
+    el.dataset.fallen = 'true';
+
+    // Check if all monkeys have fallen
+    const allMonkeys = document.querySelectorAll('.monkey-svg');
+    const activeMonkeys = Array.from(allMonkeys).filter(m => m.dataset.fallen !== 'true');
+    if (activeMonkeys.length === 0) {
       gameDone[idx] = true;
       setTimeout(() => {
         launchConfetti();
         renderPage(idx);
       }, 600);
     }
-  }, 600);
+  }, 650);
+
+  showSpeechBubble('Bump! 🐵');
   speakText('Bump!');
 }
 
+// ======== QUIZ ANSWER ========
 function checkAnswer(idx, correct, chosen, el) {
   if (gameDone[idx]) return;
   if (chosen === correct) {
     el.classList.add('correct');
     gameDone[idx] = true;
+    showSpeechBubble('🎉 答对了！真棒！');
     setTimeout(() => {
       launchConfetti();
       renderPage(idx);
-    }, 600);
+    }, 700);
   } else {
     el.classList.add('wrong');
-    setTimeout(() => el.classList.remove('wrong'), 400);
+    showSpeechBubble('❌ 再数数看！');
+    setTimeout(() => el.classList.remove('wrong'), 500);
   }
 }
 
+// ======== SPEECH ========
 function speakPage() {
   const p = pages[currentPage];
+  let text = '';
   if (p.cover) {
-    speakText('Five Little Monkeys Jumping on the Bed!');
+    text = 'Five Little Monkeys Jumping on the Bed!';
   } else if (p.final) {
-    speakText('No more monkeys jumping on the bed!');
+    text = 'No more monkeys jumping on the bed! The end!';
   } else if (p.count > 0) {
-    speakText(`${p.count} little monkey${p.count > 1 ? 's' : ''} jumping on the bed. One fell off and bumped his head!`);
+    text = `${p.count} little monkey${p.count > 1 ? 's' : ''} jumping on the bed. One fell off and bumped his head!`;
   } else {
-    speakText('No more monkeys jumping on the bed!');
+    text = 'No more monkeys jumping on the bed! Mama said, Time for bed!';
   }
+
+  showSpeechBubble(`🔊 ${text}`);
+  speakText(text);
 }
 
 function speakText(text) {
@@ -372,6 +711,7 @@ function speakText(text) {
   window.speechSynthesis.speak(u);
 }
 
+// ======== NAVIGATION ========
 function nextPage() {
   const p = pages[currentPage];
   if (p.count > 0 && !gameDone[currentPage] && !p.cover) return;
@@ -382,19 +722,35 @@ function prevPage() {
   if (currentPage > 0) { currentPage--; renderPage(currentPage); }
 }
 
+// ======== CONFETTI ========
 function launchConfetti() {
   const div = document.createElement('div');
   div.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
-  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
-  for (let i = 0; i < 40; i++) {
+  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3','#FF4757','#2ED573'];
+  const shapes = ['circle','square','star'];
+  for (let i = 0; i < 50; i++) {
     const c = document.createElement('div');
-    c.style.cssText = `position:absolute;width:${8+Math.random()*10}px;height:${8+Math.random()*10}px;border-radius:50%;left:${Math.random()*100}%;top:15%;background:${colors[i%colors.length]};animation:confetti-fall ${1.5+Math.random()}s ease-out forwards;animation-delay:${Math.random()*0.6}s;`;
+    const size = 6 + Math.random() * 12;
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    let style = `position:absolute;width:${size}px;height:${size}px;left:${Math.random() * 100}%;top:${-10 + Math.random() * 20}%;`;
+    style += `background:${colors[i % colors.length]};`;
+    style += `animation:confetti-fall ${1.5 + Math.random() * 1.5}s ease-out forwards;`;
+    style += `animation-delay:${Math.random() * 0.8}s;`;
+    if (shape === 'square') {
+      c.style.borderRadius = '2px';
+    } else if (shape === 'star') {
+      c.style.borderRadius = '50% 50% 0 50%';
+    } else {
+      c.style.borderRadius = '50%';
+    }
+    c.style.cssText = style;
     div.appendChild(c);
   }
   document.body.appendChild(div);
-  setTimeout(() => div.remove(), 3000);
+  setTimeout(() => div.remove(), 3500);
 }
 
+// ======== UI UPDATE ========
 function updateUI(idx) {
   document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${pages.length}页`;
   const dots = document.getElementById('progress');
@@ -403,6 +759,7 @@ function updateUI(idx) {
   ).join('');
 }
 
+// ======== INIT ========
 renderPage(0);
 </script>
 </body>
