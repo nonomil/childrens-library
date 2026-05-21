@@ -4,12 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Twinkle Twinkle Little Star - 互动课件</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 /* === RESET & BASE === */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{width:100%;height:100%;overflow:hidden}
 body{
-  font-family:'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   background:#FFF8E7;color:#5D4037;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   min-height:100vh;padding:0;margin:0;
@@ -289,6 +292,7 @@ h2.page-title{
   .svg-scene{max-width:280px}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 <div class="app-container" id="app">
@@ -337,6 +341,7 @@ h2.page-title{
       </svg>
     </div>
     <div style="font-size:.85rem;color:#8D6E63;text-align:center;margin-top:5px;">点击 ◀ ▶ 翻页 · 🔊 听朗读 · 🎵 听歌曲</div>
+    <button onclick="playMelody(TWINKLE)" style="margin-top:8px;background:#FFB347;border:none;border-radius:30px;padding:10px 24px;font-size:1.1rem;font-weight:600;color:#FFF;cursor:pointer;font-family:inherit;transition:all .2s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">🎵 听旋律</button>
   </div>
 
   <!-- ===== PAGE 1: "Twinkle, twinkle, little star" ===== -->
@@ -687,11 +692,10 @@ h2.page-title{
 
   <!-- === NAVIGATION BAR === -->
   <div class="nav-bar">
-    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀ 上一页</button>
-    <button class="nav-btn read-btn" onclick="readAloud()">🔊 读给我听</button>
-    <button class="nav-btn sing-btn" onclick="toggleSing()">🎵 <span id="singBtnLabel">唱</span></button>
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
+    <button class="nav-btn sing-btn" onclick="playMelody(TWINKLE)">🎵</button>
     <div class="nav-dots" id="navDots"></div>
-    <button class="nav-btn" id="nextBtn" onclick="nextPage()">下一页 ▶</button>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
 
 </div>
@@ -806,7 +810,27 @@ const melodyNotes = [
 ];
 const NOTE_LEN = 0.35;
 
-function playMelody(){
+// ===== FULL MELODY NOTE CONSTANTS (for cover/nav buttons) =====
+const NOTE = {
+  C4:261.63, D4:293.66, E4:329.63, F4:349.23,
+  G4:392.00, A4:440.00, B4:493.88, C5:523.25
+};
+const TWINKLE = [
+  [NOTE.C4,0.4],[NOTE.C4,0.4],[NOTE.G4,0.4],[NOTE.G4,0.4],
+  [NOTE.A4,0.4],[NOTE.A4,0.4],[NOTE.G4,0.8],
+  [NOTE.F4,0.4],[NOTE.F4,0.4],[NOTE.E4,0.4],[NOTE.E4,0.4],
+  [NOTE.D4,0.4],[NOTE.D4,0.4],[NOTE.C4,0.8],
+  [NOTE.G4,0.4],[NOTE.G4,0.4],[NOTE.F4,0.4],[NOTE.F4,0.4],
+  [NOTE.E4,0.4],[NOTE.E4,0.4],[NOTE.D4,0.8],
+  [NOTE.G4,0.4],[NOTE.G4,0.4],[NOTE.F4,0.4],[NOTE.F4,0.4],
+  [NOTE.E4,0.4],[NOTE.E4,0.4],[NOTE.D4,0.8],
+  [NOTE.C4,0.4],[NOTE.C4,0.4],[NOTE.G4,0.4],[NOTE.G4,0.4],
+  [NOTE.A4,0.4],[NOTE.A4,0.4],[NOTE.G4,0.8],
+  [NOTE.F4,0.4],[NOTE.F4,0.4],[NOTE.E4,0.4],[NOTE.E4,0.4],
+  [NOTE.D4,0.4],[NOTE.D4,0.4],[NOTE.C4,0.8]
+];
+
+function playSongMelody(){
   stopSinging();
   const ctx = getAudioCtx();
   if(ctx.state==='suspended') ctx.resume();
@@ -816,18 +840,33 @@ function playMelody(){
   });
   const totalTime = melodyNotes.length*NOTE_LEN;
   isSinging = true;
-  document.getElementById('singBtnLabel').textContent = '播放中...';
   singTimeout = setTimeout(()=>{
     isSinging = false;
-    document.getElementById('singBtnLabel').textContent = '唱';
   },totalTime*1000+500);
+}
+
+// ===== PLAY FULL MELODY (for cover/nav buttons) =====
+function playMelody(notes) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  let t = ctx.currentTime;
+  notes.forEach(([freq, dur]) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = freq;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.25, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.start(t); osc.stop(t + dur);
+    t += dur + 0.05;
+  });
 }
 
 function toggleSing(){
   if(isSinging){
     stopSinging();
   }else{
-    playMelody();
+    playSongMelody();
   }
 }
 
@@ -837,7 +876,6 @@ function stopSinging(){
     singTimeout = null;
   }
   isSinging = false;
-  document.getElementById('singBtnLabel').textContent = '唱';
   // We can't stop individual notes once started, but we can close and recreate context
   if(audioCtx){
     audioCtx.close().catch(()=>{});
