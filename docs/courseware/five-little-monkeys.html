@@ -176,10 +176,14 @@ const NOTES = {
 };
 
 const MONKEY_MELODY = [
-  ['G4',0.35], ['G4',0.35], ['E4',0.35], ['G4',0.35], ['A4',0.3], ['G4',0.3], ['E4',0.3], ['C4',0.5],
-  ['D4',0.3], ['D4',0.3], ['E4',0.3], ['F4',0.3], ['G4',0.6],
-  ['C5',0.3], ['C5',0.3], ['A4',0.3], ['A4',0.3], ['G4',0.3], ['E4',0.3], ['D4',0.3], ['C4',0.5],
-  ['D4',0.3], ['D4',0.3], ['E4',0.3], ['F4',0.3], ['G4',0.8]
+  // "Five little monkeys jumping on the bed" — G G E G A G E C
+  ['G4',0.35], ['G4',0.2], ['E4',0.3], ['G4',0.35], ['A4',0.25], ['G4',0.15], ['E4',0.15], ['C4',0.6],
+  // "One fell off and bumped his head" — D D E F G (hold)
+  ['D4',0.25], ['D4',0.25], ['E4',0.3], ['F4',0.3], ['G4',0.8],
+  // "Mama called the doctor and the doctor said" — C C A A G E D C
+  ['C5',0.25], ['C5',0.25], ['A4',0.25], ['A4',0.25], ['G4',0.25], ['E4',0.25], ['D4',0.2], ['C4',0.4],
+  // "No more monkeys jumping on the bed!" — repeat first phrase: G G E G A G E C
+  ['G4',0.35], ['G4',0.2], ['E4',0.3], ['G4',0.35], ['A4',0.25], ['G4',0.15], ['E4',0.15], ['C4',1.0]
 ];
 
 function playMelody() {
@@ -201,7 +205,7 @@ function playMelody() {
       osc.start(t);
       osc.stop(t + dur);
     }
-    t += dur;
+    t += dur + 0.04;
   });
   showMusicNotes();
 }
