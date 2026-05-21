@@ -38,14 +38,19 @@ nav:
     - The Day the Crayons Quit: books/crayons_quit.md
   - 🎯 互动课件:
     - courseware/index.md
-    - ⚙️ 齿轮传动小世界: courseware/gears-transmission.html
-    - 🐱 Fat Cat on a Mat - Phonics: courseware/phonics-fat-cat.html
-    - 🐵 Five Little Monkeys: courseware/five-little-monkeys.html
-    - 🚜 Old MacDonald Had a Farm: courseware/old-macdonald.html
-    - 🍎 I Am an Apple: courseware/i-am-an-apple.html
-    - 🐱 Can We Get a Pet?: courseware/sight-word-tales-can-we-get-a-pet.html
-    - 🎉 Come to the Party!: courseware/sight-word-tales-come-to-the-party.html
-    - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html
-    - 🌟 Twinkle Twinkle Little Star: courseware/twinkle-twinkle.html
-    - 🌴 雨林大冒险（Flipbook）: courseware/rainforest-adventure.html
+    - 🎵 童谣:
+      - 🌟 Twinkle Twinkle: courseware/twinkle-twinkle.html
+      - 🚜 Old MacDonald: courseware/old-macdonald.html
+      - 🐵 Five Little Monkeys: courseware/five-little-monkeys.html
+    - 🔤 英语:
+      - 🐱 Fat Cat - Phonics: courseware/phonics-fat-cat.html
+      - 🎉 Come to the Party!: courseware/sight-word-tales-come-to-the-party.html
+      - 🐱 Can We Get a Pet?: courseware/sight-word-tales-can-we-get-a-pet.html
+      - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html
+    - 🌱 科学:
+      - 🍎 I Am an Apple: courseware/i-am-an-apple.html
+      - ⚙️ 齿轮传动: courseware/gears-transmission.html
+      - 🌴 雨林大冒险: courseware/rainforest-adventure.html
+    - 🀄 语文:
+      - 🌿 大自然识字: courseware/nature-lesson-4.html
   - 全部PDF打包下载: download.md
