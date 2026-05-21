@@ -135,6 +135,21 @@
   .word-choice.correct { border-color: #4caf50; background: #e8f5e9; transform: scale(1.05); box-shadow: 0 4px 16px rgba(76,175,80,0.3); }
   .word-choice.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.4s; }
 
+  /* Drag & Drop styles */
+  .drop-zone {
+    border: 3px dashed #FFB347; border-radius: 16px; padding: 16px;
+    text-align: center; font-size: 16px; color: #AAA; margin-bottom: 10px;
+    transition: all 0.2s; min-height: 50px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drop-zone.drag-over {
+    border-color: #66BB6A; background: rgba(102,187,106,0.1); color: #4CAF50;
+    transform: scale(1.02);
+  }
+  .word-choice { cursor: grab; }
+  .word-choice:active { cursor: grabbing; }
+  .word-choice.dragging { opacity: 0.5; transform: scale(1.05); }
+
   @keyframes shake {
     0%,100% { transform: translateX(0); }
     20% { transform: translateX(-10px); }
@@ -794,8 +809,11 @@ function renderPage(idx) {
         <p style="font-size:14px;color:#B07D44;margin-bottom:8px;">
           帮小朋友完成派对邀请吧！选 "<strong>${p.game.word}</strong>"
         </p>
+        <div class="drop-zone" id="drop-zone-${idx}" ondragover="onDropZoneDragOver(event)" ondrop="onDropZoneDrop(event, ${idx})" ondragleave="onDropZoneDragLeave(event)">
+          📥 拖拽单词到这里
+        </div>
         <div class="word-choices">
-          ${p.game.options.map((w, i) => `<div class="word-choice" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this)">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
+          ${p.game.options.map((w, i) => `<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event, ${idx}, '${p.game.word}', '${w}')" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this)">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -936,6 +954,73 @@ function checkWord(idx, target, chosen, el) {
     showSpeechBubble('❌ 再试试！');
     setTimeout(() => el.classList.remove('wrong'), 500);
   }
+}
+
+/* ========== DRAG & DROP ========== */
+
+let dragWordData = null;
+
+function onWordChoiceDragStart(e, idx, target, chosen) {
+  dragWordData = { idx, target, chosen };
+  e.dataTransfer.setData('text/plain', chosen);
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+
+function onWordChoiceDragEnd(e) {
+  e.target.classList.remove('dragging');
+}
+
+function onDropZoneDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const dropZone = e.currentTarget;
+  if (!dropZone.classList.contains('drag-over')) {
+    dropZone.classList.add('drag-over');
+    dropZone.textContent = '🎯 松开鼠标投放！';
+  }
+}
+
+function onDropZoneDrop(e, idx) {
+  e.preventDefault();
+  const dropZone = e.currentTarget;
+  dropZone.classList.remove('drag-over');
+
+  if (!dragWordData) {
+    dropZone.textContent = '📥 拖拽单词到这里';
+    return;
+  }
+
+  // Use the stored drag data or fall back to dataTransfer
+  const { target, chosen } = dragWordData;
+  dropZone.textContent = chosen === target ? '✅ 正确！' : '❌ 错误！再试试';
+  dragWordData = null;
+
+  // Trigger same logic as click handler
+  const wordChoices = dropZone.parentElement.querySelector('.word-choices');
+  if (wordChoices) {
+    const choiceEls = wordChoices.querySelectorAll('.word-choice');
+    // Find the element for the chosen word
+    for (const el of choiceEls) {
+      if (el.textContent.trim().startsWith(chosen)) {
+        checkWord(idx, target, chosen, el);
+        break;
+      }
+    }
+  }
+
+  // Reset drop zone text after a short delay if not correct
+  setTimeout(() => {
+    if (!document.querySelector('#drop-zone-' + idx + '.drag-over')) {
+      dropZone.textContent = '📥 拖拽单词到这里';
+    }
+  }, 1500);
+}
+
+function onDropZoneDragLeave(e) {
+  const dropZone = e.currentTarget;
+  dropZone.classList.remove('drag-over');
+  dropZone.textContent = '📥 拖拽单词到这里';
 }
 
 /* ========== NAVIGATION ========== */

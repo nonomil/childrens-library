@@ -161,6 +161,32 @@
   .quiz-opt:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.06); }
   .quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; }
   .quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
+  .quiz-opt { cursor: grab; }
+  .quiz-opt:active { cursor: grabbing; }
+  .quiz-opt.dragging { opacity: 0.4; transform: scale(0.95); }
+  .drop-zone {
+    border: 3px dashed #E0D5C7;
+    border-radius: 20px;
+    padding: 18px 12px;
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.5);
+    transition: all 0.2s;
+    font-size: 17px;
+    color: #bbb;
+    text-align: center;
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+  }
+  .drop-zone.drag-over {
+    border-color: #4CAF50;
+    background: #E8F5E9;
+    transform: scale(1.04);
+    color: #4CAF50;
+    font-weight: bold;
+  }
 
   .fact-area {
     font-size: 15px; color: #6B4F3A; text-align: center;
@@ -389,6 +415,7 @@
     .sort-slot { width: 70px; min-height: 70px; }
     .sort-card { width: 58px; height: 58px; font-size: 22px; }
     .sort-slot .slot-item { font-size: 26px; }
+    .drop-zone { font-size: 14px; padding: 14px 10px; min-height: 48px; }
   }
 </style>
 </head>
@@ -813,10 +840,11 @@ function renderPage(idx) {
         <span class="gear-corner bl">⚙</span>
         <span class="gear-corner br">⚙</span>
         <h3>🤔 ${p.game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${p.game.question.replace(/'/g, "\\'")}')">🔊</button></h3>
+        <div class="drop-zone" ondragover="quizDragOver(event)" ondrop="quizDrop(event)" ondragleave="quizDragLeave(event)">📥 将答案拖到这里</div>
         <div class="quiz-options">
           ${p.game.options.map(opt => {
             const isCorrect = opt === p.game.correct;
-            return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
+            return `<div class="quiz-opt" draggable="true" ondragstart="quizDragStart(event, this, ${idx}, ${isCorrect})" ondragend="quizDragEnd(event)" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
           }).join('')}
         </div>
       </div>
@@ -1071,8 +1099,44 @@ function resetSortGame() {
 }
 
 // ============================================================
-// QUIZ
+// QUIZ - Click & Drag Dual Mode
 // ============================================================
+
+let quizDragData = { el: null, idx: -1, isCorrect: false };
+
+function quizDragStart(e, el, idx, isCorrect) {
+  quizDragData = { el, idx, isCorrect };
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', '' + idx);
+  setTimeout(() => el.classList.add('dragging'), 0);
+}
+
+function quizDragEnd(e) {
+  e.target.classList.remove('dragging');
+  quizDragData = { el: null, idx: -1, isCorrect: false };
+}
+
+function quizDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const zone = e.currentTarget;
+  if (zone) zone.classList.add('drag-over');
+}
+
+function quizDragLeave(e) {
+  const zone = e.currentTarget;
+  if (zone) zone.classList.remove('drag-over');
+}
+
+function quizDrop(e) {
+  e.preventDefault();
+  const zone = e.currentTarget;
+  if (zone) zone.classList.remove('drag-over');
+  if (!quizDragData.el) return;
+  const { idx, isCorrect, el } = quizDragData;
+  quizDragData = { el: null, idx: -1, isCorrect: false };
+  checkAnswer(idx, isCorrect, el);
+}
 
 function checkAnswer(idx, isCorrect, el) {
   if (gameDone[idx]) return;

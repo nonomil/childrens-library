@@ -131,7 +131,7 @@ body {
   background: white;
   font-size: 22px;
   font-weight: bold;
-  cursor: pointer;
+  cursor: grab;
   transition: all 0.15s;
   box-shadow: 0 3px 0 #DDD;
   user-select: none;
@@ -145,6 +145,7 @@ body {
 .word-choice:active {
   transform: translateY(2px);
   box-shadow: 0 0 0 #DDD;
+  cursor: grabbing;
 }
 .word-choice.correct {
   border-color: #4caf50;
@@ -167,6 +168,19 @@ body {
   0%,100% { transform: scale(1); }
   50% { transform: scale(1.15); }
 }
+
+/* Drop zone for drag-and-drop */
+.drop-zone {
+  border: 3px dashed #FFB347; border-radius: 16px; padding: 16px;
+  text-align: center; font-size: 16px; color: #AAA; margin-bottom: 10px;
+  transition: all 0.2s; min-height: 50px;
+  display: flex; align-items: center; justify-content: center;
+}
+.drop-zone.drag-over {
+  border-color: #66BB6A; background: rgba(102,187,106,0.1); color: #4CAF50;
+  transform: scale(1.02);
+}
+.word-choice.dragging { opacity: 0.5; transform: scale(1.05); }
 
 /* Speech bubble - gear style */
 .speech-bubble {
@@ -926,17 +940,43 @@ function renderGame(idx, game) {
   }
   var qSpeak = game.question.replace(/[??⚙️]/g, '').replace(/[""]/g, '').trim();
   var opts = game.options.map(function(w) {
-    return '<div class="word-choice" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
+    return '<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event,' + idx + ",'" + game.word + "','" + w + "')" + '" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
   }).join('');
   
   return `
     <div class="game-area" id="game-${idx}">
       <h3>${game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${qSpeak.replace(/'/g, "\\'")}')">🔊</button></h3>
+      <div class="drop-zone" id="dropzone-${idx}" ondragover="onDropZoneDragOver(event)" ondrop="onDropZoneDrop(event,${idx})" ondragleave="onDropZoneDragLeave(event)">⬇️ 把正确的词拖到这里</div>
       <div class="word-choices">
         ${opts}
       </div>
     </div>
   `;
+}
+
+let dragWordData = null;
+function onWordChoiceDragStart(e, idx, target, chosen) {
+  dragWordData = { idx, target, chosen, el: e.currentTarget };
+  e.dataTransfer.setData('text/plain', chosen);
+  e.currentTarget.classList.add('dragging');
+}
+function onWordChoiceDragEnd(e) {
+  dragWordData = null;
+  e.currentTarget.classList.remove('dragging');
+}
+function onDropZoneDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function onDropZoneDrop(e, idx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragWordData && dragWordData.idx === idx) {
+    checkWord(dragWordData.idx, dragWordData.target, dragWordData.chosen, dragWordData.el);
+  }
+}
+function onDropZoneDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
 }
 
 function checkWord(idx, target, chosen, el) {

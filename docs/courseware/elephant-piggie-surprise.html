@@ -132,6 +132,13 @@ body {
 .quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
 @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
+/* Drop zone for drag-to-answer */
+.drop-zone { border:3px dashed #FFB347; border-radius:16px; padding:16px; text-align:center; font-size:16px; color:#AAA; margin-bottom:10px; transition:all 0.2s; min-height:50px; display:flex; align-items:center; justify-content:center; }
+.drop-zone.drag-over { border-color:#66BB6A; background:rgba(102,187,106,0.1); color:#4CAF50; transform:scale(1.02); }
+.quiz-opt { cursor:grab; }
+.quiz-opt:active { cursor:grabbing; }
+.quiz-opt.dragging { opacity:0.5; }
+
 /* Navigation bar - gears style */
 .nav-bar {
   display: flex; gap: 12px; justify-content: center;
@@ -582,10 +589,11 @@ function renderPage(idx) {
       contentHTML += `
         <div class="quiz-area">
           <h3>💭 ${p.game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${p.game.question.replace(/'/g, "\\'")}')">🔊</button></h3>
+          <div class="drop-zone" id="dropzone-${idx}" ondragover="onQuizDragOver(event)" ondrop="onQuizDrop(event,${idx})" ondragleave="onQuizDragLeave(event)">📥 把答案拖到这里</div>
           <div class="quiz-options">
             ${p.game.options.map((opt, oi) => {
               const isCorrect = opt === p.game.correct;
-              return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
+              return `<div class="quiz-opt" draggable="true" ondragstart="onQuizDragStart(event,${idx},${isCorrect})" ondragend="onQuizDragEnd(event)" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
             }).join('')}
           </div>
         </div>
@@ -609,16 +617,62 @@ function renderPage(idx) {
   document.getElementById('nextBtn').disabled = false;
 }
 
+// ===== Drag & Drop for Quiz =====
+
+let dragQuizData = null;
+
+function onQuizDragStart(e, pageIdx, isCorrect) {
+  dragQuizData = { pageIdx, isCorrect };
+  e.dataTransfer.setData('text/plain', '');
+  e.currentTarget.classList.add('dragging');
+}
+
+function onQuizDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  dragQuizData = null;
+}
+
+function onQuizDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+
+function onQuizDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function onQuizDrop(e, pageIdx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragQuizData && dragQuizData.pageIdx === pageIdx) {
+    checkAnswer(pageIdx, dragQuizData.isCorrect, null);
+  }
+  dragQuizData = null;
+}
+
 function checkAnswer(idx, isCorrect, el) {
   if (gameDone[idx]) return;
   if (isCorrect) {
-    el.classList.add('correct');
+    if (el) {
+      el.classList.add('correct');
+    } else {
+      const dz = document.getElementById('dropzone-' + idx);
+      if (dz) { dz.style.borderColor = '#4CAF50'; dz.style.background = '#E8F5E9'; dz.innerHTML = '✅ 回答正确！'; dz.style.color = '#4CAF50'; }
+    }
     gameDone[idx] = true;
     launchConfetti();
     setTimeout(() => renderPage(idx), 900);
   } else {
-    el.classList.add('wrong');
-    setTimeout(() => el.classList.remove('wrong'), 400);
+    if (el) {
+      el.classList.add('wrong');
+      setTimeout(() => el.classList.remove('wrong'), 400);
+    } else {
+      const dz = document.getElementById('dropzone-' + idx);
+      if (dz) { dz.style.borderColor = '#F44336'; dz.style.background = '#FFEBEE'; dz.style.color = '#F44336'; dz.innerHTML = '❌ 再想想吧！'; }
+      setTimeout(() => {
+        if (dz) { dz.style.borderColor = '#FFB347'; dz.style.background = ''; dz.style.color = '#AAA'; dz.innerHTML = '📥 把答案拖到这里'; }
+      }, 600);
+    }
   }
 }
 

@@ -59,7 +59,7 @@ body {
 .quiz-options { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
 .quiz-opt {
   padding:14px 26px; border-radius:18px; border:3px solid #DDB8E8;
-  background:white; font-size:22px; font-weight:bold; cursor:pointer;
+  background:white; font-size:22px; font-weight:bold; cursor:grab; user-select:none;
   transition:all .15s; font-family:inherit; color:#5A3E2B; min-width:60px;
   box-shadow:0 2px 8px rgba(0,0,0,0.06);
 }
@@ -122,6 +122,11 @@ body {
 .speak-btn:active { transform:scale(0.9); }
 .quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
 .quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+/* Drag & Drop for quiz */
+.drop-zone { border:3px dashed #FFB347; border-radius:16px; padding:16px; text-align:center; font-size:16px; color:#AAA; margin-bottom:10px; transition:all 0.2s; min-height:50px; display:flex; align-items:center; justify-content:center; }
+.drop-zone.drag-over { border-color:#66BB6A; background:rgba(102,187,106,0.1); color:#4CAF50; transform:scale(1.02); }
+.quiz-opt:active { cursor:grabbing; }
+.quiz-opt.dragging { opacity:0.5; }
 </style>
 </head>
 <body>
@@ -468,8 +473,10 @@ function renderPage(idx){
     const answers = [count-1, count, count+1].filter(n=>n>=0&&n<=5);
     for(let i=answers.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[answers[i],answers[j]]=[answers[j],answers[i]];}
     const correct = count-1;
-    gameHTML = '<div class="quiz-area"><h3>🔢 还剩下几只猴子？ <span class="speak-btn" onclick="event.stopPropagation();speakText(\'How many monkeys are left?\')">🔊</span></h3><div class="quiz-options">'
-      +answers.map(n=>'<div class="quiz-opt" onclick="checkAnswer('+idx+','+correct+','+n+',this)">'+n+' <span class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\''+n+'\')">🔊</span></div>').join('')
+    gameHTML = '<div class="quiz-area"><h3>🔢 还剩下几只猴子？ <span class="speak-btn" onclick="event.stopPropagation();speakText(\'How many monkeys are left?\')">🔊</span></h3>'
+      +'<div class="drop-zone" id="dropzone-'+idx+'" ondragover="onQuizDragOver(event)" ondrop="onQuizDrop(event,'+idx+')" ondragleave="onQuizDragLeave(event)">📥 把答案拖到这里</div>'
+      +'<div class="quiz-options">'
+      +answers.map(n=>'<div class="quiz-opt" draggable="true" ondragstart="onQuizDragStart(event,'+n+')" ondragend="onQuizDragEnd(event)" onclick="checkAnswer('+idx+','+correct+','+n+',this)">'+n+' <span class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\''+n+'\')">🔊</span></div>').join('')
       +'</div></div>';
   } else if(isDone && count>0){
     gameHTML = '<div class="quiz-area" style="background:#E8F5E9"><h3 style="color:#4CAF50">✅ 还剩 '+(count-1)+' 只猴子！</h3><p style="color:#4CAF50;font-size:24px">⭐</p></div>';
@@ -521,6 +528,42 @@ function jumpMonkey(id){
       setTimeout(()=>renderPage(currentPage),700);
     }
   },200);
+}
+
+// ====== DRAG & DROP FOR QUIZ ======
+let dragQuizData = null;
+let dragChosenNum = null;
+
+function onQuizDragStart(event, num) {
+  dragQuizData = event.target;
+  dragChosenNum = num;
+  event.dataTransfer.setData('text/plain', num.toString());
+  event.target.classList.add('dragging');
+}
+
+function onQuizDragEnd(event) {
+  event.target.classList.remove('dragging');
+}
+
+function onQuizDragOver(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('drag-over');
+}
+
+function onQuizDragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function onQuizDrop(event, idx) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  if (dragQuizData) {
+    const p = pages[idx];
+    const correct = p.count - 1;
+    checkAnswer(idx, correct, dragChosenNum, dragQuizData);
+    dragQuizData = null;
+    dragChosenNum = null;
+  }
 }
 
 // ====== CHECK ANSWER ======
