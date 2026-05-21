@@ -24,6 +24,21 @@ def make_scene_svg(element, colors):
 
 
 SONGS = [
+    {"id":"wheels-on-bus","title":"The Wheels on the Bus","emoji":"🚌","mp3":"wheels.mp3","cover_subtitle":"✏️ 公车的轮子转啊转！",
+     "pages":[
+        {"sentence":'The <span class="hl" data-word="wheels">wheels</span> on the bus go <span class="hl" data-word="round">round</span> and <span class="hl" data-word="round">round</span>',"desc":"公车的轮子转啊转","game":"wheels"},
+        {"sentence":'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl" data-word="up">up</span> and <span class="hl" data-word="down">down</span>',"desc":"公车的人们上上下下","game":"people"},
+        {"sentence":'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span> swish swish',"desc":"公车的雨刷刷刷刷","game":"wipers"},
+        {"sentence":'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span> beep beep',"desc":"公车的喇叭哔哔哔","game":"horn"},
+        {"sentence":'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>',"desc":"公车的门开了关","game":"door"},
+     ],"svg_bg":"#87CEEB,#E0F7FA","svg_element":"bus"},
+    {"id":"itsy-bitsy-spider","title":"Itsy Bitsy Spider","emoji":"🕷️","mp3":"itsybitsy.mp3","cover_subtitle":"✏️ 小蜘蛛爬水管！",
+     "pages":[
+        {"sentence":'The <span class="hl" data-word="itsy">itsy</span> <span class="hl" data-word="bitsy">bitsy</span> <span class="hl" data-word="spider">spider</span> went up the water <span class="hl" data-word="spout">spout</span>',"desc":"小蜘蛛爬上了水管","game":"spider"},
+        {"sentence":'Down came the <span class="hl" data-word="rain">rain</span> and washed the spider <span class="hl" data-word="out">out</span>',"desc":"下雨了把蜘蛛冲出来","game":"rain"},
+        {"sentence":'Out came the <span class="hl" data-word="sun">sun</span> and dried up all the <span class="hl" data-word="rain">rain</span>',"desc":"太阳出来晒干了雨水","game":"sun"},
+        {"sentence":'And the itsy bitsy spider went up the spout <span class="hl" data-word="again">again</span>',"desc":"小蜘蛛又爬上了水管","game":"again"},
+     ],"svg_bg":"#A5D6A7,#C8E6C9","svg_element":"spider"},
     {"id":"bingo","title":"BINGO","emoji":"🐶","mp3":"bingo.mp3","cover_subtitle":"✏️ 农夫有一只小狗叫BINGO！",
      "pages":[
         {"sentence":'There was a <span class="hl" data-word="farmer">farmer</span> had a <span class="hl" data-word="dog">dog</span>',"desc":"农夫有一只小狗","game":"farmer"},
@@ -396,8 +411,9 @@ def generate(song):
     song_id = song["id"]
     pages = song["pages"]
     emoji = song.get("emoji", "🎵")
-    display_title = f"{emoji} {song['title']}"
+    display_title = f"{emoji} {song['title']}".replace("'", "\\'")
     title_clean = re.sub(r'[^a-zA-Z\s]', '', song['title']).strip()
+    sub_escaped = song["cover_subtitle"].replace("'", "\\'")
     n_pages = len(pages) + 3
 
     cover_svg = make_scene_svg(song["svg_element"], song["svg_bg"])
@@ -425,7 +441,7 @@ def generate(song):
     html = TEMPLATE_HTML
     html = html.replace("__DISPLAY_TITLE__", display_title)
     html = html.replace("__TITLE__", f"{emoji} {song['title']}")
-    html = html.replace("__COVER_SUBTITLE__", song["cover_subtitle"])
+    html = html.replace("__COVER_SUBTITLE__", sub_escaped)
     html = html.replace("__PAGES_JS__", pages_js_str)
     html = html.replace("__SCENES__", scenes_str)
     html = html.replace("__MATCH_WORDS__", match_words)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🚌 The Wheels on the Bus</title>
+<title>🚌 The Wheels on the Bus - 互动课件</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
@@ -31,13 +31,6 @@ body {
 @keyframes popIn { 0%{opacity:0;transform:scale(0.3)} 100%{opacity:1;transform:scale(1)} }
 @keyframes confetti-fall { 0%{opacity:1;transform:translateY(0)rotate(0deg)} 100%{opacity:0;transform:translateY(500px)rotate(720deg)} }
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-@keyframes busBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
-@keyframes wheelSpin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-@keyframes upDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-@keyframes swishAnim { 0%,100%{transform:rotate(0deg)} 50%{transform:rotate(-20deg)} }
-@keyframes beepPulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-@keyframes doorShut { 0%{transform:scaleX(1)} 50%{transform:scaleX(0.1)} 100%{transform:scaleX(1)} }
-
 .page-title { font-size:30px; color:#E8751A; text-align:center; margin-bottom:8px; font-weight:bold; }
 .page-desc { font-size:18px; color:#6B4F3A; text-align:center; line-height:1.5; margin-bottom:10px; }
 .scene-wrap { width:100%; max-width:460px; height:auto; margin:0 auto 10px; border-radius:20px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.08); }
@@ -45,7 +38,7 @@ body {
 .lyrics { font-size:26px; color:#E8751A; text-align:center; padding:12px 16px; background:#FFF8E7; border-radius:16px; width:100%; margin-bottom:8px; line-height:1.5; font-weight:bold; }
 .lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
 .lyrics .hl:active { transform:scale(1.2); }
-.lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
+.lyrics .hl::after { content:'\U0001f50a'; font-size:14px; opacity:0.5; margin-left:4px; }
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -60,8 +53,18 @@ body {
 .letter-tile.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
 .letter-tile.used { opacity:0.35; pointer-events:none; }
 .letter-tile.dragging { opacity:0.5; }
-
-/* Controls */
+.match-game { width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }
+.match-game h3 { font-size:18px; color:#2E7D32; margin-bottom:12px; }
+.sound-btn { width:100px; height:100px; border-radius:50%; border:4px solid #FFB347; background:#FFF; font-size:36px; cursor:pointer; transition:all .15s; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; }
+.sound-btn:active { transform:scale(1.1); background:#FFF8E7; }
+.word-choices { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.word-choice { padding:10px 20px; border-radius:20px; border:3px solid #E0D5C7; background:white; cursor:pointer; transition:all .15s; font-size:18px; font-weight:bold; color:#6B4F3A; font-family:inherit; }
+.word-choice:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
+.word-choice.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
+.word-choice.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
+.speech-bubble { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }
+.speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+.speech-bubble::before { content:'\U0001f50a'; display:block; font-size:22px; margin-bottom:4px; }
 .controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:8px; position:sticky; bottom:0; background:#FFFCF5; padding:8px 0; z-index:100; }
 .nav-btn { background:#FFB347; border:none; color:#FFF; font-size:28px; width:60px; height:60px; border-radius:50%; cursor:pointer; box-shadow:0 4px 12px rgba(255,179,71,0.4); transition:all .15s; display:flex; align-items:center; justify-content:center; flex-shrink:0; touch-action:manipulation; }
 .nav-btn:hover { transform:scale(1.1); background:#FF9F1C; }
@@ -75,26 +78,15 @@ body {
 .page-dots .dot.active { background:#FFB347; transform:scale(1.3); }
 .page-dots .dot.done { background:#4CAF50; }
 .page-counter { font-size:13px; color:#999; text-align:center; margin-top:6px; }
-
-/* Speech bubble */
-.speech-bubble { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }
-.speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
-.speech-bubble::before { content:'🔊'; display:block; font-size:22px; margin-bottom:4px; }
-
-/* Celebration */
-.celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
-.cover-page { text-align:center; padding:20px 10px; }
 .big-start-btn { width:120px; height:120px; border-radius:50%; background:linear-gradient(145deg,#FFB347,#FF9F1C); border:6px solid #FFF; color:#FFF; font-size:32px; cursor:pointer; box-shadow:0 8px 30px rgba(255,179,71,0.5); transition:all .15s; margin:10px auto; display:flex; align-items:center; justify-content:center; animation:bounce 2s ease-in-out infinite; }
 .big-start-btn:active { transform:scale(0.95); }
-
-/* Final page */
+.big-start-btn.smaller { width:90px; height:90px; font-size:28px; }
+.cover-svg { width:100%; max-width:400px; margin:0 auto; }
 .final-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0; }
-.final-bus-item { width:80px; text-align:center; padding:8px; border-radius:16px; background:#FFF8E7; border:2px solid #FFE8C8; }
-.final-bus-item .label { font-size:14px; color:#6B4F3A; font-weight:bold; margin-top:4px; }
+.final-word { padding:8px 16px; border-radius:16px; background:#FFF8E7; border:2px solid #FFE8C8; font-size:18px; font-weight:bold; color:#E8751A; }
 .home-link { color:#FFB347; text-decoration:none; font-size:18px; font-weight:bold; margin-top:10px; display:inline-block; }
 .home-link:hover { text-decoration:underline; }
-.cover-svg { width:100%; max-width:400px; margin:0 auto; }
-
+.celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
 @media (max-width:500px) {
   .book { padding:16px 12px; }
   .page-title { font-size:24px; }
@@ -104,6 +96,8 @@ body {
   .nav-btn { width:50px; height:50px; font-size:24px; }
   .nav-btn.small { width:40px; height:40px; font-size:18px; }
   .read-btn { font-size:14px; padding:8px 14px; }
+  .sound-btn { width:80px; height:80px; font-size:28px; }
+  .word-choice { font-size:16px; padding:8px 14px; }
   .big-start-btn { width:90px; height:90px; font-size:26px; }
 }
 </style>
@@ -113,29 +107,30 @@ body {
 <div class="book">
   <div class="page-area" id="pageArea"></div>
   <div class="controls" id="controlsBar">
-    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>◀</button>
-    <button class="nav-btn small" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>&#x25C0;</button>
+    <button class="nav-btn small" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">&#x1F3B5;</button>
     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
-      <button class="read-btn" onclick="speakPage()">🔊 读</button>
-      <button class="read-btn pink" onclick="playSong();showMusicNotes()">🎵 唱</button>
+      <button class="read-btn" onclick="speakPage()">&#x1F50A; 读</button>
+      <button class="read-btn pink" onclick="playSong();showMusicNotes()">&#x1F3B5; 唱</button>
     </div>
-    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">&#x25B6;</button>
   </div>
   <div class="page-dots" id="progressDots"></div>
-  <div class="page-counter" id="pageCounter">第1页 / 共7页</div>
+  <div class="page-counter" id="pageCounter">第1页 / 共8页</div>
 </div>
 <div class="speech-bubble" id="speechBubble"></div>
 
 <script>
 // ====== PAGE DATA ======
 const pages = [
-  { cover:true, title:'The Wheels on the Bus', subtitle:'🚌 一首好听的英文公车儿歌！' },
-  { sentence:'The <span class="hl" data-word="wheels">wheels</span> on the bus go <span class="hl">round and round</span>!', game:'wheels', svg:'wheels' },
-  { sentence:'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl">up and down</span>!', game:'people', svg:'people' },
-  { sentence:'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl">swish swish swish</span>!', game:'wipers', svg:'wipers' },
-  { sentence:'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl">beep beep beep</span>!', game:'horn', svg:'horn' },
-  { sentence:'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl">open and shut</span>!', game:'door', svg:'door' },
-  { final:true, title:'🚌 公车小明星！' }
+  { cover:true, title:'🚌 The Wheels on the Bus', subtitle:'✏️ 公车的轮子转啊转！' },
+  { sentence:'The <span class="hl" data-word="wheels">wheels</span> on the bus go <span class="hl" data-word="round">round</span> and <span class="hl" data-word="round">round</span>', desc:'公车的轮子转啊转', game:'wheels', svg:'0' },
+  { sentence:'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl" data-word="up">up</span> and <span class="hl" data-word="down">down</span>', desc:'公车的人们上上下下', game:'people', svg:'0' },
+  { sentence:'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span> swish swish', desc:'公车的雨刷刷刷刷', game:'wipers', svg:'0' },
+  { sentence:'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span> beep beep', desc:'公车的喇叭哔哔哔', game:'horn', svg:'0' },
+  { sentence:'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>', desc:'公车的门开了关', game:'door', svg:'0' },
+  { match:true, title:'\U0001f50a 听声音找单词' },
+  { final:true, title:'\U0001f389 太棒了!' }
 ];
 
 let currentPage = 0;
@@ -143,37 +138,8 @@ let gameDone = new Array(pages.length).fill(false);
 let buildingWord = [];
 let dragData = null;
 
-// ====== WEB AUDIO API ======
-const NOTE = {
-  C4:261.63, D4:293.66, E4:329.63, F4:349.23,
-  G4:392.00, A4:440.00, B4:493.88, C5:523.25
-};
-function playMelody(notes) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  let t = ctx.currentTime;
-  notes.forEach(function(n) {
-    const [freq, dur] = n;
-    if(freq > 0) {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'triangle';
-      gain.gain.setValueAtTime(0.25, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
-      osc.start(t); osc.stop(t + dur);
-      t += dur + 0.05;
-    }
-  });
-}
-// Wheels on the Bus melody (simplified)
-const WHEELS_MELODY = [
-  [NOTE.G4,0.2],[NOTE.A4,0.2],[NOTE.B4,0.3],[NOTE.G4,0.3],
-  [NOTE.G4,0.2],[NOTE.A4,0.2],[NOTE.B4,0.6],
-  [NOTE.B4,0.2],[NOTE.C5,0.2],[NOTE.D5,0.3],[NOTE.B4,0.2],[NOTE.G4,0.2],
-  [NOTE.A4,0.3],[NOTE.A4,0.3],[NOTE.G4,0.6]
-];
-// ===== PLAY FULL SONG MP3 =====
+const NOTE = { C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88, C5:523.25 };
+
 var songAudio = null;
 function playSong() {
   if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
@@ -181,429 +147,146 @@ function playSong() {
   songAudio.volume = 0.8;
   songAudio.play().catch(function(){});
 }
-// Sound effects
-function playSound(freq, dur) {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const osc = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain); gain.connect(ctx.destination);
-  osc.frequency.value = freq;
-  osc.type = 'square';
-  gain.gain.setValueAtTime(0.2, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-  osc.start(); osc.stop(ctx.currentTime + dur);
-}
-function playSoundEffect(freqStart,freqEnd,dur) {
-  const ctx=new(window.AudioContext||window.webkitAudioContext)();
-  if(ctx.state==='suspended') ctx.resume();
-  const t=ctx.currentTime;
-  const o=ctx.createOscillator(),g=ctx.createGain();
-  o.type='sawtooth'; o.frequency.setValueAtTime(freqStart,t); o.frequency.exponentialRampToValueAtTime(freqEnd,t+dur);
-  g.gain.setValueAtTime(0.2,t); g.gain.exponentialRampToValueAtTime(0.01,t+dur-0.05);
-  o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur);
-}
 function showMusicNotes() {
-  const scene=document.querySelector('.scene-wrap'); if(!scene) return;
-  const notes=['♪','♫','♩','♬'];
-  for(let i=0;i<8;i++){const n=document.createElement('div');n.textContent=notes[i%notes.length];n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';scene.appendChild(n);setTimeout(function(e){e.remove()},3000,n);}
+  var scene=document.querySelector('.scene-wrap'); if(!scene) return;
+  var notes=['\u266a','\u266b','\u2669','\u266c'];
+  for(var i=0;i<8;i++){var n=document.createElement('div');n.textContent=notes[i%4];n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';scene.appendChild(n);setTimeout(function(e){e.remove()},3000,n);}
 }
-
 function speakText(text) {
-  if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;window.speechSynthesis.speak(u);}
+  if('speechSynthesis' in window){window.speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;window.speechSynthesis.speak(u);}
 }
-
 function showBubble(text) {
-  const b=document.getElementById('speechBubble');b.textContent=text;b.classList.add('show');
-  clearTimeout(b._t);b._t=setTimeout(()=>{b.classList.remove('show')},3000);
+  var b=document.getElementById('speechBubble');b.textContent=text;b.classList.add('show');
+  clearTimeout(b._t);b._t=setTimeout(function(){b.classList.remove('show')},3000);
 }
 
-// ====== SVG SCENES ======
-function svgBusScene(scene) {
-  // Base bus SVG that all pages build on
-  let extra = '';
-  let animClass = '';
+// ====== SVG ======
+var COVER_SVG = `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`;
 
-  if(scene === 'wheels') {
-    extra = `
-      <!-- Wheels spinning -->
-      <g>
-        <circle cx="130" cy="195" r="22" fill="#333" stroke="#555" stroke-width="3"/>
-        <circle cx="130" cy="195" r="18" fill="#444"/>
-        <circle cx="130" cy="195" r="6" fill="#888"/>
-        <line x1="130" y1="177" x2="130" y2="213" stroke="#666" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 130 195" to="360 130 195" dur="2s" repeatCount="indefinite"/></line>
-        <line x1="112" y1="195" x2="148" y2="195" stroke="#666" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 130 195" to="360 130 195" dur="2s" repeatCount="indefinite"/></line>
-
-        <circle cx="310" cy="195" r="22" fill="#333" stroke="#555" stroke-width="3"/>
-        <circle cx="310" cy="195" r="18" fill="#444"/>
-        <circle cx="310" cy="195" r="6" fill="#888"/>
-        <line x1="310" y1="177" x2="310" y2="213" stroke="#666" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 310 195" to="360 310 195" dur="2s" repeatCount="indefinite"/></line>
-        <line x1="292" y1="195" x2="328" y2="195" stroke="#666" stroke-width="2"><animateTransform attributeName="transform" type="rotate" from="0 310 195" to="360 310 195" dur="2s" repeatCount="indefinite"/></line>
-
-        <text x="220" y="60" text-anchor="middle" font-size="18" fill="#E8751A" font-weight="bold">Round and round!</text>
-      </g>`;
-  } else if(scene === 'people') {
-    extra = `
-      <!-- People bouncing up and down -->
-      <g>
-        <!-- Person 1 -->
-        <circle cx="180" cy="80" r="10" fill="#FFCC80"/>
-        <rect x="175" y="90" width="10" height="16" rx="3" fill="#42A5F5">
-          <animate attributeName="y" values="90;80;90" dur="1s" repeatCount="indefinite"/>
-        </rect>
-        <circle cx="180" cy="80" r="10" fill="#FFCC80">
-          <animate attributeName="cy" values="80;70;80" dur="1s" repeatCount="indefinite"/>
-        </circle>
-        <line x1="175" y1="106" x2="170" y2="118" stroke="#FFCC80" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="y2" values="118;108;118" dur="1s" repeatCount="indefinite"/>
-        </line>
-        <line x1="185" y1="106" x2="190" y2="118" stroke="#FFCC80" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="y2" values="118;108;118" dur="1s" repeatCount="indefinite"/>
-        </line>
-
-        <!-- Person 2 -->
-        <circle cx="250" cy="85" r="10" fill="#FFCC80"/>
-        <rect x="245" y="95" width="10" height="16" rx="3" fill="#EF5350">
-          <animate attributeName="y" values="95;85;95" dur="0.9s" repeatCount="indefinite"/>
-        </rect>
-        <circle cx="250" cy="85" r="10" fill="#FFCC80">
-          <animate attributeName="cy" values="85;75;85" dur="0.9s" repeatCount="indefinite"/>
-        </circle>
-        <line x1="245" y1="111" x2="240" y2="123" stroke="#FFCC80" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="y2" values="123;113;123" dur="0.9s" repeatCount="indefinite"/>
-        </line>
-        <line x1="255" y1="111" x2="260" y2="123" stroke="#FFCC80" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="y2" values="123;113;123" dur="0.9s" repeatCount="indefinite"/>
-        </line>
-
-        <text x="220" y="60" text-anchor="middle" font-size="18" fill="#E8751A" font-weight="bold">Up and down!</text>
-      </g>`;
-  } else if(scene === 'wipers') {
-    extra = `
-      <g>
-        <!-- Windshield wipers -->
-        <line x1="135" y1="75" x2="170" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="x2" values="170;155;170" dur="1.5s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="70;55;70" dur="1.5s" repeatCount="indefinite"/>
-        </line>
-        <line x1="160" y1="75" x2="195" y2="70" stroke="#333" stroke-width="3" stroke-linecap="round">
-          <animate attributeName="x2" values="195;180;195" dur="1.5s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="70;55;70" dur="1.5s" repeatCount="indefinite"/>
-        </line>
-        <!-- Rain drops -->
-        <line x1="100" y1="20" x2="100" y2="30" stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.6">
-          <animate attributeName="y1" values="20;80;20" dur="1.2s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="30;90;30" dur="1.2s" repeatCount="indefinite"/>
-        </line>
-        <line x1="120" y1="10" x2="120" y2="20" stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.6">
-          <animate attributeName="y1" values="10;70;10" dur="1s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="20;80;20" dur="1s" repeatCount="indefinite"/>
-        </line>
-        <line x1="80" y1="35" x2="80" y2="45" stroke="#90CAF9" stroke-width="2" stroke-linecap="round" opacity="0.6">
-          <animate attributeName="y1" values="35;95;35" dur="1.4s" repeatCount="indefinite"/>
-          <animate attributeName="y2" values="45;105;45" dur="1.4s" repeatCount="indefinite"/>
-        </line>
-        <text x="220" y="60" text-anchor="middle" font-size="18" fill="#E8751A" font-weight="bold">Swish swish swish!</text>
-      </g>`;
-  } else if(scene === 'horn') {
-    extra = `
-      <g>
-        <!-- Horn sound waves -->
-        <text x="340" y="100" font-size="28" fill="#FF9800" font-weight="bold">
-          BEEP!
-          <animate attributeName="font-size" values="28;36;28" dur="0.5s" repeatCount="indefinite"/>
-        </text>
-        <text x="345" y="80" font-size="18" fill="#FFB74D" font-weight="bold">
-          BEEP!
-          <animate attributeName="font-size" values="18;26;18" dur="0.5s" repeatCount="indefinite"/>
-        </text>
-        <text x="350" y="60" font-size="12" fill="#FFCC80" font-weight="bold">
-          BEEP!
-          <animate attributeName="font-size" values="12;18;12" dur="0.5s" repeatCount="indefinite"/>
-        </text>
-        <!-- Horn shape -->
-        <path d="M335,110 L355,100 L355,120 Z" fill="#FF9800"/>
-        <circle cx="350" cy="110" r="20" fill="none" stroke="#FF9800" stroke-width="2" opacity="0.5">
-          <animate attributeName="r" values="20;40;20" dur="0.8s" repeatCount="indefinite"/>
-          <animate attributeName="opacity" values="0.5;0;0.5" dur="0.8s" repeatCount="indefinite"/>
-        </circle>
-      </g>`;
-  } else if(scene === 'door') {
-    extra = `
-      <g>
-        <!-- Door opening and shutting -->
-        <rect x="295" y="110" width="35" height="60" rx="2" fill="#5D4037">
-          <animate attributeName="width" values="35;2;35" dur="2s" repeatCount="indefinite"/>
-        </rect>
-        <circle cx="325" cy="142" r="3" fill="#FFD54F">
-          <animate attributeName="cx" values="325;297;325" dur="2s" repeatCount="indefinite"/>
-        </circle>
-        <text x="220" y="60" text-anchor="middle" font-size="18" fill="#E8751A" font-weight="bold">Open and shut!</text>
-      </g>`;
-  }
-
-  return `<svg viewBox="0 0 440 240">
-    <!-- Sky -->
-    <rect width="440" height="150" fill="#87CEEB"/>
-    <!-- Sun -->
-    <circle cx="380" cy="40" r="30" fill="#FFD54F"/>
-    <circle cx="380" cy="40" r="24" fill="#FFEB3B"/>
-    <!-- Clouds -->
-    <ellipse cx="80" cy="40" rx="40" ry="15" fill="white" opacity="0.7"/>
-    <ellipse cx="110" cy="35" rx="30" ry="12" fill="white" opacity="0.6"/>
-    <ellipse cx="270" cy="50" rx="35" ry="12" fill="white" opacity="0.6"/>
-    <!-- Road -->
-    <rect x="0" y="170" width="440" height="70" fill="#616161"/>
-    <rect x="0" y="170" width="440" height="6" fill="#424242"/>
-    <!-- Road lines -->
-    <rect x="20" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="80" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="140" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="200" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="260" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="320" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="380" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <!-- Green strip -->
-    <ellipse cx="380" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <ellipse cx="50" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <!-- Bus body -->
-    <rect x="100" y="90" width="260" height="85" rx="14" fill="#FFC107"/>
-    <rect x="100" y="90" width="260" height="10" rx="4" fill="#FFB300"/>
-    <rect x="100" y="160" width="260" height="15" rx="4" fill="#FFB300"/>
-    <rect x="100" y="105" width="260" height="8" fill="#FFA000"/>
-    <!-- Bus windows -->
-    <rect x="130" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-    <rect x="180" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-    <rect x="230" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-    <rect x="280" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-    <!-- Bus front windshield -->
-    <rect x="330" y="85" width="30" height="50" rx="8" fill="#81D4FA"/>
-    <!-- Bus headlight -->
-    <circle cx="355" cy="155" r="6" fill="#FFF9C4"/>
-    <circle cx="355" cy="155" r="4" fill="#FFEB3B"/>
-    <!-- Bus sign -->
-    <rect x="190" y="70" width="80" height="16" rx="6" fill="#E53935"/>
-    <text x="230" y="82" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SCHOOL BUS</text>
-    <!-- Exhaust -->
-    <circle cx="105" cy="155" r="6" fill="#9E9E9E" opacity="0.3">
-      <animate attributeName="cx" values="105;80;55" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="opacity" values="0.3;0.1;0" dur="2s" repeatCount="indefinite"/>
-      <animate attributeName="r" values="6;10;14" dur="2s" repeatCount="indefinite"/>
-    </circle>
-    <!-- Bus wheels (static base) -->
-    <circle cx="130" cy="195" r="20" fill="#333"/>
-    <circle cx="130" cy="195" r="15" fill="#424242"/>
-    <circle cx="130" cy="195" r="5" fill="#757575"/>
-    <circle cx="310" cy="195" r="20" fill="#333"/>
-    <circle cx="310" cy="195" r="15" fill="#424242"/>
-    <circle cx="310" cy="195" r="5" fill="#757575"/>
-    <!-- Scene-specific extras -->
-    ${extra}
-  </svg>`;
-}
-
-function svgCoverScene() {
-  return `<svg viewBox="0 0 440 240">
-    <rect width="440" height="150" fill="#87CEEB"/>
-    <circle cx="380" cy="40" r="30" fill="#FFD54F"/>
-    <circle cx="380" cy="40" r="24" fill="#FFEB3B"/>
-    <ellipse cx="80" cy="40" rx="40" ry="15" fill="white" opacity="0.7"/>
-    <ellipse cx="110" cy="35" rx="30" ry="12" fill="white" opacity="0.6"/>
-    <rect x="0" y="170" width="440" height="70" fill="#616161"/>
-    <rect x="0" y="170" width="440" height="6" fill="#424242"/>
-    <rect x="20" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="80" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="140" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="200" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="260" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="320" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <rect x="380" y="200" width="30" height="4" rx="2" fill="#FFEB3B"/>
-    <ellipse cx="380" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <ellipse cx="50" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <!-- Animated bus bouncing -->
-    <g>
-      <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="1.5s" repeatCount="indefinite"/>
-      <rect x="100" y="90" width="260" height="85" rx="14" fill="#FFC107"/>
-      <rect x="100" y="90" width="260" height="10" rx="4" fill="#FFB300"/>
-      <rect x="100" y="160" width="260" height="15" rx="4" fill="#FFB300"/>
-      <rect x="100" y="105" width="260" height="8" fill="#FFA000"/>
-      <rect x="130" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-      <rect x="180" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-      <rect x="230" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-      <rect x="280" y="80" width="40" height="30" rx="6" fill="#B3E5FC"/>
-      <rect x="330" y="85" width="30" height="50" rx="8" fill="#81D4FA"/>
-      <circle cx="355" cy="155" r="6" fill="#FFF9C4"/>
-      <circle cx="355" cy="155" r="4" fill="#FFEB3B"/>
-      <rect x="190" y="70" width="80" height="16" rx="6" fill="#E53935"/>
-      <text x="230" y="82" text-anchor="middle" font-size="10" fill="white" font-weight="bold">SCHOOL BUS</text>
-      <circle cx="130" cy="195" r="20" fill="#333"/>
-      <circle cx="130" cy="195" r="15" fill="#424242"/>
-      <circle cx="130" cy="195" r="5" fill="#757575"/>
-      <circle cx="310" cy="195" r="20" fill="#333"/>
-      <circle cx="310" cy="195" r="15" fill="#424242"/>
-      <circle cx="310" cy="195" r="5" fill="#757575"/>
-    </g>
-    <text x="220" y="225" text-anchor="middle" font-size="14" fill="#E8751A" font-weight="bold">🔊 Click a word to hear it!</text>
-  </svg>`;
-}
-
-function svgFinalScene() {
-  return `<svg viewBox="0 0 440 240">
-    <rect width="440" height="240" fill="#FFF8E1"/>
-    <rect x="0" y="170" width="440" height="70" fill="#616161"/>
-    <rect x="0" y="170" width="440" height="6" fill="#424242"/>
-    <ellipse cx="380" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <ellipse cx="50" cy="168" rx="30" ry="10" fill="#7CB342"/>
-    <!-- Celebratory bus -->
-    <g>
-      <animateTransform attributeName="transform" type="translate" values="0,0;0,-10;0,0" dur="1s" repeatCount="indefinite"/>
-      <rect x="120" y="90" width="220" height="75" rx="12" fill="#FFC107"/>
-      <rect x="120" y="90" width="220" height="8" rx="3" fill="#FFB300"/>
-      <rect x="330" y="85" width="28" height="45" rx="7" fill="#81D4FA"/>
-      <rect x="145" y="80" width="35" height="25" rx="5" fill="#B3E5FC"/>
-      <rect x="190" y="80" width="35" height="25" rx="5" fill="#B3E5FC"/>
-      <rect x="235" y="80" width="35" height="25" rx="5" fill="#B3E5FC"/>
-      <rect x="280" y="80" width="35" height="25" rx="5" fill="#B3E5FC"/>
-      <circle cx="150" cy="185" r="18" fill="#333"/>
-      <circle cx="150" cy="185" r="13" fill="#424242"/>
-      <circle cx="150" cy="185" r="5" fill="#757575"/>
-      <circle cx="310" cy="185" r="18" fill="#333"/>
-      <circle cx="310" cy="185" r="13" fill="#424242"/>
-      <circle cx="310" cy="185" r="5" fill="#757575"/>
-      <rect x="190" y="68" width="70" height="14" rx="5" fill="#E53935"/>
-      <text x="225" y="79" text-anchor="middle" font-size="9" fill="white" font-weight="bold">♪ WHEELS ♪</text>
-    </g>
-    <!-- Stars -->
-    <text x="60" y="40" font-size="20" fill="#FFD54F">⭐
-      <animate attributeName="font-size" values="20;28;20" dur="1.2s" repeatCount="indefinite"/>
-    </text>
-    <text x="360" y="45" font-size="18" fill="#FFD54F">⭐
-      <animate attributeName="font-size" values="18;26;18" dur="1.5s" repeatCount="indefinite"/>
-    </text>
-    <text x="200" y="30" font-size="14" fill="#FFD54F">⭐
-      <animate attributeName="font-size" values="14;22;14" dur="1.8s" repeatCount="indefinite"/>
-    </text>
-    <text x="300" y="25" font-size="12" fill="#FFD54F">⭐
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="1s" repeatCount="indefinite"/>
-    </text>
-    <text x="100" y="25" font-size="12" fill="#FFD54F">⭐
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="1.3s" repeatCount="indefinite"/>
-    </text>
-  </svg>`;
-}
+function svgCoverScene() { return COVER_SVG; }
 
 function getSVG(idx) {
   if(idx===0) return svgCoverScene();
-  const p=pages[idx];
-  if(p.final) return svgFinalScene();
-  const s=p.svg||'wheels';
-  return svgBusScene(s);
+  var p=pages[idx];
+  var scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`];
+  if(p.match) return COVER_SVG;
+  if(p.final) return COVER_SVG.replace('height="220"','height="180"');
+  return scenes[parseInt(p.svg)] || scenes[0];
 }
 
-// ====== GAME LOGIC ======
+// ====== WORD GAME ======
 function startWordGame(idx,word) {
-  if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>✅ 完成！</h3></div>';
-  const letters=[...word].sort(()=>Math.random()-0.5);
+  if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>\u2705 完成!</h3></div>';
+  var letters=word.split('').sort(function(){return Math.random()-0.5});
   buildingWord=[];
-  gameDone[idx]=false;
-  return `<div class="word-game">
-    <h3>⚙️ 拼单词: <strong>"${word}"</strong> 🔊</h3>
-    <div class="word-slots" id="ws-${idx}" ondragover="onDragOver(event,${idx})" ondrop="onDrop(event,${idx})" ondragleave="onDragLeave(event,${idx})">
-      ${word.split('').map((_,i)=>'<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>').join('')}
-    </div>
-    <div class="letter-tiles">
-      ${letters.map(l=>'<div class="letter-tile" draggable="true" ondragstart="onDragStart(event,'+idx+',\\''+l+'\\')" ondragend="onDragEnd(event)" onclick="pickLetter('+idx+',\\''+l+'\\',this)">'+l+'</div>').join('')}
-    </div>
-  </div>`;
+  var slots=word.split('').map(function(_,i){return '<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>';}).join('');
+  var tiles=letters.map(function(l){return '<div class="letter-tile" draggable="true" onclick="pickLetter('+idx+',\''+l+'\',this)" ondragstart="onDragStart(event,'+idx+',\''+l+'\')" ondragend="onDragEnd(event)">'+l+'</div>';}).join('');
+  return '<div class="word-game"><h3>\u2699\uFE0F 拼单词: <strong>"'+word+'"</strong> \U0001f50a</h3><div class="word-slots" id="ws-'+idx+'">'+slots+'</div><div class="letter-tiles" id="tiles-'+idx+'">'+tiles+'</div></div>';
 }
 
 function pickLetter(idx,letter,el) {
   if(gameDone[idx]||el.classList.contains('used')) return;
-  const p=pages[idx]; const word=p.game; const slot=buildingWord.length;
+  var word=pages[idx].game;
+  var slot=buildingWord.length;
   if(slot>=word.length) return;
-  const slots=document.querySelectorAll('#ws-'+idx+' .word-slot');
+  var slots=document.querySelectorAll('#ws-'+idx+' .word-slot');
   if(letter===word[slot]){
     buildingWord.push(letter); slots[slot].textContent=letter; slots[slot].classList.add('filled');
     el.classList.add('correct','used');
-    if(buildingWord.length===word.length){gameDone[idx]=true;setTimeout(()=>{showBubble('Great! 🎉');launchConfetti();renderPage(idx);},500);}
-  } else { el.classList.add('wrong'); setTimeout(()=>el.classList.remove('wrong'),400); }
+    if(buildingWord.length===word.length){gameDone[idx]=true;setTimeout(function(){showBubble('Great! \U0001f389');launchConfetti();renderPage(idx);},500);}
+  } else { el.classList.add('wrong'); setTimeout(function(){el.classList.remove('wrong');},400); }
 }
 
-function onDragStart(e,idx,letter){dragData={idx,letter,el:e.target};e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
-function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.word-slot.drag-over').forEach(s=>s.classList.remove('drag-over'));}
-function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)').forEach(s=>s.classList.add('drag-over'));}
-function onDragLeave(e,idx){document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));}
+function onDragStart(e,idx,letter){dragData={idx:idx,letter:letter,el:e.target};e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function onDragEnd(e){e.target.classList.remove('dragging');var all=document.querySelectorAll('.word-slot.drag-over');for(var i=0;i<all.length;i++)all[i].classList.remove('drag-over');}
+function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';var all=document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)');for(var i=0;i<all.length;i++)all[i].classList.add('drag-over');}
+function onDragLeave(e,idx){var all=document.querySelectorAll('#ws-'+idx+' .word-slot');for(var i=0;i<all.length;i++)all[i].classList.remove('drag-over');}
 function onDrop(e,idx){
-  e.preventDefault();document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));
+  e.preventDefault();var all=document.querySelectorAll('#ws-'+idx+' .word-slot');for(var i=0;i<all.length;i++)all[i].classList.remove('drag-over');
   if(!dragData||dragData.idx!==idx||gameDone[idx]) return;
   pickLetter(idx,dragData.letter,dragData.el);dragData=null;
 }
 
+// ====== MATCH GAME ======
+const MATCH_WORDS = ["door","wheels","people","horn","wipers"];
+var matchRound = 0;
+var matchDone = [];
+
+function renderMatchGame() {
+  if(matchDone.length>=MATCH_WORDS.length) return '<div class="match-game" style="background:#E8F5E9"><h3>\U0001f389 全部找到! 太棒了!</h3></div>';
+  var word=MATCH_WORDS[matchRound];
+  var shuffled=MATCH_WORDS.slice().sort(function(){return Math.random()-0.5});
+  var opts=shuffled.map(function(w){var d=matchDone.indexOf(w)>=0?'style="opacity:0.5"':'';return '<div class="word-choice" data-word="'+w+'" onclick="checkMatch(\''+w+'\',this)" '+d+'>'+w+'</div>';}).join('');
+  return '<div class="match-game"><h3>\U0001f50a 听单词: <strong>"'+word+'"</strong></h3><button class="sound-btn" onclick="speakMatchWord()">\U0001f50a</button><p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p><div class="word-choices">'+opts+'</div></div>';
+}
+
+function speakMatchWord() {
+  if(matchRound>=MATCH_WORDS.length) return;
+  speakText(MATCH_WORDS[matchRound]);
+  showBubble('\U0001f50a '+MATCH_WORDS[matchRound]);
+}
+
+function checkMatch(word,el) {
+  if(matchRound>=MATCH_WORDS.length||matchDone.indexOf(word)>=0) return;
+  if(word===MATCH_WORDS[matchRound]){
+    el.classList.add('correct'); matchDone.push(word);
+    showBubble('Great! Wonderful! \U0001f389');
+    matchRound++;
+    setTimeout(function(){renderPage(pages.length-2)},600);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(function(){el.classList.remove('wrong')},400);
+    showBubble('\u518D\u8BD5\u8BD5~ Try again!');
+  }
+}
+
 // ====== RENDER ======
 function renderPage(idx) {
-  const area=document.getElementById('pageArea');
-  const p=pages[idx];
+  var area=document.getElementById('pageArea');
+  var p=pages[idx];
 
   if(p.cover){
-    area.innerHTML=`<div class="page active cover-page">
-      <div class="cover-svg">${getSVG(0)}</div>
-      <div class="page-title">${p.title}</div>
-      <div class="page-desc">${p.subtitle}</div>
-      <div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px">
-        <button class="big-start-btn" onclick="playSong();showMusicNotes()" style="width:90px;height:90px;font-size:28px;animation:float 2s ease-in-out infinite">🎵</button>
-        <button class="big-start-btn" onclick="nextPage()">▶</button>
-      </div>
-    </div>`;
+    area.innerHTML='<div class="page active cover-page"><div class="cover-svg">'+getSVG(0)+'</div><div class="page-title">'+p.title+'</div><div class="page-desc">'+p.subtitle+'</div><div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px"><button class="big-start-btn smaller" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">\U0001f3b5</button><button class="big-start-btn" onclick="nextPage()">\u25b6</button></div></div>';
     updateUI(idx); return;
   }
 
   if(p.final){
-    area.innerHTML=`<div class="page active">
-      <div class="page-title">${p.title}</div>
-      <div class="scene-wrap" style="position:relative">${getSVG(idx)}</div>
-      <div class="final-grid">
-        <div class="final-bus-item">🚌<div class="label">Wheels 🛞</div></div>
-        <div class="final-bus-item">🧑<div class="label">People 🚶</div></div>
-        <div class="final-bus-item">💨<div class="label">Wipers ✨</div></div>
-        <div class="final-bus-item">📯<div class="label">Horn 🔊</div></div>
-        <div class="final-bus-item">🚪<div class="label">Door 🚪</div></div>
-      </div>
-      <div style="font-size:24px;margin:10px 0">🎉 ⭐ ⭐ ⭐ 🎉</div>
-      <a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">🏠 回课件列表</a>
-    </div>`;
+    var fw=MATCH_WORDS.map(function(w){return '<div class="final-word">\u2705 '+w+'</div>';}).join('');
+    area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px"><div class="page-title">'+p.title+'</div><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div style="font-size:24px;margin:10px 0">\U0001f389 \u2b50 \u2b50 \u2b50 \U0001f389</div><div class="final-grid">'+fw+'</div><a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">\U0001f3e0 \u56DE\u8BFE\u4EF6\u5217\u8868</a></div>';
     launchConfetti(); updateUI(idx); return;
   }
 
-  let gameHTML='';
-  if(p.game){
-    gameHTML=startWordGame(idx,p.game);
-    buildingWord=[];
+  if(p.match){
+    area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+renderMatchGame()+'</div>';
+    updateUI(idx); return;
   }
 
-  area.innerHTML=`<div class="page active">
-    <div class="scene-wrap" style="position:relative">${getSVG(idx)}</div>
-    <div class="lyrics">${p.sentence}</div>
-    ${gameHTML}
-  </div>`;
+  var gh='';
+  if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
 
-  // Make clickable words speak
-  area.querySelectorAll('.hl[data-word]').forEach(function(el){
-    el.addEventListener('click',function(e){
-      e.stopPropagation();
-      speakText(this.getAttribute('data-word'));
-      showBubble('🔊 '+this.getAttribute('data-word'));
-    });
-  });
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+
+  var hls=area.querySelectorAll('.hl[data-word]');
+  for(var hi=0;hi<hls.length;hi++){
+    (function(el){el.addEventListener('click',function(e){e.stopPropagation();speakText(el.getAttribute('data-word'));showBubble('\U0001f50a '+el.getAttribute('data-word'));});})(hls[hi]);
+  }
 
   updateUI(idx);
 }
 
 function updateUI(idx) {
-  const dots=document.getElementById('progressDots');
-  dots.innerHTML=pages.map((_,i)=>'<div class="dot '+(i===idx?'active':'')+(gameDone[i]?' done':'')+'" onclick="goToPage('+i+')"></div>').join('');
-  document.getElementById('prevBtn').disabled=idx===0;
-  document.getElementById('nextBtn').disabled=idx===pages.length-1;
-  document.getElementById('pageCounter').textContent='第'+(idx+1)+'页 / 共'+pages.length+'页';
-  document.getElementById('nextBtn').style.display=idx===pages.length-1?'none':'';
+  var dots=document.getElementById('progressDots');
+  var dhtml='';
+  for(var i=0;i<pages.length;i++){dhtml+='<div class="dot'+(i===idx?' active':'')+(gameDone[i]?' done':'')+'" onclick="goToPage('+i+')"></div>';}
+  dots.innerHTML=dhtml;
+  document.getElementById('prevBtn').disabled=(idx===0);
+  document.getElementById('nextBtn').disabled=(idx===pages.length-1);
+  document.getElementById('pageCounter').textContent='\u7B2C'+(idx+1)+'\u9875 / \u5171'+pages.length+'\u9875';
+  document.getElementById('nextBtn').style.display=(idx===pages.length-1)?'none':'';
   currentPage=idx;
 }
 
@@ -612,29 +295,27 @@ function nextPage(){if(currentPage<pages.length-1)goToPage(currentPage+1);}
 function goToPage(idx){renderPage(idx);}
 
 function speakPage() {
-  const p=pages[currentPage];
-  if(p.cover) { showBubble('The Wheels on the Bus! 🚌'); speakText('The Wheels on the Bus'); return; }
-  if(p.final) { showBubble('You did it! Super English Star! 🌟'); speakText('You did it! Super English Star!'); return; }
-  const txt=p.sentence.replace(/<[^>]+>/g,'');
-  showBubble('🔊 '+txt);
-  speakText(txt);
+  var p=pages[currentPage];
+  if(p.cover){showBubble('🚌 The Wheels on the Bus!');speakText('The Wheels on the Bus');return;}
+  if(p.final){showBubble('You did it! Super English Star! \U0001f31f');speakText('You did it! Super English Star!');return;}
+  if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
+  var t=p.sentence.replace(/<[^>]+>/g,'');
+  showBubble('\U0001f50a '+t);
+  speakText(t);
 }
 
-// ====== CONFETTI ======
 function launchConfetti() {
-  const d=document.createElement('div');d.className='celebration';
-  const colors=['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
-  for(let i=0;i<40;i++){const c=document.createElement('div');c.style.cssText='position:absolute;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;border-radius:50%;left:'+(Math.random()*100)+'%;top:10%;background:'+colors[i%colors.length]+';animation:confetti-fall '+(1.5+Math.random())+'s ease-out forwards;animation-delay:'+(Math.random()*0.5)+'s;';d.appendChild(c);}
-  document.body.appendChild(d);setTimeout(()=>d.remove(),3000);
+  var d=document.createElement('div');d.className='celebration';
+  var colors=['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
+  for(var i=0;i<40;i++){var c=document.createElement('div');c.style.cssText='position:absolute;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;border-radius:50%;left:'+(Math.random()*100)+'%;top:10%;background:'+colors[i%6]+';animation:confetti-fall '+(1.5+Math.random())+'s ease-out forwards;animation-delay:'+(Math.random()*0.5)+'s;';d.appendChild(c);}
+  document.body.appendChild(d);setTimeout(function(){d.remove()},3000);
 }
 
-// ====== KEYBOARD ======
 document.addEventListener('keydown',function(e){
   if(e.key==='ArrowLeft') prevPage();
   if(e.key==='ArrowRight') nextPage();
 });
 
-// ====== INIT ======
 renderPage(0);
 </script>
 </body>

@@ -123,7 +123,7 @@ body {
 <script>
 // ====== PAGE DATA ======
 const pages = [
-  { cover:true, title:'😊 If You're Happy', subtitle:'✏️ 如果你开心你就拍拍手！' },
+  { cover:true, title:'😊 If You\'re Happy', subtitle:'✏️ 如果你开心你就拍拍手！' },
   { sentence:'If you happy and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="clap">clap</span> your <span class="hl" data-word="hands">hands</span>!', desc:'如果你开心就拍拍手', game:'happy', svg:'0' },
   { sentence:'If you happy and you know it, <span class="hl" data-word="stomp">stomp</span> your <span class="hl" data-word="feet">feet</span>!', desc:'如果你开心就跺跺脚', game:'stomp', svg:'0' },
   { sentence:'If you happy and you know it, <span class="hl" data-word="shout">shout</span> Hurray!', desc:'如果你开心就喊Hurray', game:'shout', svg:'0' },
@@ -210,7 +210,7 @@ function onDrop(e,idx){
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["happy","three","stomp","shout"];
+const MATCH_WORDS = ["happy","stomp","three","shout"];
 var matchRound = 0;
 var matchDone = [];
 
@@ -294,7 +294,7 @@ function goToPage(idx){renderPage(idx);}
 
 function speakPage() {
   var p=pages[currentPage];
-  if(p.cover){showBubble('😊 If You're Happy!');speakText('If Youre Happy');return;}
+  if(p.cover){showBubble('😊 If You\'re Happy!');speakText('If Youre Happy');return;}
   if(p.final){showBubble('You did it! Super English Star! \U0001f31f');speakText('You did it! Super English Star!');return;}
   if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
   var t=p.sentence.replace(/<[^>]+>/g,'');
