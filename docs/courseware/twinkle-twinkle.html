@@ -341,7 +341,7 @@ h2.page-title{
       </svg>
     </div>
     <div style="font-size:.85rem;color:#8D6E63;text-align:center;margin-top:5px;">点击 ◀ ▶ 翻页 · 🔊 听朗读 · 🎵 听歌曲</div>
-    <button onclick="playMelody(TWINKLE)" style="margin-top:8px;background:#FFB347;border:none;border-radius:30px;padding:10px 24px;font-size:1.1rem;font-weight:600;color:#FFF;cursor:pointer;font-family:inherit;transition:all .2s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">🎵 听旋律</button>
+    <button onclick="playSong()" style="margin-top:8px;background:#FFB347;border:none;border-radius:30px;padding:10px 24px;font-size:1.1rem;font-weight:600;color:#FFF;cursor:pointer;font-family:inherit;transition:all .2s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">🎵 听旋律</button>
   </div>
 
   <!-- ===== PAGE 1: "Twinkle, twinkle, little star" ===== -->
@@ -694,7 +694,7 @@ h2.page-title{
   <div class="nav-bar">
     <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
     <button class="nav-btn read-btn" onclick="readAloud()">🔊</button>
-    <button class="nav-btn sing-btn" onclick="playMelody(TWINKLE)">🎵</button>
+    <button class="nav-btn sing-btn" onclick="playSong()">🎵</button>
     <div class="nav-dots" id="navDots"></div>
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
@@ -796,6 +796,15 @@ function readAloud(){
   }
 }
 
+// ===== PLAY FULL SONG MP3 =====
+var songAudio = null;
+function playSong() {
+  if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
+  songAudio = new Audio('audio/twinkle.mp3');
+  songAudio.volume = 0.8;
+  songAudio.play().catch(function(){});
+}
+
 // ===== WEB AUDIO API - SING =====
 function getAudioCtx(){
   if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
@@ -877,6 +886,15 @@ function playMelody(notes) {
     osc.start(t); osc.stop(t + dur);
     t += dur + 0.05;
   });
+}
+
+// ===== PLAY FULL SONG MP3 =====
+var songAudio = null;
+function playSong() {
+  if(songAudio) { songAudio.pause(); songAudio = null; }
+  songAudio = new Audio('audio/twinkle.mp3');
+  songAudio.volume = 0.8;
+  songAudio.play().catch(function(e){ /* autoplay blocked */ });
 }
 
 function toggleSing(){

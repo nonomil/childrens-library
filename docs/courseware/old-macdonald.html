@@ -122,10 +122,10 @@ body {
   <div class="page-area" id="pageArea"></div>
   <div class="controls" id="controlsBar">
     <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>◀</button>
-    <button class="nav-btn small" onclick="playMelody(MACDONALD);showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>
+    <button class="nav-btn small" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>
     <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
       <button class="read-btn" onclick="speakPage()">🔊 读</button>
-      <button class="read-btn pink" onclick="playMelody(MACDONALD);showMusicNotes()">🎵 唱</button>
+      <button class="read-btn pink" onclick="playSong();showMusicNotes()">🎵 唱</button>
     </div>
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
@@ -184,6 +184,14 @@ const MACDONALD = [
   [NOTE.B4,0.4],[NOTE.B4,0.4],[NOTE.A4,0.4],[NOTE.A4,0.4],
   [NOTE.G4,1.2]
 ];
+// ===== PLAY FULL SONG MP3 =====
+var songAudio = null;
+function playSong() {
+  if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
+  songAudio = new Audio('audio/oldmacdonald.mp3');
+  songAudio.volume = 0.8;
+  songAudio.play().catch(function(){});
+}
 // Animal sounds (simple beeps)
 function playSound(freq, dur) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -458,7 +466,7 @@ function renderPage(idx) {
       <div class="page-title">${p.title}</div>
       <div class="page-desc">${p.subtitle}</div>
       <div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px">
-        <button class="big-start-btn" onclick="playMelody(MACDONALD);showMusicNotes()" style="width:90px;height:90px;font-size:28px;animation:float 2s ease-in-out infinite">🎵</button>
+        <button class="big-start-btn" onclick="playSong();showMusicNotes()" style="width:90px;height:90px;font-size:28px;animation:float 2s ease-in-out infinite">🎵</button>
         <button class="big-start-btn" onclick="nextPage()">▶</button>
       </div>
     </div>`;
