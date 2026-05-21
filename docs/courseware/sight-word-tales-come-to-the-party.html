@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -882,7 +882,8 @@ function playAudio(src, showText) {
     a.play();
     currentAudio = a;
     a.onended = function() { currentAudio = null; };
-  } catch(e) { console.log('Audio error:', e); }
+    a.onerror = function() { currentAudio = null; if(showText) speakText(showText); };
+  } catch(e) { console.log('Audio error:', e); if(showText) speakText(showText); }
 }
 
 function speakPage() {
