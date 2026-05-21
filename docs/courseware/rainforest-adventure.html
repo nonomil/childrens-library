@@ -595,28 +595,7 @@ h1.site-title {
   sceneWrap.addEventListener('click', function(e) {
     var target = e.target;
 
-    // SVG entity click - find the closest clickable <g>
-    var entityEl = target.closest ? target.closest('[data-entity]') : null;
-    if (!entityEl && target.parentNode) {
-      // Manual traversal for SVG elements
-      var el = target;
-      while (el && el !== sceneWrap) {
-        if (el.getAttribute && el.getAttribute('data-entity')) {
-          entityEl = el;
-          break;
-        }
-        el = el.parentNode;
-      }
-    }
-
-    if (entityEl && entityEl.getAttribute('data-entity')) {
-      var entity = entityEl.getAttribute('data-entity');
-      openPanel(entity);
-      showRipple(e);
-      return;
-    }
-
-    // Action buttons inside panels
+    // Action buttons inside panels (check FIRST to avoid data-entity conflict on buttons)
     var btn = target.closest ? target.closest('[data-action]') : null;
     if (!btn && target.getAttribute && target.getAttribute('data-action')) {
       btn = target;
@@ -632,6 +611,25 @@ h1.site-title {
       } else if (action === 'hide') {
         hideDeep(btn.getAttribute('data-panel'), btn.getAttribute('data-topic'));
       }
+      return;
+    }
+
+    // SVG entity click - find the closest clickable element with data-entity
+    var entityEl = target.closest ? target.closest('[data-entity]') : null;
+    if (!entityEl && target.parentNode) {
+      var el = target;
+      while (el && el !== sceneWrap) {
+        if (el.getAttribute && el.getAttribute('data-entity')) {
+          entityEl = el;
+          break;
+        }
+        el = el.parentNode;
+      }
+    }
+    if (entityEl) {
+      var entity = entityEl.getAttribute('data-entity');
+      openPanel(entity);
+      showRipple(e);
       return;
     }
 
