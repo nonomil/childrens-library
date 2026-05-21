@@ -459,22 +459,39 @@ function showSpeechBubble(text) {
 
 // ===== Text-to-Speech =====
 
-function speakText(text) {
-  window.speechSynthesis.cancel();
-  const clean = text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, '').trim();
-  showSpeechBubble(clean);
-  const u = new SpeechSynthesisUtterance(clean);
-  u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
 }
 
 function speakPage() {
   const p = pages[currentPage];
-  if (p.cover) {
-    speakText('I Will Surprise My Friend! An Elephant and Piggie story.');
-  } else {
-    speakText(p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' '));
+  const AUDIO_MAP = ['elephant-cover', 'elephant-page1', 'elephant-page2', 'elephant-page3', 'elephant-page4', 'elephant-page5', 'elephant-page6', 'elephant-page7'];
+  const TEXTS = [
+    'I Will Surprise My Friend! An Elephant and Piggie story.',
+    'Gerald: I will surprise my friend!',
+    'Piggie: I will surprise my friend too!',
+    'Gerald: I will hide behind this bush. Then... SURPRISE!',
+    'Piggie: I will hide behind this tree. Then... SURPRISE!',
+    'Gerald & Piggie: Where is my friend? I cannot find them!',
+    'Gerald & Piggie: There you are! You surprised me!',
+    'Gerald & Piggie: Friends surprise each other! What a good friend!'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
   }
+}
+
+function speakText(text) {
+  playAudio('', text);
 }
 
 // ===== Character Click Animation =====

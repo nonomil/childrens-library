@@ -1087,28 +1087,44 @@ function checkAnswer(idx, isCorrect, el) {
 // SPEECH
 // ============================================================
 
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
+}
+
 function speakPage() {
   const p = pages[currentPage];
-  if (p.cover) {
-    const txt = 'I am an Apple! Learn about apples and how they grow!';
-    showSpeechBubble(txt);
-    speakText(txt, true);
-  } else {
-    const txt = p.speechText || p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
-    showSpeechBubble(txt);
-    speakText(txt, true);
+  const AUDIO_MAP = ['apple-cover', 'apple-page1', 'apple-page2', 'apple-page3', 'apple-page4', 'apple-page5', 'apple-page6', 'apple-page7', 'apple-page8'];
+  const TEXTS = [
+    'I am an Apple! Learn about apples and how they grow!',
+    'I am an apple. I am a fruit! Apples grow on trees. There are thousands of different kinds of apples in the world.',
+    'I start as a tiny seed. I am planted in the soil. A seed needs sun, water, and soil to grow.',
+    'I grow into a small sprout. Look at my little green leaves! The sprout reaches up toward the sun.',
+    'I become a big apple tree. I have beautiful pink blossoms. Bees help the blossoms turn into apples!',
+    'Now I am a ripe red apple! Ready to be picked. Some apples are red, green, or yellow!',
+    'People use apples to make apple pie, apple juice, and more! Apple pie is a favorite dessert.',
+    'Inside me there are seeds. Plant them and I can grow again! The apple life cycle goes round and round.',
+    'Now you know all about apples! I am an apple, a delicious fruit! From seed to tree to apple — the journey is amazing!'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
   }
 }
 
 function speakText(text, keepBubble) {
+  if (!keepBubble) showSpeechBubble(text);
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.1;
-  u.onend = function() {
-    if (!keepBubble) {
-      // Only hide if not keepBubble (speakPage keeps it, word clicks don't)
-    }
-  };
   window.speechSynthesis.speak(u);
 }
 

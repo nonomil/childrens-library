@@ -954,10 +954,35 @@ function speakWord(word) {
 }
 
 // ===== Read Aloud =====
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText, showText.length * 150);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
+}
+
 function speakPage() {
-  const p = pages[currentPage];
-  const txt = p.sentence.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').trim();
-  showSpeechBubble(txt, txt.length * 150);
+  const AUDIO_MAP = ['pet-cover', 'pet-page1', 'pet-page2', 'pet-page3', 'pet-page4', 'pet-page5', 'pet-page6', 'pet-page7'];
+  const TEXTS = [
+    'Can We Get a Pet?',
+    '"Can we get a dog?" said the kids.',
+    '"Can we get a cat?" said the kids.',
+    '"Can we get a bunny?" said the kids.',
+    '"Can we get a hamster?" said the kids.',
+    '"Can we get a fish?" said the kids.',
+    '"Can we get a turtle?" said the kids.',
+    '"Yes! We can get a pet!" said Mom and Dad.'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
 }
 
 // ===== Navigation =====

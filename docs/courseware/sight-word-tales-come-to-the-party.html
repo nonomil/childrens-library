@@ -865,6 +865,37 @@ function showSpeechBubble(text) {
 
 /* ========== SPEECH SYNTHESIS ========== */
 
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
+}
+
+function speakPage() {
+  const AUDIO_MAP = ['party-cover', 'party-page1', 'party-page2', 'party-page3', 'party-page4', 'party-page5', 'party-page6', 'party-page7'];
+  const TEXTS = [
+    'Come to the Party! Sight words come and to.',
+    '"Come to my party!" said the girl.',
+    '"I will come to the party!" said the dog.',
+    '"I will come to the party!" said the cat.',
+    '"We will all come to the party!" said the bunny.',
+    '"I come to the party with a bear hug!" said the bear.',
+    'Everyone says: We come to have fun! Hooray!',
+    '"Thank you for coming to my party! Come again!" said the girl.'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
+}
+
 function speakText(text) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
@@ -872,18 +903,6 @@ function speakText(text) {
   u.rate = 0.8;
   u.pitch = 1.1;
   window.speechSynthesis.speak(u);
-}
-
-function speakPage() {
-  const p = pages[currentPage];
-  if (p.cover) {
-    showSpeechBubble('Come to the Party!');
-    speakText('Come to the Party! Sight words come and to.');
-  } else {
-    const txt = p.sentence.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
-    showSpeechBubble(txt);
-    speakText(txt);
-  }
 }
 
 function speakPartyItem(word) {

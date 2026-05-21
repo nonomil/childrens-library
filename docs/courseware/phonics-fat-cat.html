@@ -697,29 +697,40 @@ function pickLetter(idx, letter, el) {
 }
 
 // ===== Text-to-Speech =====
-function speakPage() {
-  const p = pages[currentPage];
-  let text = '';
-  if (p.cover) {
-    text = p.title + '. ' + p.subtitle;
-  } else {
-    const div = document.createElement('div');
-    div.innerHTML = p.sentence;
-    text = div.textContent || div.innerText || '';
-  }
-  showSpeechBubble(text);
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
+}
 
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.7;
-  u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
+function speakPage() {
+  const AUDIO_MAP = ['phonics-cover', 'phonics-page1', 'phonics-page2', 'phonics-page3', 'phonics-page4', 'phonics-page5', 'phonics-page6', 'phonics-page7', 'phonics-page8'];
+  const TEXTS = [
+    'Fat Cat on a Mat. A phonics story about a cat, a rat, and a hat!',
+    'A fat cat sat on a mat.',
+    'A rat ran to the cat.',
+    '"Hat on the mat!" said the cat.',
+    'A bat flew to the mat.',
+    '"Pat the cat!" said the rat.',
+    'The cat had a nap on the mat.',
+    'The cat was fat and happy!',
+    'You read the whole story! Great reading!'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
 }
 
 function speakPhonics(text) {
   showSpeechBubble(text + ' — ' + text + '!');
-
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US';
