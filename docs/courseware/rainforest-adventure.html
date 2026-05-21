@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🌴 雨林大冒险 — 点一点，探索雨林！</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+body {
+  font-family:'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;
+  background:linear-gradient(145deg,#E8F5E9 0%,#C8E6C9 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:12px;
+}
+.book {
+  width:100%; max-width:880px; min-height:88vh;
+  background:#FFFCF5; border-radius:40px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #66BB6A;
+  padding:20px; position:relative; overflow:hidden;
+}
+h1.site-title {
+  text-align:center; color:#2E7D32; font-size:28px; margin-bottom:6px;
+}
+.site-sub {
+  text-align:center; color:#6B4F3A; font-size:16px; margin-bottom:10px;
+}
+
+/* ===== SCENE ===== */
+.scene-wrap {
+  width:100%; max-width:640px; margin:0 auto; position:relative;
+  border-radius:24px; overflow:hidden; box-shadow:0 6px 24px rgba(0,0,0,0.12);
+  cursor:default;
+}
+.scene-wrap svg { display:block; width:100%; height:auto; }
+
+/* ===== INFO PANEL ===== */
+.info-panel {
+  display:none; position:absolute; top:0; left:0; right:0; bottom:0;
+  background:rgba(255,255,255,0.97); z-index:100;
+  border-radius:24px; padding:20px; overflow-y:auto;
+  animation:panelIn .4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.info-panel.show { display:flex; flex-direction:column; }
+@keyframes panelIn {
+  from{opacity:0;transform:scale(0.85) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+.info-panel .back-btn {
+  align-self:flex-start; background:#FFB347; border:none; color:#FFF;
+  font-size:16px; padding:8px 18px; border-radius:30px; cursor:pointer;
+  font-family:inherit; font-weight:bold; margin-bottom:8px;
+  transition:transform .15s;
+}
+.info-panel .back-btn:hover { transform:scale(1.08); }
+.info-panel .panel-icon { font-size:64px; text-align:center; margin:4px 0; }
+.info-panel .panel-title { font-size:28px; color:#E8751A; text-align:center; font-weight:bold; }
+.info-panel .panel-desc {
+  font-size:20px; color:#5C4033; text-align:center; line-height:1.6; margin:8px 0 12px;
+  padding:12px 16px; background:#FFF8E7; border-radius:16px;
+}
+.info-panel .panel-desc .sub {
+  font-size:16px; color:#8D6E63; margin-top:6px;
+}
+.info-panel .speak-panel-btn {
+  display:block; margin:4px auto 12px; background:#6BCB77; border:none; color:#FFF;
+  font-size:16px; padding:10px 20px; border-radius:30px; cursor:pointer;
+  font-family:inherit; font-weight:bold; transition:transform .15s;
+}
+.info-panel .speak-panel-btn:hover { transform:scale(1.06); }
+
+/* Branch buttons */
+.branch-area {
+  display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:8px 0;
+}
+.branch-btn {
+  flex:1; min-width:120px; padding:12px 16px; border-radius:18px;
+  border:3px solid #A5D6A7; background:#FFF; cursor:pointer;
+  font-family:inherit; font-size:16px; font-weight:bold; color:#2E7D32;
+  transition:all .15s; text-align:center;
+}
+.branch-btn:hover { border-color:#66BB6A; background:#E8F5E9; transform:scale(1.05); }
+.branch-btn .emoji { font-size:28px; display:block; margin-bottom:4px; }
+
+/* Deep info card */
+.deep-card {
+  display:none; background:#F1F8E9; border-radius:18px; padding:14px 16px;
+  margin:8px 0; border:2px solid #C8E6C9; text-align:center;
+}
+.deep-card.show { display:block; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.deep-card .icon { font-size:42px; }
+.deep-card .title { font-size:20px; color:#E8751A; font-weight:bold; }
+.deep-card .text { font-size:17px; color:#5C4033; line-height:1.6; margin:6px 0; }
+.deep-card .close-deep {
+  background:#FFB347; border:none; color:#FFF; font-size:13px;
+  padding:5px 14px; border-radius:20px; cursor:pointer; font-family:inherit; font-weight:bold;
+}
+
+/* ===== SPEECH BUBBLE ===== */
+.speech-bubble {
+  position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5);
+  border-radius:24px; background:rgba(255,255,255,0.96); border:3px solid #66BB6A;
+  padding:16px 24px; font-size:20px; font-weight:600; max-width:82%;
+  text-align:center; z-index:99999; opacity:0; pointer-events:none;
+  box-shadow:0 10px 40px rgba(102,187,106,0.35);
+  transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1);
+  color:#2E7D32; line-height:1.5;
+}
+.speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+.speech-bubble::before { content:'🌴'; display:block; font-size:24px; margin-bottom:4px; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width:500px) {
+  .info-panel { padding:14px; }
+  .info-panel .panel-icon { font-size:48px; }
+  .info-panel .panel-title { font-size:22px; }
+  .info-panel .panel-desc { font-size:17px; }
+  .branch-btn { min-width:90px; padding:10px 12px; font-size:14px; }
+  .branch-btn .emoji { font-size:22px; }
+  .speech-bubble { font-size:17px; padding:12px 18px; bottom:100px; }
+}
+</style>
+</head>
+<body>
+<div class="book">
+  <h1 class="site-title">🌴 雨林大冒险</h1>
+  <p class="site-sub">👆 点击雨林里的动物植物，探索它们的秘密！</p>
+
+  <div class="scene-wrap" id="sceneWrap">
+    <!-- SVG Scene -->
+    <svg viewBox="0 0 640 440" id="sceneSvg" style="background:linear-gradient(180deg,#B3E5FC 0%,#81D4FA 30%,#A5D6A7 50%,#66BB6A 70%,#4CAF50 100%)">
+      <defs>
+        <filter id="glow"><feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFF" flood-opacity="0.5"/></filter>
+        <filter id="shadow"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.2"/></filter>
+        <linearGradient id="treeGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#388E3C"/><stop offset="100%" stop-color="#1B5E20"/>
+        </linearGradient>
+        <linearGradient id="trunkGrad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stop-color="#5D4037"/><stop offset="50%" stop-color="#795548"/><stop offset="100%" stop-color="#4E342E"/>
+        </linearGradient>
+      </defs>
+
+      <!-- Sky -->
+      <rect width="640" height="200" fill="#B3E5FC"/>
+      <!-- Clouds -->
+      <ellipse cx="120" cy="60" rx="50" ry="20" fill="white" opacity="0.7"/>
+      <ellipse cx="150" cy="55" rx="35" ry="18" fill="white" opacity="0.7"/>
+      <ellipse cx="480" cy="80" rx="45" ry="16" fill="white" opacity="0.6"/>
+      <ellipse cx="510" cy="75" rx="30" ry="14" fill="white" opacity="0.6"/>
+      <!-- Sun -->
+      <circle cx="560" cy="50" r="35" fill="#FFD54F" opacity="0.9"/>
+      <circle cx="560" cy="50" r="28" fill="#FFEB3B"/>
+
+      <!-- Ground -->
+      <ellipse cx="320" cy="420" rx="380" ry="100" fill="#388E3C"/>
+      <rect x="0" y="350" width="640" height="90" fill="#2E7D32"/>
+      <!-- Grass tufts -->
+      <path d="M50,350 Q55,330 60,350" stroke="#4CAF50" stroke-width="2" fill="none"/>
+      <path d="M150,355 Q155,338 160,355" stroke="#4CAF50" stroke-width="2" fill="none"/>
+      <path d="M500,348 Q505,330 510,348" stroke="#4CAF50" stroke-width="2" fill="none"/>
+      <path d="M590,352 Q595,335 600,352" stroke="#4CAF50" stroke-width="2" fill="none"/>
+
+      <!-- ===== BIG TREE ===== -->
+      <g id="tree-area" style="cursor:pointer" onclick="openPanel('tree')" filter="url(#shadow)">
+        <!-- Trunk -->
+        <path d="M200,350 L195,200 Q210,180 225,200 L230,350 Z" fill="url(#trunkGrad)"/>
+        <!-- Branches -->
+        <path d="M210,240 L150,200 Q155,190 165,195 L210,225" fill="#5D4037"/>
+        <path d="M218,220 L270,185 Q275,178 265,180 L218,210" fill="#5D4037"/>
+        <!-- Canopy -->
+        <circle cx="210" cy="160" r="70" fill="url(#treeGrad)" opacity="0.9"/>
+        <circle cx="160" cy="180" r="50" fill="#43A047" opacity="0.85"/>
+        <circle cx="260" cy="175" r="45" fill="#388E3C" opacity="0.85"/>
+        <circle cx="200" cy="130" r="40" fill="#66BB6A" opacity="0.8"/>
+        <!-- Highlight text -->
+        <text x="210" y="110" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFF" filter="url(#glow)">🌳</text>
+      </g>
+
+      <!-- ===== SLOTH ===== -->
+      <g id="sloth-area" style="cursor:pointer" onclick="openPanel('sloth')" filter="url(#shadow)">
+        <!-- Sloth body hanging -->
+        <path d="M305,140 Q325,135 345,140" stroke="#8D6E63" stroke-width="12" stroke-linecap="round" fill="none"/>
+        <ellipse cx="325" cy="148" rx="18" ry="14" fill="#A1887F"/>
+        <!-- Head -->
+        <circle cx="310" cy="138" r="12" fill="#A1887F"/>
+        <!-- Face -->
+        <circle cx="310" cy="140" r="8" fill="#D7CCC8"/>
+        <!-- Eyes -->
+        <circle cx="306" cy="137" r="2" fill="#333"/>
+        <circle cx="314" cy="137" r="2" fill="#333"/>
+        <!-- Nose -->
+        <circle cx="310" cy="141" r="1.5" fill="#333"/>
+        <!-- Arms -->
+        <path d="M315,152 Q330,180 320,185" stroke="#8D6E63" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <path d="M335,152 Q340,175 330,185" stroke="#8D6E63" stroke-width="5" stroke-linecap="round" fill="none"/>
+        <!-- Label -->
+        <text x="325" y="210" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" filter="url(#glow)">🦥 树懒</text>
+      </g>
+
+      <!-- ===== PARROT ===== -->
+      <g id="parrot-area" style="cursor:pointer" onclick="openPanel('parrot')">
+        <!-- Perch -->
+        <line x1="155" y1="220" x2="215" y2="210" stroke="#795548" stroke-width="4" stroke-linecap="round"/>
+        <!-- Body -->
+        <ellipse cx="185" cy="200" rx="14" ry="20" fill="#F44336"/>
+        <!-- Wing -->
+        <ellipse cx="180" cy="200" rx="10" ry="16" fill="#EF5350"/>
+        <path d="M178,192 L185,195 L178,198" stroke="#FFEB3B" stroke-width="1.5" fill="none"/>
+        <!-- Head -->
+        <circle cx="188" cy="182" r="10" fill="#F44336"/>
+        <!-- Eye -->
+        <circle cx="192" cy="180" r="3" fill="white"/>
+        <circle cx="193" cy="180" r="1.5" fill="#333"/>
+        <!-- Beak -->
+        <path d="M197,184 L205,182 L197,188 Z" fill="#FFB300"/>
+        <!-- Tail -->
+        <path d="M178,218 L168,240 L175,242 L185,218" fill="#2196F3"/>
+        <path d="M180,218 L175,238 L182,240 L188,218" fill="#FFEB3B"/>
+        <!-- Label -->
+        <text x="185" y="258" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" filter="url(#glow)">🦜 鹦鹉</text>
+      </g>
+
+      <!-- ===== MONKEY ===== -->
+      <g id="monkey-area" style="cursor:pointer" onclick="openPanel('monkey')">
+        <!-- Vines -->
+        <path d="M270,80 Q275,130 268,180" stroke="#66BB6A" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <!-- Monkey body -->
+        <ellipse cx="268" cy="160" rx="15" ry="18" fill="#8D6E63"/>
+        <!-- Head -->
+        <circle cx="268" cy="138" r="14" fill="#8D6E63"/>
+        <!-- Face -->
+        <ellipse cx="268" cy="140" rx="9" ry="8" fill="#D7CCC8"/>
+        <!-- Ears -->
+        <circle cx="255" cy="135" r="5" fill="#8D6E63"/>
+        <circle cx="281" cy="135" r="5" fill="#8D6E63"/>
+        <!-- Eyes -->
+        <circle cx="263" cy="137" r="3" fill="white"/>
+        <circle cx="273" cy="137" r="3" fill="white"/>
+        <circle cx="264" cy="137" r="1.5" fill="#333"/>
+        <circle cx="274" cy="137" r="1.5" fill="#333"/>
+        <!-- Mouth -->
+        <path d="M264,144 Q268,148 272,144" stroke="#333" stroke-width="1" fill="none"/>
+        <!-- Tail -->
+        <path d="M268,178 Q285,210 275,230" stroke="#8D6E63" stroke-width="4" stroke-linecap="round" fill="none"/>
+        <!-- Arms -->
+        <path d="M255,155 L245,170" stroke="#8D6E63" stroke-width="5" stroke-linecap="round"/>
+        <path d="M281,155 L290,170" stroke="#8D6E63" stroke-width="5" stroke-linecap="round"/>
+        <!-- Label -->
+        <text x="268" y="248" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">🐒 猴子</text>
+      </g>
+
+      <!-- ===== FLOWERS ===== -->
+      <g id="flower-area" style="cursor:pointer" onclick="openPanel('flower')">
+        <circle cx="450" cy="345" r="8" fill="#F44336"/>
+        <circle cx="445" cy="340" r="6" fill="#FF5252"/>
+        <circle cx="455" cy="340" r="6" fill="#E53935"/>
+        <circle cx="450" cy="336" r="5" fill="#FFCDD2"/>
+        <line x1="450" y1="350" x2="450" y2="370" stroke="#4CAF50" stroke-width="2"/>
+        <ellipse cx="448" cy="358" rx="4" ry="2" fill="#66BB6A"/>
+
+        <circle cx="480" cy="350" r="7" fill="#FF9800"/>
+        <circle cx="476" cy="346" r="5" fill="#FFB74D"/>
+        <circle cx="484" cy="346" r="5" fill="#FFA726"/>
+        <circle cx="480" cy="343" r="4" fill="#FFF3E0"/>
+        <line x1="480" y1="355" x2="480" y2="372" stroke="#4CAF50" stroke-width="2"/>
+        <!-- Label -->
+        <text x="465" y="390" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF" filter="url(#glow)">🌺 花</text>
+      </g>
+
+      <!-- ===== BUTTERFLY ===== -->
+      <g style="animation:flyAnim 6s ease-in-out infinite">
+        <defs>
+          <style>
+            @keyframes flyAnim {
+              0%{transform:translate(0,0)} 25%{transform:translate(30px,-20px)}
+              50%{transform:translate(-20px,-40px)} 75%{transform:translate(40px,10px)}
+              100%{transform:translate(0,0)}
+            }
+          </style>
+        </defs>
+        <g transform="translate(380,140)">
+          <ellipse cx="-8" cy="0" rx="10" ry="7" fill="#CE93D8" opacity="0.8" transform="rotate(-20)"/>
+          <ellipse cx="8" cy="0" rx="10" ry="7" fill="#CE93D8" opacity="0.8" transform="rotate(20)"/>
+          <ellipse cx="0" cy="0" rx="2" ry="5" fill="#333"/>
+        </g>
+      </g>
+    </svg>
+
+    <!-- ===== INFO PANELS ===== -->
+    <!-- Tree Panel -->
+    <div class="info-panel" id="panel-tree">
+      <button class="back-btn" onclick="closePanel('tree')">← 回到雨林</button>
+      <div class="panel-icon">🌳</div>
+      <div class="panel-title">大树</div>
+      <button class="speak-panel-btn" onclick="speakPanel('tree')">🔊 读给我听</button>
+      <div class="panel-desc" id="desc-tree">
+        雨林里有好多好多大树！它们可以长到 <strong>30层楼</strong> 那么高！
+        <div class="sub">一棵大树就像一座小城市，很多动物住在上面。</div>
+      </div>
+      <div class="branch-area">
+        <div class="branch-btn" onclick="showDeep('tree','leaf')">
+          <span class="emoji">🌿</span>
+          树叶的秘密
+        </div>
+        <div class="branch-btn" onclick="showDeep('tree','home')">
+          <span class="emoji">🏠</span>
+          谁住在树上？
+        </div>
+      </div>
+      <div class="deep-card" id="deep-tree-leaf">
+        <div class="icon">🌿</div>
+        <div class="title">树叶工厂</div>
+        <div class="text">树叶像小工厂！它们用阳光、水和空气制造食物，这叫<b>光合作用</b>。大树的叶子越多，食物就越多！</div>
+        <button class="close-deep" onclick="hideDeep('tree','leaf')">✅ 知道了</button>
+      </div>
+      <div class="deep-card" id="deep-tree-home">
+        <div class="icon">🏠</div>
+        <div class="title">大树公寓</div>
+        <div class="text">树上住着好多动物：猴子在树枝间荡来荡去，鹦鹉在树洞里做窝，树懒挂在树枝上睡大觉！</div>
+        <button class="close-deep" onclick="hideDeep('tree','home')">✅ 知道了</button>
+      </div>
+    </div>
+
+    <!-- Sloth Panel -->
+    <div class="info-panel" id="panel-sloth">
+      <button class="back-btn" onclick="closePanel('sloth')">← 回到雨林</button>
+      <div class="panel-icon">🦥</div>
+      <div class="panel-title">树懒</div>
+      <button class="speak-panel-btn" onclick="speakPanel('sloth')">🔊 读给我听</button>
+      <div class="panel-desc" id="desc-sloth">
+        树懒是雨林里<b>最慢</b>的动物！它们每天要睡 <strong>15-20个小时</strong>。
+        <div class="sub">树懒大部分时间都挂在树上，很少下地。它们的毛上会长绿藻，帮助它们躲起来！</div>
+      </div>
+      <div class="branch-area">
+        <div class="branch-btn" onclick="showDeep('sloth','food')">
+          <span class="emoji">🍃</span>
+          树懒吃什么？
+        </div>
+        <div class="branch-btn" onclick="showDeep('sloth','slow')">
+          <span class="emoji">🐢</span>
+          为什么这么慢？
+        </div>
+      </div>
+      <div class="deep-card" id="deep-sloth-food">
+        <div class="icon">🍃</div>
+        <div class="title">树懒的菜单</div>
+        <div class="text">树懒只吃树叶和嫩芽。树叶不好消化，所以树懒消化一顿饭要花<b>一个月</b>的时间！所以它们不需要吃很多，也不用动很快。</div>
+        <button class="close-deep" onclick="hideDeep('sloth','food')">✅ 知道了</button>
+      </div>
+      <div class="deep-card" id="deep-sloth-slow">
+        <div class="icon">🐢</div>
+        <div class="title">慢是超能力</div>
+        <div class="text">树懒慢是因为这样能<b>节省能量</b>。而且，慢慢移动就不会被老鹰和蛇发现！在雨林里，慢也是一种活下来的好办法。</div>
+        <button class="close-deep" onclick="hideDeep('sloth','slow')">✅ 知道了</button>
+      </div>
+    </div>
+
+    <!-- Parrot Panel -->
+    <div class="info-panel" id="panel-parrot">
+      <button class="back-btn" onclick="closePanel('parrot')">← 回到雨林</button>
+      <div class="panel-icon">🦜</div>
+      <div class="panel-title">鹦鹉</div>
+      <button class="speak-panel-btn" onclick="speakPanel('parrot')">🔊 读给我听</button>
+      <div class="panel-desc" id="desc-parrot">
+        鹦鹉是雨林里最<b> colorful </b>的鸟！它们的羽毛有红色、蓝色、黄色、绿色…
+        <div class="sub">鹦鹉有弯弯的嘴巴，可以咬开坚硬的果壳。它们还非常聪明，能学会说单词！</div>
+      </div>
+      <div class="branch-area">
+        <div class="branch-btn" onclick="showDeep('parrot','color')">
+          <span class="emoji">🎨</span>
+          为什么这么鲜艳？
+        </div>
+        <div class="branch-btn" onclick="showDeep('parrot','talk')">
+          <span class="emoji">🗣️</span>
+          真的会说话吗？
+        </div>
+      </div>
+      <div class="deep-card" id="deep-parrot-color">
+        <div class="icon">🎨</div>
+        <div class="title">彩色羽毛的用处</div>
+        <div class="text">鲜艳的羽毛帮鹦鹉在茂密的树叶中找到同伴！也用来吸引异性。而且，彩色的羽毛在阳光下可以<b>伪装</b>成彩色的花朵和果实。</div>
+        <button class="close-deep" onclick="hideDeep('parrot','color')">✅ 知道了</button>
+      </div>
+      <div class="deep-card" id="deep-parrot-talk">
+        <div class="icon">🗣️</div>
+        <div class="title">会说话的鸟</div>
+        <div class="text">鹦鹉有特别的大脑，能模仿声音！它们不是真的"说话"，而是<b>模仿</b>听到的声音。有些鹦鹉能学会上百个单词呢！</div>
+        <button class="close-deep" onclick="hideDeep('parrot','talk')">✅ 知道了</button>
+      </div>
+    </div>
+
+    <!-- Monkey Panel -->
+    <div class="info-panel" id="panel-monkey">
+      <button class="back-btn" onclick="closePanel('monkey')">← 回到雨林</button>
+      <div class="panel-icon">🐒</div>
+      <div class="panel-title">猴子</div>
+      <button class="speak-panel-btn" onclick="speakPanel('monkey')">🔊 读给我听</button>
+      <div class="panel-desc" id="desc-monkey">
+        猴子是雨林里最<b>活泼</b>的动物！它们整天在树上跳来跳去，用长长的手臂荡树枝。
+        <div class="sub">猴子是群居动物，一群猴子叫"族群"。它们会互相梳毛、一起找食物。</div>
+      </div>
+      <div class="branch-area">
+        <div class="branch-btn" onclick="showDeep('monkey','food')">
+          <span class="emoji">🍌</span>
+          猴子吃什么？
+        </div>
+        <div class="branch-btn" onclick="showDeep('monkey','smart')">
+          <span class="emoji">🧠</span>
+          猴子有多聪明？
+        </div>
+      </div>
+      <div class="deep-card" id="deep-monkey-food">
+        <div class="icon">🍌</div>
+        <div class="title">猴子大厨</div>
+        <div class="text">猴子爱吃水果、坚果、种子和小虫子。它们还会用石头砸开硬硬的果壳！有些猴子还会把食物<b>洗干净</b>再吃呢。</div>
+        <button class="close-deep" onclick="hideDeep('monkey','food')">✅ 知道了</button>
+      </div>
+      <div class="deep-card" id="deep-monkey-smart">
+        <div class="icon">🧠</div>
+        <div class="title">聪明的小机灵</div>
+        <div class="text">猴子非常聪明！它们会用树枝当工具钓白蚁，会记住哪里有好吃的果树，还会用叫声传递不同的信息——像有自己的"语言"一样！</div>
+        <button class="close-deep" onclick="hideDeep('monkey','smart')">✅ 知道了</button>
+      </div>
+    </div>
+
+    <!-- Flower Panel -->
+    <div class="info-panel" id="panel-flower">
+      <button class="back-btn" onclick="closePanel('flower')">← 回到雨林</button>
+      <div class="panel-icon">🌺</div>
+      <div class="panel-title">雨林的花朵</div>
+      <button class="speak-panel-btn" onclick="speakPanel('flower')">🔊 读给我听</button>
+      <div class="panel-desc" id="desc-flower">
+        雨林里有世界上最<b>多</b>、最<b>漂亮</b>的花！它们五颜六色，形状也千奇百怪。
+        <div class="sub">有些花比盘子还大！大王花是世界上最大的花，直径可以长到1米！</div>
+      </div>
+      <div class="branch-area">
+        <div class="branch-btn" onclick="showDeep('flower','bee')">
+          <span class="emoji">🐝</span>
+          谁给花传粉？
+        </div>
+        <div class="branch-btn" onclick="showDeep('flower','big')">
+          <span class="emoji">🌺</span>
+          最大的花
+        </div>
+      </div>
+      <div class="deep-card" id="deep-flower-bee">
+        <div class="icon">🐝</div>
+        <div class="title">花的快递员</div>
+        <div class="text">花需要把小粉粒（花粉）送到另一朵花上。蜜蜂、蝴蝶和蜂鸟会来帮忙！它们喝花蜜的时候，身上会沾上花粉，飞到下一朵花就帮忙传粉啦！</div>
+        <button class="close-deep" onclick="hideDeep('flower','bee')">✅ 知道了</button>
+      </div>
+      <div class="deep-card" id="deep-flower-big">
+        <div class="icon">🌺</div>
+        <div class="title">大王花</div>
+        <div class="text">大王花是世界上最大的花，可以长到<b>1米</b>宽、<b>7公斤</b>重！但它闻起来有臭臭的味道，像腐烂的肉——这是为了吸引喜欢吃肉的苍蝇来传粉！</div>
+        <button class="close-deep" onclick="hideDeep('flower','big')">✅ 知道了</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====== PANEL SYSTEM ======
+function openPanel(name) {
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.add('show');
+}
+
+function closePanel(name) {
+  const panel = document.getElementById('panel-' + name);
+  if (panel) panel.classList.remove('show');
+  // Hide all deep cards in this panel
+  panel.querySelectorAll('.deep-card').forEach(c => c.classList.remove('show'));
+}
+
+function showDeep(panel, topic) {
+  const card = document.getElementById('deep-' + panel + '-' + topic);
+  if (card) card.classList.add('show');
+}
+
+function hideDeep(panel, topic) {
+  const card = document.getElementById('deep-' + panel + '-' + topic);
+  if (card) card.classList.remove('show');
+}
+
+// ====== SPEECH ======
+const PANEL_TEXTS = {
+  tree: '雨林里有好多好多大树！它们可以长到30层楼那么高！一棵大树就像一座小城市，很多动物住在上面。',
+  sloth: '树懒是雨林里最慢的动物！它们每天要睡15到20个小时。树懒大部分时间都挂在树上，很少下地。它们的毛上会长绿藻，帮助它们躲起来！',
+  parrot: '鹦鹉是雨林里最漂亮的鸟！它们的羽毛有红色、蓝色、黄色、绿色。鹦鹉有弯弯的嘴巴，可以咬开坚硬的果壳。它们还非常聪明，能学会说单词！',
+  monkey: '猴子是雨林里最活泼的动物！它们整天在树上跳来跳去，用长长的手臂荡树枝。猴子是群居动物，一群猴子叫族群。它们会互相梳毛、一起找食物。',
+  flower: '雨林里有世界上最多种、最漂亮的花！它们五颜六色，形状也千奇百怪。有些花比盘子还大！大王花是世界上最大的花，直径可以长到1米！'
+};
+
+function speakPanel(name) {
+  const text = PANEL_TEXTS[name];
+  if (!text) return;
+  showSpeechBubble(text);
+  speakText(text);
+}
+
+function showSpeechBubble(text) {
+  const existing = document.querySelector('.speech-bubble');
+  if (existing) existing.remove();
+  const b = document.createElement('div');
+  b.className = 'speech-bubble';
+  b.textContent = text;
+  document.body.appendChild(b);
+  void b.offsetWidth;
+  b.classList.add('show');
+  setTimeout(() => {
+    b.classList.remove('show');
+    setTimeout(() => b.remove(), 400);
+  }, 4000);
+}
+
+function speakText(text) {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+// ====== CLOSE PANELS ON OVERLAY CLICK ======
+document.getElementById('sceneSvg').addEventListener('click', function(e) {
+  // Only close if clicking directly on SVG background
+  if (e.target === e.currentTarget || e.target.tagName === 'rect' || e.target.tagName === 'ellipse') {
+    document.querySelectorAll('.info-panel.show').forEach(p => {
+      p.classList.remove('show');
+      p.querySelectorAll('.deep-card').forEach(c => c.classList.remove('show'));
+    });
+  }
+});
+</script>
+</body>
+</html>
