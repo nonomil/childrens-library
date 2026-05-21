@@ -184,8 +184,8 @@
   <p class="subtitle">✨ 点卡片开始玩！每堂课都有互动游戏和语音朗读 🎧</p>
 
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>11</strong> 堂课</span>
-    <span class="stat-item">🎵 <strong>3</strong> 首童谣</span>
+    <span class="stat-item">📚 共 <strong>13</strong> 堂课</span>
+    <span class="stat-item">🎵 <strong>5</strong> 首童谣</span>
     <span class="stat-item">🔤 <strong>5</strong> 个英语课</span>
     <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
   </div>
@@ -234,6 +234,32 @@
         <span class="tag tag-orange">🔢 数数</span>
       </div>
       <p>5只小猴跳床咯！点击小猴学数字<br>🎵 一边唱一边从5倒数到0</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="wheels-on-bus.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-blue card-new">
+      <div class="icon">🚌</div>
+      <h3>The Wheels on the Bus</h3>
+      <div class="tags">
+        <span class="tag tag-blue">🎵 童谣</span>
+        <span class="tag tag-orange">🧒 3-6岁</span>
+      </div>
+      <p>轮子转啊转！点击公车不同部位<br>🎵 拼读 wheels/people/wipers/horn/door</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+
+  <a href="itsy-bitsy-spider.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-green card-new">
+      <div class="icon">🕷️</div>
+      <h3>Itsy Bitsy Spider</h3>
+      <div class="tags">
+        <span class="tag tag-green">🎵 童谣</span>
+        <span class="tag tag-orange">🧒 3-6岁</span>
+      </div>
+      <p>小蜘蛛爬水管！下雨冲走太阳晒干<br>🎵 拼读 spider/rain/sun/out/again</p>
       <span class="btn-start">🎵 听儿歌</span>
     </div>
   </a>
