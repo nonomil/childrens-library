@@ -339,195 +339,262 @@ body {
 <script>
 // === SVG ILLUSTRATIONS ===
 
-function svgCat(extra) {
-  return `<svg viewBox="0 0 220 200">
-    <g class="anim-float">
-      <!-- Ears -->
-      <polygon points="60,70 80,15 100,70" fill="#F9A825"/>
-      <polygon points="120,70 140,15 160,70" fill="#F9A825"/>
-      <polygon points="66,64 80,28 93,64" fill="#FFB74D"/>
-      <polygon points="127,64 140,28 154,64" fill="#FFB74D"/>
-      <!-- Face -->
-      <circle cx="110" cy="110" r="65" fill="#F9A825"/>
-      <circle cx="110" cy="110" r="60" fill="none" stroke="#E8751A" stroke-width="2"/>
-      <!-- Eyes -->
-      <ellipse cx="90" cy="100" rx="9" ry="12" fill="#333"/>
-      <ellipse cx="130" cy="100" rx="9" ry="12" fill="#333"/>
-      <ellipse cx="90" cy="97" rx="4" ry="5" fill="white"/>
-      <ellipse cx="130" cy="97" rx="4" ry="5" fill="white"/>
-      <!-- Nose -->
-      <polygon points="110,115 105,123 115,123" fill="#E91E63"/>
-      <!-- Mouth -->
-      <path d="M100,128 Q110,138 120,128" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
-      <!-- Whiskers -->
-      <line x1="45" y1="110" x2="83" y2="118" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
-      <line x1="43" y1="122" x2="82" y2="124" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
-      <line x1="175" y1="110" x2="137" y2="118" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
-      <line x1="177" y1="122" x2="138" y2="124" stroke="#8D6E63" stroke-width="2" stroke-linecap="round"/>
-      ${extra || ''}
-    </g>
-  </svg>`;
+// ===== SCENE SVG ILLUSTRATIONS (story scenes, not headshots) =====
+function sceneBackground() {
+  return `
+    <!-- Room background -->
+    <rect width="220" height="200" fill="#FFF8E1" rx="12"/>
+    <!-- Floor -->
+    <rect x="0" y="130" width="220" height="70" fill="#FFE0B2" rx="4"/>
+    <!-- Baseboard -->
+    <rect x="0" y="128" width="220" height="6" fill="#FFCC80"/>
+    <!-- Mat -->
+    <rect x="35" y="140" width="150" height="40" rx="6" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="3"/>
+    <rect x="45" y="148" width="130" height="24" rx="4" fill="#C8E6C9" opacity="0.5"/>
+    <!-- Mat stripes -->
+    <line x1="50" y1="148" x2="50" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="65" y1="148" x2="65" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="80" y1="148" x2="80" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="95" y1="148" x2="95" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="110" y1="148" x2="110" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="125" y1="148" x2="125" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="140" y1="148" x2="140" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="155" y1="148" x2="155" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="170" y1="148" x2="170" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>`;
 }
 
-function svgSleepingCat() {
-  return svgCat(`
-    <!-- Closed sleepy eyes -->
-    <path d="M80,98 Q90,92 100,98" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-    <path d="M120,98 Q130,92 140,98" fill="none" stroke="#333" stroke-width="3" stroke-linecap="round"/>
-    <!-- Zzz -->
-    <text x="155" y="55" font-size="22" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">Z</text>
-    <text x="172" y="38" font-size="18" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">z</text>
-    <text x="184" y="24" font-size="14" fill="#90CAF9" font-weight="bold" font-family="Comic Sans MS,Chalkboard SE,Segoe UI,sans-serif">z</text>
-  `);
-}
-
-function svgHappyCat() {
-  return svgCat(`
-    <!-- Happy mouth -->
-    <path d="M92,128 Q110,148 128,128" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round"/>
-    <!-- Blush -->
-    <ellipse cx="78" cy="120" rx="10" ry="5" fill="#FFCDD2" opacity="0.7"/>
-    <ellipse cx="142" cy="120" rx="10" ry="5" fill="#FFCDD2" opacity="0.7"/>
-  `);
-}
-
-function svgRat() {
-  return `<svg viewBox="0 0 220 200">
-    <g class="anim-float">
-      <!-- Big round ears -->
-      <circle cx="70" cy="60" r="24" fill="#B0BEC5"/>
-      <circle cx="70" cy="60" r="14" fill="#FFCDD2"/>
-      <circle cx="150" cy="60" r="24" fill="#B0BEC5"/>
-      <circle cx="150" cy="60" r="14" fill="#FFCDD2"/>
-      <!-- Body / face -->
-      <ellipse cx="110" cy="115" rx="60" ry="55" fill="#90A4AE"/>
-      <ellipse cx="110" cy="115" rx="55" ry="50" fill="#B0BEC5"/>
-      <!-- Eyes -->
-      <circle cx="92" cy="100" r="8" fill="#333"/>
-      <circle cx="128" cy="100" r="8" fill="#333"/>
-      <circle cx="94" cy="98" r="3" fill="white"/>
-      <circle cx="130" cy="98" r="3" fill="white"/>
-      <!-- Nose -->
-      <circle cx="110" cy="118" r="6" fill="#F48FB1"/>
-      <!-- Whiskers -->
-      <line x1="40" y1="110" x2="88" y2="118" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="38" y1="122" x2="86" y2="124" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="180" y1="110" x2="132" y2="118" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
-      <line x1="182" y1="122" x2="134" y2="124" stroke="#78909C" stroke-width="2" stroke-linecap="round"/>
+function svgCatBody(cx, cy, scale) {
+  scale = scale || 1;
+  return `
+    <g transform="translate(${cx},${cy}) scale(${scale})">
       <!-- Tail -->
-      <path d="M110,168 Q140,190 175,175 Q195,165 190,150" fill="none" stroke="#F48FB1" stroke-width="4" stroke-linecap="round"/>
-      <!-- Teeth -->
-      <rect x="105" y="120" width="4" height="6" rx="1" fill="white"/>
-      <rect x="111" y="120" width="4" height="6" rx="1" fill="white"/>
-    </g>
-  </svg>`;
-}
-
-function svgHat() {
-  return `<svg viewBox="0 0 220 200">
-    <g class="anim-float">
-      <!-- Brim -->
-      <ellipse cx="110" cy="145" rx="90" ry="18" fill="#D7CCC8"/>
-      <ellipse cx="110" cy="143" rx="85" ry="14" fill="#EFEBE9"/>
-      <!-- Hat body -->
-      <rect x="60" y="45" width="100" height="100" rx="6" fill="#FF6B6B"/>
-      <!-- Colorful stripes -->
-      <rect x="60" y="60" width="100" height="16" rx="2" fill="#FFB347"/>
-      <rect x="60" y="85" width="100" height="16" rx="2" fill="#4ECDC4"/>
-      <rect x="60" y="110" width="100" height="16" rx="2" fill="#A78BFA"/>
-      <!-- Band -->
-      <rect x="60" y="133" width="100" height="14" rx="2" fill="#D7CCC8"/>
-      <!-- Top knob -->
-      <circle cx="110" cy="45" r="9" fill="#FFB347"/>
-      <!-- Highlight -->
-      <rect x="65" y="48" width="12" height="80" rx="6" fill="white" opacity="0.15"/>
-    </g>
-  </svg>`;
-}
-
-function svgBat() {
-  return `<svg viewBox="0 0 220 200">
-    <g class="anim-float">
-      <!-- Left wing -->
-      <path d="M110,70 Q75,45 40,90 Q60,80 70,100 Q55,95 30,125 Q65,108 80,120 Q68,115 50,145 Q85,125 95,130 Q90,125 85,140" fill="#455A64"/>
-      <!-- Right wing -->
-      <path d="M110,70 Q145,45 180,90 Q160,80 150,100 Q165,95 190,125 Q155,108 140,120 Q152,115 170,145 Q135,125 125,130 Q130,125 135,140" fill="#455A64"/>
+      <path d="M-15,20 Q-40,0 -35,-20 Q-30,-35 -20,-25" fill="none" stroke="#F9A825" stroke-width="4" stroke-linecap="round"/>
       <!-- Body -->
-      <ellipse cx="110" cy="100" rx="35" ry="45" fill="#37474F"/>
+      <ellipse cx="0" cy="20" rx="22" ry="16" fill="#F9A825"/>
+      <ellipse cx="0" cy="20" rx="18" ry="12" fill="#FFE082" opacity="0.4"/>
       <!-- Ears -->
-      <polygon points="88,55 82,32 98,52" fill="#37474F"/>
-      <polygon points="132,55 138,32 122,52" fill="#37474F"/>
-      <!-- Inner ears -->
-      <polygon points="88,55 86,42 96,53" fill="#FFE0B2"/>
-      <polygon points="132,55 134,42 124,53" fill="#FFE0B2"/>
+      <polygon points="-18,-8 -14,-30 -2,-12" fill="#F9A825"/>
+      <polygon points="18,-8 14,-30 2,-12" fill="#F9A825"/>
+      <polygon points="-15,-10 -13,-25 -6,-13" fill="#FFB74D"/>
+      <polygon points="15,-10 13,-25 6,-13" fill="#FFB74D"/>
+      <!-- Head -->
+      <circle cx="0" cy="-5" r="20" fill="#F9A825"/>
       <!-- Eyes -->
-      <circle cx="98" cy="92" r="8" fill="#FFEB3B"/>
-      <circle cx="122" cy="92" r="8" fill="#FFEB3B"/>
-      <circle cx="100" cy="92" r="4" fill="#333"/>
-      <circle cx="124" cy="92" r="4" fill="#333"/>
-      <!-- Mouth / fangs -->
-      <path d="M104,108 Q110,115 116,108" fill="none" stroke="#FFCDD2" stroke-width="2"/>
-      <polygon points="107,110 108,116 109,110" fill="white"/>
-      <polygon points="113,110 114,116 115,110" fill="white"/>
-    </g>
-  </svg>`;
+      <ellipse cx="-8" cy="-8" rx="3.5" ry="4" fill="#333"/>
+      <ellipse cx="8" cy="-8" rx="3.5" ry="4" fill="#333"/>
+      <ellipse cx="-8" cy="-9" rx="1.5" ry="2" fill="white"/>
+      <ellipse cx="8" cy="-9" rx="1.5" ry="2" fill="white"/>
+      <!-- Nose -->
+      <polygon points="0,-1 -2,2 2,2" fill="#E91E63"/>
+      <!-- Mouth -->
+      <path d="M-5,4 Q0,8 5,4" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Whiskers -->
+      <line x1="-20" y1="-3" x2="-10" y2="0" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="-20" y1="2" x2="-10" y2="2" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="20" y1="-3" x2="10" y2="0" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="20" y1="2" x2="10" y2="2" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <!-- Front legs -->
+      <ellipse cx="-12" cy="34" rx="6" ry="4" fill="#F9A825"/>
+      <ellipse cx="12" cy="34" rx="6" ry="4" fill="#F9A825"/>
+    </g>`;
 }
 
-function svgCap() {
-  return `<svg viewBox="0 0 220 200">
-    <g class="anim-float">
-      <!-- Brim -->
-      <ellipse cx="135" cy="145" rx="70" ry="22" fill="#E91E63"/>
-      <ellipse cx="135" cy="143" rx="65" ry="18" fill="#F06292"/>
-      <!-- Cap crown -->
-      <path d="M55,90 Q55,55 110,48 Q165,55 165,90 Q165,115 140,135 L80,135 Q55,115 55,90 Z" fill="#2196F3"/>
-      <!-- Cap panels (stitching lines) -->
-      <path d="M110,48 Q110,90 110,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <path d="M82,52 Q85,90 88,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <path d="M138,52 Q135,90 132,135" fill="none" stroke="#1565C0" stroke-width="1.5" stroke-dasharray="4,3"/>
-      <!-- Top button -->
-      <circle cx="110" cy="50" r="7" fill="#1565C0"/>
-      <circle cx="110" cy="50" r="4" fill="#1976D2"/>
-      <!-- Visor stitching -->
-      <path d="M140,135 Q160,140 180,143" fill="none" stroke="#C62828" stroke-width="2.5" stroke-linecap="round"/>
-    </g>
-  </svg>`;
+function svgRatBody(cx, cy, scale) {
+  scale = scale || 1;
+  return `
+    <g transform="translate(${cx},${cy}) scale(${scale})">
+      <!-- Tail -->
+      <path d="M0,22 Q30,35 40,20 Q50,5 45,0" fill="none" stroke="#F48FB1" stroke-width="3" stroke-linecap="round"/>
+      <!-- Body -->
+      <ellipse cx="0" cy="18" rx="18" ry="14" fill="#B0BEC5"/>
+      <!-- Ears -->
+      <circle cx="-16" cy="-12" r="8" fill="#B0BEC5"/>
+      <circle cx="-16" cy="-12" r="5" fill="#FFCDD2"/>
+      <circle cx="16" cy="-12" r="8" fill="#B0BEC5"/>
+      <circle cx="16" cy="-12" r="5" fill="#FFCDD2"/>
+      <!-- Head -->
+      <ellipse cx="0" cy="-2" rx="16" ry="13" fill="#B0BEC5"/>
+      <ellipse cx="0" cy="-2" rx="14" ry="11" fill="#CFD8DC"/>
+      <!-- Eyes -->
+      <circle cx="-6" cy="-5" r="2.5" fill="#333"/>
+      <circle cx="6" cy="-5" r="2.5" fill="#333"/>
+      <!-- Nose -->
+      <circle cx="0" cy="2" r="2.5" fill="#F48FB1"/>
+      <!-- Whiskers -->
+      <line x1="-16" y1="0" x2="-28" y2="-3" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="-16" y1="3" x2="-28" y2="5" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="16" y1="0" x2="28" y2="-3" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="16" y1="3" x2="28" y2="5" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <!-- Teeth -->
+      <rect x="-2" y="4" width="2" height="4" rx="0.5" fill="white"/>
+      <rect x="1" y="4" width="2" height="4" rx="0.5" fill="white"/>
+      <!-- Feet -->
+      <ellipse cx="-8" cy="30" rx="5" ry="3" fill="#90A4AE"/>
+      <ellipse cx="8" cy="30" rx="5" ry="3" fill="#90A4AE"/>
+    </g>`;
 }
 
-function svgStar() {
+function svgBaseScene() {
+  return `<svg viewBox="0 0 220 200">${sceneBackground()}</svg>`;
+}
+
+function svgCoverScene() {
   return `<svg viewBox="0 0 220 200">
     <g class="anim-float">
-      <!-- Glow -->
-      <circle cx="110" cy="95" r="70" fill="#FFF8E1" opacity="0.4"/>
-      <circle cx="110" cy="95" r="55" fill="#FFECB3" opacity="0.3"/>
-      <!-- Star -->
-      <polygon points="110,15 132,75 198,75 145,115 168,178 110,142 52,178 75,115 22,75 88,75" 
-               fill="#FFB347" stroke="#E8751A" stroke-width="3" stroke-linejoin="round"/>
-      <!-- Inner star highlight -->
-      <polygon points="110,48 122,78 155,78 128,98 138,130 110,110 82,130 92,98 65,78 98,78" 
-               fill="white" opacity="0.25"/>
+      ${sceneBackground()}
+      ${svgCatBody(110, 95, 1.2)}
       <!-- Sparkles -->
-      <circle cx="55" cy="45" r="4" fill="#FFE082"/>
-      <circle cx="170" cy="40" r="3" fill="#FFE082"/>
-      <circle cx="40" cy="140" r="3" fill="#FFE082"/>
-      <circle cx="185" cy="130" r="4" fill="#FFE082"/>
+      <circle cx="30" cy="30" r="3" fill="#FFB347" opacity="0.8"/>
+      <circle cx="190" cy="25" r="4" fill="#FFB347" opacity="0.8"/>
+      <circle cx="45" cy="170" r="2" fill="#FFB347" opacity="0.6"/>
+      <circle cx="175" cy="175" r="3" fill="#FFB347" opacity="0.6"/>
+      <circle cx="200" cy="65" r="2" fill="#FFB347" opacity="0.7"/>
+      <text x="110" y="22" text-anchor="middle" font-size="10" fill="#E8751A" font-weight="bold">🐱 Fat Cat</text>
+    </g>
+  </svg>`;
+}
+
+function svgCatOnMat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.1)}
+    </g>
+  </svg>`;
+}
+
+function svgRatWithCat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(140, 100, 0.9)}
+      ${svgRatBody(80, 105, 0.85)}
+      <!-- Action lines: rat running -->
+      <line x1="55" y1="115" x2="40" y2="110" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <line x1="50" y1="120" x2="35" y2="118" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <line x1="55" y1="125" x2="40" y2="128" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    </g>
+  </svg>`;
+}
+
+function svgHatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Hat on mat -->
+      <g transform="translate(155,140)">
+        <ellipse cx="0" cy="18" rx="24" ry="6" fill="#D7CCC8"/>
+        <rect x="-16" y="-18" width="32" height="36" rx="4" fill="#FF6B6B"/>
+        <rect x="-16" y="-10" width="32" height="6" rx="1" fill="#FFB347"/>
+        <rect x="-16" y="-1" width="32" height="6" rx="1" fill="#4ECDC4"/>
+        <circle cx="0" cy="-18" r="4" fill="#FFB347"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
+function svgBatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 0.9)}
+      <!-- Bat flying above -->
+      <g transform="translate(100,45) scale(0.7)">
+        <path d="M0,0 Q-30,-20 -50,10 Q-35,5 -28,15 Q-38,12 -50,25 Q-30,18 -22,22 Q-20,18 -22,28" fill="#455A64"/>
+        <path d="M0,0 Q30,-20 50,10 Q35,5 28,15 Q38,12 50,25 Q30,18 22,22 Q20,18 22,28" fill="#455A64"/>
+        <ellipse cx="0" cy="10" rx="10" ry="16" fill="#37474F"/>
+        <polygon points="-5,-2 -6,-10 -3,-4" fill="#37474F"/>
+        <polygon points="5,-2 6,-10 3,-4" fill="#37474F"/>
+      </g>
+      <!-- Motion lines -->
+      <path d="M68,38 Q72,34 76,38" fill="none" stroke="#90A4AE" stroke-width="1" stroke-linecap="round"/>
+      <path d="M68,44 Q74,40 78,44" fill="none" stroke="#90A4AE" stroke-width="1" stroke-linecap="round"/>
+    </g>
+  </svg>`;
+}
+
+function svgPatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(130, 100, 0.85)}
+      ${svgRatBody(80, 105, 0.8)}
+      <!-- Rat arm reaching to pat -->
+      <path d="M95,95 Q105,85 115,90" fill="none" stroke="#B0BEC5" stroke-width="4" stroke-linecap="round"/>
+      <!-- Heart -->
+      <path d="M108,82 Q110,78 114,80 Q118,78 118,83 Q118,86 114,90 Q110,86 108,82Z" fill="#F48FB1" opacity="0.8"/>
+    </g>
+  </svg>`;
+}
+
+function svgNapScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Closed eyes overlay -->
+      <path d="M100,90 Q105,87 110,90" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+      <path d="M115,90 Q120,87 125,90" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+      <!-- Zzz -->
+      <text x="135" y="65" font-size="16" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">Z</text>
+      <text x="148" y="50" font-size="13" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">z</text>
+      <text x="158" y="38" font-size="10" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">z</text>
+    </g>
+  </svg>`;
+}
+
+function svgHappyFatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.2)}
+      <!-- Happy mouth -->
+      <path d="M103,100 Q110,108 117,100" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Blush -->
+      <ellipse cx="95" cy="96" rx="5" ry="3" fill="#FFCDD2" opacity="0.7"/>
+      <ellipse cx="125" cy="96" rx="5" ry="3" fill="#FFCDD2" opacity="0.7"/>
+      <!-- Fat belly -->
+      <ellipse cx="110" cy="108" rx="28" ry="18" fill="#FFE082" opacity="0.3"/>
+      <!-- Heart -->
+      <path d="M55,75 Q57,72 60,73 Q63,72 64,76 Q64,78 60,81 Q57,78 55,75Z" fill="#F48FB1" opacity="0.7"/>
+      <path d="M165,70 Q167,67 170,68 Q173,67 174,71 Q174,73 170,76 Q167,73 165,70Z" fill="#F48FB1" opacity="0.7"/>
+    </g>
+  </svg>`;
+}
+
+function svgStarScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Star -->
+      <g transform="translate(110,30)">
+        <circle cx="0" cy="0" r="28" fill="#FFF8E1" opacity="0.4"/>
+        <polygon points="0,-18 6,-6 18,-6 8,3 12,16 0,9 -12,16 -8,3 -18,-6 -6,-6" fill="#FFB347" stroke="#E8751A" stroke-width="1.5"/>
+      </g>
+      <!-- Small stars -->
+      <circle cx="35" cy="45" r="2" fill="#FFE082"/>
+      <circle cx="185" cy="40" r="2" fill="#FFE082"/>
+      <circle cx="30" cy="160" r="2" fill="#FFE082"/>
+      <circle cx="190" cy="165" r="2" fill="#FFE082"/>
     </g>
   </svg>`;
 }
 
 function getSVG(pageIdx) {
   const svgMap = {
-    0: svgCat(''),
-    1: svgCat(''),
-    2: svgRat(),
-    3: svgHat(),
-    4: svgBat(),
-    5: svgCap(),
-    6: svgSleepingCat(),
-    7: svgHappyCat(),
-    8: svgStar()
+    0: svgCoverScene(),
+    1: svgCatOnMat(),
+    2: svgRatWithCat(),
+    3: svgHatScene(),
+    4: svgBatScene(),
+    5: svgPatScene(),
+    6: svgNapScene(),
+    7: svgHappyFatScene(),
+    8: svgStarScene()
   };
-  return svgMap[pageIdx] || svgCat('');
+  return svgMap[pageIdx] || svgCatOnMat();
 }
 
 // === COVER + 8 STORY PAGES ===
