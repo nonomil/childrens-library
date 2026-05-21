@@ -17,16 +17,16 @@ body{font-family:'Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;backgroun
 .content{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:10px 0}
 .content.hidden{display:none}
 .story-text{font-size:20px;color:#5D4037;line-height:1.8;text-align:center;max-width:650px}
-.story-text .highlight{color:#E8751A;font-weight:bold;font-size:26px}
+.story-text .highlight{color:#E8751A;font-weight:bold;font-size:26px;cursor:pointer}
 .char-big{font-size:80px;color:#E8751A;font-weight:bold;text-shadow:2px 2px 0 #FFE0B2;margin:5px 0}
 .char-info{text-align:center;font-size:18px;color:#6B4F3A}
 .char-info .pinyin{font-size:24px;color:#E8751A}
 .char-info .strokes{font-size:14px;color:#999}
 .word-group{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin:8px 0}
-.word-card{background:#FFF8E1;border-radius:15px;padding:10px 20px;text-align:center;box-shadow:0 2px 0 #FFE0B2}
+.word-card{background:#FFF8E1;border-radius:15px;padding:10px 20px;text-align:center;box-shadow:0 2px 0 #FFE0B2;cursor:pointer}
 .word-card .word{font-size:28px;color:#E8751A}
 .word-card .meaning{font-size:14px;color:#6B4F3A}
-.sentence{font-size:18px;color:#5D4037;background:#F5F5F5;border-radius:12px;padding:10px 20px;margin:5px 0;text-align:center}
+.sentence{font-size:18px;color:#5D4037;background:#F5F5F5;border-radius:12px;padding:10px 20px;margin:5px 0;text-align:center;cursor:pointer}
 img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15px rgba(0,0,0,.1);margin:5px 0}
 .nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:15px;padding-top:15px;border-top:2px solid #FFE0B2}
 .nav-btn{background:#FFB347;border:none;border-radius:50px;padding:12px 30px;font-size:20px;color:#fff;cursor:pointer;transition:.2s;font-family:inherit;box-shadow:0 4px 0 #E8751A}
@@ -58,7 +58,7 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
 .char-grid-item .big{font-size:40px;color:#E8751A}
 .char-grid-item .small{font-size:14px;color:#6B4F3A}
 .review-sentence{font-size:22px;color:#5D4037;line-height:2;text-align:center;padding:15px;background:#FFF8E1;border-radius:20px}
-.review-sentence .ch{font-size:30px;color:#E8751A;font-weight:bold}
+.review-sentence .ch{font-size:30px;color:#E8751A;font-weight:bold;cursor:pointer}
 .speech-bubble{position:fixed;bottom:120px;left:50%;transform:translateX(-50%) scale(0.8);background:#FFB347;color:#fff;font-size:20px;padding:16px 24px;border-radius:20px;max-width:85%;text-align:center;opacity:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);z-index:999;box-shadow:0 6px 20px rgba(255,179,71,0.4);pointer-events:none;line-height:1.6}
 .speech-bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
 .speech-bubble::after{content:'';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);border:10px solid transparent;border-top-color:#FFB347}
@@ -95,101 +95,101 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
   <div class="content hidden" id="page1">
     <p class="story-text">Steve和Alex在村庄安顿下来。<br>第二天一早出门干活——<br>天空怎么在变？</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-01.png" alt="天空在变脸">
-    <p class="story-text">刚才还是蓝蓝的天，突然飘来一团团白色的东西。<br>看，那是 <span class="highlight">云</span>！</p>
+    <p class="story-text">刚才还是蓝蓝的天，突然飘来一团团白色的东西。<br>看，那是 <span class="highlight" onclick="playClick('audio/char-yun.mp3','云')">云</span>！</p>
   </div>
 
   <div class="content hidden" id="page2">
-    <div class="char-big">云</div>
+    <div class="char-big" onclick="playClick('audio/char-yun.mp3','云')" style="cursor:pointer">云</div>
     <div class="char-info"><span class="pinyin">yún</span> · <span class="strokes">4画</span></div>
     <p style="color:#6B4F3A;font-size:16px">"二"字上面加个"厶"——天上的棉花糖</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-02.png" alt="云字教学">
     <div class="word-group">
-      <div class="word-card"><div class="word">白云</div><div class="meaning">bái yún</div></div>
-      <div class="word-card"><div class="word">云朵</div><div class="meaning">yún duǒ</div></div>
+      <div class="word-card" onclick="playClick('audio/word-baiyun.mp3','白云')" style="cursor:pointer"><div class="word">白云</div><div class="meaning">bái yún</div></div>
+      <div class="word-card" onclick="playClick('audio/word-yunduo.mp3','云朵')" style="cursor:pointer"><div class="word">云朵</div><div class="meaning">yún duǒ</div></div>
     </div>
-    <div class="sentence">📖 白云在天上。</div>
+    <div class="sentence" onclick="playClick('audio/sent-baiyun.mp3','白云在天上。')" style="cursor:pointer">📖 白云在天上。</div>
   </div>
 
   <div class="content hidden" id="page3">
     <p class="story-text">云越来越黑。<br>"啪！"一滴水掉在Steve头上。<br>哗啦啦——大雨来了！</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-03.png" alt="下雨了">
-    <p class="story-text">这是 <span class="highlight">雨</span>！快躲起来！</p>
+    <p class="story-text">这是 <span class="highlight" onclick="playClick('audio/char-yu.mp3','雨')">雨</span>！快躲起来！</p>
   </div>
 
   <div class="content hidden" id="page4">
-    <div class="char-big">雨</div>
+    <div class="char-big" onclick="playClick('audio/char-yu.mp3','雨')" style="cursor:pointer">雨</div>
     <div class="char-info"><span class="pinyin">yǔ</span> · <span class="strokes">8画</span></div>
     <p style="color:#6B4F3A;font-size:16px">像一扇窗，里面有雨滴</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-04.png" alt="雨字教学">
     <div class="word-group">
-      <div class="word-card"><div class="word">下雨</div><div class="meaning">xià yǔ</div></div>
-      <div class="word-card"><div class="word">雨水</div><div class="meaning">yǔ shuǐ</div></div>
+      <div class="word-card" onclick="playClick('audio/word-xiayu.mp3','下雨')" style="cursor:pointer"><div class="word">下雨</div><div class="meaning">xià yǔ</div></div>
+      <div class="word-card" onclick="playClick('audio/word-yushui.mp3','雨水')" style="cursor:pointer"><div class="word">雨水</div><div class="meaning">yǔ shuǐ</div></div>
     </div>
-    <div class="sentence">📖 下雨了，天上有很多云。</div>
+    <div class="sentence" onclick="playClick('audio/sent-xiayu.mp3','下雨了，天上有很多云。')" style="cursor:pointer">📖 下雨了，天上有很多云。</div>
   </div>
 
   <div class="content hidden" id="page5">
     <p class="story-text">雨停了。呼呼——<br>突然来了一阵大风，<br>把Alex的帽子吹飞了！</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-05.png" alt="起风了">
-    <p class="story-text">好大的 <span class="highlight">风</span>！追我的帽子！</p>
+    <p class="story-text">好大的 <span class="highlight" onclick="playClick('audio/char-feng.mp3','风')">风</span>！追我的帽子！</p>
   </div>
 
   <div class="content hidden" id="page6">
     <div style="display:flex;gap:30px;flex-wrap:wrap;justify-content:center">
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">风</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-feng.mp3','风')">风</div>
         <div class="char-info"><span class="pinyin">fēng</span> · 4画</div>
-        <div class="word-card"><div class="word">大风</div><div class="meaning">dà fēng</div></div>
-        <div class="sentence" style="font-size:16px">📖 大风来了，云跑了。</div>
+        <div class="word-card" onclick="playClick('audio/word-dafeng.mp3','大风')" style="cursor:pointer"><div class="word">大风</div><div class="meaning">dà fēng</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-dafeng.mp3','大风来了，云跑了。')">📖 大风来了，云跑了。</div>
       </div>
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">雪</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-xue.mp3','雪')">雪</div>
         <div class="char-info"><span class="pinyin">xuě</span> · 11画</div>
-        <div class="word-card"><div class="word">雪花</div><div class="meaning">xuě huā</div></div>
-        <div class="sentence" style="font-size:16px">📖 下雪了，大地是白的。</div>
+        <div class="word-card" onclick="playClick('audio/word-xuehua.mp3','雪花')" style="cursor:pointer"><div class="word">雪花</div><div class="meaning">xuě huā</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-xiaxue.mp3','下雪了，大地是白的。')">📖 下雪了，大地是白的。</div>
       </div>
     </div>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-06.png" alt="风雪场景">
-    <p class="story-text" style="font-size:16px">天冷了，"阿嚏！"<br>天空飘下白白的小东西——<span class="highlight">雪</span>！</p>
+    <p class="story-text" style="font-size:16px">天冷了，"阿嚏！"<br>天空飘下白白的小东西——<span class="highlight" onclick="playClick('audio/char-xue.mp3','雪')">雪</span>！</p>
   </div>
 
   <div class="content hidden" id="page7">
     <p class="story-text">傍晚来临，风雪停了。<br>Steve和Alex坐在山坡上，<br>仰头看天。</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-07.png" alt="满天星星">
-    <p class="story-text">天上好多小灯！<br>那是 <span class="highlight">星</span>星！一颗、两颗、三颗……</p>
+    <p class="story-text">天上好多小灯！<br>那是 <span class="highlight" onclick="playClick('audio/char-xing.mp3','星')">星</span>星！一颗、两颗、三颗……</p>
   </div>
 
   <div class="content hidden" id="page8">
-    <div class="char-big">星</div>
+    <div class="char-big" onclick="playClick('audio/char-xing.mp3','星')" style="cursor:pointer">星</div>
     <div class="char-info"><span class="pinyin">xīng</span> · <span class="strokes">9画</span></div>
     <p style="color:#6B4F3A;font-size:16px">上面"日"是太阳，下面"生"是出生——太阳生的小光点</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-08.png" alt="星字教学">
     <div class="word-group">
-      <div class="word-card"><div class="word">星星</div><div class="meaning">xīng xīng</div></div>
-      <div class="word-card"><div class="word">星空</div><div class="meaning">xīng kōng</div></div>
+      <div class="word-card" onclick="playClick('audio/word-xingxing.mp3','星星')" style="cursor:pointer"><div class="word">星星</div><div class="meaning">xīng xīng</div></div>
+      <div class="word-card" onclick="playClick('audio/word-xingkong.mp3','星空')" style="cursor:pointer"><div class="word">星空</div><div class="meaning">xīng kōng</div></div>
     </div>
-    <div class="sentence">📖 天上有很多星星。</div>
+    <div class="sentence" onclick="playClick('audio/sent-xingxing.mp3','天上有很多星星。')" style="cursor:pointer">📖 天上有很多星星。</div>
   </div>
 
   <div class="content hidden" id="page9">
     <p class="story-text">太阳出来了！<br>昨天的雨水让大地长出很多新生命。</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-09.png" alt="花和草">
-    <p class="story-text">看！开了好多 <span class="highlight">花</span>！<br>旁边一大片是 <span class="highlight">草</span>。</p>
+    <p class="story-text">看！开了好多 <span class="highlight" onclick="playClick('audio/char-hua.mp3','花')">花</span>！<br>旁边一大片是 <span class="highlight" onclick="playClick('audio/char-cao.mp3','草')">草</span>。</p>
   </div>
 
   <div class="content hidden" id="page10">
     <div style="display:flex;gap:30px;flex-wrap:wrap;justify-content:center">
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">花</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-hua.mp3','花')">花</div>
         <div class="char-info"><span class="pinyin">huā</span> · 7画</div>
-        <div class="word-card"><div class="word">花朵</div><div class="meaning">huā duǒ</div></div>
-        <div class="sentence" style="font-size:16px">📖 草地上开了三朵花。</div>
+        <div class="word-card" onclick="playClick('audio/word-huaduo.mp3','花朵')" style="cursor:pointer"><div class="word">花朵</div><div class="meaning">huā duǒ</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-huaduo.mp3','草地上开了三朵花。')">📖 草地上开了三朵花。</div>
       </div>
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">草</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-cao.mp3','草')">草</div>
         <div class="char-info"><span class="pinyin">cǎo</span> · 9画</div>
-        <div class="word-card"><div class="word">小草</div><div class="meaning">xiǎo cǎo</div></div>
-        <div class="sentence" style="font-size:16px">📖 小草是绿色的。</div>
+        <div class="word-card" onclick="playClick('audio/word-xiaocao.mp3','小草')" style="cursor:pointer"><div class="word">小草</div><div class="meaning">xiǎo cǎo</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-xiaocao.mp3','小草是绿色的。')">📖 小草是绿色的。</div>
       </div>
     </div>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-10.png" alt="花草教学">
@@ -198,22 +198,22 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
   <div class="content hidden" id="page11">
     <p class="story-text">草丛里有动静！<br>"叽叽叽——"<br>一只小虫爬出来。</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-11.png" alt="虫和鸟">
-    <p class="story-text"><span class="highlight">虫</span>在地上爬，<br><span class="highlight">鸟</span>在天上飞！</p>
+    <p class="story-text"><span class="highlight" onclick="playClick('audio/char-chong.mp3','虫')">虫</span>在地上爬，<br><span class="highlight" onclick="playClick('audio/char-niao.mp3','鸟')">鸟</span>在天上飞！</p>
   </div>
 
   <div class="content hidden" id="page12">
     <div style="display:flex;gap:30px;flex-wrap:wrap;justify-content:center">
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">虫</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-chong.mp3','虫')">虫</div>
         <div class="char-info"><span class="pinyin">chóng</span> · 6画</div>
-        <div class="word-card"><div class="word">小虫</div><div class="meaning">xiǎo chóng</div></div>
-        <div class="sentence" style="font-size:16px">📖 小虫在草里走。</div>
+        <div class="word-card" onclick="playClick('audio/word-xiaochong.mp3','小虫')" style="cursor:pointer"><div class="word">小虫</div><div class="meaning">xiǎo chóng</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-xiaochong.mp3','小虫在草里走。')">📖 小虫在草里走。</div>
       </div>
       <div style="text-align:center">
-        <div class="char-big" style="font-size:60px">鸟</div>
+        <div class="char-big" style="font-size:60px;cursor:pointer" onclick="playClick('audio/char-niao.mp3','鸟')">鸟</div>
         <div class="char-info"><span class="pinyin">niǎo</span> · 5画</div>
-        <div class="word-card"><div class="word">小鸟</div><div class="meaning">xiǎo niǎo</div></div>
-        <div class="sentence" style="font-size:16px">📖 小鸟在天上飞。</div>
+        <div class="word-card" onclick="playClick('audio/word-xiaoniao.mp3','小鸟')" style="cursor:pointer"><div class="word">小鸟</div><div class="meaning">xiǎo niǎo</div></div>
+        <div class="sentence" style="font-size:16px;cursor:pointer" onclick="playClick('audio/sent-xiaoniao.mp3','小鸟在天上飞。')">📖 小鸟在天上飞。</div>
       </div>
     </div>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-12.png" alt="虫鸟教学">
@@ -223,10 +223,10 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
     <p class="story-text" style="font-size:22px">🌟 大自然的宝藏 🌟</p>
     <img class="lesson-img" src="https://raw.githubusercontent.com/nonomil/bilingual-picturebooks/main/chinese-language/chapters/img/chapter-04/page-13.png" alt="故事总结">
     <div class="review-sentence">
-      <span class="ch">云</span>带来<span class="ch">雨</span>，雨后有大<span class="ch">风</span>。<br>
-      冬天有<span class="ch">雪</span>，夜晚有<span class="ch">星</span>。<br>
-      春天<span class="ch">花</span>开，满山是<span class="ch">草</span>。<br>
-      <span class="ch">虫</span>儿爬，<span class="ch">鸟</span>儿飞。
+      <span class="ch" onclick="playClick('audio/char-yun.mp3','云')">云</span>带来<span class="ch" onclick="playClick('audio/char-yu.mp3','雨')">雨</span>，雨后有大<span class="ch" onclick="playClick('audio/char-feng.mp3','风')">风</span>。<br>
+      冬天有<span class="ch" onclick="playClick('audio/char-xue.mp3','雪')">雪</span>，夜晚有<span class="ch" onclick="playClick('audio/char-xing.mp3','星')">星</span>。<br>
+      春天<span class="ch" onclick="playClick('audio/char-hua.mp3','花')">花</span>开，满山是<span class="ch" onclick="playClick('audio/char-cao.mp3','草')">草</span>。<br>
+      <span class="ch" onclick="playClick('audio/char-chong.mp3','虫')">虫</span>儿爬，<span class="ch" onclick="playClick('audio/char-niao.mp3','鸟')">鸟</span>儿飞。
     </div>
   </div>
 
@@ -347,18 +347,20 @@ function playPageAudio(){
   }
 }
 
-function playChar(ch, py){
-  const text = ch + '，' + py;
-  showSpeechBubble(text);
+function playClick(src, text){
+  showSpeechBubble(text||'');
   if(currentAudio){currentAudio.pause();currentAudio=null;}
   try{
-    const u=new SpeechSynthesisUtterance(ch);
-    u.lang='zh-CN';u.rate=0.7;
-    const voices=window.speechSynthesis.getVoices();
-    const zh=voices.find(v=>v.lang.startsWith('zh'));
-    if(zh)u.voice=zh;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
+    const a=new Audio(src);
+    currentAudio=a;
+    a.volume=1;
+    a.play().catch(()=>{showSpeechBubble(text||'');});
+  }catch(e){showSpeechBubble(text||'');}
+}
+
+function playChar(ch, py){
+  const id = 'char-' + py;
+  playClick('audio/'+id+'.mp3', ch + '，' + py);
 }
 
 // Quiz data
@@ -436,7 +438,7 @@ function showQuizQuestion(){
     const snd=document.createElement('button');
     snd.className='q-sound';
     snd.textContent='🔊';
-    snd.onclick=function(e){e.stopPropagation();showSpeechBubble(opt);try{const u=new SpeechSynthesisUtterance(opt);u.lang='zh-CN';u.rate=0.7;window.speechSynthesis.speak(u);}catch(e){}};
+    snd.onclick=function(e){e.stopPropagation();playClick('',opt);};
     btn.appendChild(snd);
     btn.onclick=function(){checkAnswer(i);};
     opts.appendChild(btn);
