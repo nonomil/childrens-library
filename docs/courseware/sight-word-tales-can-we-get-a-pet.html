@@ -279,6 +279,12 @@ body {
 }
 .game-done h3 { color: #2e7d32 !important; }
 
+/* Speak buttons for quizzes */
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
 /* Floating animation for SVG pets */
 @keyframes floatPet {
   0%,100% { transform: translateY(0); }
@@ -918,13 +924,14 @@ function renderGame(idx, game) {
   if (gameDone[idx]) {
     return '<div class="game-area game-done"><h3>✅ Great job!</h3><p style="color:#2e7d32;font-size:30px;margin-top:4px">★</p></div>';
   }
+  var qSpeak = game.question.replace(/[??⚙️]/g, '').replace(/[""]/g, '').trim();
   var opts = game.options.map(function(w) {
-    return '<div class="word-choice" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + '</div>';
+    return '<div class="word-choice" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
   }).join('');
   
   return `
     <div class="game-area" id="game-${idx}">
-      <h3>${game.question}</h3>
+      <h3>${game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${qSpeak.replace(/'/g, "\\'")}')">🔊</button></h3>
       <div class="word-choices">
         ${opts}
       </div>
@@ -946,6 +953,15 @@ function checkWord(idx, target, chosen, el) {
   } else {
     el.classList.add('wrong');
     setTimeout(function() { el.classList.remove('wrong'); }, 500);
+  }
+}
+
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
   }
 }
 

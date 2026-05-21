@@ -367,6 +367,12 @@
   .sort-result.success { color: #4CAF50; }
   .sort-result.error { color: #F44336; }
 
+  /* Speak buttons */
+  .speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+  .speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+  .quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+  .quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
   @media (max-width: 500px) {
     body { padding: 10px; }
     .book { padding: 16px 12px; border-radius: 28px; }
@@ -806,11 +812,11 @@ function renderPage(idx) {
         <span class="gear-corner tr">⚙</span>
         <span class="gear-corner bl">⚙</span>
         <span class="gear-corner br">⚙</span>
-        <h3>🤔 ${p.game.question}</h3>
+        <h3>🤔 ${p.game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${p.game.question.replace(/'/g, "\\'")}')">🔊</button></h3>
         <div class="quiz-options">
           ${p.game.options.map(opt => {
             const isCorrect = opt === p.game.correct;
-            return `<button class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt}</button>`;
+            return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
           }).join('')}
         </div>
       </div>
@@ -849,7 +855,7 @@ function renderPage(idx) {
         <span class="gear-corner bl">⚙</span>
         <span class="gear-corner br">⚙</span>
       </div>
-      <div class="i-am-text">${p.text}</div>
+      <div class="i-am-text" onclick="speakText('${p.text.replace(/<[^>]+>/g, '').replace(/'/g, "\\'")}')">${p.text}</div>
       ${p.fact ? `<div class="fact-area">💡 ${p.fact}</div>` : ''}
       ${lifecycleHTML}
       ${gameHTML}
@@ -1120,12 +1126,13 @@ function speakPage() {
   }
 }
 
-function speakText(text, keepBubble) {
-  if (!keepBubble) showSpeechBubble(text);
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US'; u.rate = 0.75; u.pitch = 1.1;
-  window.speechSynthesis.speak(u);
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }
 }
 
 // ============================================================

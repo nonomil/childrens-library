@@ -275,6 +275,22 @@ body {
 }
 .back-link:hover { background: #FFE8C8; }
 
+/* === Speak Buttons === */
+.speak-btn {
+  background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px;
+  border-radius:50%; cursor:pointer; transition:all 0.15s;
+  display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow:0 2px 6px rgba(255,179,71,0.3);
+}
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.quiz-opt-speak {
+  background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px;
+  border-radius:50%; cursor:pointer; transition:all 0.15s;
+  display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  margin-left:6px; vertical-align:middle;
+}
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
 /* === Responsive === */
 @media (max-width: 500px) {
   .svg-illustration { width: 160px; height: 145px; }
@@ -624,12 +640,12 @@ function renderPage(idx) {
     buildingWord = [];
     gameHTML = `
       <div class="game-area" id="game-${idx}">
-        <h3><span class="gear-spin">⚙️</span> 拼单词: <strong>"${p.game.word}"</strong></h3>
+        <h3><span class="gear-spin">⚙️</span> 拼单词: <strong>"${p.game.word}"</strong> <button class="speak-btn" onclick="speakText('${p.game.word}');event.stopPropagation();" title="Listen">🔊</button></h3>
         <div class="word-build" id="wordBuild-${idx}">
           ${p.game.word.split('').map((_, i) => `<div class="word-slot" id="slot-${idx}-${i}"></div>`).join('')}
         </div>
         <div class="letter-tiles" id="tiles-${idx}">
-          ${shuffled.map((l, i) => `<div class="letter-tile" data-letter="${l}" onclick="pickLetter(${idx}, '${l}', this)">${l}</div>`).join('')}
+          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" onclick="pickLetter(${idx}, '${l}', this)">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -660,6 +676,14 @@ function renderPage(idx) {
       ${gameHTML}
     </div>
   `;
+
+  // Make ph-words clickable to speak
+  document.querySelectorAll('#page-' + idx + ' .ph-word').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      speakText(this.textContent);
+    });
+  });
 
   updateUI(idx);
 }
@@ -737,6 +761,15 @@ function speakPhonics(text) {
   u.rate = 0.7;
   u.pitch = 1.0;
   window.speechSynthesis.speak(u);
+}
+
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }
 }
 
 // ===== Navigation =====

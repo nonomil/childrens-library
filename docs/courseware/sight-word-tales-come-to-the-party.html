@@ -268,6 +268,12 @@
   .completed-badge h3 { color: #2E7D32 !important; font-size: 18px !important; }
   .completed-badge p { font-size: 30px; }
 
+  /* Speak buttons for quizzes */
+  .speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+  .speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+  .quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+  .quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
   @media (max-width: 500px) {
     .illustration { width: 150px; height: 140px; }
     .sentence { font-size: 20px; }
@@ -781,14 +787,15 @@ function renderPage(idx) {
   const isDone = !p.game || gameDone[idx];
   let gameHTML = '';
   if (p.game && !gameDone[idx]) {
+    var qSpeak = 'Select the word: ' + p.game.word;
     gameHTML = `
       <div class="game-area" id="game-${idx}">
-        <h3><span class="gear">⚙️</span> 派对准备：选出正确的词！</h3>
+        <h3><span class="gear">⚙️</span> 派对准备：选出正确的词！ <button class="speak-btn" onclick="event.stopPropagation();speakText('${qSpeak}')">🔊</button></h3>
         <p style="font-size:14px;color:#B07D44;margin-bottom:8px;">
           帮小朋友完成派对邀请吧！选 "<strong>${p.game.word}</strong>"
         </p>
         <div class="word-choices">
-          ${p.game.options.map((w, i) => `<div class="word-choice" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this)">${w}</div>`).join('')}
+          ${p.game.options.map((w, i) => `<div class="word-choice" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this)">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -897,12 +904,14 @@ function speakPage() {
 }
 
 function speakText(text) {
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.8;
-  u.pitch = 1.1;
-  window.speechSynthesis.speak(u);
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.75;
+    u.pitch = 1.0;
+    window.speechSynthesis.speak(u);
+  }
 }
 
 function speakPartyItem(word) {

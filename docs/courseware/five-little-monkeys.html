@@ -116,6 +116,12 @@ body {
   .speech-bubble { font-size:18px; padding:14px 20px; bottom:100px; max-width:90%; }
   .nav-btn { width:44px; height:44px; font-size:18px; }
 }
+/* Speak buttons */
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.speak-btn:active { transform:scale(0.9); }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
 </style>
 </head>
 <body>
@@ -462,8 +468,8 @@ function renderPage(idx){
     const answers = [count-1, count, count+1].filter(n=>n>=0&&n<=5);
     for(let i=answers.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[answers[i],answers[j]]=[answers[j],answers[i]];}
     const correct = count-1;
-    gameHTML = '<div class="quiz-area"><h3>🔢 还剩下几只猴子？</h3><div class="quiz-options">'
-      +answers.map(n=>'<div class="quiz-opt" onclick="checkAnswer('+idx+','+correct+','+n+',this)">'+n+'</div>').join('')
+    gameHTML = '<div class="quiz-area"><h3>🔢 还剩下几只猴子？ <span class="speak-btn" onclick="event.stopPropagation();speakText(\'How many monkeys are left?\')">🔊</span></h3><div class="quiz-options">'
+      +answers.map(n=>'<div class="quiz-opt" onclick="checkAnswer('+idx+','+correct+','+n+',this)">'+n+' <span class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\''+n+'\')">🔊</span></div>').join('')
       +'</div></div>';
   } else if(isDone && count>0){
     gameHTML = '<div class="quiz-area" style="background:#E8F5E9"><h3 style="color:#4CAF50">✅ 还剩 '+(count-1)+' 只猴子！</h3><p style="color:#4CAF50;font-size:24px">⭐</p></div>';
@@ -472,7 +478,7 @@ function renderPage(idx){
   area.innerHTML = '<div class="page active">'
     +'<div class="page-title">🐵 第 '+(count>0?Math.min(count,5):'0')+' 只猴子</div>'
     +'<div class="bed-scene" id="bedScene-'+idx+'"></div>'
-    +'<div class="sentence">'+storyText+'</div>'
+    +'<div class="sentence" onclick="speakPage()">'+storyText+'</div>'
     +gameHTML
     +'</div>';
 

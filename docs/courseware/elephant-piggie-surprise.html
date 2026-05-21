@@ -191,6 +191,12 @@ body {
 /* Final page badge */
 .final-badge { font-size: 42px; margin-top: 8px; }
 
+/* Speak buttons */
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
 @media (max-width: 500px) {
   .dialog-bubble { font-size: 18px; }
   .scene { max-width: 100%; }
@@ -490,7 +496,13 @@ function speakPage() {
   }
 }
 
-function speakText(text) {
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }
   playAudio('', text);
 }
 
@@ -569,11 +581,11 @@ function renderPage(idx) {
     if (p.game && !gameDone[idx]) {
       contentHTML += `
         <div class="quiz-area">
-          <h3>💭 ${p.game.question}</h3>
+          <h3>💭 ${p.game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${p.game.question.replace(/'/g, "\\'")}')">🔊</button></h3>
           <div class="quiz-options">
             ${p.game.options.map((opt, oi) => {
               const isCorrect = opt === p.game.correct;
-              return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt}</div>`;
+              return `<div class="quiz-opt" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
             }).join('')}
           </div>
         </div>
