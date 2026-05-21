@@ -141,18 +141,20 @@ body {
 .letter-tiles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
 .letter-tile {
   width: 52px; height: 52px; border-radius: 12px; border: 3px solid #E0D5C7;
-  background: white; font-size: 28px; font-weight: bold; cursor: pointer;
+  background: white; font-size: 28px; font-weight: bold; cursor: grab;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.15s; user-select: none;
+  transition: all 0.15s; user-select: none; touch-action: none;
   position: relative;
 }
-.letter-tile:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.1); }
+.letter-tile:hover { border-color: #FFB347; background: #FFF8E7; }
+.letter-tile:active { cursor: grabbing; }
 .letter-tile.correct {
   border-color: #4CAF50; background: #E8F5E9;
   animation: popIn 0.3s ease, spin-cw 0.4s ease;
 }
 .letter-tile.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
 .letter-tile.used { opacity: 0.35; pointer-events: none; }
+.letter-tile.dragging { opacity: 0.5; transform: scale(1.1); border-color: #66BB6A; }
 .word-build {
   display: flex; gap: 4px; justify-content: center; margin-bottom: 10px;
   min-height: 48px;
@@ -169,6 +171,11 @@ body {
   border-bottom-color: #4CAF50;
   background: rgba(232,245,233,0.5);
   animation: popIn 0.2s ease, spin-ccw 0.3s ease;
+}
+.word-slot.drag-over {
+  border-bottom-color: #66BB6A; border-bottom-width: 6px;
+  background: rgba(102,187,106,0.15);
+  transform: scale(1.05);
 }
 
 /* === Speech Bubble === */
@@ -641,11 +648,11 @@ function renderPage(idx) {
     gameHTML = `
       <div class="game-area" id="game-${idx}">
         <h3><span class="gear-spin">⚙️</span> 拼单词: <strong>"${p.game.word}"</strong> <button class="speak-btn" onclick="speakText('${p.game.word}');event.stopPropagation();" title="Listen">🔊</button></h3>
-        <div class="word-build" id="wordBuild-${idx}">
+        <div class="word-build" id="wordBuild-${idx}" ondragover="onWordDragOver(event, ${idx})" ondrop="onWordDrop(event, ${idx})" ondragleave="onWordDragLeave(event, ${idx})">
           ${p.game.word.split('').map((_, i) => `<div class="word-slot" id="slot-${idx}-${i}"></div>`).join('')}
         </div>
         <div class="letter-tiles" id="tiles-${idx}">
-          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" onclick="pickLetter(${idx}, '${l}', this)">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
+          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" draggable="true" ondragstart="onTileDragStart(event, ${idx}, '${l}')" ondragend="onTileDragEnd(event)" onclick="pickLetter(${idx}, '${l}', this)">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -718,6 +725,74 @@ function pickLetter(idx, letter, el) {
     el.classList.add('wrong');
     setTimeout(() => el.classList.remove('wrong'), 400);
   }
+}
+
+// ===== Drag & Drop Handlers =====
+let dragData = null;
+
+function onTileDragStart(e, idx, letter) {
+  dragData = { idx: idx, letter: letter, el: e.target };
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', letter);
+}
+
+function onTileDragEnd(e) {
+  e.target.classList.remove('dragging');
+  // Clear drag-over on all slots
+  document.querySelectorAll('.word-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+}
+
+function onWordDragOver(e, idx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  // Highlight all empty slots
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => { if (!s.classList.contains('filled')) s.classList.add('drag-over'); });
+}
+
+function onWordDragLeave(e, idx) {
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => s.classList.remove('drag-over'));
+}
+
+function onWordDrop(e, idx) {
+  e.preventDefault();
+  // Remove drag-over highlight
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => s.classList.remove('drag-over'));
+
+  if (!dragData || dragData.idx !== idx) return;
+  if (gameDone[idx]) return;
+
+  const letter = dragData.letter;
+  const el = dragData.el;
+
+  // Same logic as pickLetter
+  const target = pages[idx].game.word;
+  const slotIdx = buildingWord.length;
+  if (slotIdx >= target.length) return;
+
+  if (letter === target[slotIdx]) {
+    buildingWord.push(letter);
+    slots[slotIdx].textContent = letter;
+    slots[slotIdx].classList.add('filled');
+    el.classList.add('correct');
+    el.classList.add('used');
+
+    if (buildingWord.length === target.length) {
+      gameDone[idx] = true;
+      setTimeout(() => {
+        launchConfetti();
+        renderPage(idx);
+      }, 600);
+    }
+  } else {
+    el.classList.add('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 400);
+  }
+
+  dragData = null;
 }
 
 // ===== Text-to-Speech =====
