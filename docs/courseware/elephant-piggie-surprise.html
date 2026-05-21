@@ -1,207 +1,240 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🐘🐷 Elephant & Piggie - I Will Surprise My Friend!</title>
+<title>🐘🐷 大象小猪 - 我要给朋友一个惊喜！</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
-    min-height: 100vh; display: flex; justify-content: center;
-    align-items: center; padding: 20px;
-  }
-  .book {
-    max-width: 800px; width: 100%; background: #fff;
-    border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    overflow: hidden;
-  }
-  .header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white; padding: 20px 30px; text-align: center;
-  }
-  .header h1 { font-size: 22px; }
-  .header .sub { font-size: 13px; opacity: 0.9; }
-  .page-area { padding: 20px 30px 10px; min-height: 380px; }
-  .page { display: none; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
-  .page.active { display: flex; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  
-  .scene {
-    width: 100%; max-width: 350px; height: 200px; position: relative;
-    background: #f0f8ff; border-radius: 20px; margin-bottom: 12px;
-    display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 20px; gap: 20px; box-shadow: inset 0 -5px 15px rgba(0,0,0,0.05);
-  }
-  .character {
-    font-size: 80px; cursor: pointer; transition: transform 0.2s;
-    user-select: none;
-  }
-  .character:hover { transform: scale(1.1); }
-  .character.speaking { animation: speakPulse 0.5s ease infinite; }
-  @keyframes speakPulse {
-    0%,100% { transform: scale(1) translateY(0); }
-    50% { transform: scale(1.1) translateY(-8px); }
-  }
-  .character.left { transform-origin: bottom right; }
-  .character.right { transform-origin: bottom left; }
-  
-  .dialog-bubble {
-    width: 100%; padding: 14px 20px; border-radius: 20px;
-    font-size: 22px; line-height: 1.5; text-align: center;
-    margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
-    position: relative;
-  }
-  .bubble-gerald { background: #e8eaf6; color: #283593; border: 3px solid #7986cb; }
-  .bubble-piggie { background: #fce4ec; color: #880e4f; border: 3px solid #f48fb1; }
-  .dialog-bubble::before {
-    content: ''; position: absolute; width: 20px; height: 20px;
-    top: -10px; transform: rotate(45deg);
-  }
-  .bubble-gerald::before { left: 30px; background: #e8eaf6; border-top: 3px solid #7986cb; border-left: 3px solid #7986cb; }
-  .bubble-piggie::before { right: 30px; background: #fce4ec; border-top: 3px solid #f48fb1; border-right: 3px solid #f48fb1; }
-  .dialog-bubble:hover { transform: scale(1.02); }
-  .dialog-bubble .name { font-size: 13px; font-weight: bold; opacity: 0.7; }
-  .dialog-bubble .highlight { background: #ffeb3b; padding: 0 4px; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Comic Sans MS','Chalkboard SE','Segoe UI',cursive,sans-serif;
+  background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
+  min-height: 100vh; display: flex; justify-content: center;
+  align-items: center; padding: 20px;
+}
+.book {
+  max-width: 800px; width: 100%;
+  background: #FFFCF5;
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;
+  padding: 24px 20px;
+}
 
-  .game-area {
-    width: 100%; padding: 12px 16px; background: #f3e5f5;
-    border-radius: 16px; text-align: center; margin-top: 6px;
-  }
-  .game-area h3 { font-size: 14px; color: #7b1fa2; margin-bottom: 8px; }
-  .emoji-choices { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .emoji-choice {
-    padding: 8px 16px; border-radius: 14px; border: 3px solid #ddd;
-    background: white; font-size: 28px; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .emoji-choice:hover { border-color: #7b1fa2; background: #f3e5f5; transform: scale(1.15); }
-  .emoji-choice.correct { border-color: #4caf50; background: #e8f5e9; }
-  .emoji-choice.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.3s; }
-  @keyframes shake {
-    0%,100% { transform: translateX(0); }
-    25% { transform: translateX(-8px); }
-    75% { transform: translateX(8px); }
-  }
+.page-area { position: relative; min-height: 400px; }
+.page { display: none; flex-direction: column; align-items: center; animation: fadeIn 0.4s ease; }
+.page.active { display: flex; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-  .controls {
-    display: flex; gap: 12px; justify-content: center; align-items: center; padding: 0 30px 15px;
-  }
-  .btn {
-    padding: 12px 28px; border: none; border-radius: 30px;
-    font-size: 16px; font-weight: 600; cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .btn:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-  .btn:active { transform: scale(0.95); }
-  .btn-primary { background: #667eea; color: white; }
-  .btn-sound { background: #7b1fa2; color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 22px; padding: 0; display: flex; align-items: center; justify-content: center; }
-  .btn-prev, .btn-next { background: #eee; color: #333; }
-  .btn-prev:disabled, .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
-  .page-counter { font-size: 14px; color: #999; text-align: center; }
-  .progress { display: flex; gap: 6px; justify-content: center; padding: 0 30px 18px; }
-  .dot { width: 12px; height: 12px; border-radius: 50%; background: #ddd; cursor: pointer; transition: all 0.2s; }
-  .dot.active { background: #7b1fa2; transform: scale(1.3); }
-  .dot.done { background: #4caf50; }
+/* Page title - gears style */
+.page-title { font-size: 34px; color: #E8751A; text-align: center; margin: 6px 0 10px; }
+.page-title-icon { font-size: 48px; text-align: center; }
+.page-desc { color: #6B4F3A; font-size: 19px; text-align: center; }
 
-  .celebration {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    pointer-events: none; z-index: 999;
-  }
-  .confetti { position: absolute; width: 10px; height: 10px; border-radius: 50%; animation: confettiFall 2s ease-out forwards; }
-  @keyframes confettiFall {
-    0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-    100% { opacity: 0; transform: translateY(500px) rotate(720deg); }
-  }
-  .cover-page { text-align: center; padding: 30px 20px; }
-  .cover-page .big-icon { font-size: 120px; margin-bottom: 20px; }
-  .cover-page h2 { font-size: 28px; color: #333; }
-  .cover-page p { font-size: 18px; color: #999; margin-top: 8px; }
+/* Cover page */
+.cover-page { text-align: center; padding: 30px 20px; }
+.cover-big-icon { font-size: 120px; animation: float 2s ease-in-out infinite; margin-bottom: 16px; }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.cover-page h2 { font-size: 28px; color: #E8751A; margin: 10px 0; }
+.cover-page .page-desc { margin-top: 8px; }
 
-  @media (max-width: 500px) {
-    .character { font-size: 60px; }
-    .dialog-bubble { font-size: 18px; }
-    .scene { height: 160px; }
-    .header h1 { font-size: 18px; }
-  }
+/* Scene */
+.scene {
+  width: 100%; max-width: 350px; height: 200px; position: relative;
+  background: #FFF8E7; border-radius: 20px; margin-bottom: 12px;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 20px; gap: 20px;
+  box-shadow: inset 0 -5px 15px rgba(0,0,0,0.05), 0 2px 8px rgba(0,0,0,0.04);
+}
+.character { font-size: 80px; cursor: pointer; transition: transform 0.2s; user-select: none; }
+.character:hover { transform: scale(1.1); }
+@keyframes speakPulse { 0%,100% { transform: scale(1) translateY(0); } 50% { transform: scale(1.1) translateY(-8px); } }
+.character.speaking { animation: speakPulse 0.5s ease infinite; }
+.character.left { transform-origin: bottom right; }
+.character.right { transform-origin: bottom left; }
+
+/* Dialog bubble */
+.dialog-bubble {
+  width: 100%; padding: 14px 20px; border-radius: 20px;
+  font-size: 22px; line-height: 1.5; text-align: center;
+  margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+  position: relative;
+}
+.bubble-gerald { background: #e8eaf6; color: #283593; border: 3px solid #7986cb; }
+.bubble-piggie { background: #fce4ec; color: #880e4f; border: 3px solid #f48fb1; }
+.dialog-bubble::before {
+  content: ''; position: absolute; width: 20px; height: 20px;
+  top: -10px; transform: rotate(45deg);
+}
+.bubble-gerald::before { left: 30px; background: #e8eaf6; border-top: 3px solid #7986cb; border-left: 3px solid #7986cb; }
+.bubble-piggie::before { right: 30px; background: #fce4ec; border-top: 3px solid #f48fb1; border-right: 3px solid #f48fb1; }
+.dialog-bubble:hover { transform: scale(1.02); }
+.dialog-bubble .name { font-size: 13px; font-weight: bold; opacity: 0.7; }
+.dialog-bubble .highlight { background: #ffeb3b; padding: 0 4px; }
+
+/* Quiz area - gears style */
+.quiz-area {
+  background: #F3E5F5; border-radius: 20px; padding: 16px;
+  text-align: center; margin: 8px 0; width: 100%;
+}
+.quiz-area h3 { font-size: 18px; color: #7B1FA2; margin-bottom: 12px; }
+.quiz-options { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.quiz-opt {
+  padding: 12px 22px; border-radius: 16px; border: 3px solid #ddd;
+  background: white; font-size: 19px; cursor: pointer;
+  transition: all 0.15s; font-family: inherit;
+}
+.quiz-opt:hover { border-color: #FFB347; background: #FFF8E7; transform: scale(1.08); }
+.quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; }
+.quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+
+/* Navigation bar - gears style */
+.nav-bar {
+  display: flex; gap: 12px; justify-content: center;
+  align-items: center; padding: 16px 10px 8px;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: #FFB347; border: none; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; color: white; font-weight: bold;
+  box-shadow: 0 4px 12px rgba(255,179,71,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+.nav-btn:hover:not(:disabled) { transform: scale(1.08); box-shadow: 0 6px 18px rgba(255,179,71,0.5); }
+.nav-btn:active:not(:disabled) { transform: scale(0.95); }
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.read-btn {
+  background: #6BCB77; border: none; border-radius: 30px;
+  padding: 8px 18px; font-size: 16px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center;
+  gap: 6px; color: white; font-family: inherit;
+  box-shadow: 0 4px 12px rgba(107,203,119,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.read-btn:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(107,203,119,0.5); }
+.read-btn:active { transform: scale(0.95); }
+
+/* Page dots */
+.page-dots { display: flex; gap: 6px; align-items: center; }
+.dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #E0D5C7; cursor: pointer;
+  transition: all 0.2s;
+}
+.dot.active { background: #FFB347; transform: scale(1.3); }
+.dot.done { background: #4CAF50; }
+
+/* Page counter */
+.page-counter { text-align: center; font-size: 14px; color: #6B4F3A; padding: 4px 0 0; }
+
+/* Celebration / confetti */
+.celebration {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+.confetti-piece {
+  position: absolute; border-radius: 50%;
+  animation: confetti-fall ease-out forwards;
+}
+@keyframes confetti-fall {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(500px) rotate(720deg); }
+}
+
+/* Final page badge */
+.final-badge { font-size: 42px; margin-top: 8px; }
+
+@media (max-width: 500px) {
+  .character { font-size: 60px; }
+  .dialog-bubble { font-size: 18px; }
+  .scene { height: 160px; }
+  .page-title { font-size: 26px; }
+  .cover-big-icon { font-size: 90px; }
+  .nav-btn { width: 44px; height: 44px; font-size: 18px; }
+  .read-btn { font-size: 14px; padding: 7px 14px; }
+}
 </style>
 </head>
 <body>
 <div class="book">
-  <div class="header">
-    <h1>🐘 I Will Surprise My Friend! 🐷</h1>
-    <div class="sub">Elephant & Piggie · Tap the dialog to hear it!</div>
-  </div>
-
   <div class="page-area" id="pageArea"></div>
 
-  <div class="controls">
-    <button class="btn btn-prev" id="prevBtn" onclick="prevPage()">⬅</button>
-    <button class="btn btn-sound" onclick="speakPage()">🔊</button>
-    <button class="btn btn-primary" id="nextBtn" onclick="nextPage()">Next ➡</button>
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
+    <button class="read-btn" onclick="speakPage()">🔊 读给我听</button>
+    <div class="page-dots" id="progress"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
-  <div class="page-counter" id="pageCounter">1 / 8</div>
-  <div class="progress" id="progress"></div>
+  <div class="page-counter" id="pageCounter">第1页 / 共8页</div>
 </div>
 
 <script>
 const pages = [
   {
-    cover: true, icon: '🐘🐷', title: 'I Will Surprise My Friend!',
-    subtitle: 'An Elephant & Piggie story about friendship!'
+    cover: true, icon: '🐘🐷', title: '我要给朋友一个惊喜！',
+    subtitle: '小猪小象系列故事 · 关于友谊的故事！'
   },
   {
     scene: '🐘🐷',
     speaker: 'Gerald',
+    pageTitle: '🐘 Gerald 想要',
     text: '<span class="name">🐘 Gerald:</span> I will surprise my <span class="highlight">friend</span>!',
     bubble: 'bubble-gerald',
     emoji: '😊',
-    game: { question: 'How does Gerald feel?', correct: '😊 Happy', options: ['😊 Happy', '😢 Sad', '😡 Angry'] }
+    game: { question: 'Gerald 感觉怎么样？', correct: '😊 开心', options: ['😊 开心', '😢 难过', '😡 生气'] }
   },
   {
     scene: '🐷🐘',
     speaker: 'Piggie',
+    pageTitle: '🐷 Piggie 也想要',
     text: '<span class="name">🐷 Piggie:</span> I will surprise my <span class="highlight">friend</span> too!',
     bubble: 'bubble-piggie',
     emoji: '😄',
-    game: { question: 'How does Piggie feel?', correct: '😄 Excited', options: ['😄 Excited', '😴 Tired', '😱 Scared'] }
+    game: { question: 'Piggie 感觉怎么样？', correct: '😄 兴奋', options: ['😄 兴奋', '😴 累了', '😱 害怕'] }
   },
   {
     scene: '🐘',
     speaker: 'Gerald',
+    pageTitle: '🐘 Gerald 的计划',
     text: '<span class="name">🐘 Gerald:</span> I will hide behind this <span class="highlight">bush</span>. Then... SURPRISE!',
     bubble: 'bubble-gerald',
     emoji: '🌿',
-    game: { question: 'Where does Gerald hide?', correct: '🌿 Behind a bush', options: ['🌿 Behind a bush', '🏠 In a house', '🌳 Up a tree'] }
+    game: { question: 'Gerald 躲在哪里？', correct: '🌿 灌木丛后面', options: ['🌿 灌木丛后面', '🏠 房子里面', '🌳 树上面'] }
   },
   {
     scene: '🐷',
     speaker: 'Piggie',
+    pageTitle: '🐷 Piggie 的计划',
     text: '<span class="name">🐷 Piggie:</span> I will hide behind this <span class="highlight">tree</span>. Then... SURPRISE!',
     bubble: 'bubble-piggie',
     emoji: '🌳',
-    game: { question: 'Where does Piggie hide?', correct: '🌳 Behind a tree', options: ['🌳 Behind a tree', '🚗 In a car', '📦 In a box'] }
+    game: { question: 'Piggie 躲在哪里？', correct: '🌳 大树后面', options: ['🌳 大树后面', '🚗 汽车里面', '📦 箱子里面'] }
   },
   {
     scene: '🐘❓🐷❓',
     speaker: 'Both',
+    pageTitle: '🤔 都找不到对方',
     text: '<span class="name">🤔 Gerald & Piggie:</span> Where <span class="highlight">is</span> my friend? I <span class="highlight">cannot</span> find them!',
     bubble: 'bubble-gerald',
     emoji: '🤔',
-    game: { question: 'Can they find each other?', correct: '❌ Not yet!', options: ['✅ Yes!', '❌ Not yet!', '🤷 I don\'t know'] }
+    game: { question: '他们找到对方了吗？', correct: '❌ 还没有！', options: ['✅ 找到了！', '❌ 还没有！', '🤷 不知道'] }
   },
   {
     scene: '🐘👀🐷',
     speaker: 'Both',
+    pageTitle: '😲 终于见面了！',
     text: '<span class="name">😲 Gerald & Piggie:</span> There you <span class="highlight">are</span>! You surprised <span class="highlight">me</span>!',
     bubble: 'bubble-piggie',
     emoji: '😲',
-    game: { question: 'Are they surprised?', correct: '✅ YES! Surprise!', options: ['✅ YES! Surprise!', '❌ No', '😐 Maybe'] }
+    game: { question: '他们惊喜吗？', correct: '✅ 是的！惊喜！', options: ['✅ 是的！惊喜！', '❌ 不是', '😐 也许吧'] }
   },
   {
     scene: '🐘🤝🐷',
     speaker: 'Both',
+    pageTitle: '🥰 最好的朋友',
     text: '<span class="name">🥰 Gerald & Piggie:</span> Friends <span class="highlight">surprise</span> each other! What a good <span class="highlight">friend</span>!',
     bubble: 'bubble-gerald',
     emoji: '🥰',
@@ -217,65 +250,79 @@ function renderPage(idx) {
   const area = document.getElementById('pageArea');
   const p = pages[idx];
 
+  // Remove old pages
+  area.innerHTML = '';
+
+  const pageDiv = document.createElement('div');
+  pageDiv.className = 'page active';
+  pageDiv.id = 'page-' + idx;
+
   if (p.cover) {
-    area.innerHTML = `
-      <div class="page active cover-page">
-        <div class="big-icon">${p.icon}</div>
+    pageDiv.innerHTML = `
+      <div class="cover-page">
+        <div class="cover-big-icon">${p.icon}</div>
         <h2>${p.title}</h2>
-        <p>${p.subtitle}</p>
-        <p style="margin-top:16px;font-size:14px;color:#aaa">👆 Click "Next" to start reading!</p>
+        <p class="page-desc">${p.subtitle}</p>
+        <p style="margin-top:20px;font-size:15px;color:#aaa">👆 点击 ▶ 开始阅读！</p>
       </div>
     `;
-    updateUI(idx);
-    document.getElementById('prevBtn').disabled = true;
-    document.getElementById('prevBtn').style.opacity = '0.4';
-    return;
-  }
+  } else {
+    // Story page
+    let contentHTML = '';
 
-  const isDone = !p.game || gameDone[idx];
-  let gameHTML = '';
-  if (p.game && !gameDone[idx]) {
-    gameHTML = `
-      <div class="game-area">
-        <h3>💭 ${p.game.question}</h3>
-        <div class="emoji-choices">
-          ${p.game.options.map(opt => {
-            const isCorrect = opt === p.game.correct;
-            return `<div class="emoji-choice" onclick="checkEmotion(${idx}, ${isCorrect}, this)">${opt}</div>`;
-          }).join('')}
+    // Page title
+    if (p.pageTitle) {
+      contentHTML += `<div class="page-title">${p.pageTitle}</div>`;
+    }
+
+    // Character scene
+    if (p.scene) {
+      const chars = Array.from(p.scene);
+      const charHTML = chars.map(c => {
+        const isElephant = c === '🐘';
+        const isPig = c === '🐷';
+        const cls = isElephant ? 'character left' : isPig ? 'character right' : 'character';
+        return `<div class="${cls}" onclick="speakText('${isElephant ? 'Gerald' : isPig ? 'Piggie' : ''}')">${c}</div>`;
+      }).join('');
+      contentHTML += `<div class="scene">${charHTML}</div>`;
+    }
+
+    // Dialog bubble
+    if (p.text) {
+      const cleanText = p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/'/g, "\\'");
+      contentHTML += `<div class="dialog-bubble ${p.bubble}" onclick="speakText('${cleanText}')">${p.text}</div>`;
+    }
+
+    // Quiz or final area
+    if (p.game && !gameDone[idx]) {
+      contentHTML += `
+        <div class="quiz-area">
+          <h3>💭 ${p.game.question}</h3>
+          <div class="quiz-options">
+            ${p.game.options.map((opt, oi) => {
+              const isCorrect = opt === p.game.correct;
+              return `<div class="quiz-opt" onclick="checkEmotion(${idx}, ${isCorrect}, this)">${opt}</div>`;
+            }).join('')}
+          </div>
         </div>
-      </div>
-    `;
-  } else if (p.final) {
-    gameHTML = `<div class="game-area" style="background:#e8f5e9;margin-top:12px">
-      <h3>🎉 A wonderful story about friendship!</h3>
-      <p style="font-size:36px;margin-top:8px">⭐ ⭐ ⭐</p>
-    </div>`;
-  } else if (isDone && p.game) {
-    gameHTML = `<div class="game-area" style="background:#e8f5e9"><h3>✅ Great answer!</h3><p style="color:#4caf50;font-size:24px">★</p></div>`;
+      `;
+    } else if (p.final) {
+      contentHTML += `<div class="quiz-area" style="background:#E8F5E9;margin-top:12px">
+        <h3>🎉 一个关于友谊的美妙故事！</h3>
+        <div class="final-badge">⭐ ⭐ ⭐</div>
+        <p style="margin-top:6px;color:#6B4F3A;font-size:16px">你真棒！读完了整本书！👏</p>
+      </div>`;
+    } else if (p.game && gameDone[idx]) {
+      contentHTML += `<div class="quiz-area" style="background:#E8F5E9"><h3>✅ 回答正确！</h3><p style="color:#4CAF50;font-size:28px">★</p></div>`;
+    }
+
+    pageDiv.innerHTML = contentHTML;
   }
 
-  // Character scene
-  const chars = Array.from(p.scene);
-  const charHTML = chars.map(c => {
-    const isElephant = c === '🐘';
-    const isPig = c === '🐷';
-    const cls = isElephant ? 'character left' : isPig ? 'character right' : 'character';
-    return `<div class="${cls}" onclick="speakText('${isElephant ? 'Gerald' : isPig ? 'Piggie' : ''}')">${c}</div>`;
-  }).join('');
-
-  area.innerHTML = `
-    <div class="page active">
-      <div class="scene">${charHTML}</div>
-      <div class="dialog-bubble ${p.bubble}" onclick="speakText(\`${p.text.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/'/g, "\\'")}\`)">
-        ${p.text}
-      </div>
-      ${gameHTML}
-    </div>
-  `;
+  area.appendChild(pageDiv);
   updateUI(idx);
   document.getElementById('prevBtn').disabled = idx === 0;
-  document.getElementById('prevBtn').style.opacity = idx === 0 ? '0.4' : '1';
+  document.getElementById('nextBtn').disabled = false;
 }
 
 function checkEmotion(idx, isCorrect, el) {
@@ -283,14 +330,26 @@ function checkEmotion(idx, isCorrect, el) {
   if (isCorrect) {
     el.classList.add('correct');
     gameDone[idx] = true;
-    setTimeout(() => {
-      celebrate();
-      renderPage(idx);
-    }, 600);
+    launchConfetti();
+    setTimeout(() => renderPage(idx), 800);
   } else {
     el.classList.add('wrong');
     setTimeout(() => el.classList.remove('wrong'), 400);
   }
+}
+
+function launchConfetti() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti-piece';
+    c.style.cssText = `width:${8+Math.random()*10}px;height:${8+Math.random()*10}px;left:${Math.random()*100}%;top:15%;background:${colors[i%colors.length]};animation-duration:${1.5+Math.random()}s;animation-delay:${Math.random()*0.6}s;`;
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
 }
 
 function speakPage() {
@@ -319,25 +378,8 @@ function prevPage() {
   if (currentPage > 0) { currentPage--; renderPage(currentPage); }
 }
 
-function celebrate() {
-  const div = document.createElement('div');
-  div.className = 'celebration';
-  const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff'];
-  for (let i = 0; i < 40; i++) {
-    const c = document.createElement('div');
-    c.className = 'confetti';
-    c.style.left = Math.random() * 100 + '%';
-    c.style.top = '20%';
-    c.style.background = colors[Math.floor(Math.random() * colors.length)];
-    c.style.animationDelay = Math.random() * 0.6 + 's';
-    div.appendChild(c);
-  }
-  document.body.appendChild(div);
-  setTimeout(() => div.remove(), 2500);
-}
-
 function updateUI(idx) {
-  document.getElementById('pageCounter').textContent = `Page ${idx+1} / ${pages.length}`;
+  document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${pages.length}页`;
   const dots = document.getElementById('progress');
   dots.innerHTML = pages.map((_, i) =>
     `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] ? 'done' : ''}" onclick="currentPage=${i};renderPage(${i})"></div>`
