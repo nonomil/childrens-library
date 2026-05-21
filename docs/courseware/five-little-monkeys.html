@@ -142,27 +142,57 @@ const pages = [
 let currentPage = 0;
 let gameDone = new Array(pages.length).fill(false);
 
-// ====== SPEECH ======
+// ====== SPEECH (Hybrid: Real Audio + Speech Bubble) ======
+let currentAudio = null;
+
 function showSpeechBubble(text) {
   const e=document.querySelector('.speech-bubble');if(e)e.remove();
   const b=document.createElement('div');b.className='speech-bubble';b.textContent=text;
   document.body.appendChild(b);void b.offsetWidth;b.classList.add('show');
-  setTimeout(()=>{b.classList.remove('show');setTimeout(()=>b.remove(),400);},2800);
+  setTimeout(()=>{b.classList.remove('show');setTimeout(()=>b.remove(),400);},3500);
 }
+
+function playAudio(src, text) {
+  showSpeechBubble(text);
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  try {
+    const a=new Audio(src);
+    currentAudio=a;a.volume=1;
+    a.play().catch(()=>{ /* TTS fallback */ });
+  } catch(e){}
+}
+
 function speakPage(){
   const p=pages[currentPage];
-  let t='';
-  if(p.cover)t='Five Little Monkeys Jumping on the Bed!';
-  else if(p.final)t='No more monkeys jumping on the bed!';
-  else if(p.count>0)t=p.count+' little monkey'+(p.count>1?'s':'')+' jumping on the bed. One fell off and bumped his head!';
-  else t='No more monkeys jumping on the bed!';
-  showSpeechBubble(t);speakText(t);
+  const AUDIO_BASE='audio/';
+  const AUDIO_MAP={0:'monkeys-page1',1:'monkeys-page2',2:'monkeys-page3',3:'monkeys-page4',4:'monkeys-page5',5:'monkeys-page6',6:'monkeys-page7'};
+  const TEXTS=[
+    '🐵 Five Little Monkeys Jumping on the Bed!',
+    '5 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '4 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '3 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '2 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '1 little monkey jumping on the bed. One fell off and bumped his head!',
+    '😴 No more monkeys jumping on the bed! Mama said, Time for bed!',
+    '🎉 The End! You read the whole story!'
+  ];
+  let idx=-1,txt='';
+  if(p.cover){idx=-1;txt=TEXTS[0];}
+  else if(p.final){idx=-1;txt=TEXTS[7];}
+  else if(p.count>=0){idx=5-p.count;txt=TEXTS[idx+1];}
+  else{txt='The End!';}
+
+  if(idx>=0&&idx<7) playAudio(AUDIO_BASE+AUDIO_MAP[idx]+'.mp3',txt);
+  else {showSpeechBubble(txt);speakText(txt);}
 }
+
 function speakText(text){
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));
-  u.lang='en-US';u.rate=0.7;u.pitch=1.0;
-  window.speechSynthesis.speak(u);
+  try{
+    const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,'').replace(/[^\x20-\x7E]/g,''));
+    u.lang='en-US';u.rate=0.7;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
 }
 
 // ====== SVG BUILDER ======
