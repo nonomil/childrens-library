@@ -38,7 +38,7 @@ body {
 .lyrics { font-size:26px; color:#E8751A; text-align:center; padding:12px 16px; background:#FFF8E7; border-radius:16px; width:100%; margin-bottom:8px; line-height:1.5; font-weight:bold; }
 .lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
 .lyrics .hl:active { transform:scale(1.2); }
-.lyrics .hl::after { content:'\U0001f50a'; font-size:14px; opacity:0.5; margin-left:4px; }
+.lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -64,7 +64,7 @@ body {
 .word-choice.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
 .speech-bubble { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }
 .speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
-.speech-bubble::before { content:'\U0001f50a'; display:block; font-size:22px; margin-bottom:4px; }
+.speech-bubble::before { content:'🔊'; display:block; font-size:22px; margin-bottom:4px; }
 .controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:8px; position:sticky; bottom:0; background:#FFFCF5; padding:8px 0; z-index:100; }
 .nav-btn { background:#FFB347; border:none; color:#FFF; font-size:28px; width:60px; height:60px; border-radius:50%; cursor:pointer; box-shadow:0 4px 12px rgba(255,179,71,0.4); transition:all .15s; display:flex; align-items:center; justify-content:center; flex-shrink:0; touch-action:manipulation; }
 .nav-btn:hover { transform:scale(1.1); background:#FF9F1C; }
@@ -129,8 +129,8 @@ const pages = [
   { sentence:'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span> swish swish', desc:'公车的雨刷刷刷刷', game:'wipers', svg:'0' },
   { sentence:'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span> beep beep', desc:'公车的喇叭哔哔哔', game:'horn', svg:'0' },
   { sentence:'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>', desc:'公车的门开了关', game:'door', svg:'0' },
-  { match:true, title:'\U0001f50a 听声音找单词' },
-  { final:true, title:'\U0001f389 太棒了!' }
+  { match:true, title:'🔊 听声音找单词' },
+  { final:true, title:'🎉 太棒了!' }
 ];
 
 let currentPage = 0;
@@ -185,7 +185,7 @@ function startWordGame(idx,word) {
   buildingWord=[];
   var slots=word.split('').map(function(_,i){return '<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>';}).join('');
   var tiles=letters.map(function(l){return '<div class="letter-tile" draggable="true" onclick="pickLetter('+idx+',\''+l+'\',this)" ondragstart="onDragStart(event,'+idx+',\''+l+'\')" ondragend="onDragEnd(event)">'+l+'</div>';}).join('');
-  return '<div class="word-game"><h3>\u2699\uFE0F 拼单词: <strong>"'+word+'"</strong> \U0001f50a</h3><div class="word-slots" id="ws-'+idx+'">'+slots+'</div><div class="letter-tiles" id="tiles-'+idx+'">'+tiles+'</div></div>';
+  return '<div class="word-game"><h3>\u2699\uFE0F 拼单词: <strong>"'+word+'"</strong> 🔊</h3><div class="word-slots" id="ws-'+idx+'">'+slots+'</div><div class="letter-tiles" id="tiles-'+idx+'">'+tiles+'</div></div>';
 }
 
 function pickLetter(idx,letter,el) {
@@ -197,7 +197,7 @@ function pickLetter(idx,letter,el) {
   if(letter===word[slot]){
     buildingWord.push(letter); slots[slot].textContent=letter; slots[slot].classList.add('filled');
     el.classList.add('correct','used');
-    if(buildingWord.length===word.length){gameDone[idx]=true;setTimeout(function(){showBubble('Great! \U0001f389');launchConfetti();renderPage(idx);},500);}
+    if(buildingWord.length===word.length){gameDone[idx]=true;setTimeout(function(){showBubble('Great! 🎉');launchConfetti();renderPage(idx);},500);}
   } else { el.classList.add('wrong'); setTimeout(function(){el.classList.remove('wrong');},400); }
 }
 
@@ -212,29 +212,29 @@ function onDrop(e,idx){
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["door","wheels","people","horn","wipers"];
+const MATCH_WORDS = ["people","door","horn","wheels","wipers"];
 var matchRound = 0;
 var matchDone = [];
 
 function renderMatchGame() {
-  if(matchDone.length>=MATCH_WORDS.length) return '<div class="match-game" style="background:#E8F5E9"><h3>\U0001f389 全部找到! 太棒了!</h3></div>';
+  if(matchDone.length>=MATCH_WORDS.length) return '<div class="match-game" style="background:#E8F5E9"><h3>🎉 全部找到! 太棒了!</h3></div>';
   var word=MATCH_WORDS[matchRound];
   var shuffled=MATCH_WORDS.slice().sort(function(){return Math.random()-0.5});
   var opts=shuffled.map(function(w){var d=matchDone.indexOf(w)>=0?'style="opacity:0.5"':'';return '<div class="word-choice" data-word="'+w+'" onclick="checkMatch(\''+w+'\',this)" '+d+'>'+w+'</div>';}).join('');
-  return '<div class="match-game"><h3>\U0001f50a 听单词: <strong>"'+word+'"</strong></h3><button class="sound-btn" onclick="speakMatchWord()">\U0001f50a</button><p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p><div class="word-choices">'+opts+'</div></div>';
+  return '<div class="match-game"><h3>🔊 听单词: <strong>"'+word+'"</strong></h3><button class="sound-btn" onclick="speakMatchWord()">🔊</button><p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p><div class="word-choices">'+opts+'</div></div>';
 }
 
 function speakMatchWord() {
   if(matchRound>=MATCH_WORDS.length) return;
   speakText(MATCH_WORDS[matchRound]);
-  showBubble('\U0001f50a '+MATCH_WORDS[matchRound]);
+  showBubble('🔊 '+MATCH_WORDS[matchRound]);
 }
 
 function checkMatch(word,el) {
   if(matchRound>=MATCH_WORDS.length||matchDone.indexOf(word)>=0) return;
   if(word===MATCH_WORDS[matchRound]){
     el.classList.add('correct'); matchDone.push(word);
-    showBubble('Great! Wonderful! \U0001f389');
+    showBubble('Great! Wonderful! 🎉');
     matchRound++;
     setTimeout(function(){renderPage(pages.length-2)},600);
   } else {
@@ -250,13 +250,13 @@ function renderPage(idx) {
   var p=pages[idx];
 
   if(p.cover){
-    area.innerHTML='<div class="page active cover-page"><div class="cover-svg">'+getSVG(0)+'</div><div class="page-title">'+p.title+'</div><div class="page-desc">'+p.subtitle+'</div><div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px"><button class="big-start-btn smaller" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">\U0001f3b5</button><button class="big-start-btn" onclick="nextPage()">\u25b6</button></div></div>';
+    area.innerHTML='<div class="page active cover-page"><div class="cover-svg">'+getSVG(0)+'</div><div class="page-title">'+p.title+'</div><div class="page-desc">'+p.subtitle+'</div><div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px"><button class="big-start-btn smaller" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button><button class="big-start-btn" onclick="nextPage()">\u25b6</button></div></div>';
     updateUI(idx); return;
   }
 
   if(p.final){
     var fw=MATCH_WORDS.map(function(w){return '<div class="final-word">\u2705 '+w+'</div>';}).join('');
-    area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px"><div class="page-title">'+p.title+'</div><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div style="font-size:24px;margin:10px 0">\U0001f389 \u2b50 \u2b50 \u2b50 \U0001f389</div><div class="final-grid">'+fw+'</div><a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">\U0001f3e0 \u56DE\u8BFE\u4EF6\u5217\u8868</a></div>';
+    area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px"><div class="page-title">'+p.title+'</div><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div style="font-size:24px;margin:10px 0">🎉 \u2b50 \u2b50 \u2b50 🎉</div><div class="final-grid">'+fw+'</div><a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">🏠 \u56DE\u8BFE\u4EF6\u5217\u8868</a></div>';
     launchConfetti(); updateUI(idx); return;
   }
 
@@ -272,7 +272,7 @@ function renderPage(idx) {
 
   var hls=area.querySelectorAll('.hl[data-word]');
   for(var hi=0;hi<hls.length;hi++){
-    (function(el){el.addEventListener('click',function(e){e.stopPropagation();speakText(el.getAttribute('data-word'));showBubble('\U0001f50a '+el.getAttribute('data-word'));});})(hls[hi]);
+    (function(el){el.addEventListener('click',function(e){e.stopPropagation();speakText(el.getAttribute('data-word'));showBubble('🔊 '+el.getAttribute('data-word'));});})(hls[hi]);
   }
 
   updateUI(idx);
@@ -297,10 +297,10 @@ function goToPage(idx){renderPage(idx);}
 function speakPage() {
   var p=pages[currentPage];
   if(p.cover){showBubble('🚌 The Wheels on the Bus!');speakText('The Wheels on the Bus');return;}
-  if(p.final){showBubble('You did it! Super English Star! \U0001f31f');speakText('You did it! Super English Star!');return;}
+  if(p.final){showBubble('You did it! Super English Star! 🌟');speakText('You did it! Super English Star!');return;}
   if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
   var t=p.sentence.replace(/<[^>]+>/g,'');
-  showBubble('\U0001f50a '+t);
+  showBubble('🔊 '+t);
   speakText(t);
 }
 
