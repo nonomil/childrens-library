@@ -69,6 +69,20 @@ h2.page-title{
   text-align:center;margin:10px 0;line-height:1.3;
   letter-spacing:1px;
 }
+.lyrics-text .hl{
+  color:#E8751A;cursor:pointer;transition:all .2s;
+  display:inline-block;padding:0 2px;border-radius:6px;
+}
+.lyrics-text .hl:hover{background:#FFF0E0;}
+.lyrics-text .hl:active{transform:scale(1.2);}
+.lyrics-text .hl::after{content:'🔊';font-size:12px;opacity:0.5;margin-left:3px;}
+.cover-title .hl{
+  color:#E8751A;cursor:pointer;transition:all .2s;
+  display:inline-block;padding:0 2px;border-radius:6px;
+}
+.cover-title .hl:hover{background:#FFF0E0;}
+.cover-title .hl:active{transform:scale(1.2);}
+.cover-title .hl::after{content:'🔊';font-size:12px;opacity:0.5;margin-left:3px;}
 .lyrics-sub{
   font-size:1rem;color:#8D6E63;margin-bottom:8px;
 }
@@ -210,6 +224,14 @@ h2.page-title{
 .quiz-btn:hover{transform:scale(1.05);background:#FFD54F;}
 .quiz-btn.correct{background:#81C784;border-color:#4CAF50;cursor:default;}
 .quiz-btn.wrong{background:#EF9A9A;border-color:#E53935;}
+.quiz-opt-speak{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:50%;background:#FFF0E0;
+  border:2px solid #FFB347;cursor:pointer;font-size:12px;
+  transition:all .2s ease;margin-left:6px;flex-shrink:0;
+}
+.quiz-opt-speak:hover{transform:scale(1.2);background:#FFE0B2;}
+.quiz-opt-speak:active{transform:scale(0.95);}
 .quiz-feedback{
   margin:8px 0;font-size:.95rem;font-weight:600;
   min-height:1.4em;text-align:center;
@@ -310,7 +332,7 @@ h2.page-title{
 
   <!-- ===== PAGE 0: COVER ===== -->
   <div class="page active" data-page="0">
-    <div class="cover-title">Twinkle Twinkle<br>Little Star</div>
+    <div class="cover-title"><span class="hl" data-word="Twinkle">Twinkle</span> <span class="hl" data-word="Twinkle">Twinkle</span><br><span class="hl" data-word="Little">Little</span> <span class="hl" data-word="Star">Star</span></div>
     <div class="cover-subtitle">✦ 一首关于星星的英语儿歌 ✦</div>
     <div class="cover-svg-wrap svg-scene">
       <svg viewBox="0 0 400 260" xmlns="http://www.w3.org/2000/svg">
@@ -358,7 +380,7 @@ h2.page-title{
   <!-- ===== PAGE 1: "Twinkle, twinkle, little star" ===== -->
   <div class="page" data-page="1">
     <h2 class="page-title">🌟 第一句</h2>
-    <div class="lyrics-text">Twinkle, twinkle,<br>little star</div>
+    <div class="lyrics-text"><span class="hl" data-word="Twinkle">Twinkle</span>, <span class="hl" data-word="twinkle">twinkle</span>,<br><span class="hl" data-word="little">little</span> <span class="hl" data-word="star">star</span></div>
     <div class="lyrics-sub">— 一闪一闪小星星 —</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -395,7 +417,7 @@ h2.page-title{
   <!-- ===== PAGE 2: "How I wonder what you are" ===== -->
   <div class="page" data-page="2">
     <h2 class="page-title">🌟 第二句</h2>
-    <div class="lyrics-text">How I wonder<br>what you are</div>
+    <div class="lyrics-text"><span class="hl" data-word="How">How</span> <span class="hl" data-word="I">I</span> <span class="hl" data-word="wonder">wonder</span><br><span class="hl" data-word="what">what</span> <span class="hl" data-word="you">you</span> <span class="hl" data-word="are">are</span></div>
     <div class="lyrics-sub">— 我真想知道你是什么 —</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -436,7 +458,7 @@ h2.page-title{
   <!-- ===== PAGE 3: "Up above the world so high" ===== -->
   <div class="page" data-page="3">
     <h2 class="page-title">🌟 第三句</h2>
-    <div class="lyrics-text">Up above the world<br>so high</div>
+    <div class="lyrics-text"><span class="hl" data-word="Up">Up</span> <span class="hl" data-word="above">above</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="world">world</span><br><span class="hl" data-word="so">so</span> <span class="hl" data-word="high">high</span></div>
     <div class="lyrics-sub">— 在世界上方那么高 —</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -478,7 +500,7 @@ h2.page-title{
   <!-- ===== PAGE 4: "Like a diamond in the sky" ===== -->
   <div class="page" data-page="4">
     <h2 class="page-title">🌟 第四句</h2>
-    <div class="lyrics-text">Like a diamond<br>in the sky</div>
+    <div class="lyrics-text"><span class="hl" data-word="Like">Like</span> <span class="hl" data-word="a">a</span> <span class="hl" data-word="diamond">diamond</span><br><span class="hl" data-word="in">in</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="sky">sky</span></div>
     <div class="lyrics-sub">— 像天空中的钻石 —</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -519,7 +541,7 @@ h2.page-title{
   <!-- ===== PAGE 5: "Twinkle, twinkle, little star" (repeat) ===== -->
   <div class="page" data-page="5">
     <h2 class="page-title">🌟 第五句</h2>
-    <div class="lyrics-text">Twinkle, twinkle,<br>little star</div>
+    <div class="lyrics-text"><span class="hl" data-word="Twinkle">Twinkle</span>, <span class="hl" data-word="twinkle">twinkle</span>,<br><span class="hl" data-word="little">little</span> <span class="hl" data-word="star">star</span></div>
     <div class="lyrics-sub">— 一闪一闪小星星（重复）—</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -561,7 +583,7 @@ h2.page-title{
   <!-- ===== PAGE 6: "How I wonder what you are" (repeat) ===== -->
   <div class="page" data-page="6">
     <h2 class="page-title">🌟 第六句</h2>
-    <div class="lyrics-text">How I wonder<br>what you are</div>
+    <div class="lyrics-text"><span class="hl" data-word="How">How</span> <span class="hl" data-word="I">I</span> <span class="hl" data-word="wonder">wonder</span><br><span class="hl" data-word="what">what</span> <span class="hl" data-word="you">you</span> <span class="hl" data-word="are">are</span></div>
     <div class="lyrics-sub">— 我真想知道你是什么（重复）—</div>
     <div class="svg-scene">
       <svg viewBox="0 0 380 220" xmlns="http://www.w3.org/2000/svg">
@@ -631,8 +653,8 @@ h2.page-title{
   <!-- ===== PAGE 8: Star Finding Game ===== -->
   <div class="page" data-page="8">
     <h2 class="page-title">🔭 找星星游戏</h2>
-    <div style="text-align:center;font-size:.95rem;color:#8D6E63;margin-bottom:3px;">点击夜空中的星星 🌟 找到全部10颗!</div>
-    <div class="star-find-count">已找到: <span id="star-found-count">0</span> / 10</div>
+    <div style="text-align:center;font-size:.95rem;color:#8D6E63;margin-bottom:3px;">点击夜空中的星星 🌟 找到全部 <strong>3</strong> 颗!</div>
+    <div class="star-find-count">已找到: <span id="star-found-count">0</span> / 3</div>
     <div class="svg-scene star-find-area" id="star-find-scene">
       <svg viewBox="0 0 380 230" xmlns="http://www.w3.org/2000/svg" id="star-find-svg">
         <rect width="380" height="230" fill="#0A0A3A"/>
@@ -796,6 +818,22 @@ function speakText(text){
   }
 }
 
+// ===== CLICKABLE WORDS (.hl) =====
+function speakWord(word){
+  speakText(word);
+  showSpeech('🔊 '+word);
+  setTimeout(hideSpeech,2000);
+}
+document.addEventListener('click',function(e){
+  var hl = e.target.closest('.hl');
+  if(hl && hl.getAttribute('data-word')){
+    e.stopPropagation();
+    speakWord(hl.getAttribute('data-word'));
+    hl.style.transform='scale(1.3)';
+    setTimeout(function(){hl.style.transform='scale(1)';},300);
+  }
+});
+
 // ===== READ ALOUD =====
 function readAloud(){
   if(currentPage>=0&&currentPage<lyricsRead.length){
@@ -930,6 +968,8 @@ function stopSinging(){
 }
 
 // ===== SPELLING GAMES (Pages 1-6) =====
+let dragLetterData = null;
+
 function initSpellingGame(pageIdx){
   const container = document.getElementById('game'+pageIdx);
   if(!container) return;
@@ -944,15 +984,67 @@ function initSpellingGame(pageIdx){
     [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
   }
   container.innerHTML = '';
+  // Make container a drop zone
+  container.style.minHeight = '60px';
+  container.style.border = '2px dashed #FFB347';
+  container.style.borderRadius = '12px';
+  container.style.padding = '8px';
+  container.style.transition = 'all .2s ease';
   const status = document.getElementById('game'+pageIdx+'-status');
-  if(status) status.textContent = '按顺序点击字母拼出单词';
+  if(status) status.textContent = '点击或拖拽字母到上方拼出单词' ;
   let currentIdx = 0;
+  // Add drag-over class when dragging over container
+  container.addEventListener('dragover',function(e){
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    this.style.background = '#FFF1D6';
+    this.style.borderColor = '#FF8C00';
+  });
+  container.addEventListener('dragleave',function(e){
+    this.style.background = '';
+    this.style.borderColor = '#FFB347';
+  });
+  container.addEventListener('drop',function(e){
+    e.preventDefault();
+    this.style.background = '';
+    this.style.borderColor = '#FFB347';
+    if(!dragLetterData || dragLetterData.idx !== pageIdx) return;
+    var el = dragLetterData.el;
+    var letter = dragLetterData.letter;
+    dragLetterData = null;
+    if(el.classList.contains('correct')) return;
+    const expected = target[currentIdx];
+    if(letter===expected){
+      el.classList.add('correct');
+      currentIdx++;
+      if(currentIdx===target.length){
+        if(status) status.textContent = '✅ 拼写正确! 太棒了!';
+        container.dataset.completed = 'true';
+        container.style.border = '2px solid #4CAF50';
+        container.style.background = '#E8F5E9';
+      }
+    }else{
+      el.classList.add('wrong');
+      setTimeout(function(){el.classList.remove('wrong');},400);
+      if(status) status.textContent = '❌ 顺序不对，再试试!';
+    }
+  });
   shuffled.forEach((ch,idx)=>{
     const block = document.createElement('span');
     block.className = 'word-block';
     block.textContent = ch;
     block.dataset.letter = ch;
     block.dataset.origIdx = idx;
+    block.draggable = true;
+    block.addEventListener('dragstart',function(e){
+      dragLetterData = {idx:pageIdx, letter:ch, el:this};
+      this.style.opacity = '0.5';
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    block.addEventListener('dragend',function(e){
+      this.style.opacity = '1';
+      dragLetterData = null;
+    });
     block.addEventListener('click',function(e){
       if(this.classList.contains('correct')) return;
       const expected = target[currentIdx];
@@ -962,6 +1054,8 @@ function initSpellingGame(pageIdx){
         if(currentIdx===target.length){
           if(status) status.textContent = '✅ 拼写正确! 太棒了!';
           container.dataset.completed = 'true';
+          container.style.border = '2px solid #4CAF50';
+          container.style.background = '#E8F5E9';
         }
       }else{
         this.classList.add('wrong');
@@ -1019,6 +1113,8 @@ function showQuizQuestion(){
   document.getElementById('q-feedback').textContent = '';
   quizAnswered = false;
   q.options.forEach((opt,idx)=>{
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:2px;';
     const btn = document.createElement('button');
     btn.className = 'quiz-btn';
     btn.textContent = opt;
@@ -1041,7 +1137,20 @@ function showQuizQuestion(){
         },800);
       }
     });
-    optContainer.appendChild(btn);
+    wrapper.appendChild(btn);
+    // Add speak button
+    var speakBtn = document.createElement('span');
+    speakBtn.className = 'quiz-opt-speak';
+    speakBtn.textContent = '🔊';
+    speakBtn.title = '朗读选项';
+    speakBtn.addEventListener('click',function(e){
+      e.stopPropagation();
+      speakText(opt);
+      showSpeech('🔊 '+opt);
+      setTimeout(hideSpeech,2000);
+    });
+    wrapper.appendChild(speakBtn);
+    optContainer.appendChild(wrapper);
   });
 }
 
@@ -1058,7 +1167,11 @@ function initStarFind(){
     s.classList.remove('found');
     s.setAttribute('fill','#FFD700');
     s.style.pointerEvents = 'auto';
+    s.style.opacity = '1';
+    s.style.filter = 'drop-shadow(0 0 4px #FFD700)';
   });
+  showSpeech('🔭 在夜空中找到3颗星星吧！');
+  setTimeout(hideSpeech,2500);
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -1067,13 +1180,28 @@ document.addEventListener('DOMContentLoaded',function(){
     const target = e.target;
     if(target.classList.contains('clickable-star') && !target.classList.contains('found')){
       target.classList.add('found');
-      target.setAttribute('fill','#FFD700');
+      target.setAttribute('fill','#FFEB3B');
       target.style.pointerEvents = 'none';
+      target.style.filter = 'drop-shadow(0 0 10px #FFD700)';
+      // Animate: grow then settle
+      var origR = target.getAttribute('r');
+      target.setAttribute('r', parseFloat(origR)*2.5);
+      setTimeout(function(){target.setAttribute('r', origR);},300);
       starsFound++;
       document.getElementById('star-found-count').textContent = starsFound;
-      if(starsFound>=10){
+      // Speak and show bubble for each found star
+      var msgs = ['✨ You found a star! ⭐','🌟 好棒！又找到一颗！','🎉 太厉害了！'];
+      showSpeech(msgs[starsFound-1]);
+      speakText('You found a star');
+      setTimeout(hideSpeech,2000);
+      if(starsFound>=3){
         starFindCompleted = true;
-        document.getElementById('star-find-msg').textContent = '🎉 太棒了！你找到了所有的星星！';
+        setTimeout(function(){
+          document.getElementById('star-find-msg').textContent = '🎉 太棒了！你找到了3颗星星！Twinkle Twinkle~ ⭐';
+          showSpeech('🎉 恭喜通关！Twinkle Twinkle Little Star ⭐');
+          speakText('Twinkle Twinkle Little Star');
+          setTimeout(hideSpeech,3500);
+        },600);
       }
     }
   });
