@@ -239,8 +239,8 @@ function playAudio(src, text) {
   try {
     const a=new Audio(src);
     currentAudio=a;a.volume=1;
-    a.play().catch(()=>{ /* TTS fallback */ });
-  } catch(e){}
+    a.play().catch(function(){ speakText(text); });
+  } catch(e){ speakText(text); }
 }
 
 function speakPage(){
@@ -270,7 +270,10 @@ function speakPage(){
 function speakText(text){
   window.speechSynthesis.cancel();
   try{
-    const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,'').replace(/[^\x20-\x7E]/g,''));
+    // Remove emoji + non-ASCII but keep letters, numbers, punctuation
+    var clean = text.replace(/<[^>]+>/g,'').replace(/[\u{1F300}-\u{1FFFF}\u2600-\u27BF\uFE00-\uFE0F\u200D\u{1F000}-\u{1FFFF}]/gu,'').replace(/\s+/g,' ').trim();
+    if(clean.length===0) return;
+    const u=new SpeechSynthesisUtterance(clean);
     u.lang='en-US';u.rate=0.7;u.pitch=1.0;
     window.speechSynthesis.speak(u);
   }catch(e){}

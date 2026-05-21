@@ -693,6 +693,7 @@ h2.page-title{
   <!-- === NAVIGATION BAR === -->
   <div class="nav-bar">
     <button class="nav-btn" id="prevBtn" onclick="prevPage()">◀</button>
+    <button class="nav-btn read-btn" onclick="readAloud()">🔊</button>
     <button class="nav-btn sing-btn" onclick="playMelody(TWINKLE)">🎵</button>
     <div class="nav-dots" id="navDots"></div>
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
@@ -771,11 +772,27 @@ function hideSpeech(){
   document.getElementById('speechBubble').classList.remove('show');
 }
 
+// ===== TEXT-TO-SPEECH =====
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    var clean = text.replace(/<[^>]+>/g,'').replace(/[—\u4e00-\u9fff\u3000-\u303f\uff00-\uffef]+/g,'').replace(/\s+/g,' ').trim();
+    if(clean.length>0){
+      var u=new SpeechSynthesisUtterance(clean);
+      u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+      window.speechSynthesis.speak(u);
+    }
+  }
+}
+
 // ===== READ ALOUD =====
 function readAloud(){
   if(currentPage>=0&&currentPage<lyricsRead.length){
     showSpeech(lyricsRead[currentPage]);
-    setTimeout(hideSpeech,3000);
+    // Extract English part for TTS
+    var eng = lyricsRead[currentPage].replace(/[—\u4e00-\u9fff\u3000-\u303f\uff00-\uffef\u3000-\u303f]+/g,'').replace(/[~\-]+/g,' ').trim();
+    speakText(eng);
+    setTimeout(hideSpeech,4000);
   }
 }
 
