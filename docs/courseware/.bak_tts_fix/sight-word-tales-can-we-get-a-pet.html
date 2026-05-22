@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Sight Word Tales - Can We Get a Pet?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.book {
+  max-width: 800px;
+  width: 100%;
+  background: #FFFCF5;
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;
+  padding: 24px 20px;
+  position: relative;
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+}
+.page-area { min-height: 380px; }
+.page {
+  display: none; flex-direction: column; align-items: center;
+}
+.page.active { display: flex; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page.active { animation: fadeIn 0.4s ease; }
+
+/* Cover page */
+.cover-page .cover-emoji {
+  margin: 10px 0 20px;
+  display: block;
+  text-align: center;
+}
+.cover-page .cover-tagline {
+  font-size: 18px;
+  color: #BF6F00;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.cover-page .word-pills {
+  margin-top: 10px;
+  display: flex; gap: 12px; justify-content: center;
+  margin-bottom: 15px;
+}
+.cover-page .word-pill {
+  background: #FFB347;
+  color: white;
+  padding: 6px 22px;
+  border-radius: 30px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.cover-page .word-pill:hover { transform: scale(1.1); }
+
+/* Page title */
+.page-title {
+  color: #E8751A;
+  font-size: 34px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.illustration {
+  width: 200px; height: 180px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 15px;
+}
+.illustration svg {
+  width: 180px; height: 160px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+.sentence {
+  font-size: 28px; line-height: 1.6; text-align: center;
+  padding: 15px 20px; background: #FFF8E7; border-radius: 16px;
+  width: 100%; margin-bottom: 15px;
+  border: 2px solid #FFE0B2;
+}
+.sentence .highlight {
+  color: #E8751A; font-weight: bold;
+  cursor: pointer;
+  transition: all 0.15s;
+  border-bottom: 3px solid transparent;
+}
+.sentence .highlight:hover {
+  border-bottom-color: #E8751A;
+  background: #FFF0D0;
+  border-radius: 4px;
+}
+.sentence .highlight:active {
+  transform: scale(0.95);
+}
+
+/* Quiz / Game area */
+.game-area {
+  width: 100%; margin-top: 10px; padding: 18px;
+  background: linear-gradient(135deg,#FFF8E7,#FFF0D0);
+  border: 3px solid #FFB347;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 4px 0 #E8951A, inset 0 2px 4px rgba(255,255,255,0.5);
+}
+.game-area h3 {
+  font-size: 17px;
+  color: #BF6F00;
+  margin-bottom: 12px;
+  font-weight: bold;
+}
+.word-choices {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.word-choice {
+  padding: 10px 24px;
+  border-radius: 16px;
+  border: 3px solid #FFD4A8;
+  background: white;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: grab;
+  transition: all 0.15s;
+  box-shadow: 0 3px 0 #DDD;
+  user-select: none;
+}
+.word-choice:hover {
+  border-color: #FFB347;
+  background: #FFF8E7;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 #DDD;
+}
+.word-choice:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #DDD;
+  cursor: grabbing;
+}
+.word-choice.correct {
+  border-color: #4caf50;
+  background: #e8f5e9;
+  animation: bounce 0.4s ease;
+  box-shadow: 0 3px 0 #388E3C;
+}
+.word-choice.wrong {
+  border-color: #f44336;
+  background: #ffebee;
+  animation: shake 0.3s;
+  box-shadow: 0 3px 0 #C62828;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+@keyframes bounce {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* Drop zone for drag-and-drop */
+.drop-zone {
+  border: 3px dashed #FFB347; border-radius: 16px; padding: 16px;
+  text-align: center; font-size: 16px; color: #AAA; margin-bottom: 10px;
+  transition: all 0.2s; min-height: 50px;
+  display: flex; align-items: center; justify-content: center;
+}
+.drop-zone.drag-over {
+  border-color: #66BB6A; background: rgba(102,187,106,0.1); color: #4CAF50;
+  transform: scale(1.02);
+}
+.word-choice.dragging { opacity: 0.5; transform: scale(1.05); }
+
+/* Speech bubble - gear style */
+.speech-bubble {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FFFFFF;
+  border: 3px solid #FFB347;
+  border-radius: 25px 25px 25px 8px;
+  padding: 14px 24px;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  z-index: 1000;
+  box-shadow: 0 6px 25px rgba(0,0,0,0.18), 0 0 0 2px #FFF5E6;
+  max-width: 85%;
+  font-size: 22px;
+  font-weight: 600;
+  color: #5D4037;
+  animation: bubbleUp 0.3s ease-out;
+  pointer-events: none;
+}
+.speech-bubble .speech-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  animation: pulseSpeaker 1.5s ease-in-out infinite;
+}
+@keyframes bubbleUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes pulseSpeaker {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Nav controls */
+.controls {
+  display: flex; gap: 10px; justify-content: center; align-items: center;
+  margin-top: 18px; flex-wrap: wrap;
+}
+.btn {
+  border: none; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: inherit;
+}
+.btn:hover { transform: scale(1.08); box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+.btn:active { transform: scale(0.92); }
+.btn-nav {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: #FFB347; color: white;
+  font-size: 24px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(255,179,71,0.3);
+}
+.btn-nav:disabled {
+  opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none;
+}
+.btn-read {
+  background: #6BCB77; color: white;
+  padding: 10px 22px; border-radius: 30px;
+  font-size: 16px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+  box-shadow: 0 3px 10px rgba(107,203,119,0.3);
+}
+
+/* Progress dots */
+.progress {
+  display: flex; gap: 8px; justify-content: center; align-items: center;
+}
+.dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #ddd; cursor: pointer; transition: all 0.2s;
+}
+.dot.active { background: #FFB347; transform: scale(1.4); }
+.dot.done { background: #6BCB77; }
+
+/* Page counter */
+.page-counter {
+  font-size: 14px; color: #BF6F00; text-align: center; margin-top: 12px;
+  font-weight: 600;
+}
+
+/* Confetti celebration */
+.celebration {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 999;
+}
+.confetti-piece {
+  position: absolute;
+  animation: confettiFall var(--fall-duration, 2.5s) ease-out forwards;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes confettiFall {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(550px) rotate(720deg) scale(0.3);
+  }
+}
+
+/* Completed game style */
+.game-done {
+  background: #E8F5E9 !important;
+  border-color: #4CAF50 !important;
+  box-shadow: 0 4px 0 #388E3C, inset 0 2px 4px rgba(255,255,255,0.5) !important;
+}
+.game-done h3 { color: #2e7d32 !important; }
+
+/* Speak buttons for quizzes */
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
+/* Floating animation for SVG pets */
+@keyframes floatPet {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.illustration svg { animation: floatPet 3s ease-in-out infinite; }
+
+/* Wagging tail animation for dog */
+@keyframes wagTail {
+  0%,100% { transform: rotate(-10deg); }
+  50% { transform: rotate(10deg); }
+}
+.tail-wag { animation: wagTail 0.4s ease-in-out infinite; transform-origin: left center; }
+
+/* Fish swim animation */
+@keyframes swim {
+  0%,100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+.swim-anim { animation: swim 2s ease-in-out infinite; }
+
+/* Cat tail sway */
+@keyframes tailSway {
+  0%,100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+.tail-sway { animation: tailSway 1.5s ease-in-out infinite; transform-origin: top center; }
+
+/* Bunny ear wiggle */
+@keyframes earWiggle {
+  0%,100% { transform: rotate(0deg); }
+  30% { transform: rotate(3deg); }
+  60% { transform: rotate(-3deg); }
+}
+.ear-wiggle { animation: earWiggle 0.8s ease-in-out infinite; transform-origin: bottom center; }
+/* Top navigation buttons */
+.top-nav-btn {
+  position:absolute; z-index:50; border:none;
+  background:rgba(255,255,255,0.85); border-radius:30px;
+  padding:4px 12px; font-size:14px; font-weight:bold;
+  cursor:pointer; transition:all .2s; font-family:inherit;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  display:flex; align-items:center; gap:4px; touch-action:manipulation;
+  text-decoration:none; color:#6B4F3A;
+}
+.top-nav-btn:hover { background:rgba(255,255,255,1); transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+.top-nav-btn:active { transform:scale(0.95); }
+.top-nav-btn.home { left:10px; top:10px; }
+.top-nav-btn.next { right:10px; top:10px; }
+
+@media(max-width:500px){
+  .top-nav-btn { font-size:12px; padding:3px 10px; }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+<div class="book">
+  <a class="top-nav-btn home" href="https://nonomil.github.io/childrens-library/courseware/">🏠 首页</a>
+  <button class="top-nav-btn next" onclick="nextPage()">下一个 ▶</button>
+  <div class="page-area" id="pageArea"></div>
+  <div class="controls">
+    <button class="btn btn-nav" id="prevBtn" onclick="prevPage()">◀</button>
+    <button class="btn btn-read" onclick="speakPage()">🔊读给我听</button>
+    <div class="progress" id="progress"></div>
+    <button class="btn btn-nav" id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+  <div class="page-counter" id="pageCounter">第1页 / 共8页</div>
+</div>
+
+<!-- Speech bubble -->
+<div class="speech-bubble" id="speechBubble">
+  <span class="speech-icon">🔊</span>
+  <span class="speech-text" id="speechText"></span>
+</div>
+
+<script>
+// ===== SVG Illustrations =====
+
+function svgDog() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="dogBody" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#C68642"/>
+        <stop offset="100%" stop-color="#8B5E3C"/>
+      </radialGradient>
+    </defs>
+    <!-- Body -->
+    <ellipse cx="90" cy="105" rx="42" ry="30" fill="url(#dogBody)"/>
+    <!-- Back leg -->
+    <ellipse cx="68" cy="128" rx="10" ry="14" fill="#7A4E2D"/>
+    <ellipse cx="110" cy="128" rx="10" ry="14" fill="#7A4E2D"/>
+    <!-- Front legs -->
+    <rect x="72" y="118" width="10" height="18" rx="5" fill="#8B5E3C"/>
+    <rect x="98" y="118" width="10" height="18" rx="5" fill="#8B5E3C"/>
+    <!-- Paws -->
+    <ellipse cx="77" cy="137" rx="6" ry="4" fill="#A0714F"/>
+    <ellipse cx="103" cy="137" rx="6" ry="4" fill="#A0714F"/>
+    <ellipse cx="68" cy="142" rx="6" ry="4" fill="#A0714F"/>
+    <ellipse cx="110" cy="142" rx="6" ry="4" fill="#A0714F"/>
+    <!-- Head -->
+    <circle cx="95" cy="72" r="28" fill="url(#dogBody)"/>
+    <!-- Left ear (floppy) -->
+    <ellipse cx="70" cy="62" rx="14" ry="24" fill="#6B4226" transform="rotate(20,70,62)"/>
+    <!-- Right ear (floppy) -->
+    <ellipse cx="118" cy="60" rx="14" ry="24" fill="#6B4226" transform="rotate(-15,118,60)"/>
+    <!-- Snout -->
+    <ellipse cx="100" cy="80" rx="14" ry="10" fill="#C68642"/>
+    <!-- Nose -->
+    <ellipse cx="100" cy="76" rx="5" ry="4" fill="#2C1810"/>
+    <!-- Eyes -->
+    <circle cx="84" cy="68" r="4" fill="#2C1810"/>
+    <circle cx="105" cy="67" r="4" fill="#2C1810"/>
+    <circle cx="85" cy="67" r="1.5" fill="white"/>
+    <circle cx="106" cy="66" r="1.5" fill="white"/>
+    <!-- Mouth -->
+    <path d="M94,84 Q100,90 106,84" fill="none" stroke="#2C1810" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- Tongue -->
+    <ellipse cx="100" cy="87" rx="4" ry="3" fill="#FF8A80"/>
+    <!-- Tail (wagging) -->
+    <g class="tail-wag">
+      <path d="M50,100 Q32,80 28,65" fill="none" stroke="#8B5E3C" stroke-width="6" stroke-linecap="round"/>
+      <circle cx="28" cy="63" r="4" fill="#C68642"/>
+    </g>
+    <!-- Collar -->
+    <rect x="79" y="92" width="30" height="5" rx="2" fill="#E53935"/>
+    <circle cx="94" cy="97" r="3" fill="#FFD700"/>
+  </svg>`;
+}
+
+function svgCat() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="catBody" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#FFB74D"/>
+        <stop offset="100%" stop-color="#F57C00"/>
+      </radialGradient>
+    </defs>
+    <!-- Body -->
+    <ellipse cx="88" cy="108" rx="38" ry="28" fill="url(#catBody)"/>
+    <!-- Front legs -->
+    <rect x="72" y="120" width="9" height="20" rx="5" fill="#F57C00"/>
+    <rect x="98" y="120" width="9" height="20" rx="5" fill="#F57C00"/>
+    <!-- Paws -->
+    <ellipse cx="76" cy="140" rx="6" ry="3.5" fill="#FFB74D"/>
+    <ellipse cx="103" cy="140" rx="6" ry="3.5" fill="#FFB74D"/>
+    <!-- Head -->
+    <circle cx="88" cy="72" r="28" fill="url(#catBody)"/>
+    <!-- Left ear -->
+    <polygon points="62,60 68,28 82,52" fill="#F57C00"/>
+    <polygon points="66,56 70,34 80,52" fill="#FFCC80"/>
+    <!-- Right ear -->
+    <polygon points="108,52 116,28 112,60" fill="#F57C00"/>
+    <polygon points="104,52 112,34 108,56" fill="#FFCC80"/>
+    <!-- Eyes -->
+    <ellipse cx="78" cy="68" rx="5" ry="6" fill="#2C1810"/>
+    <ellipse cx="100" cy="68" rx="5" ry="6" fill="#2C1810"/>
+    <ellipse cx="79" cy="66" rx="2" ry="3" fill="#81C784"/>
+    <ellipse cx="101" cy="66" rx="2" ry="3" fill="#81C784"/>
+    <circle cx="78" cy="68" r="1.5" fill="white"/>
+    <circle cx="100" cy="68" r="1.5" fill="white"/>
+    <!-- Nose -->
+    <path d="M86,76 L90,76 L88,79 Z" fill="#FF8A80"/>
+    <!-- Mouth -->
+    <path d="M82,80 Q88,85 94,80" fill="none" stroke="#2C1810" stroke-width="1.2"/>
+    <path d="M88,79 L88,84" stroke="#2C1810" stroke-width="1.2"/>
+    <!-- Whiskers -->
+    <line x1="72" y1="76" x2="52" y2="72" stroke="#2C1810" stroke-width="1"/>
+    <line x1="72" y1="78" x2="52" y2="80" stroke="#2C1810" stroke-width="1"/>
+    <line x1="104" y1="76" x2="124" y2="72" stroke="#2C1810" stroke-width="1"/>
+    <line x1="104" y1="78" x2="124" y2="80" stroke="#2C1810" stroke-width="1"/>
+    <!-- Stripes -->
+    <path d="M88,48 L88,54" stroke="#E65100" stroke-width="2.5" stroke-linecap="round" opacity="0.4"/>
+    <path d="M78,50 L80,56" stroke="#E65100" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    <path d="M98,50 L96,56" stroke="#E65100" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+    <!-- Tail -->
+    <path d="M50,100 Q30,80 36,60 Q40,48 50,55" fill="none" stroke="#F57C00" stroke-width="7" stroke-linecap="round" class="tail-sway"/>
+    <path d="M50,100 Q30,80 36,60 Q40,48 50,55" fill="none" stroke="#E65100" stroke-width="1.5" stroke-linecap="round" opacity="0.3" class="tail-sway"/>
+    <!-- Collar -->
+    <rect x="76" y="92" width="24" height="5" rx="2" fill="#42A5F5"/>
+    <circle cx="88" cy="97" r="3" fill="#FFD700"/>
+  </svg>`;
+}
+
+function svgBunny() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="bunnyBody" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#FFFFFF"/>
+        <stop offset="100%" stop-color="#F5F5F5"/>
+      </radialGradient>
+    </defs>
+    <!-- Body -->
+    <ellipse cx="90" cy="110" rx="36" ry="32" fill="url(#bunnyBody)"/>
+    <!-- Belly -->
+    <ellipse cx="90" cy="115" rx="22" ry="20" fill="#FAFAFA"/>
+    <!-- Back leg -->
+    <ellipse cx="72" cy="132" rx="14" ry="10" fill="#F0F0F0"/>
+    <ellipse cx="106" cy="132" rx="14" ry="10" fill="#F0F0F0"/>
+    <!-- Front legs -->
+    <rect x="76" y="125" width="8" height="16" rx="4" fill="url(#bunnyBody)"/>
+    <rect x="98" y="125" width="8" height="16" rx="4" fill="url(#bunnyBody)"/>
+    <!-- Head -->
+    <circle cx="90" cy="70" r="25" fill="url(#bunnyBody)"/>
+    <!-- Left ear -->
+    <g class="ear-wiggle">
+      <ellipse cx="72" cy="28" rx="9" ry="30" fill="url(#bunnyBody)"/>
+      <ellipse cx="72" cy="28" rx="5" ry="24" fill="#FFCDD2"/>
+    </g>
+    <!-- Right ear -->
+    <g class="ear-wiggle">
+      <ellipse cx="108" cy="28" rx="9" ry="30" fill="url(#bunnyBody)"/>
+      <ellipse cx="108" cy="28" rx="5" ry="24" fill="#FFCDD2"/>
+    </g>
+    <!-- Cheeks -->
+    <ellipse cx="78" cy="74" rx="8" ry="6" fill="#FFCDD2" opacity="0.5"/>
+    <ellipse cx="102" cy="74" rx="8" ry="6" fill="#FFCDD2" opacity="0.5"/>
+    <!-- Eyes -->
+    <circle cx="80" cy="66" r="4" fill="#2C1810"/>
+    <circle cx="100" cy="66" r="4" fill="#2C1810"/>
+    <circle cx="81" cy="65" r="1.5" fill="white"/>
+    <circle cx="101" cy="65" r="1.5" fill="white"/>
+    <!-- Nose -->
+    <path d="M88,72 L92,72 L90,75 Z" fill="#FF8A80"/>
+    <!-- Mouth -->
+    <path d="M86,76 Q90,80 94,76" fill="none" stroke="#2C1810" stroke-width="1.2"/>
+    <!-- Front teeth -->
+    <rect x="87.5" y="74" width="2" height="3" rx="0.5" fill="white" stroke="#DDD" stroke-width="0.5"/>
+    <rect x="90.5" y="74" width="2" height="3" rx="0.5" fill="white" stroke="#DDD" stroke-width="0.5"/>
+    <!-- Whiskers -->
+    <line x1="74" y1="72" x2="58" y2="68" stroke="#CCC" stroke-width="0.8"/>
+    <line x1="74" y1="74" x2="58" y2="76" stroke="#CCC" stroke-width="0.8"/>
+    <line x1="106" y1="72" x2="122" y2="68" stroke="#CCC" stroke-width="0.8"/>
+    <line x1="106" y1="74" x2="122" y2="76" stroke="#CCC" stroke-width="0.8"/>
+    <!-- Tail -->
+    <circle cx="56" cy="108" r="8" fill="white"/>
+  </svg>`;
+}
+
+function svgHamster() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="hamBody" cx="50%" cy="50%">
+        <stop offset="0%" stop-color="#E8C882"/>
+        <stop offset="100%" stop-color="#C4944A"/>
+      </radialGradient>
+    </defs>
+    <!-- Body -->
+    <ellipse cx="90" cy="95" rx="40" ry="38" fill="url(#hamBody)"/>
+    <!-- Belly -->
+    <ellipse cx="90" cy="100" rx="26" ry="24" fill="#FFF3E0"/>
+    <!-- Head -->
+    <circle cx="90" cy="60" r="26" fill="url(#hamBody)"/>
+    <!-- Cheek pouches -->
+    <ellipse cx="74" cy="68" rx="14" ry="10" fill="#F5D9A8"/>
+    <ellipse cx="106" cy="68" rx="14" ry="10" fill="#F5D9A8"/>
+    <!-- Left ear -->
+    <circle cx="70" cy="38" r="9" fill="#C4944A"/>
+    <circle cx="71" cy="39" r="5" fill="#FFCDD2"/>
+    <!-- Right ear -->
+    <circle cx="110" cy="38" r="9" fill="#C4944A"/>
+    <circle cx="109" cy="39" r="5" fill="#FFCDD2"/>
+    <!-- Eyes -->
+    <circle cx="80" cy="58" r="4" fill="#1A1A1A"/>
+    <circle cx="100" cy="58" r="4" fill="#1A1A1A"/>
+    <circle cx="81" cy="57" r="1.5" fill="white"/>
+    <circle cx="101" cy="57" r="1.5" fill="white"/>
+    <!-- Nose -->
+    <path d="M88,64 L92,64 L90,66.5 Z" fill="#FF8A80"/>
+    <!-- Mouth -->
+    <path d="M86,68 Q90,72 94,68" fill="none" stroke="#2C1810" stroke-width="1"/>
+    <!-- Whiskers -->
+    <line x1="68" y1="64" x2="50" y2="60" stroke="#AAA" stroke-width="0.8"/>
+    <line x1="68" y1="66" x2="50" y2="68" stroke="#AAA" stroke-width="0.8"/>
+    <line x1="112" y1="64" x2="130" y2="60" stroke="#AAA" stroke-width="0.8"/>
+    <line x1="112" y1="66" x2="130" y2="68" stroke="#AAA" stroke-width="0.8"/>
+    <!-- Front paws -->
+    <ellipse cx="70" cy="115" rx="7" ry="5" fill="#E8C882"/>
+    <ellipse cx="110" cy="115" rx="7" ry="5" fill="#E8C882"/>
+    <!-- Back feet -->
+    <ellipse cx="76" cy="128" rx="8" ry="4" fill="#E8C882"/>
+    <ellipse cx="104" cy="128" rx="8" ry="4" fill="#E8C882"/>
+    <!-- Sunflower seed (cute) -->
+    <ellipse cx="76" cy="62" rx="3" ry="5" fill="#2C1810" transform="rotate(30,76,62)"/>
+  </svg>`;
+}
+
+function svgFish() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fishBody" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FF7043"/>
+        <stop offset="50%" stop-color="#FF9800"/>
+        <stop offset="100%" stop-color="#FFB74D"/>
+      </linearGradient>
+    </defs>
+    <g class="swim-anim">
+      <!-- Body -->
+      <ellipse cx="85" cy="80" rx="48" ry="24" fill="url(#fishBody)"/>
+      <!-- Belly -->
+      <ellipse cx="85" cy="88" rx="42" ry="14" fill="#FFF3E0" opacity="0.6"/>
+      <!-- Tail fin -->
+      <polygon points="40,80 15,55 15,105" fill="#FF7043"/>
+      <polygon points="40,80 20,60 20,100" fill="#E64A19"/>
+      <!-- Top fin -->
+      <path d="M70,56 Q85,40 100,56" fill="#E64A19"/>
+      <!-- Bottom fin -->
+      <path d="M70,104 Q85,120 100,104" fill="#E64A19"/>
+      <!-- Side fin -->
+      <ellipse cx="100" cy="80" rx="10" ry="4" fill="#E64A19" transform="rotate(-20,100,80)"/>
+      <!-- Eye -->
+      <circle cx="112" cy="74" r="6" fill="white"/>
+      <circle cx="113" cy="74" r="3.5" fill="#1A1A1A"/>
+      <circle cx="114" cy="73" r="1.5" fill="white"/>
+      <!-- Mouth -->
+      <ellipse cx="130" cy="80" rx="4" ry="3" fill="#E64A19"/>
+      <!-- Scales pattern -->
+      <path d="M75,70 Q80,66 85,70" fill="none" stroke="#E64A19" stroke-width="1" opacity="0.3"/>
+      <path d="M85,68 Q90,64 95,68" fill="none" stroke="#E64A19" stroke-width="1" opacity="0.3"/>
+      <path d="M80,78 Q85,74 90,78" fill="none" stroke="#E64A19" stroke-width="1" opacity="0.3"/>
+      <path d="M90,76 Q95,72 100,76" fill="none" stroke="#E64A19" stroke-width="1" opacity="0.3"/>
+    </g>
+    <!-- Bubbles -->
+    <circle cx="132" cy="68" r="4" fill="none" stroke="#90CAF9" stroke-width="1.5">
+      <animate attributeName="cy" values="68;55" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="138" cy="60" r="3" fill="none" stroke="#90CAF9" stroke-width="1.5">
+      <animate attributeName="cy" values="60;45" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="135" cy="52" r="2" fill="none" stroke="#90CAF9" stroke-width="1.2">
+      <animate attributeName="cy" values="52;35" dur="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+  </svg>`;
+}
+
+function svgTurtle() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="turtleShell" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#66BB6A"/>
+        <stop offset="100%" stop-color="#388E3C"/>
+      </radialGradient>
+    </defs>
+    <!-- Back legs -->
+    <ellipse cx="62" cy="126" rx="12" ry="8" fill="#558B2F"/>
+    <ellipse cx="110" cy="126" rx="12" ry="8" fill="#558B2F"/>
+    <!-- Shell -->
+    <ellipse cx="86" cy="98" rx="46" ry="34" fill="url(#turtleShell)"/>
+    <!-- Shell top highlight -->
+    <ellipse cx="86" cy="88" rx="38" ry="22" fill="#81C784" opacity="0.4"/>
+    <!-- Shell pattern - hexagons -->
+    <path d="M86,72 L98,78 L98,90 L86,96 L74,90 L74,78 Z" fill="none" stroke="#2E7D32" stroke-width="2" opacity="0.5"/>
+    <line x1="86" y1="84" x2="74" y2="78" stroke="#2E7D32" stroke-width="1.5" opacity="0.4"/>
+    <line x1="86" y1="84" x2="98" y2="78" stroke="#2E7D32" stroke-width="1.5" opacity="0.4"/>
+    <!-- Shell bottom edge -->
+    <path d="M46,100 Q86,132 126,100" fill="#33691E" opacity="0.3"/>
+    <!-- Front left leg -->
+    <rect x="60" y="110" width="14" height="18" rx="7" fill="#558B2F"/>
+    <!-- Front right leg -->
+    <rect x="100" y="110" width="14" height="18" rx="7" fill="#558B2F"/>
+    <!-- Head -->
+    <ellipse cx="86" cy="68" rx="16" ry="14" fill="#558B2F"/>
+    <!-- Neck -->
+    <rect x="80" y="70" width="12" height="14" rx="4" fill="#558B2F"/>
+    <!-- Eyes -->
+    <circle cx="80" cy="64" r="3.5" fill="white"/>
+    <circle cx="92" cy="64" r="3.5" fill="white"/>
+    <circle cx="80" cy="64" r="2" fill="#1A1A1A"/>
+    <circle cx="92" cy="64" r="2" fill="#1A1A1A"/>
+    <circle cx="80" cy="63" r="0.8" fill="white"/>
+    <circle cx="92" cy="63" r="0.8" fill="white"/>
+    <!-- Mouth (smile) -->
+    <path d="M82,72 Q86,76 90,72" fill="none" stroke="#2E7D32" stroke-width="1.2" stroke-linecap="round"/>
+    <!-- Cheek spots -->
+    <circle cx="76" cy="68" r="2" fill="#81C784" opacity="0.5"/>
+    <circle cx="96" cy="68" r="2" fill="#81C784" opacity="0.5"/>
+    <!-- Tail -->
+    <path d="M46,106 Q36,112 40,118" fill="none" stroke="#558B2F" stroke-width="5" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function svgHouse() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <!-- Sky background -->
+    <rect x="0" y="0" width="180" height="160" fill="#E3F2FD" rx="16"/>
+    <!-- Sun -->
+    <circle cx="150" cy="30" r="22" fill="#FFD54F"/>
+    <circle cx="150" cy="30" r="18" fill="#FFEB3B"/>
+    <!-- Ground -->
+    <rect x="0" y="120" width="180" height="40" fill="#81C784" rx="0"/>
+    <!-- House body -->
+    <rect x="50" y="60" width="80" height="60" fill="#FFCC80" rx="3"/>
+    <!-- Roof -->
+    <polygon points="40,60 90,20 140,60" fill="#E53935"/>
+    <polygon points="45,60 90,25 135,60" fill="#EF5350"/>
+    <!-- Door -->
+    <rect x="80" y="88" width="22" height="32" fill="#5D4037" rx="3"/>
+    <circle cx="97" cy="106" r="2" fill="#FFD700"/>
+    <!-- Window left -->
+    <rect x="58" y="70" width="18" height="18" fill="#BBDEFB" rx="2" stroke="#90A4AE" stroke-width="1.5"/>
+    <line x1="67" y1="70" x2="67" y2="88" stroke="#90A4AE" stroke-width="1"/>
+    <line x1="58" y1="79" x2="76" y2="79" stroke="#90A4AE" stroke-width="1"/>
+    <!-- Window right -->
+    <rect x="104" y="70" width="18" height="18" fill="#BBDEFB" rx="2" stroke="#90A4AE" stroke-width="1.5"/>
+    <line x1="113" y1="70" x2="113" y2="88" stroke="#90A4AE" stroke-width="1"/>
+    <line x1="104" y1="79" x2="122" y2="79" stroke="#90A4AE" stroke-width="1"/>
+    <!-- Chimney -->
+    <rect x="110" y="28" width="14" height="28" fill="#8D6E63"/>
+    <!-- Smoke -->
+    <circle cx="117" cy="22" r="5" fill="#B0BEC5" opacity="0.6">
+      <animate attributeName="cy" values="22;10" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;0" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Heart above house -->
+    <path d="M90,12 Q90,6 96,6 Q102,6 102,12 Q102,18 96,22 Q90,18 90,12 Z" fill="#E53935" opacity="0.8">
+      <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
+    </path>
+    <!-- Flowers -->
+    <circle cx="38" cy="118" r="4" fill="#E91E63"/>
+    <circle cx="38" cy="118" r="2" fill="#FCE4EC"/>
+    <line x1="38" y1="122" x2="38" y2="130" stroke="#4CAF50" stroke-width="1.5"/>
+    <circle cx="142" cy="116" r="4" fill="#FF9800"/>
+    <circle cx="142" cy="116" r="2" fill="#FFF3E0"/>
+    <line x1="142" y1="120" x2="142" y2="128" stroke="#4CAF50" stroke-width="1.5"/>
+  </svg>`;
+}
+
+function svgEnding() {
+  return `<svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="180" height="160" fill="#FFF8E1" rx="16"/>
+    <!-- Big star -->
+    <polygon points="90,20 97,50 128,50 103,68 112,98 90,80 68,98 77,68 52,50 83,50" fill="#FFD54F">
+      <animate attributeName="opacity" values="1;0.6;1" dur="1.2s" repeatCount="indefinite"/>
+    </polygon>
+    <!-- Small stars -->
+    <circle cx="40" cy="40" r="4" fill="#FFD54F">
+      <animate attributeName="r" values="4;6;4" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="140" cy="35" r="4" fill="#FFD54F">
+      <animate attributeName="r" values="4;6;4" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="30" cy="100" r="3" fill="#FFD54F">
+      <animate attributeName="r" values="3;5;3" dur="1.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="150" cy="105" r="3" fill="#FFD54F">
+      <animate attributeName="r" values="3;5;3" dur="1.6s" repeatCount="indefinite"/>
+    </circle>
+    <!-- Hearts -->
+    <path d="M55,70 Q55,62 61,62 Q67,62 67,70 Q67,78 61,82 Q55,78 55,70 Z" fill="#E53935" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1s" repeatCount="indefinite"/>
+    </path>
+    <path d="M125,65 Q125,57 131,57 Q137,57 137,65 Q137,73 131,77 Q125,73 125,65 Z" fill="#E53935" opacity="0.7">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1.3s" repeatCount="indefinite"/>
+    </path>
+    <!-- Banner -->
+    <rect x="30" y="112" width="120" height="28" rx="14" fill="#FFB347"/>
+    <text x="90" y="132" text-anchor="middle" fill="white" font-size="16" font-weight="bold">THE END!</text>
+    <!-- Confetti dots -->
+    <circle cx="25" cy="55" r="3" fill="#42A5F5" opacity="0.6"/>
+    <circle cx="155" cy="50" r="2.5" fill="#66BB6A" opacity="0.6"/>
+    <circle cx="20" cy="130" r="2" fill="#AB47BC" opacity="0.6"/>
+    <circle cx="160" cy="125" r="3" fill="#FF7043" opacity="0.6"/>
+    <circle cx="45" cy="30" r="2" fill="#66BB6A" opacity="0.5"/>
+    <circle cx="135" cy="130" r="2" fill="#42A5F5" opacity="0.5"/>
+  </svg>`;
+}
+
+// ===== Page Data =====
+const pages = [
+  {
+    id: 'page-0',
+    title: '📖 Can We Get a Pet?',
+    svg: svgHouse,
+    sentence: '"<span class="highlight">Can we</span> get a pet?"',
+    game: {
+      question: '🔍 Find the sight word: "we"',
+      word: 'we',
+      options: ['we', 'he', 'she', 'me']
+    },
+    cover: true
+  },
+  {
+    id: 'page-1',
+    title: '🐶 A Dog',
+    svg: svgDog,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">dog</span>?" said the kids.',
+    game: {
+      question: '❓ What can a dog do? Find: "run"',
+      word: 'run',
+      options: ['run', 'sit', 'eat', 'fly']
+    }
+  },
+  {
+    id: 'page-2',
+    title: '🐱 A Cat',
+    svg: svgCat,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">cat</span>?" said the kids.',
+    game: {
+      question: '❓ What does a cat say? Find: "meow"',
+      word: 'meow',
+      options: ['meow', 'woof', 'moo', 'baa']
+    }
+  },
+  {
+    id: 'page-3',
+    title: '🐰 A Bunny',
+    svg: svgBunny,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">bunny</span>?" said the kids.',
+    game: {
+      question: '❓ What does a bunny eat? Find: "carrot"',
+      word: 'carrot',
+      options: ['carrot', 'pizza', 'fish', 'bone']
+    }
+  },
+  {
+    id: 'page-4',
+    title: '🐹 A Hamster',
+    svg: svgHamster,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">hamster</span>?" said the kids.',
+    game: {
+      question: '❓ Where does a hamster sleep? Find: "bed"',
+      word: 'bed',
+      options: ['bed', 'car', 'sun', 'cup']
+    }
+  },
+  {
+    id: 'page-5',
+    title: '🐟 A Fish',
+    svg: svgFish,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">fish</span>?" said the kids.',
+    game: {
+      question: '❓ Where can a fish live? Find: "water"',
+      word: 'water',
+      options: ['water', 'land', 'tree', 'fire']
+    }
+  },
+  {
+    id: 'page-6',
+    title: '🐢 A Turtle',
+    svg: svgTurtle,
+    sentence: '"<span class="highlight">Can we</span> get a <span class="highlight">turtle</span>?" said the kids.',
+    game: {
+      question: '❓ What is on a turtle? Find: "shell"',
+      word: 'shell',
+      options: ['shell', 'fur', 'wings', 'sand']
+    }
+  },
+  {
+    id: 'page-7',
+    title: '🎉 Happy Ending',
+    svg: svgEnding,
+    sentence: '"Yes! <span class="highlight">We can</span> get a pet!" said Mom and Dad.',
+    game: null
+  }
+];
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+
+// ===== Speech Bubble =====
+function showSpeechBubble(text, duration) {
+  const bubble = document.getElementById('speechBubble');
+  const textEl = document.getElementById('speechText');
+  if (!textEl) return;
+  
+  textEl.textContent = text;
+  bubble.style.display = 'flex';
+  
+  // Speak aloud
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.8;
+  u.pitch = 1.1;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+  
+  // Auto-hide
+  clearTimeout(bubble._hideTimer);
+  const dur = duration || Math.max(2500, text.length * 120);
+  bubble._hideTimer = setTimeout(function() {
+    bubble.style.display = 'none';
+  }, dur);
+  
+  // Hide when speech ends
+  u.onend = function() {
+    setTimeout(function() {
+      bubble.style.display = 'none';
+    }, 500);
+  };
+}
+
+function hideSpeechBubble() {
+  const bubble = document.getElementById('speechBubble');
+  bubble.style.display = 'none';
+  window.speechSynthesis.cancel();
+}
+
+// ===== Rendering =====
+function renderPage(idx) {
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+
+  let extraClasses = p.cover ? 'cover-page' : '';
+  let content = '';
+
+  if (p.cover) {
+    content = `
+      <div class="page active ${extraClasses}" id="${p.id}">
+        <div class="page-title">${p.title}</div>
+        <div class="cover-emoji illustration">${p.svg()}</div>
+        <div class="cover-tagline">Sight Word Tales · Book 1</div>
+        <div class="word-pills">
+          <span class="word-pill" onclick="speakWord('can')">can</span>
+          <span class="word-pill" onclick="speakWord('we')">we</span>
+        </div>
+        <div class="sentence">${p.sentence}</div>
+        ${p.game ? renderGame(idx, p.game) : ''}
+      </div>
+    `;
+  } else {
+    let gameHtml = '';
+    if (p.game) {
+      gameHtml = renderGame(idx, p.game);
+    } else {
+      gameHtml = '<div class="game-area game-done"><h3>🎉 Story Complete!</h3><p style="color:#2e7d32;font-size:40px;margin-top:8px">★ ★ ★</p><p style="color:#555;font-size:16px">You read the whole story!</p></div>';
+    }
+    content = `
+      <div class="page active ${extraClasses}" id="${p.id}">
+        <div class="page-title">${p.title}</div>
+        <div class="illustration">${p.svg()}</div>
+        <div class="sentence">${p.sentence}</div>
+        ${gameHtml}
+      </div>
+    `;
+  }
+
+  area.innerHTML = content;
+  updateUI(idx);
+  document.getElementById('prevBtn').disabled = idx === 0;
+  
+  // Add click handlers for highlights
+  setTimeout(function() {
+    document.querySelectorAll('.sentence .highlight').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var word = this.textContent.trim();
+        speakWord(word);
+      });
+      el.style.cursor = 'pointer';
+    });
+  }, 50);
+}
+
+function renderGame(idx, game) {
+  if (gameDone[idx]) {
+    return '<div class="game-area game-done"><h3>✅ Great job!</h3><p style="color:#2e7d32;font-size:30px;margin-top:4px">★</p></div>';
+  }
+  var qSpeak = game.question.replace(/[??⚙️]/g, '').replace(/[""]/g, '').trim();
+  var opts = game.options.map(function(w) {
+    return '<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event,' + idx + ",'" + game.word + "','" + w + "')" + '" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
+  }).join('');
+  
+  return `
+    <div class="game-area" id="game-${idx}">
+      <h3>${game.question} <button class="speak-btn" onclick="event.stopPropagation();speakText('${qSpeak.replace(/'/g, "\\'")}')">🔊</button></h3>
+      <div class="drop-zone" id="dropzone-${idx}" ondragover="onDropZoneDragOver(event)" ondrop="onDropZoneDrop(event,${idx})" ondragleave="onDropZoneDragLeave(event)">⬇️ 把正确的词拖到这里</div>
+      <div class="word-choices">
+        ${opts}
+      </div>
+    </div>
+  `;
+}
+
+let dragWordData = null;
+function onWordChoiceDragStart(e, idx, target, chosen) {
+  dragWordData = { idx, target, chosen, el: e.currentTarget };
+  e.dataTransfer.setData('text/plain', chosen);
+  e.currentTarget.classList.add('dragging');
+}
+function onWordChoiceDragEnd(e) {
+  dragWordData = null;
+  e.currentTarget.classList.remove('dragging');
+}
+function onDropZoneDragOver(e) {
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function onDropZoneDrop(e, idx) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (dragWordData && dragWordData.idx === idx) {
+    checkWord(dragWordData.idx, dragWordData.target, dragWordData.chosen, dragWordData.el);
+  }
+}
+function onDropZoneDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function checkWord(idx, target, chosen, el) {
+  if (gameDone[idx]) return;
+  
+  // Speak the chosen word
+  speakWord(chosen);
+  
+  if (chosen === target) {
+    el.classList.add('correct');
+    gameDone[idx] = true;
+    launchConfetti();
+    setTimeout(function() { renderPage(idx); }, 800);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(function() { el.classList.remove('wrong'); }, 500);
+  }
+}
+
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+function speakWord(word) {
+  showSpeechBubble('🔊 ' + word, 2000);
+}
+
+// ===== Read Aloud =====
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText, showText.length * 150);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+    a.onerror = function() { currentAudio = null; if(showText) speakText(showText); };
+  } catch(e) { console.log('Audio error:', e); if(showText) speakText(showText); }
+}
+
+function speakPage() {
+  const AUDIO_MAP = ['pet-cover', 'pet-page1', 'pet-page2', 'pet-page3', 'pet-page4', 'pet-page5', 'pet-page6', 'pet-page7'];
+  const TEXTS = [
+    'Can We Get a Pet?',
+    '"Can we get a dog?" said the kids.',
+    '"Can we get a cat?" said the kids.',
+    '"Can we get a bunny?" said the kids.',
+    '"Can we get a hamster?" said the kids.',
+    '"Can we get a fish?" said the kids.',
+    '"Can we get a turtle?" said the kids.',
+    '"Yes! We can get a pet!" said Mom and Dad.'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
+}
+
+// ===== Navigation =====
+function nextPage() {
+  if (!gameDone[currentPage] && pages[currentPage].game) return;
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    hideSpeechBubble();
+    renderPage(currentPage);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    hideSpeechBubble();
+    renderPage(currentPage);
+  }
+}
+
+function updateUI(idx) {
+  document.getElementById('pageCounter').textContent = '第' + (idx+1) + '页 / 共' + pages.length + '页';
+  const dots = document.getElementById('progress');
+  dots.innerHTML = pages.map(function(_, i) {
+    var cls = 'dot';
+    if (i === idx) cls += ' active';
+    if (gameDone[i]) cls += ' done';
+    return '<div class="' + cls + '" onclick="goToPage(' + i + ')"></div>';
+  }).join('');
+}
+
+function goToPage(i) {
+  hideSpeechBubble();
+  currentPage = i;
+  renderPage(currentPage);
+}
+
+// ===== Confetti =====
+function launchConfetti() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#FF6B6B','#FECA57','#48DBFB','#FF9FF3','#54A0FF','#FFB347','#6BCB77','#E8751A'];
+  const shapes = ['circle','rect'];
+  for (let i = 0; i < 45; i++) {
+    const piece = document.createElement('div');
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    const size = 6 + Math.random() * 10;
+    const isRect = shape === 'rect';
+    piece.className = 'confetti-piece';
+    piece.style.left = (5 + Math.random() * 90) + '%';
+    piece.style.top = (10 + Math.random() * 20) + '%';
+    piece.style.background = color;
+    piece.style.width = isRect ? (size * 0.5) + 'px' : size + 'px';
+    piece.style.height = isRect ? (size * 1.6) + 'px' : size + 'px';
+    piece.style.borderRadius = isRect ? '2px' : '50%';
+    piece.style.setProperty('--delay', (Math.random() * 0.8) + 's');
+    piece.style.setProperty('--fall-duration', (1.8 + Math.random() * 1.2) + 's');
+    piece.style.opacity = '0.8';
+    div.appendChild(piece);
+  }
+  document.body.appendChild(div);
+  setTimeout(function() { div.remove(); }, 3500);
+}
+
+// ===== Init =====
+renderPage(0);
+</script>
+</body>
+</html>
