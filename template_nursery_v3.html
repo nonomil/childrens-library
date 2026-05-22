@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🔤 ABC Song</title>
+<title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
@@ -155,7 +155,7 @@ body {
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
   <div class="page-dots" id="progressDots"></div>
-  <div class="page-counter" id="pageCounter">第1页 / 共10页</div>
+  <div class="page-counter" id="pageCounter">第1页 / 共__TOTAL__页</div>
 </div>
 <div class="speech-bubble" id="speechBubble"></div>
 
@@ -170,12 +170,8 @@ body {
 
 // ====== PAGE DATA ======
 const pages = [
-  { cover:true, title:'🔤 ABC Song', subtitle:'✏️ 一起来学英文字母歌！' },
-  { sentence:'<span class="hl" data-word="A">A</span>-<span class="hl" data-word="B">B</span>-<span class="hl" data-word="C">C</span>-<span class="hl" data-word="D">D</span>-<span class="hl" data-word="E">E</span>-<span class="hl" data-word="F">F</span>-<span class="hl" data-word="G">G</span>', desc:'字母ABCDEFG', game:'abcdefg', svg:'0' },
-  { sentence:'<span class="hl" data-word="H">H</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="J">J</span>-<span class="hl" data-word="K">K</span>-<span class="hl" data-word="L">L</span>-<span class="hl" data-word="M">M</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="O">O</span>-<span class="hl" data-word="P">P</span>', desc:'字母HIJKLMNOP', game:'hijklmnop', svg:'0' },
-  { sentence:'<span class="hl" data-word="Q">Q</span>-<span class="hl" data-word="R">R</span>-<span class="hl" data-word="S">S</span>-<span class="hl" data-word="T">T</span>-<span class="hl" data-word="U">U</span>-<span class="hl" data-word="V">V</span>', desc:'字母QRSTUV', game:'qrstuv', svg:'0' },
-  { sentence:'<span class="hl" data-word="W">W</span>-<span class="hl" data-word="X">X</span>-<span class="hl" data-word="Y">Y</span>-<span class="hl" data-word="Z">Z</span>', desc:'字母WXYZ', game:'wxyz', svg:'0' },
-  { sentence:'Now I know my <span class="hl" data-word="ABC">ABC</span>s, sing with <span class="hl" data-word="me">me</span>!', desc:'我会唱字母歌了！', game:'abcs', svg:'0' },
+  { cover:true, title:'__DISPLAY_TITLE__', subtitle:'__COVER_SUBTITLE__' },
+__PAGES_JS__
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -205,12 +201,12 @@ function playNote(freq, dur, type='triangle', vol=0.25) {
 function playTick() { playNote(880, 0.08, 'square', 0.15); }
 function playGood() { playNote(523.25, 0.15, 'triangle', 0.2); setTimeout(function(){playNote(659.25, 0.15, 'triangle', 0.2);},100); setTimeout(function(){playNote(783.99, 0.3, 'triangle', 0.2);},200); }
 
-function playMelody(){const m=[[NOTE.C4,0.3],[NOTE.D4,0.3],[NOTE.E4,0.3],[NOTE.F4,0.3],[NOTE.G4,0.3],[NOTE.A4,0.3],[NOTE.B4,0.3],[NOTE.C5,0.6]];m.forEach(function(n,i){setTimeout(function(){playNote(n[0],n[1],'triangle',0.2);},i*200);});}
+__SONG_MELODY__
 
 var songAudio = null;
 function playSong() {
   if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
-  songAudio = new Audio('audio/abcsong.mp3');
+  songAudio = new Audio('audio/__MP3FILE__');
   songAudio.volume = 0.8;
   songAudio.play().catch(function(){});
 }
@@ -243,27 +239,23 @@ function showBubble(text) {
 }
 
 // ====== SVG ======
-var COVER_SVG = `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`;
+var COVER_SVG = `__COVER_SVG__`;
 function svgCoverScene() { return COVER_SVG; }
 function getSVG(idx) {
   if(idx===0) return svgCoverScene();
   const p=pages[idx];
-  const scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`];
+  const scenes = [__SCENES__];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
-const INTERACT_ITEMS = [{"id": "A", "emoji": "A", "label": "A", "zone": "1", "target": "60,120"}, {"id": "B", "emoji": "B", "label": "B", "zone": "2", "target": "120,110"}, {"id": "C", "emoji": "C", "label": "C", "zone": "3", "target": "180,120"}];
+const INTERACT_ITEMS = __INTERACT_ITEMS__;
 let dragItemsPlaced = 0;
 let dragActive = false;
 
 function renderInteractGame() {
-  let html = '<div class="page-desc">把字母拖到正确位置！</div>';
+  let html = '<div class="page-desc">__INTERACT_INST__</div>';
   // Canvas with drop zones
   html += '<div class="drag-canvas" id="dragCanvas">';
   for(let i=0;i<INTERACT_ITEMS.length;i++){
@@ -449,7 +441,7 @@ function onDrop(e,idx){
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["qrstuv","abcs","hijklmnop","wxyz","abcdefg"];
+const MATCH_WORDS = [__MATCH_WORDS__];
 let matchRound = 0;
 let matchDone = [];
 function renderMatchGame() {
@@ -482,7 +474,7 @@ function checkMatch(word,el) {
 }
 
 // ====== QUIZ ======
-const QUIZ_DATA = [{"q": "字母歌里第一个字母是？", "opts": ["B", "A", "C"], "ans": 1, "feedback": "A is the first letter! 🅰️"}, {"q": "字母歌里有多少个字母？", "opts": ["24", "26", "28"], "ans": 1, "feedback": "26个字母 from A to Z!"}, {"q": "Z后面是什么字母？", "opts": ["A", "没有", "Y"], "ans": 1, "feedback": "Z是最后一个字母! Now I know my ABCs!"}];
+const QUIZ_DATA = __QUIZ_DATA__;
 let quizIdx = 0;
 let quizAnswered = false;
 function renderQuizGame() {
@@ -534,7 +526,7 @@ function renderPage(idx) {
   }
 
   if(p.interact){
-    area.innerHTML='<div class="page active"><div class="page-title">🔤 字母拼图</div>'+renderInteractGame()+'</div>';
+    area.innerHTML='<div class="page active"><div class="page-title">__INTERACT_TITLE__</div>'+renderInteractGame()+'</div>';
     updateUI(idx);
     setTimeout(setupInteractDrag, 100);
     return;
@@ -584,9 +576,9 @@ function goToPage(idx){renderPage(idx);}
 
 function speakPage() {
   const p=pages[currentPage];
-  if(p.cover){showBubble('🔤 ABC Song!');speakText('ABC Song');return;}
+  if(p.cover){showBubble('__SPEAK_TITLE__!');speakText('__SPEAK_TEXT__');return;}
   if(p.final){showBubble('You did it! Super English Star! 🌟');speakText('You did it! Super English Star!');return;}
-  if(p.interact){showBubble('把字母拖到正确位置！');speakText('把字母拖到正确位置！');return;}
+  if(p.interact){showBubble('__INTERACT_INST__');speakText('__INTERACT_INST__');return;}
   if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
   if(p.quiz){showBubble('Answer the quiz question!');speakText('Answer the quiz question!');return;}
   const t=p.sentence.replace(/<[^>]+>/g,'');

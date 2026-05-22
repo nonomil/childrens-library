@@ -39,6 +39,8 @@ body {
 .lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
+
+/* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -53,6 +55,8 @@ body {
 .letter-tile.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
 .letter-tile.used { opacity:0.35; pointer-events:none; }
 .letter-tile.dragging { opacity:0.5; }
+
+/* Match game */
 .match-game { width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }
 .match-game h3 { font-size:18px; color:#2E7D32; margin-bottom:12px; }
 .sound-btn { width:100px; height:100px; border-radius:50%; border:4px solid #FFB347; background:#FFF; font-size:36px; cursor:pointer; transition:all .15s; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; }
@@ -62,6 +66,21 @@ body {
 .word-choice:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
 .word-choice.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
 .word-choice.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
+
+/* Drag game - like gears */
+.drag-canvas { width:100%; min-height:180px; background:#F5F0E8; border-radius:20px; border:3px dashed #E0D5C7; position:relative; margin:6px 0; overflow:hidden; }
+.drag-zone { position:absolute; border:3px dashed #FFB347; border-radius:16px; background:rgba(255,179,71,0.08); transition:all .3s; display:flex; align-items:center; justify-content:center; font-size:14px; color:#B8956A; font-weight:bold; }
+.drag-zone.highlight { border-color:#4CAF50; background:rgba(76,175,80,0.12); transform:scale(1.05); }
+.drag-zone.filled { border-color:#4CAF50; border-style:solid; background:rgba(76,175,80,0.15); }
+.drag-tray { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding:8px; background:#FFF8E7; border-radius:16px; border:2px solid #FFE8C8; margin:4px 0; min-height:60px; }
+.drag-item { padding:8px 16px; border-radius:16px; background:white; border:3px solid #E0D5C7; font-size:18px; font-weight:bold; cursor:grab; display:inline-flex; align-items:center; gap:6px; transition:all .15s; user-select:none; touch-action:none; }
+.drag-item:hover { border-color:#FFB347; background:#FFF8E7; }
+.drag-item.used { opacity:0.3; pointer-events:none; }
+.drag-item.dragging { opacity:0.6; transform:scale(1.1); z-index:1000; }
+.drag-ghost { position:fixed; pointer-events:none; z-index:99999; opacity:0.85; transform:scale(1.15); font-size:24px; }
+.drag-status { text-align:center; font-size:16px; color:#6B4F3A; font-weight:bold; min-height:28px; margin:4px 0; }
+
+/* Quiz */
 .quiz-area { width:100%; padding:16px; background:#FFF3E0; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #FFE0B2; }
 .quiz-area h3 { font-size:18px; color:#E65100; margin-bottom:12px; }
 .quiz-options { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
@@ -70,9 +89,13 @@ body {
 .quiz-opt.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
 .quiz-opt.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
 .quiz-feedback { font-size:18px; font-weight:bold; margin-top:10px; min-height:32px; }
+
+/* Speech bubble */
 .speech-bubble { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }
 .speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
 .speech-bubble::before { content:'🔊'; display:block; font-size:22px; margin-bottom:4px; }
+
+/* Controls */
 .controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:8px; position:sticky; bottom:0; background:#FFFCF5; padding:8px 0; z-index:100; }
 .nav-btn { background:#FFB347; border:none; color:#FFF; font-size:28px; width:60px; height:60px; border-radius:50%; cursor:pointer; box-shadow:0 4px 12px rgba(255,179,71,0.4); transition:all .15s; display:flex; align-items:center; justify-content:center; flex-shrink:0; touch-action:manipulation; }
 .nav-btn:hover { transform:scale(1.1); background:#FF9F1C; }
@@ -91,13 +114,15 @@ body {
 .big-start-btn.smaller { width:90px; height:90px; font-size:28px; }
 .cover-svg { width:100%; max-width:400px; margin:0 auto; }
 .cover-page { text-align:center; padding:20px 10px; }
+
+/* Final */
 .final-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0; }
-.final-word { padding:8px 16px; border-radius:16px; background:#FFF8E7; border:2px solid #FFE8C8; font-size:18px; font-weight:bold; color:#E8751A; }
 .final-star-cell { width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; font-size:28px; cursor:pointer; border-radius:12px; transition:all .2s; background:#FFF8E7; border:2px solid #FFE8C8; color:#E0D5C7; }
 .final-star-cell.lit { color:#FFD700; background:#FFFDE7; border-color:#FFD700; transform:scale(1.2); }
 .home-link { color:#FFB347; text-decoration:none; font-size:18px; font-weight:bold; margin-top:10px; display:inline-block; }
 .home-link:hover { text-decoration:underline; }
 .celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+
 @media (max-width:500px) {
   .book { padding:16px 12px; }
   .page-title { font-size:24px; }
@@ -111,6 +136,8 @@ body {
   .word-choice { font-size:16px; padding:8px 14px; }
   .big-start-btn { width:90px; height:90px; font-size:26px; }
   .quiz-opt { font-size:17px; padding:10px 18px; min-width:90px; }
+  .drag-item { font-size:15px; padding:6px 12px; }
+  .drag-zone { font-size:12px; }
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -128,25 +155,27 @@ body {
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
   <div class="page-dots" id="progressDots"></div>
-  <div class="page-counter" id="pageCounter">第1页 / 共8页</div>
+  <div class="page-counter" id="pageCounter">第1页 / 共9页</div>
 </div>
 <div class="speech-bubble" id="speechBubble"></div>
 
 <script>
-// ====== SPEECH INIT (fix Chrome silent TTS) ======
+// ====== SPEECH INIT ======
 (function initSpeech(){
   if('speechSynthesis' in window){
     window.speechSynthesis.getVoices();
-    window.speechSynthesis.onvoiceschanged = function(){
-      window.speechSynthesis.getVoices();
-    };
+    window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
   }
 })();
 
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🐑 Mary Had a Little Lamb', subtitle:'✏️ 玛丽有一只小羊羔！' },
-  { sentence:'<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>', desc:'玛丽有只小羊羔', game:'mary', svg:'0' },\n  { sentence:'Mary had a little lamb, its <span class="hl" data-word="fleece">fleece</span> was white as <span class="hl" data-word="snow">snow</span>', desc:'羊毛白如雪', game:'fleece', svg:'0' },\n  { sentence:'And everywhere that Mary went, the <span class="hl" data-word="lamb">lamb</span> was sure to <span class="hl" data-word="go">go</span>', desc:'玛莉走到哪羊羔就跟到哪', game:'lamb', svg:'0' },\n  { sentence:'It <span class="hl" data-word="followed">followed</span> her to school one day', desc:'有一天它跟着去了学校', game:'followed', svg:'0' },
+  { sentence:'<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>', desc:'玛丽有只小羊羔', game:'mary', svg:'0' },
+  { sentence:'Mary had a little lamb, its <span class="hl" data-word="fleece">fleece</span> was white as <span class="hl" data-word="snow">snow</span>', desc:'羊毛白如雪', game:'fleece', svg:'0' },
+  { sentence:'And everywhere that Mary went, the <span class="hl" data-word="lamb">lamb</span> was sure to <span class="hl" data-word="go">go</span>', desc:'玛莉走到哪羊羔就跟到哪', game:'lamb', svg:'0' },
+  { sentence:'It <span class="hl" data-word="followed">followed</span> her to school one day', desc:'有一天它跟着去了学校', game:'followed', svg:'0' },
+  { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
   { final:true, title:'🎉 太棒了!' }
@@ -163,8 +192,7 @@ function playNote(freq, dur, type='triangle', vol=0.25) {
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     if(ctx.state==='suspended') ctx.resume();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
     osc.connect(gain); gain.connect(ctx.destination);
     osc.frequency.value = freq; osc.type = type;
     const t = ctx.currentTime;
@@ -173,24 +201,11 @@ function playNote(freq, dur, type='triangle', vol=0.25) {
     osc.start(t); osc.stop(t + dur);
   } catch(e){}
 }
-function playSoundEffect(freqStart, freqEnd, dur, type='sawtooth', vol=0.2) {
-  try {
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    if(ctx.state==='suspended') ctx.resume();
-    const t=ctx.currentTime;
-    const o=ctx.createOscillator(),g=ctx.createGain();
-    o.type=type; o.frequency.setValueAtTime(freqStart,t);
-    o.frequency.exponentialRampToValueAtTime(freqEnd,t+dur);
-    g.gain.setValueAtTime(vol,t); g.gain.exponentialRampToValueAtTime(0.01,t+dur-0.05);
-    o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t+dur);
-  } catch(e){}
-}
 function playTick() { playNote(880, 0.08, 'square', 0.15); }
+function playGood() { playNote(523.25, 0.15, 'triangle', 0.2); setTimeout(function(){playNote(659.25, 0.15, 'triangle', 0.2);},100); setTimeout(function(){playNote(783.99, 0.3, 'triangle', 0.2);},200); }
 
-// Song-specific melody
 function playMelody(){const m=[[NOTE.E4,0.3],[NOTE.D4,0.3],[NOTE.C4,0.3],[NOTE.D4,0.3],[NOTE.E4,0.3],[NOTE.E4,0.3],[NOTE.E4,0.5],[NOTE.D4,0.3],[NOTE.D4,0.3],[NOTE.D4,0.5],[NOTE.E4,0.3],[NOTE.G4,0.3],[NOTE.G4,0.5]];m.forEach(function(n,i){setTimeout(function(){playNote(n[0],n[1],'triangle',0.2);},i*200);});}
 
-// ====== PLAY SONG MP3 ======
 var songAudio = null;
 function playSong() {
   if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
@@ -232,11 +247,169 @@ function svgCoverScene() { return COVER_SVG; }
 function getSVG(idx) {
   if(idx===0) return svgCoverScene();
   const p=pages[idx];
-  const scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,\n    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,\n    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,\n    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`];
-  if(p.match) return COVER_SVG;
-  if(p.quiz) return COVER_SVG.replace('height="220"','height="180"');
-  if(p.final) return COVER_SVG.replace('height="220"','height="180"');
+  const scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`];
+  if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== DRAG INTERACTIVE GAME (like gears) ======
+const INTERACT_ITEMS = [{"id": "lamb", "emoji": "🐑", "label": "Lamb", "zone": "玛丽身边", "target": "200,130"}, {"id": "mary", "emoji": "👧", "label": "Mary", "zone": "前面", "target": "270,100"}, {"id": "school", "emoji": "🏫", "label": "School", "zone": "后面", "target": "380,80"}];
+let dragItemsPlaced = 0;
+let dragActive = false;
+
+function renderInteractGame() {
+  let html = '<div class="page-desc">帮小羊找到玛丽！</div>';
+  // Canvas with drop zones
+  html += '<div class="drag-canvas" id="dragCanvas">';
+  for(let i=0;i<INTERACT_ITEMS.length;i++){
+    const item = INTERACT_ITEMS[i];
+    const pos = item.target.split(',');
+    html += '<div class="drag-zone" id="zone-'+i+'" data-idx="'+i+'" style="left:'+pos[0]+'px;top:'+pos[1]+'px;width:70px;height:50px">'+item.zone+'</div>';
+  }
+  html += '</div>';
+  // Tray with draggable items
+  html += '<div class="drag-status" id="dragStatus">👆 '+(dragItemsPlaced<INTERACT_ITEMS.length?'拖动物品到对应位置！':'✅ 全部完成！')+'</div>';
+  html += '<div class="drag-tray" id="dragTray">';
+  for(let i=0;i<INTERACT_ITEMS.length;i++){
+    const item = INTERACT_ITEMS[i];
+    html += '<div class="drag-item" id="ditem-'+i+'" data-idx="'+i+'" draggable="true">'+item.emoji+' '+item.label+'</div>';
+  }
+  html += '</div>';
+  if(dragItemsPlaced>=INTERACT_ITEMS.length){
+    html += '<div style="text-align:center;margin:8px 0"><button class="read-btn" onclick="resetInteract()">🔄 再来一次</button></div>';
+  }
+  return html;
+}
+
+function setupInteractDrag() {
+  document.querySelectorAll('.drag-item').forEach(function(el){
+    el.addEventListener('dragstart', function(e){
+      if(this.classList.contains('used')){e.preventDefault();return;}
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', this.dataset.idx);
+    });
+    el.addEventListener('dragend', function(e){
+      this.classList.remove('dragging');
+    });
+    // Touch support
+    el.addEventListener('touchstart', function(e){
+      if(this.classList.contains('used')) return;
+      const touch = e.touches[0];
+      dragActive = {idx:parseInt(this.dataset.idx), el:this, offsetX:20, offsetY:20};
+      // Create ghost
+      const ghost = document.createElement('div');
+      ghost.className = 'drag-ghost';
+      ghost.textContent = this.textContent;
+      ghost.style.left = (touch.clientX - 20) + 'px';
+      ghost.style.top = (touch.clientY - 20) + 'px';
+      ghost.id = 'dragGhost';
+      document.body.appendChild(ghost);
+      this.style.opacity = '0.4';
+    }, {passive:true});
+    el.addEventListener('touchmove', function(e){
+      if(!dragActive) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const ghost = document.getElementById('dragGhost');
+      if(ghost){
+        ghost.style.left = (touch.clientX - 20) + 'px';
+        ghost.style.top = (touch.clientY - 20) + 'px';
+      }
+      // Check proximity to zones
+      document.querySelectorAll('.drag-zone:not(.filled)').forEach(function(z){
+        const r = z.getBoundingClientRect();
+        const cx = r.left + r.width/2, cy = r.top + r.height/2;
+        const dist = Math.sqrt((touch.clientX-cx)*(touch.clientX-cx) + (touch.clientY-cy)*(touch.clientY-cy));
+        z.classList.toggle('highlight', dist < 80);
+      });
+    }, {passive:false});
+    el.addEventListener('touchend', function(e){
+      if(!dragActive) return;
+      const ghost = document.getElementById('dragGhost');
+      if(ghost) ghost.remove();
+      this.style.opacity = '1';
+      const touch = e.changedTouches[0];
+      // Check if over a zone
+      let matched = false;
+      document.querySelectorAll('.drag-zone:not(.filled)').forEach(function(z){
+        const r = z.getBoundingClientRect();
+        if(touch.clientX >= r.left && touch.clientX <= r.right && touch.clientY >= r.top && touch.clientY <= r.bottom){
+          const idx = parseInt(z.dataset.idx);
+          if(idx === dragActive.idx){
+            matched = true;
+            z.classList.add('filled');
+            z.textContent = INTERACT_ITEMS[idx].emoji;
+            dragActive.el.classList.add('used');
+            dragItemsPlaced++;
+            playGood();
+            showBubble('✅ '+INTERACT_ITEMS[idx].label+' 放好了!');
+            document.getElementById('dragStatus').textContent = '✅ '+(dragItemsPlaced)+'/'+INTERACT_ITEMS.length+' 完成!';
+            if(dragItemsPlaced >= INTERACT_ITEMS.length){
+              document.getElementById('dragStatus').textContent = '🎉 全部完成! 太棒了!';
+              gameDone[pages.findIndex(function(p){return p.interact;})] = true;
+              showBubble('🎉 太棒了! 全部组装完成!');
+              launchConfetti();
+              // Show reset button
+              const rm = document.querySelector('.drag-tray + div');
+              if(!rm) {
+                const div = document.createElement('div');
+                div.style.cssText = 'text-align:center;margin:8px 0';
+                div.innerHTML = '<button class="read-btn" onclick="resetInteract()">🔄 再来一次</button>';
+                document.getElementById('dragTray').after(div);
+              }
+            }
+          }
+        }
+      });
+      if(!matched){
+        showBubble('再试试~ 拖到对应的位置!');
+      }
+      document.querySelectorAll('.drag-zone').forEach(function(z){z.classList.remove('highlight');});
+      dragActive = null;
+    }, {passive:true});
+  });
+
+  // Mouse drag & drop for desktop
+  document.querySelectorAll('.drag-zone').forEach(function(zone){
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); });
+    zone.addEventListener('drop', function(e){
+      e.preventDefault();
+      if(this.classList.contains('filled')) return;
+      const idx = parseInt(e.dataTransfer.getData('text/plain'));
+      const zoneIdx = parseInt(this.dataset.idx);
+      if(idx !== zoneIdx) {
+        showBubble('❌ 位置不对! 再试试~');
+        return;
+      }
+      this.classList.add('filled');
+      this.textContent = INTERACT_ITEMS[idx].emoji;
+      const item = document.getElementById('ditem-'+idx);
+      if(item) item.classList.add('used');
+      dragItemsPlaced++;
+      playGood();
+      showBubble('✅ '+INTERACT_ITEMS[idx].label+' 放好了!');
+      document.getElementById('dragStatus').textContent = '✅ '+(dragItemsPlaced)+'/'+INTERACT_ITEMS.length+' 完成!';
+      if(dragItemsPlaced >= INTERACT_ITEMS.length){
+        document.getElementById('dragStatus').textContent = '🎉 全部完成! 太棒了!';
+        gameDone[pages.findIndex(function(p){return p.interact;})] = true;
+        showBubble('🎉 太棒了! 全部组装完成!');
+        launchConfetti();
+      }
+    });
+  });
+}
+
+function resetInteract() {
+  dragItemsPlaced = 0;
+  document.querySelectorAll('.drag-zone').forEach(function(z){z.classList.remove('filled');z.textContent=INTERACT_ITEMS[parseInt(z.dataset.idx)].zone;});
+  document.querySelectorAll('.drag-item').forEach(function(el){el.classList.remove('used');el.style.opacity='1';});
+  document.getElementById('dragStatus').textContent = '👆 拖动物品到对应位置！';
+  gameDone[pages.findIndex(function(p){return p.interact;})] = false;
+  showBubble('🔄 重新开始!');
 }
 
 // ====== WORD GAME ======
@@ -264,17 +437,17 @@ function pickLetter(idx,letter,el) {
   } else { el.classList.add('wrong'); setTimeout(function(){el.classList.remove('wrong');},400); }
 }
 function onDragStart(e,idx,letter){dragData={idx,letter,el:e.target};e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
-function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.word-slot.drag-over').forEach(s=>s.classList.remove('drag-over'));}
-function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)').forEach(s=>s.classList.add('drag-over'));}
-function onDragLeave(e,idx){document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));}
+function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.word-slot.drag-over').forEach(function(s){s.classList.remove('drag-over');});}
+function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)').forEach(function(s){s.classList.add('drag-over');});}
+function onDragLeave(e,idx){document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(function(s){s.classList.remove('drag-over');});}
 function onDrop(e,idx){
-  e.preventDefault();document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(s=>s.classList.remove('drag-over'));
+  e.preventDefault();document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(function(s){s.classList.remove('drag-over');});
   if(!dragData||dragData.idx!==idx||gameDone[idx]) return;
   pickLetter(idx,dragData.letter,dragData.el);dragData=null;
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["mary","lamb","fleece","followed"];
+const MATCH_WORDS = ["fleece","followed","lamb","mary"];
 let matchRound = 0;
 let matchDone = [];
 function renderMatchGame() {
@@ -306,7 +479,7 @@ function checkMatch(word,el) {
   }
 }
 
-// ====== QUIZ GAME ======
+// ====== QUIZ ======
 const QUIZ_DATA = [{"q": "Mary 养了什么动物？", "opts": ["🐱 猫", "🐑 小羊", "🐶 狗"], "ans": 1, "feedback": "Mary had a little lamb! 小羊羔!"}, {"q": "羊毛像什么一样白？", "opts": ["☁️ 云", "❄️ 雪", "🦷 牙齿"], "ans": 1, "feedback": "White as snow! 像雪一样白!"}, {"q": "小羊跟着Mary去了哪？", "opts": ["🏫 学校", "🏪 商店", "🏠 家"], "ans": 0, "feedback": "Followed her to school! 跟着去了学校!"}];
 let quizIdx = 0;
 let quizAnswered = false;
@@ -321,8 +494,7 @@ function renderQuizGame() {
     for(let i=0;i<q.opts.length;i++){
       html += '<button class="quiz-opt" onclick="checkQuiz('+i+',this)">'+q.opts[i]+'</button>';
     }
-    html += '</div>';
-    html += '<div class="quiz-feedback" id="quizFeedback"></div>';
+    html += '</div><div class="quiz-feedback" id="quizFeedback"></div>';
   }
   html += '</div>';
   return html;
@@ -334,10 +506,7 @@ function checkQuiz(idx,el) {
   if(idx===q.ans){
     el.classList.add('correct');
     document.getElementById('quizFeedback').textContent = '✅ 正确! '+q.feedback;
-    setTimeout(function(){
-      quizIdx++; quizAnswered=false;
-      renderPage(pages.length-2);
-    },1500);
+    setTimeout(function(){quizIdx++; quizAnswered=false;renderPage(pages.length-2);},1500);
   } else {
     el.classList.add('wrong');
     document.getElementById('quizFeedback').textContent = '❌ 再想想哦!';
@@ -360,6 +529,13 @@ function renderPage(idx) {
     for(let i=0;i<15;i++) stars+='<span class="final-star-cell" onclick="this.classList.toggle(\'lit\');this.textContent=this.classList.contains(\'lit\')?\'★\':\'☆\'">☆</span>';
     area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px"><div class="page-title">'+p.title+'</div><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div style="font-size:18px;margin:6px 0">👆 点击星星点亮!</div><div>'+stars+'</div><div style="margin:8px 0">🎉 ⭐ ⭐ ⭐ 🎉</div><a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">🏠 回课件列表</a></div>';
     launchConfetti(); updateUI(idx); return;
+  }
+
+  if(p.interact){
+    area.innerHTML='<div class="page active"><div class="page-title">🐑 小羊找玛丽</div>'+renderInteractGame()+'</div>';
+    updateUI(idx);
+    setTimeout(setupInteractDrag, 100);
+    return;
   }
 
   if(p.match){
@@ -406,8 +582,9 @@ function goToPage(idx){renderPage(idx);}
 
 function speakPage() {
   const p=pages[currentPage];
-  if(p.cover){showBubble('🐑 Mary Had a Little Lamb!');speakText('MaryHadaLittleLamb');return;}
+  if(p.cover){showBubble('🐑 Mary Had a Little Lamb!');speakText('Mary Had a Little Lamb');return;}
   if(p.final){showBubble('You did it! Super English Star! 🌟');speakText('You did it! Super English Star!');return;}
+  if(p.interact){showBubble('帮小羊找到玛丽！');speakText('帮小羊找到玛丽！');return;}
   if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
   if(p.quiz){showBubble('Answer the quiz question!');speakText('Answer the quiz question!');return;}
   const t=p.sentence.replace(/<[^>]+>/g,'');
