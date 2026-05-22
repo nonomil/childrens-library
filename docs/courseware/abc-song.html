@@ -420,9 +420,10 @@ function startWordGame(idx,word) {
   const letters=[...word].sort(function(){return Math.random()-0.5});
   buildingWord=[];
   const slots=word.split('').map(function(_,i){return '<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>';}).join('');
-  const tiles=letters.map(function(l){return '<div class="letter-tile" draggable="true" onclick="pickLetter('+idx+',\\''+l+'\\',this)" ondragstart="onDragStart(event,'+idx+',\\''+l+'\\')" ondragend="onDragEnd(event)">'+l+'</div>';}).join('');
+  const tiles=letters.map(function(l){return '<div class="letter-tile" draggable="true" data-idx="'+idx+'" data-letter="'+l+'">'+l+'</div>';}).join('');
   return '<div class="word-game"><h3>⚙️ 拼单词: <strong>"'+word+'"</strong> 🔊</h3><div class="word-slots" id="ws-'+idx+'">'+slots+'</div><div class="letter-tiles" id="tiles-'+idx+'">'+tiles+'</div></div>';
 }
+function pickTile(el){pickLetter(parseInt(el.dataset.idx),el.dataset.letter,el);}
 function pickLetter(idx,letter,el) {
   if(gameDone[idx]||el.classList.contains('used')) return;
   const word=pages[idx].game;
@@ -449,7 +450,7 @@ function onDrop(e,idx){
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["qrstuv","abcs","hijklmnop","wxyz","abcdefg"];
+const MATCH_WORDS = ["abcs","qrstuv","abcdefg","hijklmnop","wxyz"];
 let matchRound = 0;
 let matchDone = [];
 function renderMatchGame() {
@@ -458,7 +459,7 @@ function renderMatchGame() {
   const shuffled=MATCH_WORDS.slice().sort(function(){return Math.random()-0.5;});
   const opts=shuffled.map(function(w){
     const d=matchDone.indexOf(w)>=0?'style="opacity:0.5"':'';
-    return '<div class="word-choice" data-word="'+w+'" onclick="checkMatch(\\''+w+'\\',this)" '+d+'>'+w+'</div>';
+    return '<div class="word-choice" data-word="'+w+'" onclick="checkMatchByData(this)" '+d+'>'+w+'</div>';
   }).join('');
   return '<div class="match-game"><h3>🔊 听单词: <strong>"'+word+'"</strong></h3><button class="sound-btn" onclick="speakMatchWord()">🔊</button><p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p><div class="word-choices">'+opts+'</div></div>';
 }
@@ -467,6 +468,7 @@ function speakMatchWord() {
   speakText(MATCH_WORDS[matchRound]);
   showBubble('🔊 '+MATCH_WORDS[matchRound]);
 }
+function checkMatchByData(el){var w=el.dataset.word;if(w){checkMatch(w,el);}}
 function checkMatch(word,el) {
   if(matchRound>=MATCH_WORDS.length||matchDone.indexOf(word)>=0) return;
   if(word===MATCH_WORDS[matchRound]){

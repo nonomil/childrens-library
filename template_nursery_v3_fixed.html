@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🐑 Mary Had a Little Lamb</title>
+<title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
@@ -155,7 +155,7 @@ body {
     <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
   </div>
   <div class="page-dots" id="progressDots"></div>
-  <div class="page-counter" id="pageCounter">第1页 / 共9页</div>
+  <div class="page-counter" id="pageCounter">第1页 / 共__TOTAL__页</div>
 </div>
 <div class="speech-bubble" id="speechBubble"></div>
 
@@ -170,11 +170,8 @@ body {
 
 // ====== PAGE DATA ======
 const pages = [
-  { cover:true, title:'🐑 Mary Had a Little Lamb', subtitle:'✏️ 玛丽有一只小羊羔！' },
-  { sentence:'<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>', desc:'玛丽有只小羊羔', game:'mary', svg:'0' },
-  { sentence:'Mary had a little lamb, its <span class="hl" data-word="fleece">fleece</span> was white as <span class="hl" data-word="snow">snow</span>', desc:'羊毛白如雪', game:'fleece', svg:'0' },
-  { sentence:'And everywhere that Mary went, the <span class="hl" data-word="lamb">lamb</span> was sure to <span class="hl" data-word="go">go</span>', desc:'玛莉走到哪羊羔就跟到哪', game:'lamb', svg:'0' },
-  { sentence:'It <span class="hl" data-word="followed">followed</span> her to school one day', desc:'有一天它跟着去了学校', game:'followed', svg:'0' },
+  { cover:true, title:'__DISPLAY_TITLE__', subtitle:'__COVER_SUBTITLE__' },
+__PAGES_JS__
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -204,12 +201,12 @@ function playNote(freq, dur, type='triangle', vol=0.25) {
 function playTick() { playNote(880, 0.08, 'square', 0.15); }
 function playGood() { playNote(523.25, 0.15, 'triangle', 0.2); setTimeout(function(){playNote(659.25, 0.15, 'triangle', 0.2);},100); setTimeout(function(){playNote(783.99, 0.3, 'triangle', 0.2);},200); }
 
-function playMelody(){const m=[[NOTE.E4,0.3],[NOTE.D4,0.3],[NOTE.C4,0.3],[NOTE.D4,0.3],[NOTE.E4,0.3],[NOTE.E4,0.3],[NOTE.E4,0.5],[NOTE.D4,0.3],[NOTE.D4,0.3],[NOTE.D4,0.5],[NOTE.E4,0.3],[NOTE.G4,0.3],[NOTE.G4,0.5]];m.forEach(function(n,i){setTimeout(function(){playNote(n[0],n[1],'triangle',0.2);},i*200);});}
+__SONG_MELODY__
 
 var songAudio = null;
 function playSong() {
   if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
-  songAudio = new Audio('audio/mary_lamb.mp3');
+  songAudio = new Audio('audio/__MP3FILE__');
   songAudio.volume = 0.8;
   songAudio.play().catch(function(){});
 }
@@ -242,26 +239,23 @@ function showBubble(text) {
 }
 
 // ====== SVG ======
-var COVER_SVG = `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`;
+var COVER_SVG = `__COVER_SVG__`;
 function svgCoverScene() { return COVER_SVG; }
 function getSVG(idx) {
   if(idx===0) return svgCoverScene();
   const p=pages[idx];
-  const scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`,
-    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#F3E5F5"/><stop offset="100%" stop-color="#E1BEE7"/></linearGradient></defs><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><ellipse cx="80" cy="35" rx="40" ry="12" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="45" rx="35" ry="10" fill="#FFF" opacity="0.2"/><ellipse cx="230" cy="95" rx="40" ry="28" fill="#FFF"/><ellipse cx="230" cy="100" rx="28" ry="22" fill="#FAFAFA"/><ellipse cx="215" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="245" cy="88" rx="12" ry="10" fill="#E0E0E0"/><ellipse cx="230" cy="80" rx="10" ry="8" fill="#E0E0E0"/><circle cx="235" cy="78" r="2.5" fill="#5D4037"/><circle cx="243" cy="78" r="2.5" fill="#5D4037"/><ellipse cx="225" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="241" cy="76" rx="2" ry="1.5" fill="#FFF"/><ellipse cx="238" cy="83" rx="4" ry="2" fill="#F48FB1"/><rect x="215" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><rect x="237" y="118" width="8" height="12" rx="2" fill="#E0E0E0"/><ellipse cx="200" cy="95" rx="4" ry="6" fill="#E0E0E0"/><ellipse cx="260" cy="95" rx="4" ry="6" fill="#E0E0E0"/></svg>`];
+  const scenes = [__SCENES__];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
-const INTERACT_ITEMS = [{"id": "lamb", "emoji": "🐑", "label": "Lamb", "zone": "玛丽身边", "target": "200,130"}, {"id": "mary", "emoji": "👧", "label": "Mary", "zone": "前面", "target": "270,100"}, {"id": "school", "emoji": "🏫", "label": "School", "zone": "后面", "target": "380,80"}];
+const INTERACT_ITEMS = __INTERACT_ITEMS__;
 let dragItemsPlaced = 0;
 let dragActive = false;
 
 function renderInteractGame() {
-  let html = '<div class="page-desc">帮小羊找到玛丽！</div>';
+  let html = '<div class="page-desc">__INTERACT_INST__</div>';
   // Canvas with drop zones
   html += '<div class="drag-canvas" id="dragCanvas">';
   for(let i=0;i<INTERACT_ITEMS.length;i++){
@@ -448,7 +442,7 @@ function onDrop(e,idx){
 }
 
 // ====== MATCH GAME ======
-const MATCH_WORDS = ["followed","fleece","mary","lamb"];
+const MATCH_WORDS = [__MATCH_WORDS__];
 let matchRound = 0;
 let matchDone = [];
 function renderMatchGame() {
@@ -482,7 +476,7 @@ function checkMatch(word,el) {
 }
 
 // ====== QUIZ ======
-const QUIZ_DATA = [{"q": "Mary 养了什么动物？", "opts": ["🐱 猫", "🐑 小羊", "🐶 狗"], "ans": 1, "feedback": "Mary had a little lamb! 小羊羔!"}, {"q": "羊毛像什么一样白？", "opts": ["☁️ 云", "❄️ 雪", "🦷 牙齿"], "ans": 1, "feedback": "White as snow! 像雪一样白!"}, {"q": "小羊跟着Mary去了哪？", "opts": ["🏫 学校", "🏪 商店", "🏠 家"], "ans": 0, "feedback": "Followed her to school! 跟着去了学校!"}];
+const QUIZ_DATA = __QUIZ_DATA__;
 let quizIdx = 0;
 let quizAnswered = false;
 function renderQuizGame() {
@@ -534,7 +528,7 @@ function renderPage(idx) {
   }
 
   if(p.interact){
-    area.innerHTML='<div class="page active"><div class="page-title">🐑 小羊找玛丽</div>'+renderInteractGame()+'</div>';
+    area.innerHTML='<div class="page active"><div class="page-title">__INTERACT_TITLE__</div>'+renderInteractGame()+'</div>';
     updateUI(idx);
     setTimeout(setupInteractDrag, 100);
     return;
@@ -584,9 +578,9 @@ function goToPage(idx){renderPage(idx);}
 
 function speakPage() {
   const p=pages[currentPage];
-  if(p.cover){showBubble('🐑 Mary Had a Little Lamb!');speakText('Mary Had a Little Lamb');return;}
+  if(p.cover){showBubble('__SPEAK_TITLE__!');speakText('__SPEAK_TEXT__');return;}
   if(p.final){showBubble('You did it! Super English Star! 🌟');speakText('You did it! Super English Star!');return;}
-  if(p.interact){showBubble('帮小羊找到玛丽！');speakText('帮小羊找到玛丽！');return;}
+  if(p.interact){showBubble('__INTERACT_INST__');speakText('__INTERACT_INST__');return;}
   if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
   if(p.quiz){showBubble('Answer the quiz question!');speakText('Answer the quiz question!');return;}
   const t=p.sentence.replace(/<[^>]+>/g,'');
