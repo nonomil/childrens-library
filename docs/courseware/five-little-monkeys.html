@@ -123,6 +123,14 @@ body {
 .drop-zone.drag-over { border-color:#66BB6A; background:rgba(102,187,106,0.1); color:#4CAF50; transform:scale(1.02); }
 .quiz-opt:active { cursor:grabbing; }
 .quiz-opt.dragging { opacity:0.5; }
+/* Word game */
+.vocab-row { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:12px 0 8px; }
+.vocab-btn { background:#E3F2FD; border:2px solid #90CAF9; border-radius:14px; padding:8px 16px; font-size:16px; font-weight:600; cursor:pointer; font-family:inherit; color:#1A237E; transition:all 0.15s; box-shadow:0 2px 6px rgba(0,0,0,0.06); display:inline-flex; align-items:center; gap:6px; line-height:1.3; }
+.vocab-btn:hover { background:#BBDEFB; border-color:#42A5F5; transform:scale(1.08); }
+.vocab-btn:active { transform:scale(0.95); }
+.vocab-btn .en { font-size:17px; }
+.vocab-btn .zh { color:#666; font-weight:400; font-size:14px; }
+.vocab-btn .spkr { font-size:13px; margin-left:2px; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
@@ -156,8 +164,8 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'Five Little Monkeys', subtitle:'Jumping on the Bed! 🛏️ A counting rhyme!' },
-  { count:5 }, { count:4, fallen:1 }, { count:3, fallen:2 },
-  { count:2, fallen:3 }, { count:1, fallen:4 },
+  { count:5, words:['monkey:猴子','jump:跳'] }, { count:4, fallen:1, words:['fell:摔下','bump:撞包'] }, { count:3, fallen:2, words:['mama:妈妈','doctor:医生'] },
+  { count:2, fallen:3, words:['more:更多','careful:小心'] }, { count:1, fallen:4 },
   { count:0, fallen:5, done:true },
   { count:-1, final:true, sentence:'🎉 No more monkeys jumping on the bed! ★★★' }
 ];
@@ -553,7 +561,7 @@ function renderPage(idx){
     ? '<span class="num">'+count+'</span> little monkey'+(count>1?'s':'')+' jumping on the bed!<br>One fell off and <span class="bump">bumped</span> his head!'
     : '😴 No more monkeys jumping on the bed!<br>Mama said, "Time for bed!"';
 
-  let gameHTML = '';
+  let gameHTML = '', vb = '';
   if(count>0 && !isDone){
     const answers = [count-1, count, count+1].filter(n=>n>=0&&n<=5);
     for(let i=answers.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[answers[i],answers[j]]=[answers[j],answers[i]];}
@@ -566,17 +574,35 @@ function renderPage(idx){
   } else if(isDone && count>0){
     gameHTML = '<div class="quiz-area" style="background:#E8F5E9"><h3 style="color:#4CAF50">✅ 还剩 '+(count-1)+' 只猴子！</h3><p style="color:#4CAF50;font-size:24px">⭐</p></div>';
   }
+  if(p.words){vb=renderVocabRow(p);}
 
   area.innerHTML = '<div class="page active">'
     +'<div class="page-title">🐵 第 '+(count>0?Math.min(count,5):'0')+' 只猴子</div>'
     +'<div class="bed-scene" id="bedScene-'+idx+'"></div>'
     +'<div class="sentence" onclick="speakPage()">'+storyText+'</div>'
-    +gameHTML
+    +vb+gameHTML
     +'</div>';
 
   setTimeout(()=>drawBedScene('bedScene-'+idx,count,fallen,false),30);
   updateUI(idx);
   document.getElementById('prevBtn').disabled = idx===0;
+}
+
+// ====== WORD GAME ======
+function renderVocabRow(p){
+  var words=p.words||[];
+  if(!words.length) return '';
+  var html='<div class="vocab-row">';
+  for(var i=0;i<words.length;i++){
+    var parts=words[i].split(':');
+    var en=parts[0],zh=parts[1];
+    html+='<div class="vocab-btn" onclick="speakWord(\''+en.replace(/'/g,"\\'")+'\')"><span class="en">'+en+'</span> <span class="zh">'+zh+'</span> <span class="spkr">🔊</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word){
+  speakText(word);
+  showSpeechBubble('🔊 '+word);
 }
 
 // ====== JUMP MONKEY ======

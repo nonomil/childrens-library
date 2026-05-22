@@ -56,6 +56,15 @@ body {
 .letter-tile.used { opacity:0.35; pointer-events:none; }
 .letter-tile.dragging { opacity:0.5; }
 
+/* Bilingual word buttons */
+.word-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:6px 0; }
+.word-btn { padding:8px 16px; border-radius:30px; border:3px solid #E0D5C7; background:#FFF; cursor:pointer; font-size:16px; font-weight:bold; color:#5A3E2B; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:6px; touch-action:manipulation; }
+.word-btn:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { color:#E8751A; }
+.word-btn .zh { color:#6B4F3A; font-size:14px; }
+.word-btn .divider { color:#E0D5C7; font-weight:normal; }
+
 /* Match game */
 .match-game { width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }
 .match-game h3 { font-size:18px; color:#2E7D32; margin-bottom:12px; }
@@ -171,10 +180,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🥚 Humpty Dumpty', subtitle:'✏️ 蛋头先生坐在墙头上！' },
-  { sentence:'<span class="hl" data-word="Humpty">Humpty</span> <span class="hl" data-word="Dumpty">Dumpty</span> sat on a <span class="hl" data-word="wall">wall</span>', desc:'蛋头先生坐在墙头上', game:'humpty', svg:'0' },
-  { sentence:'Humpty Dumpty had a <span class="hl" data-word="great">great</span> <span class="hl" data-word="fall">fall</span>', desc:'蛋头先生摔了一大跤', game:'great', svg:'0' },
-  { sentence:'All the <span class="hl" data-word="king">king</span> horses and all the king men', desc:'国王所有的马和士兵', game:'king', svg:'0' },
-  { sentence:'Couldn put Humpty together <span class="hl" data-word="again">again</span>', desc:'都没法把蛋头拼回去', game:'again', svg:'0' },
+  { sentence:'<span class="hl" data-word="Humpty">Humpty</span> <span class="hl" data-word="Dumpty">Dumpty</span> sat on a <span class="hl" data-word="wall">wall</span>', desc:'蛋头先生坐在墙头上', game:'humpty', svg:'0', words:['humpty:蛋头','wall:墙'] },
+  { sentence:'Humpty Dumpty had a <span class="hl" data-word="great">great</span> <span class="hl" data-word="fall">fall</span>', desc:'蛋头先生摔了一大跤', game:'great', svg:'0', words:['great:大大的','fall:摔跤'] },
+  { sentence:'All the <span class="hl" data-word="king">king</span> horses and all the king men', desc:'国王所有的马和士兵', game:'king', svg:'0', words:['king:国王','horse:马'] },
+  { sentence:'Couldn put Humpty together <span class="hl" data-word="again">again</span>', desc:'都没法把蛋头拼回去', game:'again', svg:'0', words:['again:再次','together:一起'] },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -447,6 +456,24 @@ function onDrop(e,idx){
   pickLetter(idx,dragData.letter,dragData.el);dragData=null;
 }
 
+// ====== BILINGUAL WORD BUTTONS ======
+function renderWordBtns(idx) {
+  const p=pages[idx];
+  if(!p.words || !p.words.length) return '';
+  const btns=p.words.map(function(w){
+    const parts=w.split(':');
+    const en=parts[0], zh=parts[1]||'';
+    return '<button class="word-btn" data-en="'+en+'" data-zh="'+zh+'" onclick="speakWordBtn(this)"><span class="en">'+en+'</span><span class="divider">|</span><span class="zh">'+zh+'</span></button>';
+  }).join('');
+  return '<div class="word-btns">'+btns+'</div>';
+}
+function speakWordBtn(el) {
+  const en=el.getAttribute('data-en');
+  const zh=el.getAttribute('data-zh');
+  speakText(en);
+  showBubble('🔊 '+en+' — '+zh);
+}
+
 // ====== MATCH GAME ======
 const MATCH_WORDS = ["again","humpty","great","king"];
 let matchRound = 0;
@@ -550,9 +577,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', wb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  wb=renderWordBtns(idx);
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+wb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

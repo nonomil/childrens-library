@@ -40,6 +40,13 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Word buttons (bilingual) */
+.word-buttons { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:8px 0; }
+.word-btn { padding:8px 18px; border-radius:16px; border:2px solid #FFB347; background:#FFF8E7; cursor:pointer; font-size:17px; font-weight:bold; color:#6B4F3A; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
+.word-btn:hover { background:#FFE8C8; transform:scale(1.05); }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .cn { color:#E8751A; font-size:14px; background:#FFF0D6; padding:2px 8px; border-radius:10px; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,10 +178,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🐑 Mary Had a Little Lamb', subtitle:'✏️ 玛丽有一只小羊羔！' },
-  { sentence:'<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>', desc:'玛丽有只小羊羔', game:'mary', svg:'0' },
-  { sentence:'Mary had a little lamb, its <span class="hl" data-word="fleece">fleece</span> was white as <span class="hl" data-word="snow">snow</span>', desc:'羊毛白如雪', game:'fleece', svg:'0' },
-  { sentence:'And everywhere that Mary went, the <span class="hl" data-word="lamb">lamb</span> was sure to <span class="hl" data-word="go">go</span>', desc:'玛莉走到哪羊羔就跟到哪', game:'lamb', svg:'0' },
-  { sentence:'It <span class="hl" data-word="followed">followed</span> her to school one day', desc:'有一天它跟着去了学校', game:'followed', svg:'0' },
+  { sentence:'<span class="hl" data-word="Mary">Mary</span> had a <span class="hl" data-word="little">little</span> <span class="hl" data-word="lamb">lamb</span>', desc:'玛丽有只小羊羔', game:'mary', words:['mary:玛丽','lamb:羊羔'], svg:'0' },
+  { sentence:'Mary had a little lamb, its <span class="hl" data-word="fleece">fleece</span> was white as <span class="hl" data-word="snow">snow</span>', desc:'羊毛白如雪', game:'fleece', words:['fleece:羊毛','snow:雪'], svg:'0' },
+  { sentence:'And everywhere that Mary went, the <span class="hl" data-word="lamb">lamb</span> was sure to <span class="hl" data-word="go">go</span>', desc:'玛莉走到哪羊羔就跟到哪', game:'lamb', words:['lamb:羊羔','go:去'], svg:'0' },
+  { sentence:'It <span class="hl" data-word="followed">followed</span> her to school one day', desc:'有一天它跟着去了学校', game:'followed', words:['follow:跟随','school:学校'], svg:'0' },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -552,7 +559,16 @@ function renderPage(idx) {
 
   let gh='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  let wh='';
+  if(p.words){
+    wh='<div class="word-buttons">';
+    for(let i=0;i<p.words.length;i++){
+      const e=p.words[i].split(':');
+      wh+='<div class="word-btn" onclick="speakText(\''+e[0]+'\');showBubble(\'🔊 '+e[0]+' — '+e[1]+'\')">'+e[0]+'<span class="cn">'+e[1]+'</span></div>';
+    }
+    wh+='</div>';
+  }
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+wh+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

@@ -40,6 +40,15 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Vocab row - bilingual word buttons */
+.vocab-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:6px 0 4px; }
+.vocab-btn { padding:6px 14px; border-radius:30px; border:3px solid #E0D5C7; background:#FFF; font-size:15px; font-weight:bold; color:#6B4F3A; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:4px; font-family:inherit; }
+.vocab-btn:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
+.vocab-btn:active { transform:scale(0.95); }
+.vocab-btn .en { color:#E8751A; }
+.vocab-btn .cn { color:#6B4F3A; font-size:13px; }
+.vocab-btn .sound { font-size:14px; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,11 +180,11 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🔤 ABC Song', subtitle:'✏️ 一起来学英文字母歌！' },
-  { sentence:'<span class="hl" data-word="A">A</span>-<span class="hl" data-word="B">B</span>-<span class="hl" data-word="C">C</span>-<span class="hl" data-word="D">D</span>-<span class="hl" data-word="E">E</span>-<span class="hl" data-word="F">F</span>-<span class="hl" data-word="G">G</span>', desc:'字母ABCDEFG', game:'abcdefg', svg:'0' },
-  { sentence:'<span class="hl" data-word="H">H</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="J">J</span>-<span class="hl" data-word="K">K</span>-<span class="hl" data-word="L">L</span>-<span class="hl" data-word="M">M</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="O">O</span>-<span class="hl" data-word="P">P</span>', desc:'字母HIJKLMNOP', game:'hijklmnop', svg:'0' },
-  { sentence:'<span class="hl" data-word="Q">Q</span>-<span class="hl" data-word="R">R</span>-<span class="hl" data-word="S">S</span>-<span class="hl" data-word="T">T</span>-<span class="hl" data-word="U">U</span>-<span class="hl" data-word="V">V</span>', desc:'字母QRSTUV', game:'qrstuv', svg:'0' },
-  { sentence:'<span class="hl" data-word="W">W</span>-<span class="hl" data-word="X">X</span>-<span class="hl" data-word="Y">Y</span>-<span class="hl" data-word="Z">Z</span>', desc:'字母WXYZ', game:'wxyz', svg:'0' },
-  { sentence:'Now I know my <span class="hl" data-word="ABC">ABC</span>s, sing with <span class="hl" data-word="me">me</span>!', desc:'我会唱字母歌了！', game:'abcs', svg:'0' },
+  { sentence:'<span class="hl" data-word="A">A</span>-<span class="hl" data-word="B">B</span>-<span class="hl" data-word="C">C</span>-<span class="hl" data-word="D">D</span>-<span class="hl" data-word="E">E</span>-<span class="hl" data-word="F">F</span>-<span class="hl" data-word="G">G</span>', desc:'字母ABCDEFG', game:'abcdefg', svg:'0', words:['letter:字母','sing:唱歌'] },
+  { sentence:'<span class="hl" data-word="H">H</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="J">J</span>-<span class="hl" data-word="K">K</span>-<span class="hl" data-word="L">L</span>-<span class="hl" data-word="M">M</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="O">O</span>-<span class="hl" data-word="P">P</span>', desc:'字母HIJKLMNOP', game:'hijklmnop', svg:'0', words:['alphabet:字母表','learn:学习'] },
+  { sentence:'<span class="hl" data-word="Q">Q</span>-<span class="hl" data-word="R">R</span>-<span class="hl" data-word="S">S</span>-<span class="hl" data-word="T">T</span>-<span class="hl" data-word="U">U</span>-<span class="hl" data-word="V">V</span>', desc:'字母QRSTUV', game:'qrstuv', svg:'0', words:['letter:字母','song:歌曲'] },
+  { sentence:'<span class="hl" data-word="W">W</span>-<span class="hl" data-word="X">X</span>-<span class="hl" data-word="Y">Y</span>-<span class="hl" data-word="Z">Z</span>', desc:'字母WXYZ', game:'wxyz', svg:'0', words:['letter:字母','sing:唱歌'] },
+  { sentence:'Now I know my <span class="hl" data-word="ABC">ABC</span>s, sing with <span class="hl" data-word="me">me</span>!', desc:'我会唱字母歌了！', game:'abcs', svg:'0', words:['abcs:字母歌','sing:唱歌'] },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -255,6 +264,23 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E8EAF6"/><stop offset="100%" stop-color="#C5CAE9"/></linearGradient></defs><ellipse cx="80" cy="40" rx="40" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#81C784" opacity="0.3"/><text x="60" y="120" font-size="40" font-weight="bold" fill="#FF5252" font-family="sans-serif">A</text><text x="120" y="110" font-size="32" font-weight="bold" fill="#FFB347" font-family="sans-serif">B</text><text x="180" y="120" font-size="40" font-weight="bold" fill="#4CAF50" font-family="sans-serif">C</text><text x="240" y="105" font-size="28" font-weight="bold" fill="#2196F3" font-family="sans-serif">D</text><text x="300" y="115" font-size="36" font-weight="bold" fill="#9C27B0" font-family="sans-serif">E</text><text x="360" y="108" font-size="30" font-weight="bold" fill="#E91E63" font-family="sans-serif">F</text><ellipse cx="130" cy="55" rx="5" ry="5" fill="#FF5252" opacity="0.4"/><ellipse cx="230" cy="40" rx="4" ry="4" fill="#4CAF50" opacity="0.4"/><ellipse cx="330" cy="50" rx="5" ry="5" fill="#9C27B0" opacity="0.4"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB ROW - bilingual word buttons ======
+function renderVocabRow(p) {
+  if(!p.words || !p.words.length) return '';
+  let html='<div class="vocab-row">';
+  for(let i=0;i<p.words.length;i++){
+    const parts=p.words[i].split(':');
+    const en=parts[0], cn=parts[1];
+    html+='<button class="vocab-btn" onclick="speakWord(\''+en+'\',\''+cn+'\')"><span class="sound">🔊</span> <span class="en">'+en+'</span> <span class="cn">('+cn+')</span></button>';
+  }
+  html+='</div>';
+  return html;
+}
+function speakWord(en,cn) {
+  showBubble('🔊 '+en+' — '+cn);
+  speakText(en);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -552,9 +578,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  vb=renderVocabRow(p);
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+vb+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

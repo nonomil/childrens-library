@@ -40,6 +40,14 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Bilingual word buttons */
+.word-btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:6px 0; }
+.word-btn { background:#FFF; border:3px solid #FFB347; border-radius:16px; padding:6px 14px; cursor:pointer; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
+.word-btn .en { font-size:18px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:14px; color:#6B4F3A; }
+.word-btn .snd { font-size:14px; opacity:0.6; }
+.word-btn:active { transform:scale(0.95); background:#FFF8E7; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,10 +179,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🌉 London Bridge', subtitle:'✏️ 伦敦桥要倒啦！' },
-  { sentence:'<span class="hl" data-word="London">London</span> <span class="hl" data-word="Bridge">Bridge</span> is <span class="hl" data-word="falling">falling</span> <span class="hl" data-word="down">down</span>', desc:'伦敦桥要倒了', game:'london', svg:'0' },
-  { sentence:'London Bridge is falling down, my <span class="hl" data-word="fair">fair</span> <span class="hl" data-word="lady">lady</span>', desc:'伦敦桥要倒了，我美丽的淑女', game:'fair', svg:'0' },
-  { sentence:'<span class="hl" data-word="Build">Build</span> it <span class="hl" data-word="up">up</span> with <span class="hl" data-word="iron">iron</span> <span class="hl" data-word="bars">bars</span>', desc:'用铁棍把桥修好', game:'build', svg:'0' },
-  { sentence:'Iron bars will <span class="hl" data-word="bend">bend</span> and <span class="hl" data-word="break">break</span>', desc:'铁棍也会弯会断', game:'break', svg:'0' },
+  { sentence:'<span class="hl" data-word="London">London</span> <span class="hl" data-word="Bridge">Bridge</span> is <span class="hl" data-word="falling">falling</span> <span class="hl" data-word="down">down</span>', desc:'伦敦桥要倒了', game:'london', words:['london:伦敦','bridge:桥'], svg:'0' },
+  { sentence:'London Bridge is falling down, my <span class="hl" data-word="fair">fair</span> <span class="hl" data-word="lady">lady</span>', desc:'伦敦桥要倒了，我美丽的淑女', game:'fair', words:['fair:美丽的','lady:淑女'], svg:'0' },
+  { sentence:'<span class="hl" data-word="Build">Build</span> it <span class="hl" data-word="up">up</span> with <span class="hl" data-word="iron">iron</span> <span class="hl" data-word="bars">bars</span>', desc:'用铁棍把桥修好', game:'build', words:['build:建造','iron:铁棍'], svg:'0' },
+  { sentence:'Iron bars will <span class="hl" data-word="bend">bend</span> and <span class="hl" data-word="break">break</span>', desc:'铁棍也会弯会断', game:'break', words:['bend:弯曲','break:断裂'], svg:'0' },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -253,6 +261,23 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#E0F7FA"/><stop offset="100%" stop-color="#B2EBF2"/></linearGradient></defs><ellipse cx="80" cy="40" rx="45" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="380" cy="50" rx="35" ry="12" fill="#FFF" opacity="0.2"/><rect y="170" width="460" height="50" fill="#4FC3F7" opacity="0.3"/><path d="M0 120 Q115 60 230 80 Q345 60 460 120" fill="none" stroke="#8D6E63" stroke-width="8" stroke-linecap="round"/><path d="M0 140 Q115 80 230 100 Q345 80 460 140" fill="none" stroke="#A1887F" stroke-width="6" stroke-linecap="round"/><rect x="105" y="70" width="8" height="50" fill="#795548"/><rect x="345" y="70" width="8" height="50" fill="#795548"/><rect x="225" y="80" width="10" height="40" fill="#795548"/><ellipse cx="230" cy="160" rx="12" ry="8" fill="#FFF" opacity="0.5"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== BILINGUAL WORD BUTTONS ======
+function renderVocabRow(p) {
+  if(!p.words) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    const parts=p.words[i].split(':');
+    const en=parts[0], cn=parts[1]||'';
+    html+='<button class="word-btn" onclick="speakWord(\''+en+'\')"><span class="en">'+en+'</span> <span class="cn">'+cn+'</span> <span class="snd">🔊</span></button>';
+  }
+  html+='</div>';
+  return html;
+}
+function speakWord(w) {
+  speakText(w);
+  showBubble('🔊 '+w);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -550,9 +575,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

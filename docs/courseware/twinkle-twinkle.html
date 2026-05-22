@@ -40,6 +40,13 @@ body {
 .lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
+.vocab-row { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:8px 0; }
+.vocab-btn { display:inline-flex; align-items:center; gap:4px; padding:6px 14px; border-radius:20px; border:2px solid #FFB347; background:#FFF; font-size:15px; font-weight:600; cursor:pointer; transition:all .2s; font-family:inherit; color:#5A3E2B; }
+.vocab-btn:hover { transform:scale(1.08); background:#FFF8E7; }
+.vocab-btn:active { transform:scale(0.95); }
+.vocab-btn .en { color:#E8751A; }
+.vocab-btn .zh { color:#8D6E63; font-size:13px; }
+.vocab-btn .sep { color:#E0D5C7; margin:0 3px; }
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -176,12 +183,12 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'Twinkle Twinkle Little Star', subtitle:'✦ 一首关于星星的英语儿歌 ✦' },
-  { sentence:'<span class="hl" data-word="Twinkle">Twinkle</span>, <span class="hl" data-word="twinkle">twinkle</span>,<br><span class="hl" data-word="little">little</span> <span class="hl" data-word="star">star</span>', desc:'— 一闪一闪小星星 —', game:'twinkle', svg:'star1' },
+  { sentence:'<span class="hl" data-word="Twinkle">Twinkle</span>, <span class="hl" data-word="twinkle">twinkle</span>,<br><span class="hl" data-word="little">little</span> <span class="hl" data-word="star">star</span>', desc:'— 一闪一闪小星星 —', game:'twinkle', svg:'star1', words:['star:星星','sky:天空'] },
   { sentence:'<span class="hl" data-word="How">How</span> <span class="hl" data-word="I">I</span> <span class="hl" data-word="wonder">wonder</span><br><span class="hl" data-word="what">what</span> <span class="hl" data-word="you">you</span> <span class="hl" data-word="are">are</span>', desc:'— 我真想知道你是什么 —', game:'wonder', svg:'star2' },
-  { sentence:'<span class="hl" data-word="Up">Up</span> <span class="hl" data-word="above">above</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="world">world</span><br><span class="hl" data-word="so">so</span> <span class="hl" data-word="high">high</span>', desc:'— 在世界上方那么高 —', game:'high', svg:'star3' },
-  { sentence:'<span class="hl" data-word="Like">Like</span> <span class="hl" data-word="a">a</span> <span class="hl" data-word="diamond">diamond</span><br><span class="hl" data-word="in">in</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="sky">sky</span>', desc:'— 像天空中的钻石 —', game:'diamond', svg:'diamond' },
+  { sentence:'<span class="hl" data-word="Up">Up</span> <span class="hl" data-word="above">above</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="world">world</span><br><span class="hl" data-word="so">so</span> <span class="hl" data-word="high">high</span>', desc:'— 在世界上方那么高 —', game:'high', svg:'star3', words:['world:世界','diamond:钻石'] },
+  { sentence:'<span class="hl" data-word="Like">Like</span> <span class="hl" data-word="a">a</span> <span class="hl" data-word="diamond">diamond</span><br><span class="hl" data-word="in">in</span> <span class="hl" data-word="the">the</span> <span class="hl" data-word="sky">sky</span>', desc:'— 像天空中的钻石 —', game:'diamond', svg:'diamond', words:['twinkle:闪烁','wonder:好奇'] },
   { sentence:'<span class="hl" data-word="Twinkle">Twinkle</span>, <span class="hl" data-word="twinkle">twinkle</span>,<br><span class="hl" data-word="little">little</span> <span class="hl" data-word="star">star</span>', desc:'— 一闪一闪小星星（重复）—', game:'little', svg:'star5' },
-  { sentence:'<span class="hl" data-word="How">How</span> <span class="hl" data-word="I">I</span> <span class="hl" data-word="wonder">wonder</span><br><span class="hl" data-word="what">what</span> <span class="hl" data-word="you">you</span> <span class="hl" data-word="are">are</span>', desc:'— 我真想知道你是什么（重复）—', game:'star', svg:'star6' },
+  { sentence:'<span class="hl" data-word="How">How</span> <span class="hl" data-word="I">I</span> <span class="hl" data-word="wonder">wonder</span><br><span class="hl" data-word="what">what</span> <span class="hl" data-word="you">you</span> <span class="hl" data-word="are">are</span>', desc:'— 我真想知道你是什么（重复）—', game:'star', svg:'star6', words:['traveller:旅行者','dark:黑暗'] },
   { quiz:true, title:'✨ 知识小问答' },
   { starfind:true, title:'🔭 找星星游戏' },
   { final:true, title:'🎉 太棒了!' }
@@ -448,6 +455,14 @@ function getSVG(idx) {
   return svgStarScene1();
 }
 
+function renderVocabRow(p){
+  if(!p.words||!p.words.length)return'';
+  return '<div class="vocab-row">'+
+    p.words.map(function(w){var parts=w.split(':');var en=parts[0],zh=parts[1]||'';return '<button class="vocab-btn" onclick="speakWord(\''+en+'\')"><span class="en">'+en+'</span><span class="sep">·</span><span class="zh">'+zh+'</span> 🔊</button>';}).join('')+
+  '</div>';
+}
+function speakWord(word){speakText(word);showBubble('🔊 '+word);}
+
 // ====== WORD GAME ======
 function startWordGame(idx,word) {
   if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>✅ 完成！</h3></div>';
@@ -686,17 +701,18 @@ function renderPage(idx) {
   }
 
   // Default: lyric page with scene + sentence + game
-  var gameHTML='';
+  var gameHTML='', vb='';
   if(p.game){
     gameHTML=startWordGame(idx,p.game);
     buildingWord=[];
   }
+  if(p.words){vb=renderVocabRow(p);}
 
   area.innerHTML='<div class="page active">'+
     '<div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+
     '<div class="lyrics">'+p.sentence+'</div>'+
     (p.desc?'<div class="page-desc">'+p.desc+'</div>':'')+
-    gameHTML+
+    vb+gameHTML+
   '</div>';
 
   // Make clickable words speak

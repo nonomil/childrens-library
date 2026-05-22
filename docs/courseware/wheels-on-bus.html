@@ -41,6 +41,20 @@ body {
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
 /* Word game */
+/* Word buttons (English + Chinese) */
+.word-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:4px 0 2px; }
+.word-btn {
+  background:#FFF8E7; border:2px solid #FFE0B2; border-radius:16px;
+  padding:6px 14px; cursor:pointer; transition:all .2s;
+  display:inline-flex; flex-direction:column; align-items:center;
+  font-family:inherit; touch-action:manipulation; min-width:90px;
+}
+.word-btn:hover { transform:scale(1.08); border-color:#FFB347; }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { font-size:20px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:13px; color:#8D6E63; margin-top:1px; }
+.word-btn .snd { font-size:14px; opacity:0.6; margin-left:4px; }
+
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -171,11 +185,11 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🚌 The Wheels on the Bus', subtitle:'✏️ 公车的轮子转啊转！' },
-  { sentence:'The <span class="hl" data-word="wheels">wheels</span> on the bus go <span class="hl" data-word="round">round</span> and <span class="hl" data-word="round">round</span>', desc:'公车的轮子转啊转', game:'wheels', svg:'0' },
-  { sentence:'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl" data-word="up">up</span> and <span class="hl" data-word="down">down</span>', desc:'公车的人们上上下下', game:'people', svg:'0' },
-  { sentence:'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span> swish swish', desc:'公车的雨刷刷刷刷', game:'wipers', svg:'0' },
-  { sentence:'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span> beep beep', desc:'公车的喇叭哔哔哔', game:'horn', svg:'0' },
-  { sentence:'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>', desc:'公车的门开了关', game:'door', svg:'0' },
+  { sentence:'The <span class="hl" data-word="wheels">wheels</span> on the bus go <span class="hl" data-word="round">round</span> and <span class="hl" data-word="round">round</span>', desc:'公车的轮子转啊转', words:['wheels:轮子','round:转圈'], game:'wheels', svg:'0' },
+  { sentence:'The <span class="hl" data-word="people">people</span> on the bus go <span class="hl" data-word="up">up</span> and <span class="hl" data-word="down">down</span>', desc:'公车的人们上上下下', words:['people:人们','up:向上'], game:'people', svg:'0' },
+  { sentence:'The <span class="hl" data-word="wipers">wipers</span> on the bus go <span class="hl" data-word="swish">swish</span> swish swish', desc:'公车的雨刷刷刷刷', words:['wipers:雨刷','swish:嗖嗖'], game:'wipers', svg:'0' },
+  { sentence:'The <span class="hl" data-word="horn">horn</span> on the bus goes <span class="hl" data-word="beep">beep</span> beep beep', desc:'公车的喇叭哔哔哔', words:['horn:喇叭','beep:哔'], game:'horn', svg:'0' },
+  { sentence:'The <span class="hl" data-word="door">door</span> on the bus goes <span class="hl" data-word="open">open</span> and <span class="hl" data-word="shut">shut</span>', desc:'公车的门开了关', words:['door:门','open:打开'], game:'door', svg:'0' },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -255,6 +269,24 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#E0F7FA"/></linearGradient></defs><rect x="80" y="80" width="280" height="100" rx="20" fill="#FFD54F" stroke="#FF8F00" stroke-width="3"/><rect x="100" y="100" width="120" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><rect x="230" y="100" width="100" height="50" rx="8" fill="#81D4FA" stroke="#4FC3F7" stroke-width="2"/><circle cx="130" cy="190" r="22" fill="#424242"/><circle cx="130" cy="190" r="14" fill="#9E9E9E"/><circle cx="310" cy="190" r="22" fill="#424242"/><circle cx="310" cy="190" r="14" fill="#9E9E9E"/><rect x="250" y="90" width="8" height="40" rx="4" fill="#FF8A65"/><ellipse cx="360" cy="60" rx="30" ry="15" fill="#FFF" opacity="0.3"/><ellipse cx="80" cy="50" rx="25" ry="12" fill="#FFF" opacity="0.2"/><rect x="148" y="108" width="60" height="34" rx="4" fill="#FFF" opacity="0.5"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB BUTTONS (English + Chinese) ======
+function renderVocabRow(p) {
+  if(!p.words || p.words.length===0) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    var parts=p.words[i].split(':');
+    var en=parts[0], cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\',this)"><span class="en">'+en+' <span class="snd">🔊</span></span><span class="cn">'+cn+'</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word,el){
+  speakText(word);
+  showBubble('🔊 '+word);
+  el.style.transform='scale(1.12)';
+  setTimeout(function(){el.style.transform='';},300);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -552,9 +584,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

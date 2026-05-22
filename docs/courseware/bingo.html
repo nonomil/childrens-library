@@ -40,6 +40,20 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Word buttons (English + Chinese) */
+.word-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:4px 0 2px; }
+.word-btn {
+  background:#FFF8E7; border:2px solid #FFE0B2; border-radius:16px;
+  padding:6px 14px; cursor:pointer; transition:all .2s;
+  display:inline-flex; flex-direction:column; align-items:center;
+  font-family:inherit; touch-action:manipulation; min-width:90px;
+}
+.word-btn:hover { transform:scale(1.08); border-color:#FFB347; }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { font-size:20px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:13px; color:#8D6E63; margin-top:1px; }
+.word-btn .snd { font-size:14px; opacity:0.6; margin-left:4px; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,10 +185,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🐶 BINGO', subtitle:'✏️ 农夫有一只小狗叫BINGO！' },
-  { sentence:'There was a <span class="hl" data-word="farmer">farmer</span> had a <span class="hl" data-word="dog">dog</span>', desc:'农夫有一只小狗', game:'farmer', svg:'0' },
-  { sentence:'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o', desc:'Bingo是它的名字', game:'bingo', svg:'0' },
-  { sentence:'B-I-N-G-O, <span class="hl" data-word="B">B</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="G">G</span>-<span class="hl" data-word="O">O</span>', desc:'拼出BINGO的名字', game:'bingo', svg:'0' },
-  { sentence:'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o!', desc:'Bingo就是它的名字！', game:'name', svg:'0' },
+  { sentence:'There was a <span class="hl" data-word="farmer">farmer</span> had a <span class="hl" data-word="dog">dog</span>', desc:'农夫有一只小狗', game:'farmer', words:['farmer:农夫','dog:小狗'], svg:'0' },
+  { sentence:'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o', desc:'Bingo是它的名字', game:'bingo', words:['bingo:宾果','name:名字'], svg:'0' },
+  { sentence:'B-I-N-G-O, <span class="hl" data-word="B">B</span>-<span class="hl" data-word="I">I</span>-<span class="hl" data-word="N">N</span>-<span class="hl" data-word="G">G</span>-<span class="hl" data-word="O">O</span>', desc:'拼出BINGO的名字', game:'bingo', words:['name:名字','dog:小狗'], svg:'0' },
+  { sentence:'And <span class="hl" data-word="Bingo">Bingo</span> was his <span class="hl" data-word="name">name</span>-o!', desc:'Bingo就是它的名字！', game:'name', words:['bingo:宾果','name:名字'], svg:'0' },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -253,6 +267,24 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFE0B2"/><stop offset="100%" stop-color="#FFF3E0"/></linearGradient></defs><rect y="160" width="460" height="60" fill="#81C784" opacity="0.3"/><ellipse cx="200" cy="80" rx="40" ry="30" fill="#FFCC80"/><ellipse cx="200" cy="95" rx="25" ry="20" fill="#FFE0B2"/><ellipse cx="230" cy="55" rx="28" ry="25" fill="#FFCC80" transform="rotate(15,230,55)"/><circle cx="240" cy="50" r="4" fill="#5D4037"/><circle cx="238" cy="48" r="1.5" fill="#FFF"/><ellipse cx="255" cy="60" rx="10" ry="6" fill="#5D4037"/><circle cx="220" cy="95" r="3" fill="#5D4037"/><ellipse cx="190" cy="80" rx="15" ry="10" fill="#A1887F"/><ellipse cx="260" cy="58" rx="8" ry="4" fill="#FFAB91"/><ellipse cx="80" cy="50" rx="30" ry="12" fill="#FFF" opacity="0.3"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB BUTTONS (English + Chinese) ======
+function renderVocabRow(p) {
+  if(!p.words || p.words.length===0) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    var parts=p.words[i].split(':');
+    var en=parts[0], cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\',this)"><span class="en">'+en+' <span class="snd">🔊</span></span><span class="cn">'+cn+'</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word,el){
+  speakText(word);
+  showBubble('🔊 '+word);
+  el.style.transform='scale(1.12)';
+  setTimeout(function(){el.style.transform='';},300);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -550,9 +582,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

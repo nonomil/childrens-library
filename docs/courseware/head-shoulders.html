@@ -40,6 +40,20 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Word buttons (English + Chinese) */
+.word-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:4px 0 2px; }
+.word-btn {
+  background:#FFF8E7; border:2px solid #FFE0B2; border-radius:16px;
+  padding:6px 14px; cursor:pointer; transition:all .2s;
+  display:inline-flex; flex-direction:column; align-items:center;
+  font-family:inherit; touch-action:manipulation; min-width:90px;
+}
+.word-btn:hover { transform:scale(1.08); border-color:#FFB347; }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { font-size:20px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:13px; color:#8D6E63; margin-top:1px; }
+.word-btn .snd { font-size:14px; opacity:0.6; margin-left:4px; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,10 +185,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🧍 Head Shoulders Knees &amp; Toes', subtitle:'✏️ 一起来认识身体部位！' },
-  { sentence:'<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', desc:'头肩膀膝盖和脚趾', game:'head', svg:'0' },
-  { sentence:'<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', desc:'眼睛耳朵嘴巴和鼻子', game:'eyes', svg:'0' },
-  { sentence:'<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', desc:'我们再来一遍！', game:'knees', svg:'0' },
-  { sentence:'<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', desc:'我们都认识身体部位啦！', game:'mouth', svg:'0' },
+  { sentence:'<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', desc:'头肩膀膝盖和脚趾', game:'head', svg:'0', words:['head:头','shoulders:肩膀'] },
+  { sentence:'<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', desc:'眼睛耳朵嘴巴和鼻子', game:'eyes', svg:'0', words:['eyes:眼睛','nose:鼻子'] },
+  { sentence:'<span class="hl" data-word="Head">Head</span>, <span class="hl" data-word="shoulders">shoulders</span>, <span class="hl" data-word="knees">knees</span> and <span class="hl" data-word="toes">toes</span>', desc:'我们再来一遍！', game:'knees', svg:'0', words:['head:头','knees:膝盖'] },
+  { sentence:'<span class="hl" data-word="Eyes">Eyes</span> and <span class="hl" data-word="ears">ears</span> and <span class="hl" data-word="mouth">mouth</span> and <span class="hl" data-word="nose">nose</span>', desc:'我们都认识身体部位啦！', game:'mouth', svg:'0', words:['eyes:眼睛','mouth:嘴巴'] },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -253,6 +267,24 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF8E1"/><stop offset="100%" stop-color="#FFECB3"/></linearGradient></defs><rect y="180" width="460" height="40" fill="#1B5E20" opacity="0.15"/><ellipse cx="80" cy="35" rx="50" ry="15" fill="#FFF" opacity="0.3"/><text x="80" y="110" font-size="28" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><text x="160" y="95" font-size="22" font-weight="bold" fill="#FFF" font-family="sans-serif">★</text><text x="230" y="110" font-size="32" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><text x="310" y="90" font-size="20" font-weight="bold" fill="#FFF" font-family="sans-serif">★</text><text x="370" y="105" font-size="26" font-weight="bold" fill="#FFD700" font-family="sans-serif">★</text><ellipse cx="130" cy="45" rx="4" ry="4" fill="#FFF" opacity="0.5"/><ellipse cx="300" cy="50" rx="3" ry="3" fill="#FFF" opacity="0.4"/><rect x="210" y="140" width="40" height="45" rx="3" fill="#A1887F"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB BUTTONS (English + Chinese) ======
+function renderVocabRow(p) {
+  if(!p.words || p.words.length===0) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    var parts=p.words[i].split(':');
+    var en=parts[0], cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\',this)"><span class="en">'+en+' <span class="snd">🔊</span></span><span class="cn">'+cn+'</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word,el){
+  speakText(word);
+  showBubble('🔊 '+word);
+  el.style.transform='scale(1.12)';
+  setTimeout(function(){el.style.transform='';},300);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -550,9 +582,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

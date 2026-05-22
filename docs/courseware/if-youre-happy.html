@@ -123,6 +123,15 @@ body {
 .home-link:hover { text-decoration:underline; }
 .celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
 
+/* Bilingual word buttons */
+.word-btns { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:8px 0; }
+.word-btn { padding:8px 16px; border-radius:20px; border:3px solid #FFB347; background:#FFFCF5; cursor:pointer; transition:all .15s; font-size:16px; font-weight:bold; color:#5A3E2B; font-family:inherit; display:inline-flex; align-items:center; gap:6px; touch-action:manipulation; }
+.word-btn:hover { background:#FFF8E7; transform:scale(1.05); }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { color:#E8751A; font-size:18px; }
+.word-btn .zh { color:#6B4F3A; font-size:14px; }
+.word-btn .sound-icon { font-size:12px; opacity:0.6; }
+
 @media (max-width:500px) {
   .book { padding:16px 12px; }
   .page-title { font-size:24px; }
@@ -171,10 +180,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'😊 If You\'re Happy', subtitle:'✏️ 如果你开心你就拍拍手！' },
-  { sentence:'If you happy and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="clap">clap</span> your <span class="hl" data-word="hands">hands</span>!', desc:'如果你开心就拍拍手', game:'happy', svg:'0' },
-  { sentence:'If you happy and you know it, <span class="hl" data-word="stomp">stomp</span> your <span class="hl" data-word="feet">feet</span>!', desc:'如果你开心就跺跺脚', game:'stomp', svg:'0' },
-  { sentence:'If you happy and you know it, <span class="hl" data-word="shout">shout</span> Hurray!', desc:'如果你开心就喊Hurray', game:'shout', svg:'0' },
-  { sentence:'If you happy and you know it, do <span class="hl" data-word="all">all</span> <span class="hl" data-word="three">three</span>!', desc:'如果你开心就全做一遍', game:'three', svg:'0' },
+  { sentence:'If you happy and you <span class="hl" data-word="know">know</span> it, <span class="hl" data-word="clap">clap</span> your <span class="hl" data-word="hands">hands</span>!', desc:'如果你开心就拍拍手', game:'happy', svg:'0', words:['happy:开心','clap:拍手'] },
+  { sentence:'If you happy and you know it, <span class="hl" data-word="stomp">stomp</span> your <span class="hl" data-word="feet">feet</span>!', desc:'如果你开心就跺跺脚', game:'stomp', svg:'0', words:['happy:开心','stomp:跺脚'] },
+  { sentence:'If you happy and you know it, <span class="hl" data-word="shout">shout</span> Hurray!', desc:'如果你开心就喊Hurray', game:'shout', svg:'0', words:['happy:开心','shout:喊叫'] },
+  { sentence:'If you happy and you know it, do <span class="hl" data-word="all">all</span> <span class="hl" data-word="three">three</span>!', desc:'如果你开心就全做一遍', game:'three', svg:'0', words:['happy:开心','three:三'] },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -447,6 +456,23 @@ function onDrop(e,idx){
   pickLetter(idx,dragData.letter,dragData.el);dragData=null;
 }
 
+// ====== BILINGUAL WORD BUTTONS ======
+function renderWordBtns(words) {
+  if(!words||words.length===0) return '';
+  let html='<div class="word-btns">';
+  for(let i=0;i<words.length;i++){
+    const parts=words[i].split(':');
+    const en=parts[0], zh=parts[1]||'';
+    html+='<div class="word-btn" onclick="onWordBtn(\''+en+'\',\''+zh+'\')"><span class="en">'+en+'</span> <span class="zh">'+zh+'</span> <span class="sound-icon">🔊</span></div>';
+  }
+  html+='</div>';
+  return html;
+}
+function onWordBtn(en,zh) {
+  speakText(en);
+  showBubble('🔊 '+en+' = '+zh);
+}
+
 // ====== MATCH GAME ======
 const MATCH_WORDS = ["stomp","shout","three","happy"];
 let matchRound = 0;
@@ -551,8 +577,10 @@ function renderPage(idx) {
   }
 
   let gh='';
+  let wb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){wb=renderWordBtns(p.words);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+wb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

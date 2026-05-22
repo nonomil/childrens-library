@@ -40,6 +40,20 @@ body {
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
 
+/* Word buttons (English + Chinese) */
+.word-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:4px 0 2px; }
+.word-btn {
+  background:#FFF8E7; border:2px solid #FFE0B2; border-radius:16px;
+  padding:6px 14px; cursor:pointer; transition:all .2s;
+  display:inline-flex; flex-direction:column; align-items:center;
+  font-family:inherit; touch-action:manipulation; min-width:90px;
+}
+.word-btn:hover { transform:scale(1.08); border-color:#FFB347; }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { font-size:20px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:13px; color:#8D6E63; margin-top:1px; }
+.word-btn .snd { font-size:14px; opacity:0.6; margin-left:4px; }
+
 /* Word game */
 .word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
 .word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
@@ -171,10 +185,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🕷️ Itsy Bitsy Spider', subtitle:'✏️ 小蜘蛛爬水管！' },
-  { sentence:'The <span class="hl" data-word="itsy">itsy</span> <span class="hl" data-word="bitsy">bitsy</span> <span class="hl" data-word="spider">spider</span> went up the water <span class="hl" data-word="spout">spout</span>', desc:'小蜘蛛爬上了水管', game:'spider', svg:'0' },
-  { sentence:'Down came the <span class="hl" data-word="rain">rain</span> and washed the spider <span class="hl" data-word="out">out</span>', desc:'下雨了把蜘蛛冲出来', game:'rain', svg:'0' },
-  { sentence:'Out came the <span class="hl" data-word="sun">sun</span> and dried up all the <span class="hl" data-word="rain">rain</span>', desc:'太阳出来晒干了雨水', game:'sun', svg:'0' },
-  { sentence:'And the itsy bitsy spider went up the spout <span class="hl" data-word="again">again</span>', desc:'小蜘蛛又爬上了水管', game:'again', svg:'0' },
+  { sentence:'The <span class="hl" data-word="itsy">itsy</span> <span class="hl" data-word="bitsy">bitsy</span> <span class="hl" data-word="spider">spider</span> went up the water <span class="hl" data-word="spout">spout</span>', desc:'小蜘蛛爬上了水管', game:'spider', words:['spider:蜘蛛','spout:水管'], svg:'0' },
+  { sentence:'Down came the <span class="hl" data-word="rain">rain</span> and washed the spider <span class="hl" data-word="out">out</span>', desc:'下雨了把蜘蛛冲出来', game:'rain', words:['rain:雨水','wash:冲洗'], svg:'0' },
+  { sentence:'Out came the <span class="hl" data-word="sun">sun</span> and dried up all the <span class="hl" data-word="rain">rain</span>', desc:'太阳出来晒干了雨水', game:'sun', words:['sun:太阳','dry:晒干'], svg:'0' },
+  { sentence:'And the itsy bitsy spider went up the spout <span class="hl" data-word="again">again</span>', desc:'小蜘蛛又爬上了水管', game:'again', words:['again:再一次','spider:蜘蛛'], svg:'0' },
   { interact:true, title:'🎮 互动游戏' },
   { match:true, title:'🔊 听声音找单词' },
   { quiz:true, title:'❓ 小问答' },
@@ -253,6 +267,24 @@ function getSVG(idx) {
     `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#s)"/><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#A5D6A7"/><stop offset="100%" stop-color="#C8E6C9"/></linearGradient></defs><rect x="210" y="40" width="40" height="140" rx="20" fill="#8D6E63"/><ellipse cx="230" cy="40" rx="30" ry="15" fill="#FFF9C4"/><circle cx="230" cy="80" r="10" fill="#5D4037"/><circle cx="226" cy="78" r="2" fill="#FFF"/><circle cx="234" cy="78" r="2" fill="#FFF"/><ellipse cx="230" cy="95" rx="8" ry="6" fill="#5D4037"/><path d="M210 85 Q195 75 200 65" fill="none" stroke="#5D4037" stroke-width="2"/><path d="M220 88 Q205 85 205 75" fill="none" stroke="#5D4037" stroke-width="2"/><path d="M250 85 Q265 75 260 65" fill="none" stroke="#5D4037" stroke-width="2"/><path d="M240 88 Q255 85 255 75" fill="none" stroke="#5D4037" stroke-width="2"/><ellipse cx="80" cy="40" rx="50" ry="20" fill="#FFF" opacity="0.3"/></svg>`];
   if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
   return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB BUTTONS (English + Chinese) ======
+function renderVocabRow(p) {
+  if(!p.words || p.words.length===0) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    var parts=p.words[i].split(':');
+    var en=parts[0], cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\',this)"><span class="en">'+en+' <span class="snd">🔊</span></span><span class="cn">'+cn+'</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word,el){
+  speakText(word);
+  showBubble('🔊 '+word);
+  el.style.transform='scale(1.12)';
+  setTimeout(function(){el.style.transform='';},300);
 }
 
 // ====== DRAG INTERACTIVE GAME (like gears) ======
@@ -550,9 +582,10 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gh='';
+  let gh='', vb='';
   if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
-  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+gh+'</div>';
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
 
   area.querySelectorAll('.hl[data-word]').forEach(function(el){
     el.addEventListener('click',function(e){

@@ -42,6 +42,13 @@ body {
 .lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
 .lyrics .hl:active { transform:scale(1.2); }
 .lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
+.vocab-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:6px 0; }
+.vocab-btn { background:#FFF; border:2px solid #42A5F5; border-radius:12px; padding:6px 14px; font-size:16px; cursor:pointer; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:5px; }
+.vocab-btn:hover { background:#E3F2FD; transform:scale(1.05); }
+.vocab-btn:active { transform:scale(0.95); }
+.vocab-btn .en { color:#1565C0; font-weight:bold; }
+.vocab-btn .zh { color:#546E7A; font-size:14px; }
+
 .word-game { width:100%; padding:14px; background:#E3F2FD; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #BBDEFB; }
 .word-game h3 { font-size:16px; color:#1565C0; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
 .word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
@@ -139,10 +146,10 @@ body {
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'🚣 Row Row Row Your Boat', subtitle:'🎵 一首经典的英语儿歌，一起划小船吧！' },
-  { sentence:'Row, row, row your boat <span class="hl" data-word="gently">gently</span> down the <span class="hl" data-word="stream">stream</span>!', game:'row', svg:'row' },
-  { sentence:'<span class="hl" data-word="Merrily">Merrily</span>, merrily, merrily, merrily,<br>life is but a <span class="hl" data-word="dream">dream</span>!', game:'dream', svg:'dream' },
-  { sentence:'Row, row, row your <span class="hl" data-word="boat">boat</span> gently down the <span class="hl" data-word="stream">stream</span>!', game:'boat', svg:'stream' },
-  { sentence:'<span class="hl" data-word="Merrily">Merrily</span>, merrily, merrily, merrily,<br>life is but a dream!', game:'merrily', svg:'merrily' },
+  { sentence:'Row, row, row your boat <span class="hl" data-word="gently">gently</span> down the <span class="hl" data-word="stream">stream</span>!', game:'row', svg:'row', words:['boat:小船','stream:小溪'] },
+  { sentence:'<span class="hl" data-word="Merrily">Merrily</span>, merrily, merrily, merrily,<br>life is but a <span class="hl" data-word="dream">dream</span>!', game:'dream', svg:'dream', words:['gently:轻轻地','dream:梦'] },
+  { sentence:'Row, row, row your <span class="hl" data-word="boat">boat</span> gently down the <span class="hl" data-word="stream">stream</span>!', game:'boat', svg:'stream', words:['merrily:快乐地','life:生活'] },
+  { sentence:'<span class="hl" data-word="Merrily">Merrily</span>, merrily, merrily, merrily,<br>life is but a dream!', game:'merrily', svg:'merrily', words:['row:划船','dream:做梦'] },
   { final:true, title:'🚣 划船小明星！' }
 ];
 
@@ -577,6 +584,10 @@ function getSVG(idx) {
   return svgRowScene();
 }
 
+// ====== VOCAB ROW ======
+function renderVocabRow(p){var words=p.words;var btns=words.map(function(w){var parts=w.split(':');var en=parts[0],zh=parts[1];return '<button class="vocab-btn" data-word="'+en+'" onclick="speakWord(this.dataset.word)"><span class="spkr">🔊</span> <span class="en">'+en+'</span> <span class="zh">'+zh+'</span></button>';}).join('');return '<div class="vocab-row">'+btns+'</div>';}
+function speakWord(w){speakText(w);showBubble('🔊 '+w);}
+
 // ====== GAME LOGIC ======
 function startWordGame(idx,word) {
   if(gameDone[idx]) return '<div class="word-game" style="background:#C8E6C9"><h3>✅ 完成！</h3></div>';
@@ -677,16 +688,17 @@ function renderPage(idx) {
     launchConfetti(); updateUI(idx); return;
   }
 
-  let gameHTML='';
+  let gameHTML='',vb='';
   if(p.game){
     gameHTML=startWordGame(idx,p.game);
     buildingWord=[];
   }
+  if(p.words){vb=renderVocabRow(p);}
 
   area.innerHTML=`<div class="page active">
     <div class="scene-wrap" style="position:relative">${getSVG(idx)}</div>
     <div class="lyrics">${p.sentence}</div>
-    ${gameHTML}
+    ${vb}${gameHTML}
   </div>`;
 
   // Make clickable words speak

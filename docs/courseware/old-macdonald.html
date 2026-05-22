@@ -55,6 +55,14 @@ body {
 .letter-tile.used { opacity:0.35; pointer-events:none; }
 .letter-tile.dragging { opacity:0.5; }
 
+/* Word buttons for bilingual vocabulary */
+.word-btn-row { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:6px 0; }
+.word-btn { display:inline-flex; align-items:center; gap:4px; background:#FFF; border:2px solid #FFB347; border-radius:30px; padding:6px 16px; cursor:pointer; transition:all .15s; font-family:inherit; font-size:16px; box-shadow:0 2px 8px rgba(255,179,71,0.2); }
+.word-btn:active { transform:scale(0.95); background:#FFF8E7; }
+.word-btn .en { color:#E8751A; font-weight:bold; }
+.word-btn .cn { color:#6B4F3A; font-size:14px; }
+.word-btn .snd { font-size:14px; opacity:0.6; }
+
 /* Sound match game */
 .match-game { width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }
 .match-game h3 { font-size:18px; color:#2E7D32; margin-bottom:12px; }
@@ -149,12 +157,16 @@ body {
 const pages = [
   { cover:true, title:'Old MacDonald Had a Farm', subtitle:'🚜 一首关于农场动物的英语儿歌！' },
   { sentence:'Old MacDonald had a farm, <span class="hl">E-I-E-I-O</span>!', game:'farm', svg:'farm' },
-  { sentence:'And on his farm he had a <span class="hl" data-word="cow">COW</span>, <span class="hl">E-I-E-I-O</span>!', game:'cow', svg:'cow' },
+  { sentence:'And on his farm he had a <span class="hl" data-word="cow">COW</span>, <span class="hl">E-I-E-I-O</span>!', game:'cow', svg:'cow', words:['cow:奶牛','farm:农场'] },
   { sentence:'With a <span class="hl">moo-moo</span> here and a <span class="hl">moo-moo</span> there!', game:null, svg:'cow-sound' },
-  { sentence:'And on his farm he had a <span class="hl" data-word="pig">PIG</span>, <span class="hl">E-I-E-I-O</span>!', game:'pig', svg:'pig' },
+  { sentence:'And on his farm he had a <span class="hl" data-word="pig">PIG</span>, <span class="hl">E-I-E-I-O</span>!', game:'pig', svg:'pig', words:['pig:猪','duck:鸭子'] },
   { sentence:'With an <span class="hl">oink-oink</span> here and an <span class="hl">oink-oink</span> there!', game:null, svg:'pig-sound' },
   { sentence:'And on his farm he had a <span class="hl" data-word="duck">DUCK</span>, <span class="hl">E-I-E-I-O</span>!', game:'duck', svg:'duck' },
   { sentence:'With a <span class="hl">quack-quack</span> here and a <span class="hl">quack-quack</span> there!', game:null, svg:'duck-sound' },
+  { sentence:'And on his farm he had a <span class="hl" data-word="horse">HORSE</span>, <span class="hl">E-I-E-I-O</span>!', game:'horse', svg:'horse', words:['horse:马','sheep:羊'] },
+  { sentence:'With a <span class="hl">neigh-neigh</span> here and a <span class="hl">neigh-neigh</span> there!', game:null, svg:'horse-sound' },
+  { sentence:'And on his farm he had a <span class="hl" data-word="chicken">CHICKEN</span>, <span class="hl">E-I-E-I-O</span>!', game:'chicken', svg:'chicken', words:['chicken:鸡','rooster:公鸡'] },
+  { sentence:'With a <span class="hl">cluck-cluck</span> here and a <span class="hl">cluck-cluck</span> there!', game:null, svg:'chicken-sound' },
   { match:true, title:'🎵 听声音找动物' },
   { final:true, title:'🚜 农场小明星！' }
 ];
@@ -377,6 +389,26 @@ function getSVG(idx) {
   return svgFarmScene();
 }
 
+// ====== BILINGUAL WORD BUTTONS ======
+function renderVocabRow(p) {
+  var html='<div class="word-btn-row">';
+  p.words.forEach(function(w){
+    var parts=w.split(':');
+    var en=parts[0],cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\')">'
+      +'<span class="en">'+en+'</span>'
+      +'<span class="cn">'+cn+'</span>'
+      +'<span class="snd">🔊</span>'
+      +'</div>';
+  });
+  html+='</div>';
+  return html;
+}
+function speakWord(w){
+  speakText(w);
+  showBubble('🔊 '+w);
+}
+
 // ====== GAME LOGIC ======
 function startWordGame(idx,word) {
   if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>✅ 完成！</h3></div>';
@@ -457,7 +489,7 @@ function checkMatch(animal,el){
     showBubble('Great! Wonderful! 🎉');
     playSoundEffect(800,1200,0.15);
     matchRound++;
-    setTimeout(()=>renderPage(8),600);
+    setTimeout(()=>renderPage(12),600);
   } else {
     el.classList.add('wrong');
     setTimeout(()=>el.classList.remove('wrong'),400);
@@ -506,16 +538,17 @@ function renderPage(idx) {
     updateUI(idx); return;
   }
 
-  let gameHTML='';
+  let gameHTML='',vb='';
   if(p.game){
     gameHTML=startWordGame(idx,p.game);
     buildingWord=[];
   }
+  if(p.words){vb=renderVocabRow(p);}
 
   area.innerHTML=`<div class="page active">
     <div class="scene-wrap" style="position:relative">${getSVG(idx)}</div>
     <div class="lyrics">${p.sentence}</div>
-    ${gameHTML}
+    ${vb}${gameHTML}
   </div>`;
 
   // Make clickable words speak
