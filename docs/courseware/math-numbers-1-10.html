@@ -402,7 +402,7 @@ body{
     speechBubble.classList.add('show');
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      var utter = new SpeechSynthesisUtterance(text.replace(/[🌀-🗿🎀-🎓🎠-🏁🚀-🛿🐀-🦿🌂-🎄🎃🎄🎅🧙-🧟🧠-🧮🦴-🦷🪀-🪶]/g,''));
+      var utter = new SpeechSynthesisUtterance(text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]/gu,''));
       utter.lang = /[\u4e00-\u9fff]/.test(text) ? 'zh-CN' : 'en-US';
       utter.rate = 0.85;
       window.speechSynthesis.speak(utter);

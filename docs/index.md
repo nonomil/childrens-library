@@ -167,7 +167,7 @@
 <div class="scroll-row">
 
 <a href="courseware/math-numbers-1-10.html" class="sc-img-card" style="border-color:#42A5F5">
-  <img class="sc-thumb" src="courseware/images/math/page-01.png" alt="认识数字1~10" loading="lazy">
+  <img class="sc-thumb" src="courseware/images/math/webp/page-01.webp" alt="认识数字1~10" loading="lazy">
   <span class="sc-label">🔢 认识数字1~10</span>
 </a>
 
@@ -184,7 +184,7 @@
 <div class="scroll-row">
 
 <a href="courseware/chinese-magic-characters.html" class="sc-img-card" style="border-color:#EF5350">
-  <img class="sc-thumb" src="courseware/images/chinese/page-01.png" alt="神奇汉字" loading="lazy">
+  <img class="sc-thumb" src="courseware/images/chinese/webp/page-01.webp" alt="神奇汉字" loading="lazy">
   <span class="sc-label">🀄 神奇汉字</span>
 </a>
 

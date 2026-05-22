@@ -757,7 +757,7 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
       ttsPlay(text); 
     } else if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      var clean = text.replace(/[🌀-🗿🎀-🎓🎠-🏁🚀-🛿🐀-🦿🌂-🎄🎃🎄🎅🧙-🧟🧠-🧮🦴-🦷🪀-🪶]/g,'');
+      var clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]/gu,'');
       var utter = new SpeechSynthesisUtterance(clean);
       utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
       utter.rate = 0.85;
