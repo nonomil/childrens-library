@@ -81,11 +81,12 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>35</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>38</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
-    <span class="stat-item">🔤 <strong>5</strong> 个英语课</span>
+    <span class="stat-item">🔤 <strong>6</strong> 个英语课</span>
     <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
-    <span class="stat-item">🀄 <strong>1</strong> 个语文课</span>
+    <span class="stat-item">🀄 <strong>2</strong> 个语文课</span>
+    <span class="stat-item">🔢 <strong>1</strong> 个数学课</span>
   </div>
 </div>
 
@@ -278,6 +279,39 @@
 <a href="nature-lesson-4.html" class="wf-item"><div class="wf-card card-blue">
   <div class="icon">🌿</div><div class="name">大自然识字</div>
   <span class="tag-sm tag-blue">🌱 科学</span>
+</div></a>
+
+</div>
+
+## 🔢 数学启蒙
+<div class="cat-divider"></div>
+<div class="waterfall-grid">
+
+<a href="math-numbers-1-10.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🔢</div><div class="name">认识数字 1~10</div>
+  <span class="tag-sm tag-blue">🔢 数学</span>
+</div></a>
+
+</div>
+
+## 🀄 汉字
+<div class="cat-divider"></div>
+<div class="waterfall-grid">
+
+<a href="chinese-magic-characters.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🀄</div><div class="name">神奇汉字</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+</div>
+
+## 🌈 英语色彩
+<div class="cat-divider"></div>
+<div class="waterfall-grid">
+
+<a href="english-colors.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🌈</div><div class="name">彩虹颜色</div>
+  <span class="tag-sm tag-green">🌈 色彩</span>
 </div></a>
 
 </div>

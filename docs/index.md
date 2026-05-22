@@ -33,6 +33,19 @@
 .scroll-card .sc-name{font-size:12px;font-weight:700;color:#5D4037;line-height:1.3;word-break:break-word}
 .scroll-card.card-new::after{content:'🆕';position:absolute;top:-6px;right:-6px;font-size:13px}
 
+/* ===== 带图卡片 ===== */
+.sc-img-card{flex:0 0 180px;background:#FFFCF5;border-radius:18px;padding:0;text-align:center;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:center;box-shadow:0 3px 12px rgba(0,0,0,0.08);border:3px solid transparent;transition:all .25s cubic-bezier(0.34,1.56,0.64,1);position:relative;touch-action:manipulation;overflow:hidden}
+.sc-img-card:hover{transform:translateY(-5px) scale(1.05);border-color:#FFB347;box-shadow:0 12px 30px rgba(255,179,71,0.25)}
+.sc-img-card:active{transform:scale(0.95)}
+.sc-img-card .sc-thumb{width:100%;height:130px;object-fit:cover;display:block;border-radius:15px 15px 0 0}
+.sc-img-card .sc-label{padding:6px 4px 10px;font-size:12px;font-weight:700;color:#5D4037;line-height:1.3}
+.sc-img-card.card-new::after{content:'🆕';position:absolute;top:-6px;right:-6px;font-size:14px;z-index:2}
+@media(max-width:500px){
+  .sc-img-card{flex:0 0 150px}
+  .sc-img-card .sc-thumb{height:100px}
+  .sc-img-card .sc-label{font-size:11px}
+}
+
 /* ===== 响应式 ===== */
 @media(max-width:500px){
   .play-header h1{font-size:24px}
@@ -47,11 +60,12 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>35</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>38</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
-    <span class="stat-item">🔤 <strong>5</strong> 个英语课</span>
+    <span class="stat-item">🔤 <strong>6</strong> 个英语课</span>
     <span class="stat-item">🌿 <strong>2</strong> 个科学课</span>
-    <span class="stat-item">🀄 <strong>2</strong> 个语文课</span>
+    <span class="stat-item">🀄 <strong>3</strong> 个语文课</span>
+    <span class="stat-item">🔢 <strong>1</strong> 个数学课</span>
   </div>
 </div>
 
@@ -139,6 +153,57 @@
 
 <a href="courseware/rainforest-adventure.html" class="scroll-card"><span class="sc-icon">🌴</span><span class="sc-name">雨林大冒险</span></a>
 <a href="courseware/nature-lesson-4.html" class="scroll-card"><span class="sc-icon">🌿</span><span class="sc-name">大自然识字</span></a>
+
+</div>
+</div>
+
+<!-- ===== 🔢 数学 ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">🔢</span>
+  <span class="sh-name">数学启蒙</span>
+  <span class="sh-count">1 课</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/math-numbers-1-10.html" class="sc-img-card" style="border-color:#42A5F5">
+  <img class="sc-thumb" src="courseware/images/math/page-01.png" alt="认识数字1~10" loading="lazy">
+  <span class="sc-label">🔢 认识数字1~10</span>
+</a>
+
+</div>
+</div>
+
+<!-- ===== 🀄 汉字 ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">🀄</span>
+  <span class="sh-name">汉字</span>
+  <span class="sh-count">1 课</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/chinese-magic-characters.html" class="sc-img-card" style="border-color:#EF5350">
+  <img class="sc-thumb" src="courseware/images/chinese/page-01.png" alt="神奇汉字" loading="lazy">
+  <span class="sc-label">🀄 神奇汉字</span>
+</a>
+
+</div>
+</div>
+
+<!-- ===== 🌈 英语色彩 ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">🌈</span>
+  <span class="sh-name">英语色彩</span>
+  <span class="sh-count">1 课</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/english-colors.html" class="sc-img-card" style="border-color:#66BB6A">
+  <img class="sc-thumb" src="courseware/images/english/page-01.png" alt="彩虹颜色" loading="lazy">
+  <span class="sc-label">🌈 彩虹颜色</span>
+</a>
 
 </div>
 </div>
