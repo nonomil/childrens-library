@@ -626,6 +626,13 @@ document.addEventListener('keydown',function(e){
   if(e.key==='ArrowRight') nextPage();
 });
 
+// Click-to-spell: delegate click on letter tiles
+document.addEventListener('click', function(e){
+  var tile = e.target.closest('.letter-tile');
+  if(tile && !tile.classList.contains('used') && typeof pickTile === 'function'){
+    pickTile(tile);
+  }
+});
 renderPage(0);
 </script>
 </body>
