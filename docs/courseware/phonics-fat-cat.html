@@ -315,12 +315,33 @@ body {
   .speech-bubble { font-size: 16px; padding: 14px 20px 14px 46px; bottom: 100px; }
   .speech-bubble::before { font-size: 22px; left: 12px; }
 }
+
+/* Top navigation buttons */
+.top-nav-btn {
+  position:absolute; z-index:50; border:none;
+  background:rgba(255,255,255,0.85); border-radius:30px;
+  padding:4px 12px; font-size:14px; font-weight:bold;
+  cursor:pointer; transition:all .2s; font-family:inherit;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  display:flex; align-items:center; gap:4px; touch-action:manipulation;
+  text-decoration:none; color:#6B4F3A;
+}
+.top-nav-btn:hover { background:rgba(255,255,255,1); transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+.top-nav-btn:active { transform:scale(0.95); }
+.top-nav-btn.home { left:10px; top:10px; }
+.top-nav-btn.next { right:10px; top:10px; }
+
+@media(max-width:500px){
+  .top-nav-btn { font-size:12px; padding:3px 10px; }
+}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 
 <div class="book">
+  <a class="top-nav-btn home" href="https://nonomil.github.io/childrens-library/courseware/">🏠 首页</a>
+  <button class="top-nav-btn next" onclick="nextPage()">下一个 ▶</button>
   <div class="page-area" id="pageArea"></div>
 
   <!-- Navigation Bar (Gears Style) -->
