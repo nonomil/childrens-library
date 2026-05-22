@@ -393,6 +393,13 @@ body{
   function showBubble(text) {
     bubbleText.textContent = text;
     speechBubble.classList.add('show');
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var utter = new SpeechSynthesisUtterance(text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{27BF}]/gu,''));
+      utter.lang = /[\u4e00-\u9fff]/.test(text) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
     if (typeof gsap !== 'undefined') {
       gsap.fromTo(speechBubble, {opacity:0,scale:0.8}, {opacity:1,scale:1,duration:0.3,ease:'back.out(1.7)'});
     }
