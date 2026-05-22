@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🔢 数学乐园 — 认识数字 1~10</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Fredoka One',sans-serif;
+  background:linear-gradient(135deg,#FFF8E7,#FFE8C8);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;margin:0;
+}
+.book-card{
+  background:#fff;
+  border-radius:40px;
+  box-shadow:0 8px 0 #42A5F5,0 12px 30px rgba(66,153,245,0.3);
+  max-width:800px;width:100%;
+  padding:30px 25px 80px;
+  position:relative;
+  overflow:hidden;
+}
+.page{display:none;flex-direction:column;align-items:center;gap:16px;}
+.page.active{display:flex;}
+.page-title{
+  font-size:28px;color:#42A5F5;text-align:center;
+  text-shadow:2px 2px 0 rgba(66,153,245,0.15);
+}
+.page-subtitle{font-size:16px;color:#888;text-align:center;}
+.story-text{
+  font-size:17px;color:#555;text-align:center;line-height:1.7;
+  padding:0 10px;
+}
+.svg-wrap{width:100%;display:flex;justify-content:center;position:relative;}
+.svg-wrap svg{max-width:100%;height:auto;}
+.game-area{
+  width:100%;display:flex;flex-wrap:wrap;gap:12px;
+  justify-content:center;align-items:center;padding:10px 0;
+}
+.game-btn{
+  font-family:'Fredoka One',sans-serif;
+  background:#fff;border:3px solid #42A5F5;border-radius:20px;
+  padding:12px 28px;font-size:24px;color:#42A5F5;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 0 rgba(66,153,245,0.3);
+  user-select:none;
+}
+.game-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(66,153,245,0.3);}
+.game-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(66,153,245,0.3);}
+.game-btn.selected{background:#42A5F5;color:#fff;}
+.game-btn.correct{background:#4CAF50;border-color:#4CAF50;color:#fff;box-shadow:0 4px 0 rgba(76,175,80,0.3);}
+.game-btn.wrong{background:#ef5350;border-color:#ef5350;color:#fff;animation:shake 0.4s;}
+.drop-zone{
+  border:3px dashed #42A5F5;border-radius:20px;padding:15px;min-width:100px;min-height:60px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.3s;
+}
+.drop-zone.drag-over{background:rgba(66,153,245,0.1);border-color:#1565C0;}
+.draggable{cursor:grab;transition:transform 0.2s;}
+.draggable:active{cursor:grabbing;transform:scale(0.95);}
+.score-display{
+  font-size:20px;color:#42A5F5;padding:8px 20px;
+  background:rgba(66,153,245,0.1);border-radius:30px;
+}
+.celebration{
+  font-size:28px;color:#4CAF50;text-align:center;
+  animation:celebratePop 0.6s ease-out;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-8px);}
+  75%{transform:translateX(8px);}
+}
+@keyframes celebratePop{
+  0%{transform:scale(0);opacity:0;}
+  50%{transform:scale(1.3);}
+  100%{transform:scale(1);opacity:1;}
+}
+.navigation{
+  position:absolute;bottom:20px;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:15px;
+  padding:0 25px;flex-wrap:wrap;
+}
+.nav-btn{
+  width:44px;height:44px;border-radius:50%;
+  border:none;font-size:26px;color:#fff;
+  background:#42A5F5;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 0 #1565C0;transition:all 0.15s;
+  font-family:'Fredoka One',sans-serif;padding:0;line-height:1;
+}
+.nav-btn:active{transform:translateY(3px);box-shadow:none;}
+.nav-btn:disabled{background:#ccc;box-shadow:0 4px 0 #999;cursor:default;}
+.page-dots{display:flex;gap:8px;}
+.page-dot{
+  width:12px;height:12px;border-radius:50%;background:#ddd;
+  border:none;cursor:pointer;transition:all 0.3s;padding:0;
+}
+.page-dot.active{background:#42A5F5;transform:scale(1.3);}
+.read-btn{
+  width:44px;height:44px;border-radius:50%;border:3px solid #42A5F5;
+  background:#fff;font-size:22px;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;transition:all 0.2s;
+  box-shadow:0 3px 0 rgba(66,153,245,0.25);line-height:1;
+}
+.read-btn:active{transform:translateY(2px);box-shadow:none;}
+.speech-bubble{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#fff;border:3px solid #42A5F5;border-radius:30px;
+  padding:25px 35px;max-width:85%;z-index:100;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  font-size:22px;color:#333;text-align:center;display:none;
+  pointer-events:none;
+}
+.speech-bubble::before{
+  content:'';position:absolute;bottom:-18px;left:50%;
+  transform:translateX(-50%);
+  border:10px solid transparent;border-top-color:#42A5F5;
+}
+.speech-bubble.show{display:block;pointer-events:auto;}
+.speech-bubble .close-bubble{
+  position:absolute;top:-12px;right:-12px;
+  width:32px;height:32px;border-radius:50%;border:2px solid #42A5F5;
+  background:#fff;cursor:pointer;font-size:16px;display:flex;
+  align-items:center;justify-content:center;color:#42A5F5;line-height:1;
+}
+.floating-num{
+  display:inline-block;animation:floatUp 3s ease-in-out infinite;
+  font-size:32px;
+}
+@keyframes floatUp{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:0.7;}
+  50%{transform:translateY(-20px) rotate(10deg);opacity:1;}
+}
+.interact-hint{
+  font-size:14px;color:#aaa;text-align:center;margin-top:-5px;
+}
+.item-btn{
+  font-family:'Fredoka One',sans-serif;
+  background:rgba(66,153,245,0.08);border:2px solid #42A5F5;
+  border-radius:16px;padding:8px 16px;font-size:20px;color:#42A5F5;
+  cursor:pointer;transition:all 0.2s;
+}
+.item-btn:active{background:#42A5F5;color:#fff;}
+.item-btn.matched{background:#4CAF50;border-color:#4CAF50;color:#fff;opacity:0.7;}
+.card-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.number-card{
+  font-family:'Fredoka One',sans-serif;
+  width:56px;height:76px;border-radius:14px;border:3px solid #42A5F5;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;color:#42A5F5;background:#fff;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 0 rgba(66,153,245,0.25);
+}
+.number-card:active{transform:translateY(3px);box-shadow:none;}
+.number-card.selected{background:#42A5F5;color:#fff;}
+.number-card.correct{background:#4CAF50;border-color:#4CAF50;color:#fff;}
+.number-card.wrong{background:#ef5350;border-color:#ef5350;color:#fff;animation:shake 0.4s;}
+.final-title{font-size:32px;color:#42A5F5;text-align:center;}
+.confetti-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;}
+@media(max-width:600px){
+  .book-card{padding:20px 15px 90px;border-radius:30px;}
+  .page-title{font-size:22px;}
+  .story-text{font-size:15px;}
+  .game-btn{font-size:20px;padding:10px 22px;}
+  .speech-bubble{font-size:18px;padding:20px 25px;}
+  .nav-btn{width:38px;height:38px;font-size:22px;}
+  .number-card{width:46px;height:64px;font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<div class="book-card" id="app">
+
+  <!-- PAGE 0: Cover -->
+  <div class="page active" data-page="0">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 220" width="400" height="220">
+        <rect x="30" y="90" width="50" height="50" fill="#8BC34A" rx="4"/>
+        <rect x="40" y="80" width="50" height="50" fill="#9CCC65" rx="4"/>
+        <rect x="35" y="85" width="50" height="50" fill="#AED581" rx="4"/>
+        <text x="60" y="118" font-size="22" fill="#fff" text-anchor="middle" font-family="Fredoka One">1</text>
+
+        <rect x="100" y="70" width="50" height="50" fill="#795548" rx="4"/>
+        <rect x="110" y="60" width="50" height="50" fill="#8D6E63" rx="4"/>
+        <rect x="105" y="65" width="50" height="50" fill="#A1887F" rx="4"/>
+        <text x="130" y="98" font-size="22" fill="#fff" text-anchor="middle" font-family="Fredoka One">2</text>
+
+        <rect x="170" y="50" width="50" height="50" fill="#78909C" rx="4"/>
+        <rect x="180" y="40" width="50" height="50" fill="#90A4AE" rx="4"/>
+        <rect x="175" y="45" width="50" height="50" fill="#B0BEC5" rx="4"/>
+        <text x="200" y="78" font-size="22" fill="#fff" text-anchor="middle" font-family="Fredoka One">3</text>
+
+        <rect x="240" y="70" width="50" height="50" fill="#FF7043" rx="4"/>
+        <rect x="250" y="60" width="50" height="50" fill="#FF8A65" rx="4"/>
+        <rect x="245" y="65" width="50" height="50" fill="#FFAB91" rx="4"/>
+        <text x="270" y="98" font-size="22" fill="#fff" text-anchor="middle" font-family="Fredoka One">4</text>
+
+        <rect x="310" y="90" width="50" height="50" fill="#AB47BC" rx="4"/>
+        <rect x="320" y="80" width="50" height="50" fill="#CE93D8" rx="4"/>
+        <rect x="315" y="85" width="50" height="50" fill="#E1BEE7" rx="4"/>
+        <text x="340" y="118" font-size="22" fill="#fff" text-anchor="middle" font-family="Fredoka One">5</text>
+      </svg>
+    </div>
+    <div class="page-title">🔢 认识数字 1~10</div>
+    <div class="page-subtitle">和 Steve 一起学数数！</div>
+    <div style="font-size:40px;letter-spacing:8px;">
+      <span class="floating-num" style="animation-delay:0s;">1</span>
+      <span class="floating-num" style="animation-delay:0.4s;">2</span>
+      <span class="floating-num" style="animation-delay:0.8s;">3</span>
+      <span class="floating-num" style="animation-delay:1.2s;">4</span>
+      <span class="floating-num" style="animation-delay:1.6s;">5</span>
+      <span class="floating-num" style="animation-delay:2.0s;">6</span>
+      <span class="floating-num" style="animation-delay:2.4s;">7</span>
+      <span class="floating-num" style="animation-delay:2.8s;">8</span>
+      <span class="floating-num" style="animation-delay:3.2s;">9</span>
+      <span class="floating-num" style="animation-delay:3.6s;">10</span>
+    </div>
+  </div>
+
+  <!-- PAGE 1: 初到方块世界 -->
+  <div class="page" data-page="1">
+    <div class="page-title">🌍 初到方块世界</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 200" width="400" height="200">
+        <!-- sky -->
+        <rect width="400" height="200" fill="#B3E5FC"/>
+        <!-- ground -->
+        <rect x="0" y="150" width="400" height="50" fill="#8BC34A"/>
+        <rect x="0" y="155" width="400" height="45" fill="#795548"/>
+        <!-- tree 1 -->
+        <rect x="50" y="90" width="16" height="60" fill="#795548"/>
+        <circle cx="58" cy="80" r="28" fill="#4CAF50"/>
+        <!-- tree 2 -->
+        <rect x="320" y="100" width="14" height="50" fill="#795548"/>
+        <circle cx="327" cy="90" r="24" fill="#388E3C"/>
+        <!-- Steve -->
+        <rect x="180" y="110" width="24" height="24" rx="3" fill="#FFCCBC"/>
+        <rect x="182" y="134" width="20" height="18" rx="2" fill="#42A5F5"/>
+        <rect x="182" y="152" width="20" height="18" rx="2" fill="#1565C0"/>
+        <rect x="180" y="110" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="196" y="110" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="188" y="122" width="4" height="4" rx="1" fill="#8D6E63"/>
+        <rect x="192" y="126" width="6" height="3" rx="1" fill="#8D6E63"/>
+        <!-- sheep 1 -->
+        <g class="sheep" data-sheep="0" style="cursor:pointer;">
+          <rect x="80" y="130" width="28" height="18" rx="8" fill="#fff"/>
+          <rect x="84" y="146" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="98" y="146" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="82" y="148" width="4" height="4" rx="1" fill="#333"/>
+          <rect x="100" y="148" width="4" height="4" rx="1" fill="#333"/>
+          <circle cx="94" cy="137" r="8" fill="#333"/>
+          <circle cx="92" cy="135" r="1.5" fill="#fff"/>
+          <circle cx="97" cy="135" r="1.5" fill="#fff"/>
+        </g>
+        <!-- sheep 2 -->
+        <g class="sheep" data-sheep="1" style="cursor:pointer;">
+          <rect x="120" y="128" width="28" height="18" rx="8" fill="#fff"/>
+          <rect x="124" y="144" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="138" y="144" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="122" y="146" width="4" height="4" rx="1" fill="#333"/>
+          <rect x="140" y="146" width="4" height="4" rx="1" fill="#333"/>
+          <circle cx="134" cy="135" r="8" fill="#333"/>
+          <circle cx="132" cy="133" r="1.5" fill="#fff"/>
+          <circle cx="137" cy="133" r="1.5" fill="#fff"/>
+        </g>
+        <!-- sheep 3 -->
+        <g class="sheep" data-sheep="2" style="cursor:pointer;">
+          <rect x="280" y="128" width="28" height="18" rx="8" fill="#fff"/>
+          <rect x="284" y="144" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="298" y="144" width="6" height="8" rx="2" fill="#333"/>
+          <rect x="282" y="146" width="4" height="4" rx="1" fill="#333"/>
+          <rect x="300" y="146" width="4" height="4" rx="1" fill="#333"/>
+          <circle cx="294" cy="135" r="8" fill="#333"/>
+          <circle cx="292" cy="133" r="1.5" fill="#fff"/>
+          <circle cx="297" cy="133" r="1.5" fill="#fff"/>
+        </g>
+        <!-- speech bubble from Steve -->
+        <rect x="160" y="80" width="80" height="28" rx="14" fill="#fff" stroke="#42A5F5" stroke-width="2"/>
+        <text x="200" y="99" font-size="14" fill="#333" text-anchor="middle" font-family="Fredoka One">好多🐑啊！</text>
+        <polygon points="195,108 200,118 205,108" fill="#fff" stroke="#42A5F5" stroke-width="2"/>
+        <line x1="196" y1="108" x2="204" y2="108" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="story-text">Steve 来到了方块世界，Alex 请他帮忙数一数有多少只羊...</div>
+    <div class="game-area" id="page1Game">
+      <button class="game-btn" data-sheep-btn="0">🐑 第1只</button>
+      <button class="game-btn" data-sheep-btn="1">🐑 第2只</button>
+      <button class="game-btn" data-sheep-btn="2">🐑 第3只</button>
+    </div>
+    <div class="interact-hint">点击小羊或按钮来数数！</div>
+  </div>
+
+  <!-- PAGE 2: 用手指数数 -->
+  <div class="page" data-page="2">
+    <div class="page-title">🖐️ 用手指数数</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 180" width="400" height="180">
+        <!-- Left hand -->
+        <rect x="50" y="50" width="80" height="100" rx="20" fill="#FFCCBC"/>
+        <!-- fingers L -->
+        <rect x="45" y="10" width="16" height="55" rx="8" fill="#FFCCBC"/>
+        <rect x="63" y="5" width="16" height="60" rx="8" fill="#FFCCBC"/>
+        <rect x="81" y="8" width="16" height="60" rx="8" fill="#FFCCBC"/>
+        <rect x="99" y="20" width="16" height="50" rx="8" fill="#FFCCBC"/>
+        <rect x="117" y="30" width="16" height="45" rx="8" fill="#FFCCBC"/>
+        <!-- thumb L -->
+        <rect x="30" y="80" width="25" height="16" rx="8" fill="#FFCCBC"/>
+        <!-- numbers on fingers L -->
+        <text x="53" y="30" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">1</text>
+        <text x="71" y="25" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">2</text>
+        <text x="89" y="28" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">3</text>
+        <text x="107" y="38" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">4</text>
+        <text x="125" y="48" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">5</text>
+
+        <!-- Right hand -->
+        <rect x="270" y="50" width="80" height="100" rx="20" fill="#FFCCBC"/>
+        <!-- fingers R -->
+        <rect x="265" y="10" width="16" height="55" rx="8" fill="#FFCCBC"/>
+        <rect x="283" y="5" width="16" height="60" rx="8" fill="#FFCCBC"/>
+        <rect x="301" y="8" width="16" height="60" rx="8" fill="#FFCCBC"/>
+        <rect x="319" y="20" width="16" height="50" rx="8" fill="#FFCCBC"/>
+        <rect x="337" y="30" width="16" height="45" rx="8" fill="#FFCCBC"/>
+        <!-- thumb R -->
+        <rect x="345" y="80" width="25" height="16" rx="8" fill="#FFCCBC"/>
+        <!-- numbers on fingers R -->
+        <text x="273" y="30" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">6</text>
+        <text x="291" y="25" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">7</text>
+        <text x="309" y="28" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">8</text>
+        <text x="327" y="38" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">9</text>
+        <text x="345" y="48" font-size="12" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">10</text>
+
+        <!-- center apples -->
+        <circle cx="190" cy="70" r="12" fill="#ef5350"/>
+        <line x1="190" y1="58" x2="190" y2="52" stroke="#4CAF50" stroke-width="2"/>
+        <circle cx="210" cy="80" r="12" fill="#ef5350"/>
+        <line x1="210" y1="68" x2="210" y2="62" stroke="#4CAF50" stroke-width="2"/>
+        <circle cx="200" cy="95" r="12" fill="#ef5350"/>
+        <line x1="200" y1="83" x2="200" y2="77" stroke="#4CAF50" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="story-text">3个苹果，用手指表示几？</div>
+    <div class="game-area" id="page2Game">
+      <button class="game-btn" data-choice="1">1</button>
+      <button class="game-btn" data-choice="2">2</button>
+      <button class="game-btn" data-choice="3">3</button>
+      <button class="game-btn" data-choice="4">4</button>
+      <button class="game-btn" data-choice="5">5</button>
+    </div>
+    <div id="page2Result" style="font-size:20px;color:#42A5F5;min-height:30px;"></div>
+  </div>
+
+  <!-- PAGE 3: 认识数字 1~5 -->
+  <div class="page" data-page="3">
+    <div class="page-title">🎮 认识数字 1~5</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 160" width="400" height="160">
+        <!-- 1 pickaxe -->
+        <line x1="35" y1="60" x2="45" y2="90" stroke="#795548" stroke-width="4"/>
+        <rect x="30" y="40" width="12" height="24" rx="2" fill="#78909C"/>
+        <rect x="26" y="44" width="20" height="6" rx="1" fill="#90A4AE"/>
+        <text x="42" y="115" font-size="14" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">1</text>
+
+        <!-- 2 apples -->
+        <circle cx="90" cy="65" r="14" fill="#ef5350"/>
+        <line x1="90" y1="51" x2="90" y2="45" stroke="#4CAF50" stroke-width="2"/>
+        <circle cx="108" cy="72" r="14" fill="#ef5350"/>
+        <line x1="108" y1="58" x2="108" y2="52" stroke="#4CAF50" stroke-width="2"/>
+        <text x="99" y="110" font-size="14" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">2</text>
+
+        <!-- 3 chickens -->
+        <g transform="translate(140,45)">
+          <circle cx="0" cy="10" r="10" fill="#FFE082"/>
+          <circle cx="-6" cy="8" r="3" fill="#FF8F00"/>
+          <circle cx="-6" cy="7" r="1" fill="#333"/>
+          <rect x="-12" y="18" width="6" height="2" rx="1" fill="#FF8F00"/>
+        </g>
+        <g transform="translate(165,50)">
+          <circle cx="0" cy="10" r="10" fill="#FFF9C4"/>
+          <circle cx="-6" cy="8" r="3" fill="#FF8F00"/>
+          <circle cx="-6" cy="7" r="1" fill="#333"/>
+          <rect x="-12" y="18" width="6" height="2" rx="1" fill="#FF8F00"/>
+        </g>
+        <g transform="translate(188,40)">
+          <circle cx="0" cy="10" r="10" fill="#FFE082"/>
+          <circle cx="-6" cy="8" r="3" fill="#FF8F00"/>
+          <circle cx="-6" cy="7" r="1" fill="#333"/>
+          <rect x="-12" y="18" width="6" height="2" rx="1" fill="#FF8F00"/>
+        </g>
+        <text x="172" y="105" font-size="14" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">3</text>
+
+        <!-- 4 trees -->
+        <g transform="translate(230,60)">
+          <rect x="-3" y="10" width="6" height="20" fill="#795548"/>
+          <circle cx="0" cy="5" r="12" fill="#66BB6A"/>
+        </g>
+        <g transform="translate(250,55)">
+          <rect x="-3" y="10" width="6" height="20" fill="#795548"/>
+          <circle cx="0" cy="5" r="11" fill="#4CAF50"/>
+        </g>
+        <g transform="translate(270,65)">
+          <rect x="-3" y="10" width="6" height="20" fill="#795548"/>
+          <circle cx="0" cy="5" r="10" fill="#43A047"/>
+        </g>
+        <g transform="translate(290,58)">
+          <rect x="-3" y="10" width="6" height="20" fill="#795548"/>
+          <circle cx="0" cy="5" r="12" fill="#66BB6A"/>
+        </g>
+        <text x="260" y="110" font-size="14" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">4</text>
+
+        <!-- 5 hand -->
+        <rect x="330" y="40" width="50" height="55" rx="12" fill="#FFCCBC"/>
+        <rect x="326" y="20" width="10" height="32" rx="5" fill="#FFCCBC"/>
+        <rect x="338" y="15" width="10" height="38" rx="5" fill="#FFCCBC"/>
+        <rect x="350" y="18" width="10" height="35" rx="5" fill="#FFCCBC"/>
+        <rect x="362" y="25" width="10" height="30" rx="5" fill="#FFCCBC"/>
+        <text x="358" y="110" font-size="14" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">5</text>
+      </svg>
+    </div>
+    <div class="story-text">点击数字卡片，找到对应的数量！</div>
+    <div class="game-area" id="page3Game" style="flex-direction:column;gap:10px;">
+      <div class="card-row" id="page3Question">
+        <span style="font-size:18px;color:#555;margin-right:4px;">🔍 找到数量为</span>
+        <span id="page3Target" style="font-size:28px;color:#42A5F5;">2</span>
+        <span style="font-size:18px;color:#555;margin-left:4px;">的卡片</span>
+      </div>
+      <div class="card-row" id="page3Cards">
+        <button class="number-card" data-num="1">1</button>
+        <button class="number-card" data-num="2">2</button>
+        <button class="number-card" data-num="3">3</button>
+        <button class="number-card" data-num="4">4</button>
+        <button class="number-card" data-num="5">5</button>
+      </div>
+      <div id="page3Result" style="font-size:18px;color:#42A5F5;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: 数字 6~10 -->
+  <div class="page" data-page="4">
+    <div class="page-title">💎 数字 6~10</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 180" width="400" height="180">
+        <!-- Hands showing 5+1 through 5+5 -->
+        <!-- Left hand (5) -->
+        <rect x="20" y="50" width="55" height="70" rx="12" fill="#FFCCBC"/>
+        <rect x="16" y="25" width="11" height="38" rx="5" fill="#FFCCBC"/>
+        <rect x="29" y="20" width="11" height="44" rx="5" fill="#FFCCBC"/>
+        <rect x="42" y="23" width="11" height="40" rx="5" fill="#FFCCBC"/>
+        <rect x="55" y="32" width="11" height="32" rx="5" fill="#FFCCBC"/>
+        <text x="48" y="138" font-size="13" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">5</text>
+
+        <!-- plus sign -->
+        <text x="90" y="95" font-size="28" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">+</text>
+
+        <!-- right hand (variable, show partial) -->
+        <rect x="115" y="50" width="55" height="70" rx="12" fill="#FFCCBC"/>
+        <rect x="111" y="35" width="11" height="38" rx="5" fill="#FFCCBC"/>
+        <rect x="124" y="30" width="11" height="44" rx="5" fill="#FFCCBC"/>
+        <rect x="137" y="33" width="11" height="40" rx="5" fill="#FFCCBC"/>
+        <rect x="150" y="28" width="11" height="32" rx="5" fill="#FFCCBC"/>
+        <!-- 5th finger is the thumb, slightly different pos -->
+        <rect x="163" y="60" width="14" height="12" rx="6" fill="#FFCCBC"/>
+        <text x="143" y="138" font-size="13" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">5</text>
+
+        <!-- = -->
+        <text x="185" y="95" font-size="28" fill="#42A5F5" text-anchor="middle" font-family="Fredoka One">=</text>
+
+        <!-- result number area -->
+        <rect x="205" y="70" width="40" height="40" rx="8" fill="#42A5F5"/>
+        <text x="225" y="98" font-size="26" fill="#fff" text-anchor="middle" font-family="Fredoka One">10</text>
+
+        <!-- diamond blocks row -->
+        <g transform="translate(270,20)">
+          <rect x="0" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="16" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="32" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="48" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="64" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="80" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="96" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="112" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="128" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+          <rect x="144" y="0" width="14" height="14" rx="2" fill="#42A5F5"/>
+        </g>
+      </svg>
+    </div>
+    <div class="story-text">5 + ? = ? 把数字拖到正确的方块数量上！</div>
+    <div class="game-area" id="page4Game">
+      <div class="card-row" id="page4DragNums">
+        <button class="number-card" data-drag="6">6</button>
+        <button class="number-card" data-drag="7">7</button>
+        <button class="number-card" data-drag="8">8</button>
+        <button class="number-card" data-drag="9">9</button>
+        <button class="number-card" data-drag="10">10</button>
+      </div>
+      <div class="card-row" id="page4Drops" style="gap:10px;">
+        <div class="drop-zone" data-target="6" data-count="6">6个 💎</div>
+        <div class="drop-zone" data-target="7" data-count="7">7个 💎</div>
+        <div class="drop-zone" data-target="8" data-count="8">8个 💎</div>
+        <div class="drop-zone" data-target="9" data-count="9">9个 💎</div>
+        <div class="drop-zone" data-target="10" data-count="10">10个 💎</div>
+      </div>
+      <div id="page4Result" style="font-size:18px;color:#42A5F5;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: 练一练 -->
+  <div class="page" data-page="5">
+    <div class="page-title">✏️ 练一练</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 150" width="400" height="150">
+        <!-- diamond clusters -->
+        <g id="clusterA">
+          <text x="35" y="25" font-size="12" fill="#888" text-anchor="middle" font-family="Fredoka One">3</text>
+          <!-- 3 diamonds -->
+          <rect x="10" y="35" width="28" height="28" rx="4" fill="#42A5F5"/>
+          <rect x="42" y="40" width="28" height="28" rx="4" fill="#42A5F5"/>
+          <rect x="74" y="35" width="28" height="28" rx="4" fill="#42A5F5"/>
+        </g>
+        <g id="clusterB">
+          <text x="135" y="25" font-size="12" fill="#888" text-anchor="middle" font-family="Fredoka One">5</text>
+          <rect x="100" y="35" width="24" height="24" rx="4" fill="#42A5F5"/>
+          <rect x="126" y="40" width="24" height="24" rx="4" fill="#42A5F5"/>
+          <rect x="152" y="35" width="24" height="24" rx="4" fill="#42A5F5"/>
+          <rect x="110" y="65" width="24" height="24" rx="4" fill="#42A5F5"/>
+          <rect x="138" y="65" width="24" height="24" rx="4" fill="#42A5F5"/>
+        </g>
+        <g id="clusterC">
+          <text x="240" y="25" font-size="12" fill="#888" text-anchor="middle" font-family="Fredoka One">7</text>
+          <rect x="210" y="35" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="234" y="38" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="258" y="35" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="218" y="60" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="242" y="63" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="250" y="88" width="22" height="22" rx="3" fill="#42A5F5"/>
+          <rect x="226" y="88" width="22" height="22" rx="3" fill="#42A5F5"/>
+        </g>
+        <g id="clusterD">
+          <text x="350" y="25" font-size="12" fill="#888" text-anchor="middle" font-family="Fredoka One">9</text>
+          <rect x="320" y="35" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="342" y="38" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="364" y="35" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="328" y="58" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="350" y="60" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="372" y="58" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="324" y="82" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="346" y="84" width="20" height="20" rx="3" fill="#42A5F5"/>
+          <rect x="368" y="82" width="20" height="20" rx="3" fill="#42A5F5"/>
+        </g>
+      </svg>
+    </div>
+    <div class="story-text">数一数每组💎有多少个！</div>
+    <div class="game-area" id="page5Game" style="flex-direction:column;gap:8px;">
+      <div class="card-row" style="gap:12px;">
+        <div class="item-btn" data-page5-cluster="A" style="min-width:60px;">A组</div>
+        <div class="item-btn" data-page5-cluster="B" style="min-width:60px;">B组</div>
+        <div class="item-btn" data-page5-cluster="C" style="min-width:60px;">C组</div>
+        <div class="item-btn" data-page5-cluster="D" style="min-width:60px;">D组</div>
+      </div>
+      <div style="font-size:16px;color:#888;">选一组，然后点击正确的数字：</div>
+      <div class="card-row" id="page5Options">
+        <button class="number-card" data-choice="1">1</button>
+        <button class="number-card" data-choice="2">2</button>
+        <button class="number-card" data-choice="3">3</button>
+        <button class="number-card" data-choice="4">4</button>
+        <button class="number-card" data-choice="5">5</button>
+        <button class="number-card" data-choice="6">6</button>
+        <button class="number-card" data-choice="7">7</button>
+        <button class="number-card" data-choice="8">8</button>
+        <button class="number-card" data-choice="9">9</button>
+        <button class="number-card" data-choice="10">10</button>
+      </div>
+      <div class="score-display" id="page5Score">⭐ 得分: 0 / 4</div>
+      <div id="page5Result" style="font-size:18px;color:#42A5F5;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: 闯关挑战 -->
+  <div class="page" data-page="6">
+    <div class="page-title">🎯 闯关挑战</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 200" width="400" height="200">
+        <!-- castle gate -->
+        <rect x="100" y="60" width="120" height="100" rx="8" fill="#78909C"/>
+        <rect x="110" y="70" width="100" height="80" rx="6" fill="#546E7A"/>
+        <rect x="130" y="90" width="60" height="60" rx="30" fill="#455A64"/>
+        <rect x="125" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="137" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="149" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="161" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="173" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="185" y="50" width="8" height="15" fill="#90A4AE"/>
+        <rect x="197" y="50" width="8" height="15" fill="#90A4AE"/>
+
+        <!-- guard -->
+        <rect x="255" y="80" width="28" height="28" rx="4" fill="#FFCCBC"/>
+        <rect x="253" y="108" width="32" height="22" rx="3" fill="#42A5F5"/>
+        <rect x="253" y="130" width="32" height="24" rx="3" fill="#1565C0"/>
+        <rect x="257" y="154" width="10" height="20" rx="2" fill="#333"/>
+        <rect x="271" y="154" width="10" height="20" rx="2" fill="#333"/>
+        <!-- guard helmet -->
+        <rect x="252" y="78" width="34" height="10" rx="3" fill="#90A4AE"/>
+        <!-- speech -->
+        <rect x="240" y="50" width="70" height="24" rx="12" fill="#fff" stroke="#42A5F5" stroke-width="2"/>
+        <text x="275" y="67" font-size="12" fill="#333" text-anchor="middle" font-family="Fredoka One">数数方块！</text>
+        <polygon points="270,74 275,82 280,74" fill="#fff" stroke="#42A5F5" stroke-width="2"/>
+        <line x1="271" y1="74" x2="279" y2="74" stroke="#fff" stroke-width="3"/>
+
+        <!-- scattered blocks to count -->
+        <rect x="30" y="140" width="18" height="18" rx="2" fill="#8BC34A"/>
+        <rect x="55" y="130" width="18" height="18" rx="2" fill="#795548"/>
+        <rect x="50" y="160" width="18" height="18" rx="2" fill="#42A5F5"/>
+        <rect x="15" y="160" width="18" height="18" rx="2" fill="#FF7043"/>
+        <rect x="35" y="100" width="18" height="18" rx="2" fill="#AB47BC"/>
+        <rect x="60" y="110" width="18" height="18" rx="2" fill="#FFC107"/>
+        <rect x="20" y="120" width="18" height="18" rx="2" fill="#8BC34A"/>
+        <rect x="70" y="155" width="18" height="18" rx="2" fill="#ef5350"/>
+        <rect x="65" y="95" width="18" height="18" rx="2" fill="#42A5F5"/>
+        <rect x="40" y="80" width="18" height="18" rx="2" fill="#78909C"/>
+        <rect x="10" y="90" width="18" height="18" rx="2" fill="#FF7043"/>
+        <rect x="55" y="80" width="18" height="18" rx="2" fill="#66BB6A"/>
+      </svg>
+    </div>
+    <div class="story-text">图中一共有多少个方块？</div>
+    <div class="game-area" id="page6Game">
+      <div class="card-row" style="gap:10px;" id="page6Options">
+        <button class="number-card" data-choice="8">8</button>
+        <button class="number-card" data-choice="10">10</button>
+        <button class="number-card" data-choice="12">12</button>
+        <button class="number-card" data-choice="15">15</button>
+      </div>
+      <div id="page6Result" style="font-size:20px;color:#42A5F5;min-height:30px;"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navigation">
+    <button class="nav-btn" id="prevBtn">‹</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" id="nextBtn">›</button>
+    <button class="read-btn" id="readBtn">🔊</button>
+  </div>
+
+  <!-- Speech Bubble Overlay -->
+  <div class="speech-bubble" id="speechBubble">
+    <button class="close-bubble" id="closeBubble">✕</button>
+    <div id="bubbleText"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var currentPage = 0;
+  var totalPages = 7;
+  var readTexts = [
+    '🔢 欢迎来到数学乐园！今天我们来认识数字 1 到 10！',
+    '🌍 Steve 来到了方块世界，草地上有 3 只小羊，快来数一数吧！',
+    '🖐️ 我们一共有 10 个手指头。3 个苹果要用 3 个手指来表示！',
+    '🎮 数字 1 到 5，每个数字都有对应的物品数量。点击卡片来匹配吧！',
+    '💎 5 个手指加 5 个手指等于 10。把数字拖到对应的钻石数量上！',
+    '✏️ 来练习一下数数吧！数一数每组钻石有多少个？',
+    '🎯 最后一关！数一数图中总共有多少个方块？加油！'
+  ];
+
+  var speechBubble = document.getElementById('speechBubble');
+  var bubbleText = document.getElementById('bubbleText');
+  var closeBubble = document.getElementById('closeBubble');
+
+  // Navigation
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var pageDots = document.getElementById('pageDots');
+
+  for (var i = 0; i < totalPages; i++) {
+    var dot = document.createElement('button');
+    dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.addEventListener('click', function() {
+      goTo(parseInt(this.dataset.page));
+    });
+    pageDots.appendChild(dot);
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= totalPages) return;
+    currentPage = idx;
+    var pages = document.querySelectorAll('.page');
+    pages.forEach(function(p, i) {
+      p.classList.toggle('active', i === idx);
+    });
+    var dots = document.querySelectorAll('.page-dot');
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === totalPages - 1;
+    speechBubble.classList.remove('show');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo('.page.active .page-title', {opacity:0,y:-20}, {opacity:1,y:0,duration:0.4,ease:'back.out(1.7)'});
+      gsap.fromTo('.page.active .svg-wrap', {opacity:0,scale:0.9}, {opacity:1,scale:1,duration:0.4,delay:0.1});
+      gsap.fromTo('.page.active .game-area', {opacity:0,y:20}, {opacity:1,y:0,duration:0.3,delay:0.2});
+    }
+    initPage(idx);
+  }
+
+  prevBtn.addEventListener('click', function(){ goTo(currentPage - 1); });
+  nextBtn.addEventListener('click', function(){ goTo(currentPage + 1); });
+
+  // Read-aloud
+  document.getElementById('readBtn').addEventListener('click', function() {
+    showBubble(readTexts[currentPage]);
+  });
+
+  closeBubble.addEventListener('click', function() {
+    speechBubble.classList.remove('show');
+  });
+
+  function showBubble(text) {
+    bubbleText.textContent = text;
+    speechBubble.classList.add('show');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(speechBubble, {opacity:0,scale:0.8}, {opacity:1,scale:1,duration:0.3,ease:'back.out(1.7)'});
+    }
+    setTimeout(function() {
+      speechBubble.classList.remove('show');
+    }, 4000);
+  }
+
+  // Page-specific state
+  var page1SheepClicked = 0;
+  var page2Answered = false;
+  var page3Round = 0;
+  var page3Targets = [2,4,1,5,3];
+  var page3Answered = false;
+  var page4Matches = {};
+  var page4Targets = ['6','7','8','9','10'];
+  var page5SelectedCluster = null;
+  var page5Answers = {A:3, B:5, C:7, D:9};
+  var page5Score = 0;
+  var page5Done = {};
+  var page5CompletedFlag = false;
+  var page6Done = false;
+
+  function initPage(idx) {
+    if (idx === 0) {
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.floating-num', {y:0}, {y:-15,duration:1.5,ease:'sine.inOut',yoyo:true,repeat:-1,stagger:0.15});
+      }
+    }
+    if (idx === 1) {
+      page1SheepClicked = 0;
+      document.querySelectorAll('#page1Game .game-btn').forEach(function(btn) {
+        btn.classList.remove('correct','wrong','selected');
+        btn.textContent = btn.dataset.sheepBtn === '0' ? '🐑 第1只' : (btn.dataset.sheepBtn === '1' ? '🐑 第2只' : '🐑 第3只');
+      });
+      document.querySelectorAll('.sheep').forEach(function(s) { s.style.opacity = '1'; });
+    }
+    if (idx === 2) {
+      page2Answered = false;
+      document.querySelectorAll('#page2Game .game-btn').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page2Result').textContent = '';
+    }
+    if (idx === 3) {
+      page3Round = 0;
+      page3Answered = false;
+      setupPage3();
+    }
+    if (idx === 4) {
+      page4Matches = {};
+      document.querySelectorAll('#page4DragNums .number-card').forEach(function(c) {
+        c.classList.remove('matched');
+        c.style.opacity = '1';
+        c.style.pointerEvents = 'auto';
+      });
+      document.querySelectorAll('#page4Drops .drop-zone').forEach(function(z) {
+        z.style.borderColor = '#42A5F5';
+        z.textContent = z.dataset.count + '个 💎';
+      });
+      document.getElementById('page4Result').textContent = '';
+    }
+    if (idx === 5) {
+      page5SelectedCluster = null;
+      document.querySelectorAll('[data-page5-cluster]').forEach(function(b) { b.classList.remove('selected'); });
+      document.querySelectorAll('#page5Options .number-card').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      resetPage5SVG();
+    }
+    if (idx === 6) {
+      page6Done = false;
+      document.querySelectorAll('#page6Options .number-card').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page6Result').textContent = '';
+    }
+  }
+
+  // ---- PAGE 1 ----
+  function sheepCount(idx) {
+    if (page1SheepClicked > idx) return;
+    if (page1SheepClicked === idx) {
+      page1SheepClicked++;
+      var btn = document.querySelector('[data-sheep-btn="' + idx + '"]');
+      btn.classList.add('correct');
+      btn.textContent = '🐑 ' + (idx + 1) + ' ✓';
+      var sheep = document.querySelectorAll('.sheep');
+      if (sheep[idx]) {
+        if (typeof gsap !== 'undefined') {
+          gsap.to(sheep[idx], {y:-10,duration:0.2,yoyo:true,repeat:1,ease:'power2.out'});
+        }
+      }
+      showBubble((idx + 1) + ' 只小羊！');
+      if (page1SheepClicked >= 3) {
+        setTimeout(function() {
+          showBubble('🎉 一共有 3 只羊！太棒了！');
+        }, 500);
+      }
+    }
+  }
+
+  document.querySelectorAll('#page1Game .game-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      sheepCount(parseInt(this.dataset.sheepBtn));
+    });
+  });
+  document.querySelectorAll('.sheep').forEach(function(svgGroup) {
+    svgGroup.addEventListener('click', function() {
+      var idx = parseInt(this.dataset.sheep);
+      sheepCount(idx);
+    });
+  });
+
+  // ---- PAGE 2 ----
+  document.querySelectorAll('#page2Game .game-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (page2Answered) return;
+      var val = parseInt(this.dataset.choice);
+      document.querySelectorAll('#page2Game .game-btn').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      this.classList.add('selected');
+      page2Answered = true;
+      if (val === 3) {
+        this.classList.remove('selected');
+        this.classList.add('correct');
+        document.getElementById('page2Result').textContent = '✅ 答对了！3个苹果用3个手指表示！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo('#page2Result', {scale:0}, {scale:1,duration:0.4,ease:'back.out(2)'});
+        }
+      } else {
+        this.classList.remove('selected');
+        this.classList.add('wrong');
+        document.getElementById('page2Result').textContent = '❌ 再想想，3个苹果要用几个手指？';
+        page2Answered = false;
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 3 ----
+  function setupPage3() {
+    if (page3Round >= page3Targets.length) {
+      document.getElementById('page3Result').textContent = '🎉 全部答对了！你太棒了！';
+      return;
+    }
+    page3Answered = false;
+    var target = page3Targets[page3Round];
+    document.getElementById('page3Target').textContent = target;
+    document.querySelectorAll('#page3Cards .number-card').forEach(function(c) {
+      c.classList.remove('selected','correct','wrong');
+    });
+    document.getElementById('page3Result').textContent = '第 ' + (page3Round+1) + ' / ' + page3Targets.length + ' 题';
+  }
+
+  document.querySelectorAll('#page3Cards .number-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (page3Answered) return;
+      if (page3Round >= page3Targets.length) return;
+      var val = parseInt(this.dataset.num);
+      var target = page3Targets[page3Round];
+      document.querySelectorAll('#page3Cards .number-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      if (val === target) {
+        this.classList.add('correct');
+        page3Round++;
+        page3Answered = true;
+        document.getElementById('page3Result').textContent = '✅ 正确！' + val + ' ✓';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(this, {scale:1}, {scale:1.2,duration:0.2,yoyo:true,repeat:1});
+        }
+        if (page3Round < page3Targets.length) {
+          setTimeout(setupPage3, 800);
+        } else {
+          setTimeout(function() {
+            document.getElementById('page3Result').textContent = '🎉 全部答对了！太棒了！';
+          }, 500);
+        }
+      } else {
+        this.classList.add('wrong');
+        document.getElementById('page3Result').textContent = '❌ 不对哦，再数一数！';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 4 ----
+  var dragNum = null;
+  document.querySelectorAll('#page4DragNums .number-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (this.classList.contains('matched')) return;
+      document.querySelectorAll('#page4DragNums .number-card').forEach(function(c) { c.classList.remove('selected'); });
+      this.classList.add('selected');
+      dragNum = this.dataset.drag;
+    });
+  });
+
+  document.querySelectorAll('#page4Drops .drop-zone').forEach(function(zone) {
+    zone.addEventListener('click', function() {
+      if (!dragNum) return;
+      if (this.dataset.matched) return;
+      var target = this.dataset.target;
+      if (dragNum === target) {
+        var card = document.querySelector('[data-drag="' + dragNum + '"]');
+        card.classList.remove('selected');
+        card.classList.add('matched');
+        card.style.opacity = '0.5';
+        card.style.pointerEvents = 'none';
+        this.style.borderColor = '#4CAF50';
+        this.textContent = '✅ ' + this.dataset.count + '个 💎';
+        this.dataset.matched = 'true';
+        page4Matches[dragNum] = true;
+        showBubble(dragNum + ' 个钻石！正确！');
+        dragNum = null;
+        if (Object.keys(page4Matches).length >= 5) {
+          document.getElementById('page4Result').textContent = '🎉 全部匹配成功！';
+        } else {
+          document.getElementById('page4Result').textContent = '继续匹配下一个！';
+        }
+      } else {
+        showBubble('不对哦，再数数钻石的数量！');
+        var self = this;
+        self.style.borderColor = '#ef5350';
+        setTimeout(function() { self.style.borderColor = '#42A5F5'; }, 500);
+      }
+    });
+  });
+
+  // ---- PAGE 5 ----
+  document.querySelectorAll('[data-page5-cluster]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('[data-page5-cluster]').forEach(function(b) { b.classList.remove('selected'); });
+      this.classList.add('selected');
+      page5SelectedCluster = this.dataset.page5Cluster;
+      // highlight SVG cluster
+      resetPage5SVG();
+      var cluster = document.getElementById('cluster' + page5SelectedCluster);
+      if (cluster) {
+        cluster.querySelectorAll('rect').forEach(function(r) {
+          r.style.stroke = '#42A5F5';
+          r.style.strokeWidth = '3';
+        });
+      }
+    });
+  });
+
+  function resetPage5SVG() {
+    document.querySelectorAll('.page[data-page="5"] .svg-wrap svg rect').forEach(function(r) {
+      r.style.stroke = 'none';
+      r.style.strokeWidth = '0';
+    });
+  }
+
+  document.querySelectorAll('#page5Options .number-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (!page5SelectedCluster) {
+        document.getElementById('page5Result').textContent = '👆 先选一组钻石吧！';
+        return;
+      }
+      if (page5Done[page5SelectedCluster]) return;
+      var val = parseInt(this.dataset.choice);
+      var correct = page5Answers[page5SelectedCluster];
+      document.querySelectorAll('#page5Options .number-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      if (val === correct) {
+        this.classList.add('correct');
+        page5Score++;
+        page5Done[page5SelectedCluster] = true;
+        document.getElementById('page5Score').textContent = '⭐ 得分: ' + page5Score + ' / 4';
+        document.getElementById('page5Result').textContent = '✅ 答对了！' + page5SelectedCluster + ' 组有 ' + correct + ' 个钻石！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo('#page5Result', {scale:0}, {scale:1,duration:0.4,ease:'back.out(2)'});
+        }
+        if (page5Score >= 4) {
+          setTimeout(function() {
+            document.getElementById('page5Result').textContent = '🎉 全部答对了！你是数数小能手！✨';
+            if (typeof gsap !== 'undefined') {
+              gsap.to('#page5Result', {scale:1.1,duration:0.3,yoyo:true,repeat:3});
+            }
+          }, 400);
+        }
+      } else {
+        this.classList.add('wrong');
+        document.getElementById('page5Result').textContent = '❌ 再数一数 ' + page5SelectedCluster + ' 组有多少个钻石？';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 6 ----
+  document.querySelectorAll('#page6Options .number-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (page6Done) return;
+      var val = parseInt(this.dataset.choice);
+      document.querySelectorAll('#page6Options .number-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      this.classList.add('selected');
+      // 12 blocks in the SVG
+      if (val === 12) {
+        this.classList.remove('selected');
+        this.classList.add('correct');
+        page6Done = true;
+        document.getElementById('page6Result').innerHTML = '🎉 你学会了数 1 到 10！<br>🌟 恭喜通关！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo('#page6Result', {scale:0,rotation:-10}, {scale:1,rotation:0,duration:0.6,ease:'back.out(2)'});
+        }
+        launchConfetti();
+      } else {
+        this.classList.remove('selected');
+        this.classList.add('wrong');
+        document.getElementById('page6Result').textContent = '❌ 再数数看，仔细一点哦！';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // Confetti
+  function launchConfetti() {
+    var container = document.querySelector('.book-card');
+    var colors = ['#42A5F5','#ef5350','#4CAF50','#FFC107','#AB47BC','#FF7043','#26C6DA'];
+    for (var i = 0; i < 60; i++) {
+      var el = document.createElement('div');
+      el.style.cssText =
+        'position:absolute;width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;' +
+        'background:' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+        'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';' +
+        'top:' + (10 + Math.random() * 30) + '%;left:' + (5 + Math.random() * 90) + '%;' +
+        'pointer-events:none;z-index:60;';
+      container.appendChild(el);
+      if (typeof gsap !== 'undefined') {
+        gsap.to(el, {
+          y: 200 + Math.random() * 200,
+          x: -50 + Math.random() * 100,
+          rotation: 360 * (Math.random() > 0.5 ? 1 : -1),
+          opacity: 0,
+          duration: 1.5 + Math.random() * 2,
+          delay: Math.random() * 0.5,
+          ease: 'power2.out',
+          onComplete: function() { if (el.parentNode) el.parentNode.removeChild(el); }
+        });
+      }
+    }
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') { goTo(currentPage - 1); }
+    else if (e.key === 'ArrowRight') { goTo(currentPage + 1); }
+  });
+
+  // Init
+  goTo(0);
+
+})();
+</script>
+</body>
+</html>

@@ -77,4 +77,10 @@ nav:
       - 🌴 雨林大冒险: courseware/rainforest-adventure.html
     - 🀄 语文:
       - 🌿 大自然识字: courseware/nature-lesson-4.html
+    - 🔢 数学启蒙:
+      - 🔢 认识数字1~10: courseware/math-numbers-1-10.html
+    - 🀄 汉字:
+      - 🀄 神奇汉字: courseware/chinese-magic-characters.html
+    - 🌈 英语色彩:
+      - 🌈 彩虹颜色: courseware/english-colors.html
   - 全部PDF打包下载: download.md

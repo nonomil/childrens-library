@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>🈚 汉字魔法 — 认识象形文字</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  font-family:'Fredoka One',sans-serif;
+  background:linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;margin:0;
+}
+.book-card{
+  background:#fff;
+  border-radius:40px;
+  box-shadow:0 8px 0 #EF5350,0 12px 30px rgba(239,83,80,0.3);
+  max-width:800px;width:100%;
+  padding:30px 25px 80px;
+  position:relative;
+  overflow:hidden;
+}
+.page{display:none;flex-direction:column;align-items:center;gap:16px;}
+.page.active{display:flex;}
+.page-title{
+  font-size:28px;color:#EF5350;text-align:center;
+  text-shadow:2px 2px 0 rgba(239,83,80,0.15);
+}
+.page-subtitle{font-size:16px;color:#888;text-align:center;}
+.story-text{
+  font-size:17px;color:#555;text-align:center;line-height:1.7;
+  padding:0 10px;
+}
+.svg-wrap{width:100%;display:flex;justify-content:center;position:relative;}
+.svg-wrap svg{max-width:100%;height:auto;}
+.game-area{
+  width:100%;display:flex;flex-wrap:wrap;gap:12px;
+  justify-content:center;align-items:center;padding:10px 0;
+}
+.game-btn{
+  font-family:'Fredoka One',sans-serif;
+  background:#fff;border:3px solid #EF5350;border-radius:20px;
+  padding:12px 28px;font-size:24px;color:#EF5350;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 0 rgba(239,83,80,0.3);
+  user-select:none;
+}
+.game-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 rgba(239,83,80,0.3);}
+.game-btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(239,83,80,0.3);}
+.game-btn.selected{background:#EF5350;color:#fff;}
+.game-btn.correct{background:#4CAF50;border-color:#4CAF50;color:#fff;box-shadow:0 4px 0 rgba(76,175,80,0.3);}
+.game-btn.wrong{background:#ef5350;border-color:#ef5350;color:#fff;animation:shake 0.4s;}
+.drop-zone{
+  border:3px dashed #EF5350;border-radius:20px;padding:15px;min-width:100px;min-height:60px;
+  display:flex;align-items:center;justify-content:center;transition:all 0.3s;
+}
+.drop-zone.drag-over{background:rgba(239,83,80,0.1);border-color:#C62828;}
+.draggable{cursor:grab;transition:transform 0.2s;}
+.draggable:active{cursor:grabbing;transform:scale(0.95);}
+.score-display{
+  font-size:20px;color:#EF5350;padding:8px 20px;
+  background:rgba(239,83,80,0.1);border-radius:30px;
+}
+.celebration{
+  font-size:28px;color:#4CAF50;text-align:center;
+  animation:celebratePop 0.6s ease-out;
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-8px);}
+  75%{transform:translateX(8px);}
+}
+@keyframes celebratePop{
+  0%{transform:scale(0);opacity:0;}
+  50%{transform:scale(1.3);}
+  100%{transform:scale(1);opacity:1;}
+}
+.navigation{
+  position:absolute;bottom:20px;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;gap:15px;
+  padding:0 25px;flex-wrap:wrap;
+}
+.nav-btn{
+  width:44px;height:44px;border-radius:50%;
+  border:none;font-size:26px;color:#fff;
+  background:#EF5350;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;
+  box-shadow:0 4px 0 #C62828;transition:all 0.15s;
+  font-family:'Fredoka One',sans-serif;padding:0;line-height:1;
+}
+.nav-btn:active{transform:translateY(3px);box-shadow:none;}
+.nav-btn:disabled{background:#ccc;box-shadow:0 4px 0 #999;cursor:default;}
+.page-dots{display:flex;gap:8px;}
+.page-dot{
+  width:12px;height:12px;border-radius:50%;background:#ddd;
+  border:none;cursor:pointer;transition:all 0.3s;padding:0;
+}
+.page-dot.active{background:#EF5350;transform:scale(1.3);}
+.read-btn{
+  width:44px;height:44px;border-radius:50%;border:3px solid #EF5350;
+  background:#fff;font-size:22px;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;transition:all 0.2s;
+  box-shadow:0 3px 0 rgba(239,83,80,0.25);line-height:1;
+}
+.read-btn:active{transform:translateY(2px);box-shadow:none;}
+.speech-bubble{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:#fff;border:3px solid #EF5350;border-radius:30px;
+  padding:25px 35px;max-width:85%;z-index:100;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  font-size:22px;color:#333;text-align:center;display:none;
+  pointer-events:none;
+}
+.speech-bubble::before{
+  content:'';position:absolute;bottom:-18px;left:50%;
+  transform:translateX(-50%);
+  border:10px solid transparent;border-top-color:#EF5350;
+}
+.speech-bubble.show{display:block;pointer-events:auto;}
+.speech-bubble .close-bubble{
+  position:absolute;top:-12px;right:-12px;
+  width:32px;height:32px;border-radius:50%;border:2px solid #EF5350;
+  background:#fff;cursor:pointer;font-size:16px;display:flex;
+  align-items:center;justify-content:center;color:#EF5350;line-height:1;
+}
+.floating-char{
+  display:inline-block;animation:floatUp 3s ease-in-out infinite;
+  font-size:36px;
+}
+@keyframes floatUp{
+  0%,100%{transform:translateY(0) rotate(0deg);opacity:0.7;}
+  50%{transform:translateY(-20px) rotate(10deg);opacity:1;}
+}
+.interact-hint{
+  font-size:14px;color:#aaa;text-align:center;margin-top:-5px;
+}
+.item-btn{
+  font-family:'Fredoka One',sans-serif;
+  background:rgba(239,83,80,0.08);border:2px solid #EF5350;
+  border-radius:16px;padding:8px 16px;font-size:20px;color:#EF5350;
+  cursor:pointer;transition:all 0.2s;
+}
+.item-btn:active{background:#EF5350;color:#fff;}
+.item-btn.matched{background:#4CAF50;border-color:#4CAF50;color:#fff;opacity:0.7;}
+.card-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.char-card{
+  font-family:'Fredoka One',sans-serif;
+  width:64px;height:76px;border-radius:14px;border:3px solid #EF5350;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:#EF5350;background:#fff;cursor:pointer;
+  transition:all 0.2s;box-shadow:0 4px 0 rgba(239,83,80,0.25);
+}
+.char-card:active{transform:translateY(3px);box-shadow:none;}
+.char-card.selected{background:#EF5350;color:#fff;}
+.char-card.correct{background:#4CAF50;border-color:#4CAF50;color:#fff;}
+.char-card.wrong{background:#ef5350;border-color:#ef5350;color:#fff;animation:shake 0.4s;}
+.final-title{font-size:32px;color:#EF5350;text-align:center;}
+.confetti-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;}
+@media(max-width:600px){
+  .book-card{padding:20px 15px 90px;border-radius:30px;}
+  .page-title{font-size:22px;}
+  .story-text{font-size:15px;}
+  .game-btn{font-size:20px;padding:10px 22px;}
+  .speech-bubble{font-size:18px;padding:20px 25px;}
+  .nav-btn{width:38px;height:38px;font-size:22px;}
+  .char-card{width:54px;height:66px;font-size:24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="book-card" id="app">
+
+  <!-- PAGE 0: Cover -->
+  <div class="page active" data-page="0">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 220" width="400" height="220">
+        <rect x="30" y="90" width="50" height="50" fill="#EF5350" rx="8"/>
+        <rect x="40" y="80" width="50" height="50" fill="#E57373" rx="8"/>
+        <rect x="35" y="85" width="50" height="50" fill="#EF9A9A" rx="8"/>
+        <text x="60" y="120" font-size="24" fill="#fff" text-anchor="middle" font-family="Fredoka One">日</text>
+
+        <rect x="100" y="70" width="50" height="50" fill="#FF8A65" rx="8"/>
+        <rect x="110" y="60" width="50" height="50" fill="#FFAB91" rx="8"/>
+        <rect x="105" y="65" width="50" height="50" fill="#FFCCBC" rx="8"/>
+        <text x="130" y="100" font-size="24" fill="#fff" text-anchor="middle" font-family="Fredoka One">月</text>
+
+        <rect x="170" y="50" width="50" height="50" fill="#EC407A" rx="8"/>
+        <rect x="180" y="40" width="50" height="50" fill="#F06292" rx="8"/>
+        <rect x="175" y="45" width="50" height="50" fill="#F48FB1" rx="8"/>
+        <text x="200" y="80" font-size="24" fill="#fff" text-anchor="middle" font-family="Fredoka One">山</text>
+
+        <rect x="240" y="70" width="50" height="50" fill="#AB47BC" rx="8"/>
+        <rect x="250" y="60" width="50" height="50" fill="#CE93D8" rx="8"/>
+        <rect x="245" y="65" width="50" height="50" fill="#E1BEE7" rx="8"/>
+        <text x="270" y="100" font-size="24" fill="#fff" text-anchor="middle" font-family="Fredoka One">水</text>
+
+        <rect x="310" y="90" width="50" height="50" fill="#EF5350" rx="8"/>
+        <rect x="320" y="80" width="50" height="50" fill="#E57373" rx="8"/>
+        <rect x="315" y="85" width="50" height="50" fill="#EF9A9A" rx="8"/>
+        <text x="340" y="120" font-size="24" fill="#fff" text-anchor="middle" font-family="Fredoka One">火</text>
+      </svg>
+    </div>
+    <div class="page-title">🈚 汉字魔法</div>
+    <div class="page-subtitle">和 Steve 一起认识象形文字！</div>
+    <div style="font-size:44px;letter-spacing:10px;">
+      <span class="floating-char" style="animation-delay:0s;">日</span>
+      <span class="floating-char" style="animation-delay:0.4s;">月</span>
+      <span class="floating-char" style="animation-delay:0.8s;">山</span>
+      <span class="floating-char" style="animation-delay:1.2s;">水</span>
+      <span class="floating-char" style="animation-delay:1.6s;">火</span>
+      <span class="floating-char" style="animation-delay:2.0s;">木</span>
+      <span class="floating-char" style="animation-delay:2.4s;">田</span>
+      <span class="floating-char" style="animation-delay:2.8s;">人</span>
+      <span class="floating-char" style="animation-delay:3.2s;">大</span>
+      <span class="floating-char" style="animation-delay:3.6s;">中</span>
+    </div>
+  </div>
+
+  <!-- PAGE 1: 山洞符文 -->
+  <div class="page" data-page="1">
+    <div class="page-title">🏔️ 山洞符文</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 200" width="400" height="200">
+        <rect width="400" height="200" fill="#5D4037"/>
+        <ellipse cx="200" cy="90" rx="140" ry="80" fill="#3E2723"/>
+        <ellipse cx="200" cy="95" rx="120" ry="65" fill="#4E342E"/>
+        <text x="130" y="70" font-size="22" fill="#FFCC80" text-anchor="middle" font-family="sans-serif">☀</text>
+        <text x="160" y="90" font-size="20" fill="#FFCC80" text-anchor="middle" font-family="sans-serif">☽</text>
+        <text x="200" y="75" font-size="24" fill="#FFCC80" text-anchor="middle" font-family="sans-serif">⛰</text>
+        <text x="240" y="95" font-size="22" fill="#FFCC80" text-anchor="middle" font-family="sans-serif">〰</text>
+        <text x="270" y="80" font-size="22" fill="#FFCC80" text-anchor="middle" font-family="sans-serif">🔥</text>
+
+        <!-- Steve with torch -->
+        <rect x="180" y="120" width="24" height="24" rx="3" fill="#FFCCBC"/>
+        <rect x="182" y="144" width="20" height="18" rx="2" fill="#EF5350"/>
+        <rect x="182" y="162" width="20" height="18" rx="2" fill="#C62828"/>
+        <rect x="180" y="120" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="196" y="120" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="188" y="132" width="4" height="4" rx="1" fill="#8D6E63"/>
+        <rect x="192" y="136" width="6" height="3" rx="1" fill="#8D6E63"/>
+        <!-- torch -->
+        <rect x="210" y="130" width="6" height="20" rx="2" fill="#795548"/>
+        <ellipse cx="213" cy="128" rx="8" ry="12" fill="#FF6F00"/>
+        <rect x="214" y="98" width="80" height="28" rx="14" fill="#fff" stroke="#EF5350" stroke-width="2"/>
+        <text x="254" y="117" font-size="13" fill="#333" text-anchor="middle" font-family="Fredoka One">墙上好多符号！</text>
+        <polygon points="214,126 220,136 226,126" fill="#fff" stroke="#EF5350" stroke-width="2"/>
+        <line x1="215" y1="126" x2="225" y2="126" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="story-text">Steve 在山洞里发现了古老的符文！古人把看到的东西画成符号，这就是最早的汉字...</div>
+    <div class="game-area" id="page1Game">
+      <button class="game-btn" data-rune="0">☀ 太阳</button>
+      <button class="game-btn" data-rune="1">☽ 月亮</button>
+      <button class="game-btn" data-rune="2">⛰ 大山</button>
+      <button class="game-btn" data-rune="3">〰 水流</button>
+      <button class="game-btn" data-rune="4">🔥 火焰</button>
+    </div>
+    <div class="interact-hint">点击符文听介绍！</div>
+  </div>
+
+  <!-- PAGE 2: 日 -->
+  <div class="page" data-page="2">
+    <div class="page-title">☀️ 日 — 太阳</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 180" width="400" height="180">
+        <rect width="400" height="180" fill="#FFF8E1"/>
+        <!-- big sun -->
+        <circle cx="120" cy="90" r="40" fill="#FFD54F"/>
+        <circle cx="120" cy="90" r="30" fill="#FFC107"/>
+        <!-- rays -->
+        <line x1="120" y1="35" x2="120" y2="15" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="120" y1="145" x2="120" y2="165" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="65" y1="90" x2="45" y2="90" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="175" y1="90" x2="195" y2="90" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="81" y1="51" x2="67" y2="37" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="159" y1="129" x2="173" y2="143" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="159" y1="51" x2="173" y2="37" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+        <line x1="81" y1="129" x2="67" y2="143" stroke="#FFB300" stroke-width="4" stroke-linecap="round"/>
+
+        <!-- evolution: circle with dot -> 日 -->
+        <circle cx="260" cy="65" r="20" fill="none" stroke="#EF5350" stroke-width="3"/>
+        <circle cx="260" cy="65" r="3" fill="#EF5350"/>
+        <text x="260" y="105" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">甲骨文</text>
+
+        <text x="320" y="72" font-size="32" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">☀</text>
+        <text x="320" y="105" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">金文</text>
+
+        <rect x="370" y="50" width="30" height="30" rx="3" fill="none" stroke="#EF5350" stroke-width="3"/>
+        <text x="385" y="105" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">现代</text>
+
+        <!-- arrow -->
+        <text x="240" y="40" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+        <text x="305" y="40" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+      </svg>
+    </div>
+    <div class="story-text">"日" 就是太阳。古人画一个圆圈中间加一点，后来慢慢变成了方方正正的 "日"。</div>
+    <div class="game-area" id="page2Game">
+      <button class="game-btn" data-choice="0">🌞 太阳</button>
+      <button class="game-btn" data-choice="1">🌙 月亮</button>
+      <button class="game-btn" data-choice="2">⛰ 大山</button>
+      <button class="game-btn" data-choice="3">🌊 水流</button>
+    </div>
+    <div id="page2Result" style="font-size:20px;color:#EF5350;min-height:30px;"></div>
+  </div>
+
+  <!-- PAGE 3: 月 -->
+  <div class="page" data-page="3">
+    <div class="page-title">🌙 月 — 月亮</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 180" width="400" height="180">
+        <rect width="400" height="180" fill="#E8EAF6"/>
+        <!-- crescent moon -->
+        <circle cx="120" cy="90" r="40" fill="#FFF9C4"/>
+        <circle cx="140" cy="80" r="34" fill="#E8EAF6"/>
+        <circle cx="100" cy="70" r="6" fill="#E0E0E0" opacity="0.5"/>
+        <circle cx="108" cy="60" r="4" fill="#E0E0E0" opacity="0.5"/>
+        <circle cx="92" cy="78" r="3" fill="#E0E0E0" opacity="0.5"/>
+
+        <!-- evolution -->
+        <text x="245" y="40" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+        <text x="310" y="40" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+
+        <path d="M 235,55 Q 245,40 255,55 Q 260,70 255,85 Q 245,100 235,85 Q 230,70 235,55" fill="none" stroke="#EF5350" stroke-width="3"/>
+        <text x="245" y="115" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">甲骨文</text>
+
+        <path d="M 300,60 Q 310,45 320,60 L 320,80 Q 310,95 300,80 Z" fill="none" stroke="#EF5350" stroke-width="3"/>
+        <text x="310" y="115" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">金文</text>
+
+        <rect x="370" y="55" width="22" height="28" rx="2" fill="none" stroke="#EF5350" stroke-width="3"/>
+        <line x1="376" y1="55" x2="376" y2="83" stroke="#EF5350" stroke-width="1.5"/>
+        <text x="381" y="115" font-size="11" fill="#888" text-anchor="middle" font-family="Fredoka One">现代</text>
+      </svg>
+    </div>
+    <div class="story-text">"月" 是弯弯的月亮。古人画一个月牙，后来变成了 "月"。</div>
+    <div class="game-area" id="page3Game" style="flex-direction:column;gap:10px;">
+      <div class="card-row" id="page3Question">
+        <span style="font-size:18px;color:#555;margin-right:4px;">🔍 下面哪个是 "月"？</span>
+      </div>
+      <div class="card-row" id="page3Cards">
+        <button class="char-card" data-char="日">日</button>
+        <button class="char-card" data-char="月">月</button>
+        <button class="char-card" data-char="山">山</button>
+        <button class="char-card" data-char="水">水</button>
+        <button class="char-card" data-char="火">火</button>
+      </div>
+      <div id="page3Result" style="font-size:18px;color:#EF5350;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: 山 -->
+  <div class="page" data-page="4">
+    <div class="page-title">⛰️ 山 — 大山</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 180" width="400" height="180">
+        <rect width="400" height="180" fill="#E8F5E9"/>
+        <!-- mountains -->
+        <polygon points="50,160 130,40 210,160" fill="#81C784"/>
+        <polygon points="110,160 200,20 290,160" fill="#66BB6A"/>
+        <polygon points="200,160 280,50 360,160" fill="#4CAF50"/>
+        <!-- snow caps -->
+        <polygon points="125,55 130,40 135,55" fill="#fff"/>
+        <polygon points="195,35 200,20 205,35" fill="#fff"/>
+        <polygon points="275,65 280,50 285,65" fill="#fff"/>
+        <!-- cloud -->
+        <ellipse cx="330" cy="40" rx="35" ry="14" fill="#fff" opacity="0.8"/>
+        <ellipse cx="350" cy="35" rx="20" ry="12" fill="#fff" opacity="0.8"/>
+
+        <!-- evolution arrow -->
+        <text x="240" y="155" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+        <text x="315" y="155" font-size="14" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">▲</text>
+
+        <!-- oracle bone 山 -->
+        <polygon points="245,130 250,115 255,130" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+        <polygon points="255,130 262,110 269,130" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+        <polygon points="269,130 274,117 279,130" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+
+        <!-- modern 山 -->
+        <rect x="303" y="113" width="24" height="17" rx="2" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+        <line x1="315" y1="113" x2="315" y2="130" stroke="#EF5350" stroke-width="2.5"/>
+      </svg>
+    </div>
+    <div class="story-text">"山" 就是大山的样子，三个山峰连在一起。</div>
+    <div class="game-area" id="page4Game">
+      <div class="card-row" id="page4DragNums">
+        <button class="char-card" data-char="日">日</button>
+        <button class="char-card" data-char="月">月</button>
+        <button class="char-card" data-char="山">山</button>
+        <button class="char-card" data-char="水">水</button>
+        <button class="char-card" data-char="火">火</button>
+      </div>
+      <div style="font-size:16px;color:#888;">点击一个汉字，再点击对应的图片：</div>
+      <div class="card-row" id="page4Drops" style="gap:12px;">
+        <div class="drop-zone" data-target="日" data-label="☀️ 太阳">☀️ 太阳</div>
+        <div class="drop-zone" data-target="月" data-label="🌙 月亮">🌙 月亮</div>
+        <div class="drop-zone" data-target="山" data-label="⛰️ 大山">⛰️ 大山</div>
+        <div class="drop-zone" data-target="水" data-label="🌊 水流">🌊 水流</div>
+        <div class="drop-zone" data-target="火" data-label="🔥 火焰">🔥 火焰</div>
+      </div>
+      <div id="page4Result" style="font-size:18px;color:#EF5350;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: 水 火 -->
+  <div class="page" data-page="5">
+    <div class="page-title">💧🔥 水与火</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 160" width="400" height="160">
+        <rect width="400" height="160" fill="#FFF3E0"/>
+
+        <!-- water side -->
+        <rect x="20" y="60" width="160" height="90" rx="10" fill="#B3E5FC"/>
+        <path d="M 30,100 Q 60,80 80,100 Q 100,80 120,100 Q 140,80 160,100" fill="none" stroke="#29B6F6" stroke-width="3"/>
+        <path d="M 30,120 Q 60,100 80,120 Q 100,100 120,120 Q 140,100 160,120" fill="none" stroke="#29B6F6" stroke-width="2"/>
+        <!-- water character evolution -->
+        <text x="100" y="40" font-size="13" fill="#888" text-anchor="middle" font-family="Fredoka One">甲骨文</text>
+        <path d="M 85,30 Q 95,20 100,30 Q 105,20 115,30" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+
+        <text x="160" y="40" font-size="13" fill="#888" text-anchor="middle" font-family="Fredoka One">现代</text>
+        <rect x="148" y="20" width="28" height="18" rx="2" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+        <line x1="158" y1="20" x2="158" y2="38" stroke="#EF5350" stroke-width="1.5"/>
+
+        <!-- divider -->
+        <line x1="195" y1="20" x2="195" y2="140" stroke="#ddd" stroke-width="2" stroke-dasharray="6,4"/>
+
+        <!-- fire side -->
+        <rect x="220" y="60" width="160" height="90" rx="10" fill="#FFCDD2"/>
+        <!-- flame shapes -->
+        <path d="M 250,120 Q 240,90 260,80 Q 270,90 265,110 Q 275,100 280,110 Q 275,125 260,135 Z" fill="#FF7043"/>
+        <path d="M 290,120 Q 285,100 300,85 Q 310,100 305,115 Q 315,105 315,115 Q 310,130 300,135 Z" fill="#EF5350"/>
+        <path d="M 330,120 Q 325,95 340,80 Q 350,95 345,110 Q 355,105 355,115 Q 350,130 340,135 Z" fill="#FF8A65"/>
+
+        <!-- fire char evolution -->
+        <text x="300" y="40" font-size="13" fill="#888" text-anchor="middle" font-family="Fredoka One">甲骨文</text>
+        <path d="M 285,25 Q 295,15 300,28 Q 305,15 315,25" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+
+        <text x="360" y="40" font-size="13" fill="#888" text-anchor="middle" font-family="Fredoka One">现代</text>
+        <rect x="348" y="20" width="28" height="18" rx="2" fill="none" stroke="#EF5350" stroke-width="2.5"/>
+        <line x1="356" y1="20" x2="362" y2="38" stroke="#EF5350" stroke-width="1.5"/>
+        <line x1="362" y1="20" x2="356" y2="38" stroke="#EF5350" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div class="story-text">"水" 像流动的水波，"火" 像燃烧的火焰。看看你能配对成功吗？</div>
+    <div class="game-area" id="page5Game" style="flex-direction:column;gap:8px;">
+      <div class="card-row" id="page5Picto">
+        <button class="item-btn" data-picto="水" style="min-width:70px;">〰️ 水波</button>
+        <button class="item-btn" data-picto="火" style="min-width:70px;">🔥 火焰</button>
+      </div>
+      <div style="font-size:16px;color:#888;">选一个图，再选对应的汉字：</div>
+      <div class="card-row" id="page5Options">
+        <button class="char-card" data-choice="日">日</button>
+        <button class="char-card" data-choice="月">月</button>
+        <button class="char-card" data-choice="山">山</button>
+        <button class="char-card" data-choice="水">水</button>
+        <button class="char-card" data-choice="火">火</button>
+      </div>
+      <div class="score-display" id="page5Score">⭐ 得分: 0 / 2</div>
+      <div id="page5Result" style="font-size:18px;color:#EF5350;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: 小测验 -->
+  <div class="page" data-page="6">
+    <div class="page-title">📝 小测验</div>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 400 200" width="400" height="200">
+        <rect width="400" height="200" fill="#FFF8E1"/>
+        <!-- stone tablet -->
+        <rect x="120" y="30" width="160" height="140" rx="8" fill="#A1887F"/>
+        <rect x="130" y="40" width="140" height="120" rx="4" fill="#D7CCC8"/>
+        <text x="200" y="75" font-size="20" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">?</text>
+        <text x="200" y="105" font-size="20" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">?</text>
+        <text x="200" y="135" font-size="20" fill="#EF5350" text-anchor="middle" font-family="Fredoka One">?</text>
+        <!-- Steve -->
+        <rect x="310" y="110" width="24" height="24" rx="3" fill="#FFCCBC"/>
+        <rect x="312" y="134" width="20" height="18" rx="2" fill="#EF5350"/>
+        <rect x="312" y="152" width="20" height="18" rx="2" fill="#C62828"/>
+        <rect x="310" y="110" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="326" y="110" width="8" height="8" rx="1" fill="#FFAB91"/>
+        <rect x="318" y="122" width="4" height="4" rx="1" fill="#8D6E63"/>
+        <rect x="322" y="126" width="6" height="3" rx="1" fill="#8D6E63"/>
+        <rect x="330" y="80" width="70" height="24" rx="12" fill="#fff" stroke="#EF5350" stroke-width="2"/>
+        <text x="365" y="97" font-size="12" fill="#333" text-anchor="middle" font-family="Fredoka One">考考你！</text>
+        <polygon points="330,104 335,112 340,104" fill="#fff" stroke="#EF5350" stroke-width="2"/>
+        <line x1="331" y1="104" x2="339" y2="104" stroke="#fff" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="story-text">来挑战一下，看你能认出多少汉字！</div>
+    <div class="game-area" id="page6Game" style="flex-direction:column;gap:8px;">
+      <div class="card-row" id="page6Question" style="font-size:20px;color:#555;">
+        <span id="page6QText">"☀️" 对应哪个汉字？</span>
+      </div>
+      <div class="card-row" id="page6Options">
+        <button class="char-card" data-choice="日">日</button>
+        <button class="char-card" data-choice="月">月</button>
+        <button class="char-card" data-choice="山">山</button>
+        <button class="char-card" data-choice="水">水</button>
+        <button class="char-card" data-choice="火">火</button>
+      </div>
+      <div class="score-display" id="page6Score">⭐ 得分: 0 / 5</div>
+      <div id="page6Result" style="font-size:18px;color:#EF5350;min-height:24px;"></div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="navigation">
+    <button class="nav-btn" id="prevBtn">‹</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" id="nextBtn">›</button>
+    <button class="read-btn" id="readBtn">🔊</button>
+  </div>
+
+  <!-- Speech Bubble Overlay -->
+  <div class="speech-bubble" id="speechBubble">
+    <button class="close-bubble" id="closeBubble">✕</button>
+    <div id="bubbleText"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  var currentPage = 0;
+  var totalPages = 7;
+  var readTexts = [
+    '🎴 欢迎来到汉字魔法世界！今天我们一起来认识有趣的象形文字！',
+    '🏔️ 古人把看到的东西画成符号，这些符号慢慢变成了汉字。点击符文学习吧！',
+    '☀️ "日" 就是太阳。古人画一个圆圈中间加一点，就是最早的 "日"。',
+    '🌙 "月" 是弯弯的月亮。月亮的形状就是月牙的样子。',
+    '⛰️ "山" 像三座山峰连在一起，代表着大山。',
+    '💧 "水" 像流动的水波，"火" 像燃烧的火焰。把图片和汉字配对吧！',
+    '📝 最后的小测验！看看你记住了多少个汉字？加油！'
+  ];
+
+  var speechBubble = document.getElementById('speechBubble');
+  var bubbleText = document.getElementById('bubbleText');
+  var closeBubble = document.getElementById('closeBubble');
+
+  // Navigation
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var pageDots = document.getElementById('pageDots');
+
+  for (var i = 0; i < totalPages; i++) {
+    var dot = document.createElement('button');
+    dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.addEventListener('click', function() {
+      goTo(parseInt(this.dataset.page));
+    });
+    pageDots.appendChild(dot);
+  }
+
+  function goTo(idx) {
+    if (idx < 0 || idx >= totalPages) return;
+    currentPage = idx;
+    var pages = document.querySelectorAll('.page');
+    pages.forEach(function(p, i) {
+      p.classList.toggle('active', i === idx);
+    });
+    var dots = document.querySelectorAll('.page-dot');
+    dots.forEach(function(d, i) {
+      d.classList.toggle('active', i === idx);
+    });
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === totalPages - 1;
+    speechBubble.classList.remove('show');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo('.page.active .page-title', {opacity:0,y:-20}, {opacity:1,y:0,duration:0.4,ease:'back.out(1.7)'});
+      gsap.fromTo('.page.active .svg-wrap', {opacity:0,scale:0.9}, {opacity:1,scale:1,duration:0.4,delay:0.1});
+      gsap.fromTo('.page.active .game-area', {opacity:0,y:20}, {opacity:1,y:0,duration:0.3,delay:0.2});
+    }
+    initPage(idx);
+  }
+
+  prevBtn.addEventListener('click', function(){ goTo(currentPage - 1); });
+  nextBtn.addEventListener('click', function(){ goTo(currentPage + 1); });
+
+  // Read-aloud
+  document.getElementById('readBtn').addEventListener('click', function() {
+    showBubble(readTexts[currentPage]);
+  });
+
+  closeBubble.addEventListener('click', function() {
+    speechBubble.classList.remove('show');
+  });
+
+  function showBubble(text) {
+    bubbleText.textContent = text;
+    speechBubble.classList.add('show');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(speechBubble, {opacity:0,scale:0.8}, {opacity:1,scale:1,duration:0.3,ease:'back.out(1.7)'});
+    }
+    setTimeout(function() {
+      speechBubble.classList.remove('show');
+    }, 4000);
+  }
+
+  // Page-specific state
+  var page2Answered = false;
+  var page3Answered = false;
+  var selectedChar = null;
+  var page4Matches = {};
+  var page4Targets = ['日','月','山','水','火'];
+  var page5SelectedPicto = null;
+  var page5Score = 0;
+  var page5Done = {};
+  var page5Answers = {水:'水',火:'火'};
+  var page6Questions = [
+    {q:'"☀️" 对应哪个汉字？',a:'日'},
+    {q:'"🌙" 对应哪个汉字？',a:'月'},
+    {q:'"⛰️" 对应哪个汉字？',a:'山'},
+    {q:'"🌊" 对应哪个汉字？',a:'水'},
+    {q:'"🔥" 对应哪个汉字？',a:'火'}
+  ];
+  var page6Idx = 0;
+  var page6Score = 0;
+  var page6Answered = false;
+
+  function initPage(idx) {
+    if (idx === 0) {
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo('.floating-char', {y:0}, {y:-15,duration:1.5,ease:'sine.inOut',yoyo:true,repeat:-1,stagger:0.15});
+      }
+    }
+    if (idx === 1) {
+      document.querySelectorAll('#page1Game .game-btn').forEach(function(btn) {
+        btn.classList.remove('correct','wrong','selected');
+      });
+    }
+    if (idx === 2) {
+      page2Answered = false;
+      document.querySelectorAll('#page2Game .game-btn').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page2Result').textContent = '';
+    }
+    if (idx === 3) {
+      page3Answered = false;
+      document.querySelectorAll('#page3Cards .char-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page3Result').textContent = '';
+    }
+    if (idx === 4) {
+      page4Matches = {};
+      selectedChar = null;
+      document.querySelectorAll('#page4DragNums .char-card').forEach(function(c) {
+        c.classList.remove('matched','selected');
+        c.style.opacity = '1';
+        c.style.pointerEvents = 'auto';
+      });
+      document.querySelectorAll('#page4Drops .drop-zone').forEach(function(z) {
+        z.style.borderColor = '#EF5350';
+        z.textContent = z.dataset.label;
+        delete z.dataset.matched;
+      });
+      document.getElementById('page4Result').textContent = '';
+    }
+    if (idx === 5) {
+      page5SelectedPicto = null;
+      document.querySelectorAll('#page5Picto .item-btn').forEach(function(b) { b.classList.remove('selected'); });
+      document.querySelectorAll('#page5Options .char-card').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page5Result').textContent = '';
+    }
+    if (idx === 6) {
+      page6Idx = 0;
+      page6Score = 0;
+      page6Answered = false;
+      document.getElementById('page6Score').textContent = '⭐ 得分: 0 / 5';
+      document.querySelectorAll('#page6Options .char-card').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      document.getElementById('page6Result').textContent = '';
+      setupPage6();
+    }
+  }
+
+  // ---- PAGE 1: 山洞符文 ----
+  document.querySelectorAll('#page1Game .game-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var idx = parseInt(this.dataset.rune);
+      var texts = [
+        '☀️ "日" 就是太阳的样子！',
+        '🌙 "月" 就像弯弯的月亮！',
+        '⛰️ "山" 像三座山峰连绵起伏！',
+        '🌊 "水" 像流动的水波！',
+        '🔥 "火" 像燃烧的火焰！'
+      ];
+      showBubble(texts[idx]);
+      if (typeof gsap !== 'undefined') {
+        gsap.fromTo(this, {scale:1}, {scale:1.1,duration:0.15,yoyo:true,repeat:1});
+      }
+    });
+  });
+
+  // ---- PAGE 2: 日 ----
+  document.querySelectorAll('#page2Game .game-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (page2Answered) return;
+      var val = parseInt(this.dataset.choice);
+      document.querySelectorAll('#page2Game .game-btn').forEach(function(b) { b.classList.remove('selected','correct','wrong'); });
+      this.classList.add('selected');
+      page2Answered = true;
+      if (val === 0) {
+        this.classList.remove('selected');
+        this.classList.add('correct');
+        document.getElementById('page2Result').textContent = '✅ 答对了！"日" 就是太阳！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo('#page2Result', {scale:0}, {scale:1,duration:0.4,ease:'back.out(2)'});
+        }
+      } else {
+        this.classList.remove('selected');
+        this.classList.add('wrong');
+        document.getElementById('page2Result').textContent = '❌ "日" 是太阳哦！再想想！';
+        page2Answered = false;
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 3: 月 ----
+  document.querySelectorAll('#page3Cards .char-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (page3Answered) return;
+      var val = this.dataset.char;
+      document.querySelectorAll('#page3Cards .char-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      if (val === '月') {
+        this.classList.add('correct');
+        page3Answered = true;
+        document.getElementById('page3Result').textContent = '✅ 没错！这就是 "月"！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(this, {scale:1}, {scale:1.2,duration:0.2,yoyo:true,repeat:1});
+        }
+      } else {
+        this.classList.add('wrong');
+        document.getElementById('page3Result').textContent = '❌ 不对哦，再想想哪个是月亮？';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 4: 山（配对）----
+  document.querySelectorAll('#page4DragNums .char-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (this.classList.contains('matched')) return;
+      document.querySelectorAll('#page4DragNums .char-card').forEach(function(c) { c.classList.remove('selected'); });
+      this.classList.add('selected');
+      selectedChar = this.dataset.char;
+    });
+  });
+
+  document.querySelectorAll('#page4Drops .drop-zone').forEach(function(zone) {
+    zone.addEventListener('click', function() {
+      if (!selectedChar) {
+        showBubble('👆 先点一个汉字吧！');
+        return;
+      }
+      if (this.dataset.matched) return;
+      var target = this.dataset.target;
+      if (selectedChar === target) {
+        var card = document.querySelector('[data-char="' + selectedChar + '"]');
+        card.classList.remove('selected');
+        card.classList.add('matched');
+        card.style.opacity = '0.5';
+        card.style.pointerEvents = 'none';
+        this.style.borderColor = '#4CAF50';
+        this.textContent = '✅ ' + this.dataset.label;
+        this.dataset.matched = 'true';
+        page4Matches[selectedChar] = true;
+        showBubble(selectedChar + ' 配对成功！');
+        selectedChar = null;
+        if (Object.keys(page4Matches).length >= 5) {
+          document.getElementById('page4Result').textContent = '🎉 全部配对成功！太棒了！';
+        } else {
+          document.getElementById('page4Result').textContent = '继续配对下一个！';
+        }
+      } else {
+        showBubble('不对哦，"' + selectedChar + '" 不匹配这个图片！');
+        var self = this;
+        self.style.borderColor = '#ef5350';
+        setTimeout(function() { self.style.borderColor = '#EF5350'; }, 500);
+      }
+    });
+  });
+
+  // ---- PAGE 5: 水火 ----
+  document.querySelectorAll('#page5Picto .item-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('#page5Picto .item-btn').forEach(function(b) { b.classList.remove('selected'); });
+      this.classList.add('selected');
+      page5SelectedPicto = this.dataset.picto;
+    });
+  });
+
+  document.querySelectorAll('#page5Options .char-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (!page5SelectedPicto) {
+        document.getElementById('page5Result').textContent = '👆 先选一个图片吧！';
+        return;
+      }
+      if (page5Done[page5SelectedPicto]) return;
+      var val = this.dataset.choice;
+      var correct = page5Answers[page5SelectedPicto];
+      document.querySelectorAll('#page5Options .char-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      if (val === correct) {
+        this.classList.add('correct');
+        page5Score++;
+        page5Done[page5SelectedPicto] = true;
+        document.getElementById('page5Score').textContent = '⭐ 得分: ' + page5Score + ' / 2';
+        document.getElementById('page5Result').textContent = '✅ 答对了！"' + page5SelectedPicto + '" 对应 "' + correct + '"！';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo('#page5Result', {scale:0}, {scale:1,duration:0.4,ease:'back.out(2)'});
+        }
+        if (page5Score >= 2) {
+          setTimeout(function() {
+            document.getElementById('page5Result').textContent = '🎉 全部答对了！你真聪明！✨';
+            if (typeof gsap !== 'undefined') {
+              gsap.to('#page5Result', {scale:1.1,duration:0.3,yoyo:true,repeat:3});
+            }
+          }, 400);
+        }
+      } else {
+        this.classList.add('wrong');
+        document.getElementById('page5Result').textContent = '❌ 不匹配，再想想哪个汉字对应这个图片？';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // ---- PAGE 6: 小测验 ----
+  function setupPage6() {
+    if (page6Idx >= page6Questions.length) {
+      document.getElementById('page6QText').textContent = '🎉 测验完成！';
+      document.getElementById('page6Result').innerHTML = '🌟 恭喜你学会了象形文字！🌟';
+      launchConfetti();
+      return;
+    }
+    page6Answered = false;
+    var q = page6Questions[page6Idx];
+    document.getElementById('page6QText').textContent = q.q;
+    document.querySelectorAll('#page6Options .char-card').forEach(function(c) {
+      c.classList.remove('selected','correct','wrong');
+    });
+    document.getElementById('page6Result').textContent = '第 ' + (page6Idx+1) + ' / ' + page6Questions.length + ' 题';
+  }
+
+  document.querySelectorAll('#page6Options .char-card').forEach(function(card) {
+    card.addEventListener('click', function() {
+      if (page6Answered) return;
+      if (page6Idx >= page6Questions.length) return;
+      var val = this.dataset.choice;
+      var correct = page6Questions[page6Idx].a;
+      document.querySelectorAll('#page6Options .char-card').forEach(function(c) { c.classList.remove('selected','correct','wrong'); });
+      if (val === correct) {
+        this.classList.add('correct');
+        page6Score++;
+        page6Idx++;
+        page6Answered = true;
+        document.getElementById('page6Score').textContent = '⭐ 得分: ' + page6Score + ' / 5';
+        document.getElementById('page6Result').textContent = '✅ 正确！✓';
+        if (typeof gsap !== 'undefined') {
+          gsap.fromTo(this, {scale:1}, {scale:1.2,duration:0.2,yoyo:true,repeat:1});
+        }
+        if (page6Idx < page6Questions.length) {
+          setTimeout(setupPage6, 800);
+        } else {
+          setTimeout(function() {
+            document.getElementById('page6Result').innerHTML = '🎉 全部答对了！🏆<br>你真是汉字小达人！';
+            launchConfetti();
+          }, 500);
+        }
+      } else {
+        this.classList.add('wrong');
+        document.getElementById('page6Result').textContent = '❌ 不对哦，再想想！';
+        var self = this;
+        setTimeout(function() { self.classList.remove('wrong'); }, 600);
+      }
+    });
+  });
+
+  // Confetti
+  function launchConfetti() {
+    var container = document.querySelector('.book-card');
+    var colors = ['#EF5350','#FF7043','#4CAF50','#FFC107','#AB47BC','#42A5F5','#26C6DA'];
+    for (var i = 0; i < 60; i++) {
+      var el = document.createElement('div');
+      el.style.cssText =
+        'position:absolute;width:' + (6 + Math.random() * 8) + 'px;height:' + (6 + Math.random() * 8) + 'px;' +
+        'background:' + colors[Math.floor(Math.random() * colors.length)] + ';' +
+        'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';' +
+        'top:' + (10 + Math.random() * 30) + '%;left:' + (5 + Math.random() * 90) + '%;' +
+        'pointer-events:none;z-index:60;';
+      container.appendChild(el);
+      if (typeof gsap !== 'undefined') {
+        gsap.to(el, {
+          y: 200 + Math.random() * 200,
+          x: -50 + Math.random() * 100,
+          rotation: 360 * (Math.random() > 0.5 ? 1 : -1),
+          opacity: 0,
+          duration: 1.5 + Math.random() * 2,
+          delay: Math.random() * 0.5,
+          ease: 'power2.out',
+          onComplete: function() { if (el.parentNode) el.parentNode.removeChild(el); }
+        });
+      }
+    }
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') { goTo(currentPage - 1); }
+    else if (e.key === 'ArrowRight') { goTo(currentPage + 1); }
+  });
+
+  // Init
+  goTo(0);
+
+})();
+</script>
+</body>
+</html>
