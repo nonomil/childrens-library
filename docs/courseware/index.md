@@ -1,4 +1,130 @@
-     1|# 🎪 小朋友的互动学习乐园
+     1|# 🎪 小朋友的互
+  <a href="courseware/jack-and-jill.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-red card-new">
+      <div class="icon">⛰️</div>
+      <h3>Jack and Jill</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>杰克和吉尔去打水！拼词+拖拽+问答</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/pat-a-cake.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-orange card-new">
+      <div class="icon">🎂</div>
+      <h3>Pat-A-Cake</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>拍拍蛋糕烤一个！中英文词汇+游戏</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/hush-little-baby.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-purple card-new">
+      <div class="icon">🌙</div>
+      <h3>Hush Little Baby</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>安静小宝贝！摇篮曲+中英文词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/mulberry-bush.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-green card-new">
+      <div class="icon">🌳</div>
+      <h3>Mulberry Bush</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>绕桑树丛！日常动作+中英文词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/skidamarink.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-pink card-new">
+      <div class="icon">💕</div>
+      <h3>Skidamarink</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>我爱你！爱的儿歌+中英文词汇</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/silent-night.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-blue card-new">
+      <div class="icon">⭐</div>
+      <h3>Silent Night</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>平安夜！圣善夜！中英文词汇</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/three-blind-mice.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-yellow card-new">
+      <div class="icon">🐭</div>
+      <h3>Three Blind Mice</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>三只瞎老鼠！趣味童谣+拼词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/hickory-dickory.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-red card-new">
+      <div class="icon">🕰️</div>
+      <h3>Hickory Dickory Dock</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>时钟滴答响！老鼠+中英文词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/rain-go-away.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-blue card-new">
+      <div class="icon">🌧️</div>
+      <h3>Rain Rain Go Away</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>雨啊雨快走开！天气词汇+游戏</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/baa-baa-black-sheep.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-purple card-new">
+      <div class="icon">🐑</div>
+      <h3>Baa Baa Black Sheep</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>咩咩黑绵羊！经典童谣+拼词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/cat-and-fiddle.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-orange card-new">
+      <div class="icon">🎻</div>
+      <h3>Cat and the Fiddle</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>奶牛跳月亮！有趣故事+中英文词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/yankee-doodle.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-red card-new">
+      <div class="icon">🎩</div>
+      <h3>Yankee Doodle</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>扬基杜德尔进城！美国经典童谣</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/ring-around-rosy.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-pink card-new">
+      <div class="icon">🌸</div>
+      <h3>Ring Around Rosy</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>围成圈圈转呀转！经典童谣</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>
+  <a href="courseware/jack-be-nimble.html" style="text-decoration:none;color:inherit">
+    <div class="course-card card-yellow card-new">
+      <div class="icon">🕯️</div>
+      <h3>Jack Be Nimble</h3>
+      <span class="tag" style="background:#EEE0FF;color:#7C5CFC">🎵 童谣</span>
+      <p>跳过蜡烛台！敏捷杰克+中英文词</p>
+      <span class="btn-start">🎵 听儿歌</span>
+    </div>
+  </a>动学习乐园
      2|
      3|<style>
      4|  /* ===== 乐园主题 ===== */
@@ -184,8 +310,8 @@
    184|  <p class="subtitle">✨ 点卡片开始玩！每堂课都有互动游戏和语音朗读 🎧</p>
    185|
    186|  <div class="stats">
-   187|    <span class="stat-item">📚 共 <strong>20</strong> 堂课</span>
-   188|    <span class="stat-item">🎵 <strong>12</strong> 首童谣</span>
+   187|    <span class="stat-item">📚 共 <strong>27</strong> 堂课</span>
+   188|    <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
    189|    <span class="stat-item">🔤 <strong>5</strong> 个英语课</span>
    190|    <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
    191|  </div>
