@@ -81,12 +81,12 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>44</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>47</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
-    <span class="stat-item">🔤 <strong>8</strong> 个英语课</span>
+    <span class="stat-item">🔤 <strong>9</strong> 个英语课</span>
     <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
     <span class="stat-item">🀄 <strong>4</strong> 个语文课</span>
-    <span class="stat-item">🔢 <strong>3</strong> 个数学课</span>
+    <span class="stat-item">🔢 <strong>4</strong> 个数学课</span>
   </div>
 </div>
 
@@ -302,6 +302,11 @@
   <span class="tag-sm tag-blue">🔢 Minecraft</span>
 </div></a>
 
+<a href="math-03-compare.html" class="wf-item"><div class="wf-card card-blue card-new">
+  <div class="icon">⚖️</div><div class="name">⚖️ 比多少比大小</div>
+  <span class="tag-sm tag-blue">🔢 Minecraft</span>
+</div></a>
+
 </div>
 
 ## 🀄 汉字
@@ -323,6 +328,11 @@
   <span class="tag-sm tag-red">🀄 Minecraft</span>
 </div></a>
 
+<a href="chinese-03-heaven-earth.html" class="wf-item"><div class="wf-card card-red card-new">
+  <div class="icon">🌍</div><div class="name">天地人</div>
+  <span class="tag-sm tag-red">🀄 Minecraft</span>
+</div></a>
+
 </div>
 
 ## 🌈 英语启蒙
@@ -341,6 +351,11 @@
 
 <a href="english-02-abc.html" class="wf-item"><div class="wf-card card-green card-new">
   <div class="icon">🔤</div><div class="name">ABC A-M</div>
+  <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
+</div></a>
+
+<a href="english-03-abc-nz.html" class="wf-item"><div class="wf-card card-green card-new">
+  <div class="icon">🆎</div><div class="name">ABC N-Z</div>
   <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
 </div></a>
 
