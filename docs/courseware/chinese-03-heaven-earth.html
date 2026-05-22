@@ -20,6 +20,9 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 .header .title-bar{font-size:13px;font-weight:700;color:#C62828;display:flex;align-items:center;gap:6px}
 .header .title-bar .emoji{font-size:18px}
 .header .page-num{font-size:12px;color:#EF5350;font-weight:600;background:#fff;padding:2px 10px;border-radius:10px;box-shadow:0 1px 4px rgba(239,83,80,.2)}
+/* Real image styling */
+.page-img{width:100%;max-width:400px;border-radius:14px;margin:8px 0;display:block;box-shadow:0 4px 12px rgba(0,0,0,.12);border:2px solid #fff;object-fit:cover}
+.page-img-round{width:100%;max-width:400px;border-radius:14px;margin:6px 0;display:block;box-shadow:0 4px 12px rgba(0,0,0,.12);border:2px solid #fff}
 /* Minecraft box */
 .mc-box{background:#fff;border:3px solid #EF5350;border-radius:16px;padding:18px 16px;margin:8px 0;width:100%;position:relative;box-shadow:0 4px 0 #C62828,0 6px 12px rgba(239,83,80,.15)}
 .mc-box::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;height:8px;background:linear-gradient(90deg,#EF5350,#E57373,#EF5350);border-radius:16px 16px 0 0}
@@ -119,12 +122,9 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 .maze-cell.selected{background:#C62828;color:#fff}
 .maze-cell.wrong{background:#FFCDD2;color:#C62828;animation:shake .4s}
 .maze-dir-btns{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
-/* Poem */
-.poem-box{background:#FFF8E1;border:2px solid #FFB300;border-radius:14px;padding:16px;margin:8px 0;width:100%;text-align:center;box-shadow:0 3px 0 #FF8F00}
-.poem-box .poem-title{font-size:17px;font-weight:800;color:#E65100;margin-bottom:4px}
-.poem-box .poem-author{font-size:12px;color:#A1887F;margin-bottom:10px}
-.poem-box .poem-line{font-size:18px;font-weight:600;color:#37474F;line-height:2;letter-spacing:2px}
-.poem-box .poem-line .highlight{color:#D32F2F;font-weight:800}
+/* Poem images row */
+.poem-img-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;width:100%}
+.poem-img-row img{width:calc(50% - 4px);max-width:185px;border-radius:12px;border:2px solid #FFB300;box-shadow:0 3px 8px rgba(255,179,0,.2);object-fit:cover}
 /* Navigation */
 .nav-bar{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(0deg,#FFEBEE 60%,transparent);padding:10px 16px 16px;display:flex;align-items:center;justify-content:center;gap:12px}
 .nav-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;color:#C62828;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(239,83,80,.2);transition:all .15s;touch-action:manipulation;user-select:none;flex-shrink:0}
@@ -174,25 +174,14 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 <body>
 <div class="slider" id="app">
   <div class="slides" id="slidesWrap">
-    <!-- PAGE 1: Cover -->
+    <!-- PAGE 1: Cover - Village scene -->
     <div class="slide" data-page="1">
       <div class="header">
         <div class="title-bar"><span class="emoji">📖</span> 第3课 天地人</div>
         <div class="page-num">1 / 10</div>
       </div>
       <div class="slide-inner">
-        <div class="char-row mt-4">
-          <div class="char-box">
-            <div class="speech">这个村庄好热闹！</div>
-            <div style="font-size:72px;line-height:1">🧑‍🦰</div>
-            <div class="char-label">⛏️ Steve</div>
-          </div>
-          <div class="char-box">
-            <div class="speech">看那块石碑！</div>
-            <div style="font-size:72px;line-height:1">👩‍🦰</div>
-            <div class="char-label">🌈 Alex</div>
-          </div>
-        </div>
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-01.webp" alt="村庄天地人" loading="lazy">
         <div class="mc-box mt-2" style="border-color:#EF5350;box-shadow:0 4px 0 #C62828,0 6px 12px rgba(239,83,80,.15)">
           <div class="mc-title">🏘️ 天地人</div>
           <div class="mc-text">Steve和Alex来到热闹村庄。<br>
@@ -205,22 +194,6 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
             "头上是<strong style="font-size:22px;">天</strong>，脚下是<strong style="font-size:22px;">地</strong>，中间是<strong style="font-size:22px;">人</strong>"
           </div>
         </div>
-        <div class="mt-3 flex-center w-full gap-2" style="flex-wrap:wrap">
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:36px">☀️</div>
-            <div style="font-size:12px;color:#546E7A">天 tiān</div>
-          </div>
-          <div style="font-size:28px;color:#EF9A9A">🌍</div>
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:36px">🌿</div>
-            <div style="font-size:12px;color:#546E7A">地 dì</div>
-          </div>
-          <div style="font-size:28px;color:#EF9A9A">🧑</div>
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:36px">👫</div>
-            <div style="font-size:12px;color:#546E7A">人 rén</div>
-          </div>
-        </div>
         <button class="btn btn-primary btn-lg mt-4" onclick="goNext()">开始学习 ▶</button>
       </div>
     </div>
@@ -231,6 +204,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">2 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-02.webp" alt="天" loading="lazy">
         <div class="hanzi-display mt-2">
           <div class="hanzi-pinyin">tiān</div>
           <div class="hanzi-char">天</div>
@@ -261,6 +235,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">3 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-03.webp" alt="地" loading="lazy">
         <div class="hanzi-display mt-2">
           <div class="hanzi-pinyin">dì</div>
           <div class="hanzi-char">地</div>
@@ -291,6 +266,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">4 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-04.webp" alt="人" loading="lazy">
         <div class="hanzi-display mt-2">
           <div class="hanzi-pinyin">rén</div>
           <div class="hanzi-char">人</div>
@@ -324,6 +300,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">5 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-05.webp" alt="你我他" loading="lazy">
         <div class="mc-box">
           <div class="mc-title">👥 你我他 — 介绍别人和自己</div>
           <div class="mc-text">学会用三个字来<strong>介绍自己和别人</strong>！</div>
@@ -366,6 +343,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">6 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-06.webp" alt="上中下左右" loading="lazy">
         <div class="mc-box">
           <div class="mc-title">🧭 五个方向</div>
           <div class="mc-text">学会用方向词指路和描述位置！</div>
@@ -420,6 +398,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">7 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-08.webp" alt="练习" loading="lazy">
         <div class="mc-box">
           <div class="mc-title">✏️ 练一练</div>
           <div class="mc-text">试试看，你能做对吗？</div>
@@ -489,6 +468,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">8 / 10</div>
       </div>
       <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-09.webp" alt="挑战" loading="lazy">
         <div class="mc-box" style="border-color:#FFA726;box-shadow:0 4px 0 #FB8C00,0 6px 12px rgba(255,167,38,.15)">
           <div class="mc-title">🏆 村长问路三关</div>
           <div class="mc-text">村民爷爷问路，答对三关过关！</div>
@@ -511,13 +491,17 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">📜 古诗角</div>
           <div class="mc-text">经典古诗，感受中文之美</div>
         </div>
-        <div class="poem-box mt-2">
-          <div class="poem-title">《画》</div>
-          <div class="poem-author">唐·王维</div>
-          <div class="poem-line">远看<strong class="highlight">山</strong>有色，</div>
-          <div class="poem-line">近听<strong class="highlight">水</strong>无声，</div>
-          <div class="poem-line">春去<strong class="highlight">花</strong>还在，</div>
-          <div class="poem-line"><strong class="highlight">人</strong>来鸟不惊。</div>
+        <div class="poem-box mt-2" style="background:#FFF8E1;border:2px solid #FFB300;border-radius:14px;padding:14px;width:100%;text-align:center;box-shadow:0 3px 0 #FF8F00">
+          <div class="poem-title" style="font-size:17px;font-weight:800;color:#E65100;margin-bottom:4px">《画》</div>
+          <div class="poem-author" style="font-size:12px;color:#A1887F;margin-bottom:8px">唐·王维</div>
+          <div class="poem-img-row">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-1.webp" alt="远看山有色" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-2.webp" alt="近听水无声" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-3.webp" alt="春去花还在" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-4.webp" alt="人来鸟不惊" loading="lazy">
+          </div>
+          <div class="poem-line" style="margin-top:6px;">远看<strong style="color:#D32F2F;">山</strong>有色，近听<strong style="color:#D32F2F;">水</strong>无声，</div>
+          <div class="poem-line">春去<strong style="color:#D32F2F;">花</strong>还在，<strong style="color:#D32F2F;">人</strong>来鸟不惊。</div>
         </div>
         <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.08)">
           <div class="mc-text" style="font-size:14px;color:#546E7A">
@@ -538,6 +522,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="page-num">10 / 10</div>
       </div>
       <div class="slide-inner" style="justify-content:center">
+        <img class="page-img-round" src="images/chinese-03-heaven-earth/webp/page-07.webp" alt="字典" loading="lazy" style="max-width:220px">
         <div class="badge" id="badge">🏅</div>
         <div class="mc-box mt-4" style="text-align:center;border-color:#FFD54F;background:#FFFDE7;box-shadow:0 4px 0 #FFB300,0 6px 12px rgba(255,179,0,.15)">
           <div class="mc-title">🎉 恭喜通关！</div>
@@ -623,7 +608,7 @@ function goSlide(idx) {
   // Animate elements
   const slide = document.querySelectorAll('.slide')[idx];
   if(slide){
-    gsap.fromTo(slide.querySelectorAll('.mc-box, .char-row, .hanzi-display, .triplet-row, .dir-row, .match-area, .fill-area, .poem-box, .badge, .btn:not(.nav-btn):not(.read-btn)'),
+    gsap.fromTo(slide.querySelectorAll('.mc-box, .char-row, .hanzi-display, .triplet-row, .dir-row, .match-area, .fill-area, .poem-box, .poem-img-row, .badge, .btn:not(.nav-btn):not(.read-btn), .page-img, .page-img-round'),
       {opacity:0,y:20},
       {opacity:1,y:0,duration:.4,stagger:.08,ease:'power2.out',clearProps:'all'}
     );

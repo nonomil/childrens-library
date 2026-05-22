@@ -1,990 +1,860 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ABC Adventure N-Z - English Courseware</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
-</script>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>ABC Adventure: N to Z! — English Courseware</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100dvh;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}
-.slider{width:100%;max-width:420px;height:100dvh;max-height:780px;position:relative;overflow:hidden;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#E8F5E9}
-.slides{display:flex;height:100%;transition:none}
-.slide{min-width:100%;height:100%;overflow-y:auto;padding:60px 20px 90px;position:relative;display:flex;flex-direction:column;align-items:center;scrollbar-width:none}
-.slide::-webkit-scrollbar{display:none}
-.slide-inner{width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;flex:1}
-/* Header */
-.header{position:absolute;top:0;left:0;right:0;z-index:10;padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#E8F5E9 60%,transparent)}
-.header .title-bar{font-size:13px;font-weight:700;color:#2E7D32;display:flex;align-items:center;gap:6px}
-.header .title-bar .emoji{font-size:18px}
-.header .page-num{font-size:12px;color:#66BB6A;font-weight:600;background:#fff;padding:2px 10px;border-radius:10px;box-shadow:0 1px 4px rgba(102,187,106,.2)}
-/* Book card */
-.book-card{background:#fff;border:3px solid #66BB6A;border-radius:16px;padding:18px 16px;margin:8px 0;width:100%;position:relative;box-shadow:0 4px 0 #43A047,0 6px 12px rgba(102,187,106,.15)}
-.book-card::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;height:8px;background:linear-gradient(90deg,#66BB6A,#81C784,#66BB6A);border-radius:16px 16px 0 0}
-.card-title{font-size:18px;font-weight:900;color:#2E7D32;text-align:center;margin-bottom:10px;text-shadow:0 1px 0 rgba(0,0,0,.06)}
-.card-text{font-size:15px;color:#37474F;line-height:1.7;text-align:center}
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s;touch-action:manipulation;user-select:none}
-.btn:active{transform:scale(.94)!important}
-.btn-primary{background:linear-gradient(135deg,#66BB6A,#43A047);color:#fff;box-shadow:0 4px 0 #2E7D32,0 6px 12px rgba(102,187,106,.3)}
-.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 0 #2E7D32,0 8px 16px rgba(102,187,106,.35)}
-.btn-success{background:linear-gradient(135deg,#66BB6A,#43A047);color:#fff;box-shadow:0 4px 0 #2E7D32,0 6px 12px rgba(76,175,80,.3)}
-.btn-warning{background:linear-gradient(135deg,#FFA726,#FB8C00);color:#fff;box-shadow:0 4px 0 #E65100,0 6px 12px rgba(255,167,38,.3)}
-.btn-ghost{background:rgba(102,187,106,.1);color:#2E7D32;border:2px solid #66BB6A;box-shadow:none}
-.btn-sm{padding:6px 14px;font-size:14px;border-radius:8px}
-.btn-lg{padding:14px 32px;font-size:18px;border-radius:16px}
-/* Character row */
-.char-row{display:flex;justify-content:center;align-items:flex-end;gap:24px;margin:6px 0;width:100%}
-.char-box{display:flex;flex-direction:column;align-items:center;gap:4px}
-.char-box .char-label{font-size:13px;font-weight:700;color:#2E7D32;margin-top:2px}
-.char-box .speech{font-size:11px;color:#546E7A;background:#fff;border:1.5px solid #A5D6A7;border-radius:8px;padding:4px 8px;max-width:120px;text-align:center;position:relative;margin-bottom:2px}
-.char-box .speech::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #fff}
-/* Letter card */
-.letter-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:8px 0;width:100%}
-.letter-card{background:#fff;border:2.5px solid #A5D6A7;border-radius:14px;padding:10px 8px;text-align:center;flex:0 0 auto;width:70px;box-shadow:0 3px 6px rgba(102,187,106,.1);transition:transform .3s;cursor:pointer}
-.letter-card:hover{transform:translateY(-3px)}
-.letter-card .letter{font-size:28px;font-weight:900;color:#2E7D32;display:block;line-height:1.1}
-.letter-card .letter-word{font-size:11px;color:#546E7A;margin-top:4px;font-weight:600;line-height:1.2}
-.letter-card .letter-emoji{font-size:24px;display:block;margin-top:2px}
-/* Tracing guide */
-.tracing-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:8px 0;width:100%}
-.trace-card{background:#fff;border:2px dashed #A5D6A7;border-radius:12px;padding:14px 10px;text-align:center;width:75px}
-.trace-card .trace-letter{font-size:32px;font-weight:900;color:#66BB6A;display:block;line-height:1.1}
-.trace-card .trace-guide{font-size:18px;color:#B0BEC5;display:block;margin-top:2px;letter-spacing:2px}
-.trace-card .trace-arrow{font-size:14px;color:#A5D6A7;display:block;margin-top:2px}
-/* Alphabet strip */
-.alpha-strip{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:8px 0;width:100%}
-.alpha-strip .alpha-char{width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border-radius:4px;background:#fff;border:1px solid #C8E6C9;color:#2E7D32}
-.alpha-strip .alpha-char.done{background:#66BB6A;color:#fff;border-color:#43A047}
-.alpha-strip .alpha-char.current{background:#FFD54F;color:#2E7D32;border-color:#FFB300;transform:scale(1.2)}
-/* Word bank */
-.word-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:8px 0;width:100%}
-.word-tag{background:#fff;border:1.5px solid #C8E6C9;border-radius:10px;padding:6px 10px;font-size:14px;font-weight:600;color:#37474F;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s}
-.word-tag:hover{background:#E8F5E9;border-color:#66BB6A}
-.word-tag .w-letter{color:#2E7D32;font-weight:800}
-.word-tag .w-zh{font-size:11px;color:#90A4AE;font-weight:400}
-/* Quiz area */
-.quiz-area{width:100%;margin:8px 0}
-.quiz-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;flex-wrap:wrap}
-.quiz-num{font-size:24px;font-weight:800;color:#2E7D32;min-width:36px;text-align:center}
-.quiz-symbol{display:flex;gap:6px}
-.quiz-symbol .sym-btn{width:40px;height:40px;border:2.5px solid #A5D6A7;border-radius:10px;background:#fff;font-size:18px;font-weight:800;color:#2E7D32;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;touch-action:manipulation;user-select:none}
-.quiz-symbol .sym-btn:hover{border-color:#66BB6A;background:#E8F5E9}
-.quiz-symbol .sym-btn.selected{border-color:#2E7D32;background:#2E7D32;color:#fff;transform:scale(1.1);box-shadow:0 3px 8px rgba(46,125,50,.3)}
-.quiz-symbol .sym-btn.correct{background:#43A047!important;border-color:#2E7D32!important;color:#fff!important;transform:scale(1.1);box-shadow:0 0 20px rgba(76,175,80,.4)}
-.quiz-symbol .sym-btn.wrong{background:#E53935!important;border-color:#C62828!important;color:#fff!important;animation:shake .4s}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-.quiz-result{font-size:18px;font-weight:700;min-height:28px;margin:4px 0;text-align:center}
-.quiz-result.correct{color:#43A047}
-.quiz-result.wrong{color:#E53935}
-/* Order items */
-.order-area{width:100%;margin:8px 0}
-.order-items{display:flex;flex-direction:column;gap:6px;width:100%}
-.order-item{display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;background:#fff;border:2px solid #A5D6A7;border-radius:10px;cursor:pointer;touch-action:manipulation;user-select:none;transition:all .15s;min-height:42px}
-.order-item:active{transform:scale(.97)}
-.order-item .order-val{font-size:20px;font-weight:800;color:#2E7D32}
-.order-item.done{background:#E8F5E9;border-color:#66BB6A}
-/* Fill blanks */
-.fill-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:6px 0;width:100%;flex-wrap:wrap}
-.fill-row .fill-label{font-size:16px;font-weight:700;color:#2E7D32}
-.fill-row .fill-blank{display:inline-block;min-width:32px;height:36px;border-bottom:3px solid #66BB6A;margin:0 2px;text-align:center;font-size:18px;font-weight:700;color:#2E7D32;line-height:36px}
-.fill-row .fill-options{display:flex;gap:4px}
-.fill-row .fill-opt{width:34px;height:34px;border:2px solid #A5D6A7;border-radius:8px;background:#fff;font-size:16px;font-weight:700;color:#2E7D32;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
-.fill-row .fill-opt:active{transform:scale(.88)}
-.fill-row .fill-opt.selected{border-color:#2E7D32;background:#2E7D32;color:#fff}
-.fill-row .fill-opt.correct{background:#43A047!important;border-color:#2E7D32!important;color:#fff!important}
-.fill-row .fill-opt.wrong{background:#E53935!important;border-color:#C62828!important;color:#fff!important;animation:shake .4s}
-/* Spell it */
-.spell-row{display:flex;align-items:center;justify-content:center;gap:4px;margin:4px 0;flex-wrap:wrap}
-.spell-box{width:36px;height:40px;border:2px solid #A5D6A7;border-radius:8px;background:#fff;font-size:22px;font-weight:800;color:#2E7D32;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.spell-box.filled{background:#E8F5E9;border-color:#66BB6A}
-.spell-box.correct{background:#43A047;color:#fff;border-color:#2E7D32}
-.spell-box.wrong{background:#E53935;color:#fff;border-color:#C62828;animation:shake .4s}
-/* Challenge / Gates */
-.gate-area{width:100%;margin:8px 0}
-.gate-item{background:#fff;border:2px solid #FFA726;border-radius:14px;padding:12px 14px;margin:6px 0;width:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap;box-shadow:0 2px 0 #FB8C00}
-.gate-item .gate-label{font-size:14px;font-weight:600;color:#5D4037;flex:1;min-width:100px}
-.gate-item .gate-options{display:flex;gap:4px}
-.gate-item .gate-options button{width:36px;height:36px;border:2px solid #A5D6A7;border-radius:8px;background:#fff;font-size:16px;font-weight:700;color:#2E7D32;cursor:pointer;transition:all .12s;display:flex;align-items:center;justify-content:center}
-.gate-item .gate-options button:active{transform:scale(.9)}
-.gate-item .gate-options button.sel{background:#2E7D32;color:#fff;border-color:#2E7D32}
-.gate-item .gate-options button.g-correct{background:#43A047!important;border-color:#2E7D32!important;color:#fff!important}
-.gate-item .gate-options button.g-wrong{background:#E53935!important;border-color:#C62828!important;color:#fff!important;animation:shake .4s}
-/* Navigation */
-.nav-bar{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(0deg,#E8F5E9 60%,transparent);padding:10px 16px 16px;display:flex;align-items:center;justify-content:center;gap:12px}
-.nav-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;color:#2E7D32;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(102,187,106,.2);transition:all .15s;touch-action:manipulation;user-select:none;flex-shrink:0}
-.nav-btn:active{transform:scale(.88)!important}
-.nav-btn.primary{background:linear-gradient(135deg,#66BB6A,#43A047);color:#fff;box-shadow:0 3px 0 #2E7D32,0 4px 10px rgba(102,187,106,.3)}
-.nav-btn:disabled{opacity:.3;pointer-events:none}
-.nav-dots{display:flex;gap:5px;flex:1;justify-content:center}
-.nav-dot{width:9px;height:9px;border-radius:50%;background:#A5D6A7;border:none;cursor:pointer;transition:all .25s;padding:0;flex-shrink:0}
-.nav-dot.active{width:24px;border-radius:5px;background:linear-gradient(90deg,#66BB6A,#43A047);box-shadow:0 0 8px rgba(102,187,106,.3)}
-.nav-dot:active{transform:scale(.8)}
-/* Confetti */
-.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;overflow:hidden}
-.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;opacity:0}
-/* Badge */
-.badge{width:110px;height:110px;background:linear-gradient(135deg,#FFD54F,#FFB300);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 8px 0 #FF8F00,0 12px 30px rgba(255,179,0,.4);margin:8px auto;position:relative;animation:badgeFloat 2s ease-in-out infinite}
-@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.badge::after{content:'Alpha Star';position:absolute;bottom:-28px;font-size:14px;font-weight:700;color:#FF8F00;white-space:nowrap}
-/* Misc */
-.text-center{text-align:center}
-.mt-2{margin-top:8px}
-.mt-3{margin-top:12px}
-.mt-4{margin-top:16px}
-.mb-2{margin-bottom:8px}
-.gap-2{gap:8px}
-.flex-center{display:flex;justify-content:center;align-items:center}
-.flex-col{flex-direction:column}
-.w-full{width:100%}
-.read-btn{background:rgba(102,187,106,.08);border:1.5px solid #A5D6A7;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;flex-shrink:0}
-.read-btn:active{transform:scale(.88)}
-.read-btn:hover{background:rgba(102,187,106,.15)}
-.treasure-chest{font-size:60px;text-align:center;margin:10px 0}
-.gate-icon{font-size:32px}
-/* Animations */
-.fade-in{opacity:0;transform:translateY(14px);animation:fadeIn .5s ease-out forwards}
-@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
-.delay-1{animation-delay:.1s}
-.delay-2{animation-delay:.2s}
-.delay-3{animation-delay:.3s}
-.delay-4{animation-delay:.4s}
-.delay-5{animation-delay:.5s}
-.delay-6{animation-delay:.6s}
-/* Slide scroll */
-.slide{scroll-behavior:smooth}
-/* Responsive */
-@media(max-height:640px){.slide{padding:50px 16px 75px}.book-card{padding:12px 14px}.card-title{font-size:16px}.card-text{font-size:14px}.badge{width:90px;height:90px;font-size:42px}}
-@media(min-width:421px){.slider{border-radius:24px;margin:20px auto;box-shadow:0 24px 80px rgba(0,0,0,.5)}}
-.lyrics{font-size:14px;color:#37474F;line-height:2;text-align:center;white-space:pre-line;font-weight:600}
-.sight-word{display:inline-block;background:#FFF8E1;border:1px solid #FFD54F;border-radius:6px;padding:2px 8px;margin:2px;font-size:13px;font-weight:700;color:#E65100}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#e8f5e9 0%,#c8e6c9 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:10px}
+.container{width:100%;max-width:420px;margin:0 auto;position:relative}
+.page{display:none;background:#fff;border-radius:20px;padding:16px 18px 24px;box-shadow:0 8px 32px rgba(102,187,106,0.25);position:relative;min-height:580px;flex-direction:column}
+.page.active{display:flex}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-shrink:0}
+.nav-btn{background:#66BB6A;border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;box-shadow:0 2px 8px rgba(102,187,106,0.3)}
+.nav-btn:hover{transform:scale(1.08);background:#4CAF50}
+.nav-btn:active{transform:scale(0.95)}
+.nav-btn.disabled{opacity:0.4;cursor:default;pointer-events:none}
+.page-dots{display:flex;justify-content:center;gap:6px;padding:10px 0 2px;flex-shrink:0}
+.dot{width:10px;height:10px;border-radius:50%;background:#ddd;border:none;cursor:pointer;transition:all 0.3s;padding:0}
+.dot.active{background:#66BB6A;width:26px;border-radius:5px}
+.dot:hover{background:#a5d6a7}
+.page-content{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.speak-btn{position:absolute;bottom:48px;right:12px;background:#66BB6A;color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0.8;transition:opacity 0.2s;z-index:5}
+.speak-btn:hover{opacity:1}
+.speak-btn.speaking{animation:pulse 0.6s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+h1{font-size:24px;font-weight:900;color:#2e7d32;text-align:center;letter-spacing:-0.5px}
+h2{font-size:18px;font-weight:800;color:#388E3C;text-align:center}
+h3{font-size:15px;font-weight:700;color:#2e7d32;margin-bottom:4px}
+.subtitle{color:#777;font-size:13px;text-align:center;font-weight:600}
+.big-letter{font-size:52px;font-weight:900;color:#66BB6A;display:inline-block;line-height:1}
+.cover-title{margin-bottom:4px}
+.characters{text-align:center;font-size:14px;color:#555;margin:3px 0}
+.featured-letter{text-align:center;padding:10px;background:linear-gradient(135deg,#e8f5e9,#fff);border-radius:16px;margin:4px 0;border:2px solid #c8e6c9}
+.featured-letter .big-letter{font-size:50px}
+.featured-letter .word{font-size:22px;font-weight:800;color:#2e7d32}
+.sight-words{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0}
+.word-card{background:#66BB6A;color:#fff;padding:5px 16px;border-radius:20px;font-size:14px;font-weight:700;letter-spacing:0.5px;box-shadow:0 2px 6px rgba(102,187,106,0.3);transition:transform 0.2s;cursor:default}
+.word-card:hover{transform:scale(1.05)}
+.letter-grid{display:grid;gap:8px;margin:4px 0}
+.letter-grid.cols-2{grid-template-columns:1fr 1fr}
+.letter-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.letter-card{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:14px;padding:10px 6px;text-align:center;border:2px solid #c8e6c9;transition:all 0.2s;cursor:pointer}
+.letter-card:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(102,187,106,0.2)}
+.letter-card .l{font-size:30px;font-weight:900;color:#2e7d32;display:block;line-height:1.1}
+.letter-card .w{font-size:12px;font-weight:700;color:#555;display:block;margin-top:3px}
+.letter-card .p{font-size:32px;display:block;margin-top:2px}
+.tracing-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0}
+.tracing-box{background:#fafafa;border:2px dashed #c8e6c9;border-radius:12px;padding:8px 6px;text-align:center}
+.tracing-box .tl{font-size:38px;font-weight:900;color:#66BB6A;letter-spacing:4px;font-family:'Nunito',sans-serif;line-height:1.1}
+.tracing-box .tl-label{font-size:10px;color:#999;font-weight:700;text-transform:uppercase}
+.tracing-arrows{font-size:16px;color:#66BB6A;margin-top:3px;letter-spacing:2px}
+.trace-row{display:flex;gap:4px;justify-content:center;align-items:center;margin:2px 0}
+.trace-row .big{font-size:36px;font-weight:900;color:#2e7d32;line-height:1}
+.trace-row .dash{font-size:36px;font-weight:900;color:#c8e6c9;-webkit-text-stroke:2px #66BB6A;text-stroke:2px #66BB6A;line-height:1;letter-spacing:2px;opacity:0.6}
+.alphabet-chart{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin:4px 0}
+.alphabet-chart .ach{background:#e8f5e9;border-radius:8px;padding:5px 0;text-align:center;font-size:16px;font-weight:800;color:#2e7d32;transition:all 0.2s;cursor:pointer}
+.alphabet-chart .ach:hover{transform:scale(1.1)}
+.alphabet-chart .ach.highlight{background:#66BB6A;color:#fff;box-shadow:0 2px 8px rgba(102,187,106,0.3)}
+.alphabet-chart .ach.highlight:hover{background:#4CAF50}
+.word-bank{width:100%;border-collapse:collapse;margin:4px 0;font-size:13px;border-radius:12px;overflow:hidden}
+.word-bank th{background:#66BB6A;color:#fff;padding:7px 5px;font-weight:800;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
+.word-bank td{padding:5px 5px;border-bottom:1px solid #e8f5e9;font-weight:600;color:#333;font-size:13px}
+.word-bank tr:nth-child(even){background:#f9f9f9}
+.word-bank tr:hover{background:#e8f5e9}
+.word-bank .wb-img{font-size:20px;margin-right:4px;display:inline-block;vertical-align:middle}
+.lyrics{padding:10px 14px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:14px;font-size:14px;line-height:1.8;color:#333;margin:4px 0;text-align:center;border:2px solid #c8e6c9}
+.lyrics .highlight{color:#66BB6A;font-weight:800}
+.exercise{padding:10px;background:#fafafa;border-radius:14px;margin:4px 0;border:2px solid #e8f5e9}
+.exercise .q{font-size:15px;font-weight:700;color:#333;margin-bottom:7px}
+.exercise .q .blank{display:inline-block;min-width:40px;border-bottom:3px solid #66BB6A;margin:0 2px;color:#66BB6A;font-weight:900}
+.options{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.option-btn{background:#fff;border:2px solid #c8e6c9;border-radius:10px;padding:7px 16px;font-size:14px;font-weight:700;color:#333;cursor:pointer;transition:all 0.2s;font-family:'Nunito',sans-serif}
+.option-btn:hover{border-color:#66BB6A;background:#e8f5e9;transform:scale(1.03)}
+.option-btn.selected{background:#66BB6A;color:#fff;border-color:#66BB6A}
+.option-btn.correct{background:#4CAF50;color:#fff;border-color:#4CAF50;animation:pop 0.3s}
+.option-btn.wrong{background:#ef5350;color:#fff;border-color:#ef5350;animation:shake 0.4s}
+.option-btn:disabled{cursor:default;opacity:0.7}
+.match-area{display:flex;gap:20px;justify-content:center;margin:4px 0;flex-wrap:wrap}
+.match-col{display:flex;flex-direction:column;gap:8px;align-items:center}
+.match-item{background:#fff;border:2px solid #c8e6c9;border-radius:14px;padding:10px 16px;font-size:22px;font-weight:800;cursor:pointer;transition:all 0.2s;min-width:56px;text-align:center;color:#333;user-select:none}
+.match-item:hover{border-color:#66BB6A;transform:scale(1.05);box-shadow:0 2px 8px rgba(102,187,106,0.15)}
+.match-item.active{border-color:#66BB6A;background:#e8f5e9;box-shadow:0 0 0 3px rgba(102,187,106,0.2)}
+.match-item.matched{background:#66BB6A;color:#fff;border-color:#66BB6A;cursor:default;transform:scale(0.95);opacity:0.85}
+.match-item.wrong-match{background:#ef5350;color:#fff;border-color:#ef5350;animation:shake 0.4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+.chest-area{text-align:center;padding:6px;margin:4px 0}
+.chest{font-size:72px;cursor:pointer;transition:transform 0.3s;display:inline-block}
+.chest:hover{transform:scale(1.08)}
+.chest.open{animation:chestOpen 0.6s forwards}
+@keyframes chestOpen{0%{transform:scale(1) rotate(0)}40%{transform:scale(1.3) rotate(-8deg)}70%{transform:scale(0.9) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+.chest-sparkle{font-size:36px;display:none;animation:sparkle 1s infinite}
+@keyframes sparkle{0%,100%{opacity:1;transform:scale(1) rotate(0)}25%{opacity:0.7;transform:scale(1.2) rotate(5deg)}50%{opacity:1;transform:scale(1) rotate(0)}75%{opacity:0.8;transform:scale(1.1) rotate(-5deg)}}
+.quiz-question{margin:5px 0;padding:10px;background:#fff;border:2px solid #e8f5e9;border-radius:14px;transition:all 0.3s}
+.quiz-question .qq{font-size:14px;font-weight:700;color:#333;margin-bottom:6px}
+.quiz-question .qq .qn{display:inline-block;background:#66BB6A;color:#fff;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;font-size:12px;margin-right:6px}
+.quiz-options{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.quiz-btn{background:#fff;border:2px solid #c8e6c9;border-radius:12px;padding:7px 18px;font-size:14px;font-weight:700;color:#333;cursor:pointer;transition:all 0.2s;font-family:'Nunito',sans-serif}
+.quiz-btn:hover{border-color:#66BB6A;background:#e8f5e9;transform:scale(1.03)}
+.quiz-btn.correct{background:#4CAF50;color:#fff;border-color:#4CAF50;animation:pop 0.3s}
+.quiz-btn.wrong{background:#ef5350;color:#fff;border-color:#ef5350;animation:shake 0.4s}
+.quiz-btn:disabled{cursor:default;opacity:0.6}
+.quiz-btn:disabled:hover{transform:none;background:inherit;border-color:#c8e6c9}
+.quiz-btn.wrong:disabled{background:#ef5350;border-color:#ef5350;opacity:0.8}
+.quiz-btn.correct:disabled{background:#4CAF50;border-color:#4CAF50;opacity:0.8}
+.celebration{text-align:center;padding:16px 0}
+.celebration h1{font-size:30px;margin-bottom:6px}
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000;overflow:hidden}
+.confetti{position:absolute;width:auto;height:auto;opacity:0.9;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(-30px) rotate(0) scale(1);opacity:1}100%{transform:translateY(110vh) rotate(720deg) scale(0.5);opacity:0}}
+.page-img{width:100%;max-width:400px;border-radius:14px;margin:4px auto;display:block;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.score-badge{background:linear-gradient(135deg,#66BB6A,#4CAF50);color:#fff;border-radius:30px;padding:12px 24px;font-size:20px;font-weight:900;display:inline-block;margin:6px auto;box-shadow:0 4px 16px rgba(102,187,106,0.35);letter-spacing:0.5px}
+.section-label{font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;text-align:center}
+.feedback{font-size:14px;font-weight:700;text-align:center;min-height:22px;margin:3px 0;padding:4px 8px;border-radius:8px;transition:all 0.3s}
+.feedback.good{color:#2e7d32;background:#e8f5e9}
+.feedback.bad{color:#c62828;background:#ffebee}
+.reset-btn{background:transparent;border:2px solid #66BB6A;color:#66BB6A;border-radius:10px;padding:4px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.2s;margin:2px auto;display:block}
+.reset-btn:hover{background:#e8f5e9}
+.progress-bar{height:4px;background:#e8f5e9;border-radius:2px;margin:2px 0;overflow:hidden}
+.progress-bar .fill{height:100%;background:#66BB6A;border-radius:2px;transition:width 0.5s;width:0%}
+.practice-progress{font-size:11px;color:#999;font-weight:600;text-align:center}
+@media(max-width:420px){.page{padding:12px 14px 20px;min-height:500px;border-radius:16px}h1{font-size:21px}h2{font-size:16px}.big-letter{font-size:40px}.letter-card .l{font-size:24px}.tracing-box .tl{font-size:30px}.alphabet-chart .ach{font-size:14px}.chest{font-size:56px}.match-item{font-size:18px;padding:8px 12px;min-width:44px}}
 </style>
 </head>
 <body>
-<div class="slider" id="app">
-  <div class="slides" id="slidesWrap">
-    <!-- PAGE 1: Cover -->
-    <div class="slide" data-page="1">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🔤</span> ABC Adventure N-Z</div>
-        <div class="page-num">1 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="char-row mt-4">
-          <div class="char-box">
-            <div class="speech">Let's learn N-Z!</div>
-            <div style="font-size:72px;line-height:1">👨‍🦰</div>
-            <div class="char-label">⛏️ Steve</div>
-          </div>
-          <div class="char-box">
-            <div class="speech">N is for nest!</div>
-            <div style="font-size:72px;line-height:1">👩‍🦰</div>
-            <div class="char-label">🌈 Alex</div>
-          </div>
-        </div>
-        <div class="book-card mt-2" style="border-color:#66BB6A;box-shadow:0 4px 0 #43A047,0 6px 12px rgba(102,187,106,.15)">
-          <div class="card-title">📖 Letters N – Z</div>
-          <div class="card-text">
-            Let's learn the second half of the alphabet!<br>
-            <strong style="color:#2E7D32;">N O P Q R S T U V W X Y Z</strong><br><br>
-            <span style="font-size:32px">🪺</span><br>
-            <strong>N</strong> is for <strong>nest</strong>!
-          </div>
-        </div>
-        <div class="mt-3 flex-center w-full gap-2" style="flex-wrap:wrap">
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:32px">🪺</div>
-            <div style="font-size:11px;color:#546E7A">Nest</div>
-          </div>
-          <div style="font-size:20px;color:#90A4AE">→</div>
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:32px">🔤</div>
-            <div style="font-size:11px;color:#546E7A">N-Z</div>
-          </div>
-          <div style="font-size:20px;color:#90A4AE">→</div>
-          <div style="text-align:center;min-width:70px">
-            <div style="font-size:32px">⭐</div>
-            <div style="font-size:11px;color:#546E7A">Alpha Badge</div>
-          </div>
-        </div>
-        <div class="mt-2 flex-center w-full gap-2" style="flex-wrap:wrap">
-          <span class="sight-word" onclick="speakText('my')">my</span>
-          <span class="sight-word" onclick="speakText('not')">not</span>
-          <span class="sight-word" onclick="speakText('one')">one</span>
-          <span class="sight-word" onclick="speakText('the')">the</span>
-          <span class="sight-word" onclick="speakText('up')">up</span>
-          <span class="sight-word" onclick="speakText('we')">we</span>
-        </div>
-        <button class="btn btn-primary btn-lg mt-4" onclick="goNext()">Start Learning ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 2: N-O-P-Q-R Letter Cards -->
-    <div class="slide" data-page="2">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🔤</span> N O P Q R</div>
-        <div class="page-num">2 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">🔤 Letters N – R</div>
-          <div class="card-text">Tap each card to hear the letter!</div>
-        </div>
-        <div class="letter-grid" id="letterGrid1"></div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 3: N-O-P-Q-R Tracing -->
-    <div class="slide" data-page="3">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">✏️</span> Tracing N–R</div>
-        <div class="page-num">3 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">✏️ Trace the Letters</div>
-          <div class="card-text">Follow the arrows! Say each letter as you trace.</div>
-        </div>
-        <div class="tracing-grid" id="tracingGrid1"></div>
-        <div class="book-card mt-2" style="background:#E8F5E9;border-color:#66BB6A">
-          <div class="card-text" style="font-size:14px;color:#2E7D32">
-            💡 Big N little n &nbsp;|&nbsp; Big O little o &nbsp;|&nbsp; Big P little p<br>
-            Big Q little q &nbsp;|&nbsp; Big R little r
-          </div>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 4: S-T-U-V-W Letter Cards -->
-    <div class="slide" data-page="4">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🔤</span> S T U V W</div>
-        <div class="page-num">4 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">🔤 Letters S – W</div>
-          <div class="card-text">Tap each card to hear the letter!</div>
-        </div>
-        <div class="letter-grid" id="letterGrid2"></div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 5: S-T-U-V-W Tracing -->
-    <div class="slide" data-page="5">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">✏️</span> Tracing S–W</div>
-        <div class="page-num">5 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">✏️ Trace the Letters</div>
-          <div class="card-text">Follow the arrows! Say each letter as you trace.</div>
-        </div>
-        <div class="tracing-grid" id="tracingGrid2"></div>
-        <div class="book-card mt-2" style="background:#E8F5E9;border-color:#66BB6A">
-          <div class="card-text" style="font-size:14px;color:#2E7D32">
-            💡 Big S little s &nbsp;|&nbsp; Big T little t &nbsp;|&nbsp; Big U little u<br>
-            Big V little v &nbsp;|&nbsp; Big W little w
-          </div>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 6: X-Y-Z Letters -->
-    <div class="slide" data-page="6">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🔤</span> X Y Z</div>
-        <div class="page-num">6 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">🔤 Letters X Y Z</div>
-          <div class="card-text">The last three letters! Tap to hear.</div>
-        </div>
-        <div class="letter-grid" id="letterGrid3"></div>
-        <div class="book-card mt-2" style="background:#FFF8E1;border-color:#FFD54F;box-shadow:0 4px 0 #FFB300,0 6px 12px rgba(255,179,0,.15)">
-          <div class="card-text" style="font-size:14px">
-            🎵 <strong style="color:#E65100">X</strong> is for xylophone 🎹<br>
-            🪀 <strong style="color:#E65100">Y</strong> is for yo-yo<br>
-            🦓 <strong style="color:#E65100">Z</strong> is for zebra
-          </div>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 7: X-Y-Z Tracing + Full A-Z -->
-    <div class="slide" data-page="7">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">✏️</span> Tracing X–Z + A–Z</div>
-        <div class="page-num">7 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">✏️ Trace X Y Z</div>
-          <div class="card-text">Follow the arrows!</div>
-        </div>
-        <div class="tracing-grid" id="tracingGrid3"></div>
-        <div class="book-card mt-2" style="border-color:#FFD54F;background:#FFFDE7">
-          <div class="card-title">🔤 Full Alphabet A – Z</div>
-          <div class="card-text" style="font-size:13px">Tap a letter to hear it!</div>
-          <div class="alpha-strip mt-2" id="alphaStrip"></div>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 8: Word Bank N-Z -->
-    <div class="slide" data-page="8">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">📚</span> Word Bank N–Z</div>
-        <div class="page-num">8 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">📚 My First Words (N–Z)</div>
-          <div class="card-text">Tap each word to hear it!</div>
-        </div>
-        <div class="word-grid" id="wordBank"></div>
-        <div class="book-card mt-2" style="background:#FFF8E1;border-color:#FFD54F">
-          <div class="card-title">👀 Sight Words</div>
-          <div class="card-text" style="font-size:13px">These words you should know by sight!</div>
-          <div class="flex-center gap-2 mt-2" style="flex-wrap:wrap" id="sightWordsBank"></div>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 9: ABC Song Lyrics -->
-    <div class="slide" data-page="9">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🎵</span> ABC Song</div>
-        <div class="page-num">9 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card" style="border-color:#FFD54F;background:#FFFDE7;box-shadow:0 4px 0 #FFB300,0 6px 12px rgba(255,179,0,.15)">
-          <div class="card-title">🎵 The ABC Song</div>
-          <div class="card-text" style="font-size:13px">Sing along! 🎤</div>
-          <div class="lyrics mt-2" id="lyricsArea">
-A B C D E F G
-H I J K L M N O P
-Q R S T U V
-W X Y and Z
+<div class="container" id="app">
 
-Now I know my A B C's
-Next time won't you sing with me?
-          </div>
-        </div>
-        <div class="flex-center gap-2 mt-3 w-full">
-          <button class="btn btn-primary" onclick="speakAbcSong()">🎤 Sing ABC</button>
-          <button class="btn btn-ghost" onclick="speakText('A B C D E F G, H I J K L M N O P, Q R S T U V, W X Y and Z. Now I know my A B Cs, next time won\'t you sing with me?')">🔊 Listen</button>
-        </div>
-        <div class="mt-3 flex-center w-full gap-2" style="flex-wrap:wrap">
-          <span style="font-size:28px">🎶</span>
-          <span style="font-size:28px">🎤</span>
-          <span style="font-size:28px">🎵</span>
-        </div>
-        <button class="btn btn-primary mt-3" onclick="goNext()">Next ▶</button>
-      </div>
-    </div>
-    <!-- PAGE 10: Practice -->
-    <div class="slide" data-page="10">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">✏️</span> Practice</div>
-        <div class="page-num">10 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card">
-          <div class="card-title">✏️ Letter Order</div>
-          <div class="card-text">Tap the letters in alphabetical order (N to Z)!</div>
-        </div>
-        <div class="order-area" id="orderArea"></div>
-        <div class="quiz-result" id="orderResult"></div>
-        <div class="book-card mt-2">
-          <div class="card-title">🔤 Fill the Missing Letter</div>
-          <div class="card-text">Tap the right letter!</div>
-        </div>
-        <div class="quiz-area" id="fillQuiz"></div>
-        <div class="quiz-result" id="fillQuizResult"></div>
-        <div class="flex-center gap-2 mt-3 w-full flex-col">
-          <button class="btn btn-success" onclick="checkFillQuiz()">✅ Check</button>
-        </div>
-      </div>
-    </div>
-    <!-- PAGE 11: Challenge - 5 Gates Treasure Chest -->
-    <div class="slide" data-page="11">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🏆</span> Challenge</div>
-        <div class="page-num">11 / 12</div>
-      </div>
-      <div class="slide-inner">
-        <div class="book-card" style="border-color:#FFA726;box-shadow:0 4px 0 #FB8C00,0 6px 12px rgba(255,167,38,.15)">
-          <div class="card-title">🏆 5 Gates Treasure Chest</div>
-          <div class="card-text">Answer all 5 gates to open the treasure! 🎁</div>
-        </div>
-        <div class="gate-area" id="gateArea"></div>
-        <div class="treasure-chest" id="treasureChest">📦</div>
-        <div class="quiz-result" id="gateResult"></div>
-        <div class="flex-center gap-2 mt-3 w-full">
-          <button class="btn btn-warning" onclick="checkGates()">🔑 Open Gates</button>
-        </div>
-      </div>
-    </div>
-    <!-- PAGE 12: Celebration -->
-    <div class="slide" data-page="12">
-      <div class="header">
-        <div class="title-bar"><span class="emoji">🎉</span> Congratulations!</div>
-        <div class="page-num">12 / 12</div>
-      </div>
-      <div class="slide-inner" style="justify-content:center">
-        <div class="badge" id="badge">🏅</div>
-        <div class="book-card mt-4" style="text-align:center;border-color:#FFD54F;background:#FFFDE7;box-shadow:0 4px 0 #FFB300,0 6px 12px rgba(255,179,0,.15)">
-          <div class="card-title">🎉 Alpha Badge Earned!</div>
-          <div class="card-text">
-            <strong>Letters N – Z</strong><br>
-            You did it!
-          </div>
-          <div style="text-align:left;margin-top:8px;font-size:14px;color:#37474F;line-height:1.8">
-            ✅ Learned letters <strong>N O P Q R S T U V W X Y Z</strong><br>
-            ✅ Can trace every letter<br>
-            ✅ Know 13+ words from N-Z<br>
-            ✅ Mastered sight words<br>
-            ✅ Opened the treasure chest!<br>
-            ✅ Earned the <strong style="color:#FF8F00">🏅 Alpha Badge</strong>!
-          </div>
-        </div>
-        <div class="flex-center gap-2 mt-4 w-full" style="flex-wrap:wrap">
-          <button class="btn btn-ghost" onclick="goSlide(0)">🏠 Review</button>
-          <button class="btn btn-primary" onclick="celebrate()">🎊 Celebrate!</button>
-        </div>
-      </div>
-    </div>
+<!-- ─── PAGE 1: COVER ──────────────────────────────────────────── -->
+<div class="page active" data-page="1">
+  <div class="page-header">
+    <button class="nav-btn disabled" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
   </div>
-  <!-- Navigation -->
-  <div class="nav-bar">
-    <button class="nav-btn" id="prevBtn" onclick="goPrev()">◀</button>
-    <div class="nav-dots" id="navDots"></div>
-    <button class="nav-btn primary" id="nextBtn" onclick="goNext()">▶</button>
+  <div class="page-content">
+    <div class="cover-title">
+      <h1>🌟 ABC Adventure</h1>
+      <h2>Letters N to Z!</h2>
+    </div>
+    <div class="characters">🧑 Steve &amp; 👩 Alex &nbsp;•&nbsp; Let's Learn Together!</div>
+    <div class="featured-letter">
+      <span class="big-letter">N</span>&nbsp;
+      <span style="font-size:18px;font-weight:600;color:#555">is for</span>&nbsp;
+      <span class="word">🪺 Nest</span>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#888;margin:2px 0">
+      Can you say all the letters from N to Z?
+    </div>
+    <div class="sight-words">
+      <span class="word-card">my</span>
+      <span class="word-card">not</span>
+      <span class="word-card">one</span>
+      <span class="word-card">the</span>
+      <span class="word-card">up</span>
+      <span class="word-card">we</span>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-01.webp" alt="Cover with Steve and Alex" class="page-img" loading="lazy">
+    <p style="text-align:center;font-size:12px;color:#aaa;margin-top:2px">Let's explore N through Z!</p>
   </div>
+  <button class="speak-btn" onclick="speakPage(1)" title="Listen to this page">🔊</button>
 </div>
-<button class="read-btn" id="readAloudBtn" onclick="readCurrentPage()" style="position:fixed;bottom:80px;right:max(calc(50% - 210px),8px);z-index:30;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)">🔊</button>
+
+<!-- ─── PAGE 2: N-O-P-Q-R LETTER CARDS ────────────────────────── -->
+<div class="page" data-page="2">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>📚 Letters N · O · P · Q · R</h2>
+    <p class="section-label">Tap each card to hear the letter</p>
+    <div class="letter-grid cols-3">
+      <div class="letter-card" onclick="speak('N for Nest')"><span class="l">Nn</span><span class="p">🪺</span><span class="w">Nest</span></div>
+      <div class="letter-card" onclick="speak('O for Orange')"><span class="l">Oo</span><span class="p">🍊</span><span class="w">Orange</span></div>
+      <div class="letter-card" onclick="speak('P for Pig')"><span class="l">Pp</span><span class="p">🐷</span><span class="w">Pig</span></div>
+      <div class="letter-card" onclick="speak('Q for Queen')"><span class="l">Qq</span><span class="p">👑</span><span class="w">Queen</span></div>
+      <div class="letter-card" onclick="speak('R for Rabbit')"><span class="l">Rr</span><span class="p">🐰</span><span class="w">Rabbit</span></div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-01.webp" alt="Letter cards N through R" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(2)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 3: N-O-P-Q-R TRACING GUIDE ───────────────────────── -->
+<div class="page" data-page="3">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>✏️ Tracing: N · O · P · Q · R</h2>
+    <p class="section-label">Follow the arrows to practice writing</p>
+    <div class="tracing-grid">
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">N</span><span class="dash">N</span></div>
+        <div class="tracing-arrows">↓ → ↓</div>
+        <span class="tl-label">N n</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">O</span><span class="dash">O</span></div>
+        <div class="tracing-arrows">↻ counter-clockwise</div>
+        <span class="tl-label">O o</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">P</span><span class="dash">P</span></div>
+        <div class="tracing-arrows">↓ then ↻</div>
+        <span class="tl-label">P p</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">Q</span><span class="dash">Q</span></div>
+        <div class="tracing-arrows">↻ then ╲</div>
+        <span class="tl-label">Q q</span>
+      </div>
+      <div class="tracing-box" style="grid-column:1/3">
+        <div class="trace-row"><span class="big">R</span><span class="dash">R</span></div>
+        <div class="tracing-arrows">↓ ↻ then ╲</div>
+        <span class="tl-label">R r</span>
+      </div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-03.webp" alt="Tracing guide for letters N through R" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(3)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 4: S-T-U-V-W LETTER CARDS ────────────────────────── -->
+<div class="page" data-page="4">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>📚 Letters S · T · U · V · W</h2>
+    <p class="section-label">Tap each card to hear the letter</p>
+    <div class="letter-grid cols-3">
+      <div class="letter-card" onclick="speak('S for Sun')"><span class="l">Ss</span><span class="p">☀️</span><span class="w">Sun</span></div>
+      <div class="letter-card" onclick="speak('T for Tree')"><span class="l">Tt</span><span class="p">🌳</span><span class="w">Tree</span></div>
+      <div class="letter-card" onclick="speak('U for Umbrella')"><span class="l">Uu</span><span class="p">☂️</span><span class="w">Umbrella</span></div>
+      <div class="letter-card" onclick="speak('V for Volcano')"><span class="l">Vv</span><span class="p">🌋</span><span class="w">Volcano</span></div>
+      <div class="letter-card" onclick="speak('W for Water')"><span class="l">Ww</span><span class="p">💧</span><span class="w">Water</span></div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-04.webp" alt="Letter cards S through W" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(4)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 5: S-T-U-V-W TRACING GUIDE ───────────────────────── -->
+<div class="page" data-page="5">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>✏️ Tracing: S · T · U · V · W</h2>
+    <p class="section-label">Follow the arrows to practice writing</p>
+    <div class="tracing-grid">
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">S</span><span class="dash">S</span></div>
+        <div class="tracing-arrows">↳ curve right then left</div>
+        <span class="tl-label">S s</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">T</span><span class="dash">T</span></div>
+        <div class="tracing-arrows">↓ then —</div>
+        <span class="tl-label">T t</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">U</span><span class="dash">U</span></div>
+        <div class="tracing-arrows">↓ curve ↷ up</div>
+        <span class="tl-label">U u</span>
+      </div>
+      <div class="tracing-box">
+        <div class="trace-row"><span class="big">V</span><span class="dash">V</span></div>
+        <div class="tracing-arrows">╲ then ╱</div>
+        <span class="tl-label">V v</span>
+      </div>
+      <div class="tracing-box" style="grid-column:1/3">
+        <div class="trace-row"><span class="big">W</span><span class="dash">W</span></div>
+        <div class="tracing-arrows">╲ ╱ ╲ ╱</div>
+        <span class="tl-label">W w</span>
+      </div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-05.webp" alt="Tracing guide for letters S through W" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(5)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 6: X-Y-Z LETTERS ─────────────────────────────────── -->
+<div class="page" data-page="6">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>📚 The Last Letters: X · Y · Z</h2>
+    <p class="section-label">Tap a card to hear it</p>
+    <div class="letter-grid cols-3">
+      <div class="letter-card" onclick="speak('X for X-ray')"><span class="l">Xx</span><span class="p">🦴</span><span class="w">X-ray</span></div>
+      <div class="letter-card" onclick="speak('Y for Yellow')"><span class="l">Yy</span><span class="p">🟡</span><span class="w">Yellow</span></div>
+      <div class="letter-card" onclick="speak('Z for Zebra')"><span class="l">Zz</span><span class="p">🦓</span><span class="w">Zebra</span></div>
+    </div>
+    <div style="margin:4px 0">
+      <p class="section-label">Now trace them too!</p>
+      <div class="tracing-grid" style="margin-top:4px">
+        <div class="tracing-box">
+          <div class="trace-row"><span class="big">X</span><span class="dash">X</span></div>
+          <div class="tracing-arrows">╲ then ╱</div>
+          <span class="tl-label">X x</span>
+        </div>
+        <div class="tracing-box">
+          <div class="trace-row"><span class="big">Y</span><span class="dash">Y</span></div>
+          <div class="tracing-arrows">╲ ╱ then ↓</div>
+          <span class="tl-label">Y y</span>
+        </div>
+        <div class="tracing-box" style="grid-column:1/3">
+          <div class="trace-row"><span class="big">Z</span><span class="dash">Z</span></div>
+          <div class="tracing-arrows">— ╲ —</div>
+          <span class="tl-label">Z z</span>
+        </div>
+      </div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-06.webp" alt="Letters X Y Z" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(6)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 7: X-Y-Z + FULL A-Z ─────────────────────────────── -->
+<div class="page" data-page="7">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>🔤 The Full Alphabet: A to Z!</h2>
+    <p class="section-label">Green letters = N through Z — tap any letter to hear it</p>
+    <div class="alphabet-chart" id="alphabetChart"></div>
+    <div style="text-align:center;margin:4px 0;font-size:13px;color:#888">
+      Count the letters! There are 26 in the alphabet.
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-07.webp" alt="Full alphabet A-Z chart" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(7)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 8: WORD BANK N-Z ─────────────────────────────────── -->
+<div class="page" data-page="8">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>📖 Word Bank: N to Z</h2>
+    <p class="section-label">Read each word and look at the picture</p>
+    <table class="word-bank">
+      <tr><th>Letter</th><th>Word</th><th>Picture</th></tr>
+      <tr><td><strong>N</strong></td><td>Nest</td><td><span class="wb-img">🪺</span></td></tr>
+      <tr><td><strong>O</strong></td><td>Orange</td><td><span class="wb-img">🍊</span></td></tr>
+      <tr><td><strong>P</strong></td><td>Pig</td><td><span class="wb-img">🐷</span></td></tr>
+      <tr><td><strong>Q</strong></td><td>Queen</td><td><span class="wb-img">👑</span></td></tr>
+      <tr><td><strong>R</strong></td><td>Rabbit</td><td><span class="wb-img">🐰</span></td></tr>
+      <tr><td><strong>S</strong></td><td>Sun</td><td><span class="wb-img">☀️</span></td></tr>
+      <tr><td><strong>T</strong></td><td>Tree</td><td><span class="wb-img">🌳</span></td></tr>
+      <tr><td><strong>U</strong></td><td>Umbrella</td><td><span class="wb-img">☂️</span></td></tr>
+      <tr><td><strong>V</strong></td><td>Volcano</td><td><span class="wb-img">🌋</span></td></tr>
+      <tr><td><strong>W</strong></td><td>Water</td><td><span class="wb-img">💧</span></td></tr>
+      <tr><td><strong>X</strong></td><td>X-ray</td><td><span class="wb-img">🦴</span></td></tr>
+      <tr><td><strong>Y</strong></td><td>Yellow</td><td><span class="wb-img">🟡</span></td></tr>
+      <tr><td><strong>Z</strong></td><td>Zebra</td><td><span class="wb-img">🦓</span></td></tr>
+    </table>
+    <img src="images/english-03-abc-nz/webp/page-08.webp" alt="Word bank N-Z table" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(8)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 9: ABC SONG LYRICS ───────────────────────────────── -->
+<div class="page" data-page="9">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>🎵 ABC Song</h2>
+    <p class="section-label">Press the button to sing along!</p>
+    <div class="lyrics">
+      <span class="highlight">A</span> <span class="highlight">B</span> <span class="highlight">C</span> <span class="highlight">D</span> <span class="highlight">E</span> <span class="highlight">F</span> <span class="highlight">G</span><br>
+      <span class="highlight">H</span> <span class="highlight">I</span> <span class="highlight">J</span> <span class="highlight">K</span> <span class="highlight">L</span> <span class="highlight">M</span> <span class="highlight">N</span> <span class="highlight">O</span> <span class="highlight">P</span><br>
+      <span class="highlight">Q</span> <span class="highlight">R</span> <span class="highlight">S</span> <span class="highlight">T</span> <span class="highlight">U</span> <span class="highlight">V</span><br>
+      <span class="highlight">W</span> <span class="highlight">X</span> <span class="highlight">Y</span> and <span class="highlight">Z</span><br><br>
+      Now I know my <span class="highlight">ABC</span>'s<br>
+      Next time won't you sing with me!
+    </div>
+    <div style="text-align:center;margin:4px 0">
+      <button onclick="speakPage('song');this.classList.add('speaking')" class="speak-btn" style="position:static;display:inline-flex;width:auto;padding:8px 22px;border-radius:20px;font-size:15px;gap:5px">🎤 Sing the ABCs!</button>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-09.webp" alt="ABC Song lyrics" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(9)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 10: PRACTICE EXERCISES ───────────────────────────── -->
+<div class="page" data-page="10">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>✏️ Practice Time!</h2>
+    <div id="exerciseFeedback" class="feedback"></div>
+
+    <!-- Exercise 1: Fill in the blank - N -->
+    <div class="exercise" id="ex1">
+      <div class="q">1. N is for <span class="blank">N ___ ___ ___</span></div>
+      <div class="options">
+        <button class="option-btn" data-ex="1" data-val="est" onclick="checkFill(this,1,'est')">est</button>
+        <button class="option-btn" data-ex="1" data-val="ose" onclick="checkFill(this,1,'ose')">ose</button>
+        <button class="option-btn" data-ex="1" data-val="ite" onclick="checkFill(this,1,'ite')">ite</button>
+      </div>
+    </div>
+
+    <!-- Exercise 2: Fill in the blank - P -->
+    <div class="exercise" id="ex2">
+      <div class="q">2. P is for <span class="blank">P ___ ___</span></div>
+      <div class="options">
+        <button class="option-btn" data-ex="2" data-val="en" onclick="checkFill(this,2,'en')">en</button>
+        <button class="option-btn" data-ex="2" data-val="ig" onclick="checkFill(this,2,'ig')">ig</button>
+        <button class="option-btn" data-ex="2" data-val="ot" onclick="checkFill(this,2,'ot')">ot</button>
+      </div>
+    </div>
+
+    <!-- Exercise 3: Fill in the blank - Z -->
+    <div class="exercise" id="ex3">
+      <div class="q">3. Z is for <span class="blank">Z ___ ___ ___ ___</span></div>
+      <div class="options">
+        <button class="option-btn" data-ex="3" data-val="ebra" onclick="checkFill(this,3,'ebra')">ebra</button>
+        <button class="option-btn" data-ex="3" data-val="oo" onclick="checkFill(this,3,'oo')">oo</button>
+        <button class="option-btn" data-ex="3" data-val="ero" onclick="checkFill(this,3,'ero')">ero</button>
+      </div>
+    </div>
+
+    <!-- Exercise 4: Matching -->
+    <div class="exercise">
+      <div class="q">4. Match the letter to the picture!</div>
+      <div class="match-area" id="matchArea">
+        <div class="match-col" id="matchLetters">
+          <div class="match-item" data-letter="Q" data-match="crown" onclick="matchClick(this)">Q</div>
+          <div class="match-item" data-letter="R" data-match="rabbit" onclick="matchClick(this)">R</div>
+          <div class="match-item" data-letter="S" data-match="sun" onclick="matchClick(this)">S</div>
+        </div>
+        <div class="match-col" id="matchPics">
+          <div class="match-item" data-pic="sun" onclick="matchClick(this)">☀️</div>
+          <div class="match-item" data-pic="rabbit" onclick="matchClick(this)">🐰</div>
+          <div class="match-item" data-pic="crown" onclick="matchClick(this)">👑</div>
+        </div>
+      </div>
+    </div>
+
+    <img src="images/english-03-abc-nz/webp/page-10.webp" alt="Practice exercises" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(10)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 11: CHALLENGE TREASURE CHEST ─────────────────────── -->
+<div class="page" data-page="11">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="nextPage()" title="Next page">▶</button>
+  </div>
+  <div class="page-content">
+    <h2>🏆 Treasure Challenge!</h2>
+    <p class="section-label">Answer 3 questions to unlock the treasure!</p>
+    <div class="chest-area">
+      <div class="chest" id="treasureChest">📦</div>
+      <div class="chest-sparkle" id="chestSparkle">✨🌟✨</div>
+    </div>
+    <div id="chestFeedback" class="feedback"></div>
+
+    <div class="quiz-question" id="quiz1">
+      <div class="qq"><span class="qn">1</span> Which letter comes right after N?</div>
+      <div class="quiz-options">
+        <button class="quiz-btn" data-q="1" data-correct="false" onclick="checkQuiz(this)">M</button>
+        <button class="quiz-btn" data-q="1" data-correct="true" onclick="checkQuiz(this)">O</button>
+        <button class="quiz-btn" data-q="1" data-correct="false" onclick="checkQuiz(this)">P</button>
+      </div>
+    </div>
+
+    <div class="quiz-question" id="quiz2">
+      <div class="qq"><span class="qn">2</span> Which word begins with the letter S?</div>
+      <div class="quiz-options">
+        <button class="quiz-btn" data-q="2" data-correct="false" onclick="checkQuiz(this)">Tree</button>
+        <button class="quiz-btn" data-q="2" data-correct="true" onclick="checkQuiz(this)">Sun</button>
+        <button class="quiz-btn" data-q="2" data-correct="false" onclick="checkQuiz(this)">Rabbit</button>
+      </div>
+    </div>
+
+    <div class="quiz-question" id="quiz3">
+      <div class="qq"><span class="qn">3</span> What letter does "Zebra" start with?</div>
+      <div class="quiz-options">
+        <button class="quiz-btn" data-q="3" data-correct="false" onclick="checkQuiz(this)">X</button>
+        <button class="quiz-btn" data-q="3" data-correct="false" onclick="checkQuiz(this)">Y</button>
+        <button class="quiz-btn" data-q="3" data-correct="true" onclick="checkQuiz(this)">Z</button>
+      </div>
+    </div>
+
+    <img src="images/english-03-abc-nz/webp/page-11.webp" alt="Treasure challenge" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speakPage(11)" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE 12: CELEBRATION CONFETTI ─────────────────────────── -->
+<div class="page" data-page="12">
+  <div class="page-header">
+    <button class="nav-btn" onclick="goToPage(1)" title="Home">🏠</button>
+    <button class="nav-btn" onclick="goToPage(1)" title="Start over">🏁</button>
+  </div>
+  <div class="page-content">
+    <div class="celebration">
+      <h1>🎉 Great Job! 🎉</h1>
+      <div class="score-badge" id="finalScore">⭐ N to Z Master! ⭐</div>
+      <p style="font-size:16px;color:#555;margin:8px 0;font-weight:600">
+        You learned all the letters from <strong style="color:#66BB6A">N</strong> to <strong style="color:#66BB6A">Z</strong>!
+      </p>
+      <div style="font-size:52px;margin:10px 0;letter-spacing:8px">🏆🌟🎊</div>
+      <p style="font-size:15px;color:#888">
+        You're ready for the whole alphabet!<br>
+        Keep reading and practicing every day!
+      </p>
+      <div style="margin:10px 0">
+        <button onclick="goToPage(1)" style="background:#66BB6A;color:#fff;border:none;padding:10px 28px;border-radius:30px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 12px rgba(102,187,106,0.3);transition:all 0.2s">🔄 Start Again</button>
+      </div>
+    </div>
+    <img src="images/english-03-abc-nz/webp/page-01.webp" alt="Celebration" class="page-img" loading="lazy">
+  </div>
+  <button class="speak-btn" onclick="speak('Congratulations! You did a great job learning letters N to Z. You are an alphabet star! Keep reading and practicing every day!')" title="Listen to this page">🔊</button>
+</div>
+
+<!-- ─── PAGE DOTS ─────────────────────────────────────────────── -->
+<div class="page-dots" id="pageDots"></div>
+</div>
 
 <script>
-// ===== CONFIG =====
-const TOTAL_PAGES = 12;
-let currentPage = 0;
-let fillQuizState = {1:null,2:null,3:null};
-let orderState = [];
-let gateState = [null,null,null,null,null];
-let speechSynth = window.speechSynthesis;
-let utterance = null;
+// ─── Navigation ──────────────────────────────────────────────
+let currentPage = 1;
+const totalPages = 12;
+let quizScore = {correct:0,total:0};
+let matchState = {selected:null,matched:0};
+let exerciseAnswered = {};
 
-// ===== LETTER DATA =====
-const lettersNtoR = [
-  {letter:'N',word:'Nest',emoji:'🪺',sound:'N is for nest'},
-  {letter:'O',word:'Octopus',emoji:'🐙',sound:'O is for octopus'},
-  {letter:'P',word:'Penguin',emoji:'🐧',sound:'P is for penguin'},
-  {letter:'Q',word:'Queen',emoji:'👑',sound:'Q is for queen'},
-  {letter:'R',word:'Rainbow',emoji:'🌈',sound:'R is for rainbow'}
-];
-const lettersStoW = [
-  {letter:'S',word:'Sun',emoji:'☀️',sound:'S is for sun'},
-  {letter:'T',word:'Tree',emoji:'🌳',sound:'T is for tree'},
-  {letter:'U',word:'Umbrella',emoji:'☂️',sound:'U is for umbrella'},
-  {letter:'V',word:'Violin',emoji:'🎻',sound:'V is for violin'},
-  {letter:'W',word:'Watermelon',emoji:'🍉',sound:'W is for watermelon'}
-];
-const lettersXYZ = [
-  {letter:'X',word:'Xylophone',emoji:'🎹',sound:'X is for xylophone'},
-  {letter:'Y',word:'Yo-yo',emoji:'🪀',sound:'Y is for yo-yo'},
-  {letter:'Z',word:'Zebra',emoji:'🦓',sound:'Z is for zebra'}
-];
-const wordBankData = [
-  {letter:'N',word:'Nest',zh:'鸟巢'},
-  {letter:'N',word:'Notebook',zh:'笔记本'},
-  {letter:'O',word:'Octopus',zh:'章鱼'},
-  {letter:'O',word:'Orange',zh:'橙子'},
-  {letter:'P',word:'Penguin',zh:'企鹅'},
-  {letter:'P',word:'Piano',zh:'钢琴'},
-  {letter:'Q',word:'Queen',zh:'女王'},
-  {letter:'Q',word:'Question',zh:'问题'},
-  {letter:'R',word:'Rainbow',zh:'彩虹'},
-  {letter:'R',word:'Robot',zh:'机器人'},
-  {letter:'S',word:'Star',zh:'星星'},
-  {letter:'S',word:'Sun',zh:'太阳'},
-  {letter:'T',word:'Tree',zh:'树'},
-  {letter:'T',word:'Train',zh:'火车'},
-  {letter:'U',word:'Umbrella',zh:'雨伞'},
-  {letter:'U',word:'Unicorn',zh:'独角兽'},
-  {letter:'V',word:'Violin',zh:'小提琴'},
-  {letter:'V',word:'Volcano',zh:'火山'},
-  {letter:'W',word:'Watermelon',zh:'西瓜'},
-  {letter:'W',word:'Whale',zh:'鲸鱼'},
-  {letter:'X',word:'Xylophone',zh:'木琴'},
-  {letter:'Y',word:'Yo-yo',zh:'悠悠球'},
-  {letter:'Y',word:'Yak',zh:'牦牛'},
-  {letter:'Z',word:'Zebra',zh:'斑马'},
-  {letter:'Z',word:'Zoo',zh:'动物园'}
-];
-const sightWordsData = [
-  {word:'my',zh:'我的'},
-  {word:'not',zh:'不'},
-  {word:'one',zh:'一'},
-  {word:'the',zh:'这个'},
-  {word:'up',zh:'向上'},
-  {word:'we',zh:'我们'}
-];
-const fillQuizData = [
-  {seq:'N _ P',blankIdx:1,options:['M','O','P'],answer:'O'},
-  {seq:'Q R _',blankIdx:2,options:['S','T','U'],answer:'S'},
-  {seq:'_ V W',blankIdx:0,options:['T','U','V'],answer:'U'},
-  {seq:'X _ Z',blankIdx:1,options:['W','Y','Z'],answer:'Y'}
-];
-const gateData = [
-  {q:'What comes after N?',options:['M','O','P'],answer:'O'},
-  {q:'P is for ___?',options:['Penguin','Queen','Rainbow'],answer:'Penguin'},
-  {q:'Which starts with S?',options:['Tree','Sun','Umbrella'],answer:'Sun'},
-  {q:'Last letter of alphabet?',options:['X','Y','Z'],answer:'Z'},
-  {q:'___ is for xylophone',options:['X','Y','Z'],answer:'X'}
-];
-
-// ===== INIT =====
-function init() {
-  createNavDots();
-  buildLetterGrid('letterGrid1',lettersNtoR);
-  buildTracingGrid('tracingGrid1',['N','O','P','Q','R']);
-  buildLetterGrid('letterGrid2',lettersStoW);
-  buildTracingGrid('tracingGrid2',['S','T','U','V','W']);
-  buildLetterGrid('letterGrid3',lettersXYZ);
-  buildTracingGrid('tracingGrid3',['X','Y','Z']);
-  buildAlphaStrip();
-  buildWordBank();
-  buildSightWordsBank();
-  buildOrder();
-  buildFillQuiz();
-  buildGates();
-  goSlide(0);
+function goToPage(n){
+  if(n<1||n>totalPages||n===currentPage)return;
+  const old = currentPage;
+  currentPage = n;
+  const pages = document.querySelectorAll('.page');
+  const oldPage = pages[old-1];
+  const newPage = pages[n-1];
+  gsap.to(oldPage, {opacity:0, duration:0.12, onComplete:()=>{
+    pages.forEach(p=>p.classList.remove('active'));
+    newPage.classList.add('active');
+    gsap.fromTo(newPage, {opacity:0, y:12, scale:0.98}, {opacity:1, y:0, scale:1, duration:0.3, ease:'power2.out'});
+    updateDots();
+    if(n===12) setTimeout(launchConfetti, 200);
+  }});
+  // Cancel any speaking
+  if(window.speechSynthesis) window.speechSynthesis.cancel();
 }
 
-function createNavDots() {
-  const dots = document.getElementById('navDots');
-  dots.innerHTML = '';
-  for(let i=0;i<TOTAL_PAGES;i++){
-    const d = document.createElement('button');
-    d.className = 'nav-dot' + (i===0?' active':'');
-    d.onclick = ()=>goSlide(i);
-    d.setAttribute('aria-label','Page '+(i+1));
-    dots.appendChild(d);
+function nextPage(){ if(currentPage<totalPages) goToPage(currentPage+1); }
+function prevPage(){ if(currentPage>1) goToPage(currentPage-1); }
+
+function updateDots(){
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===currentPage));
+}
+
+// Build dots
+(function(){
+  const c = document.getElementById('pageDots');
+  for(let i=1;i<=totalPages;i++){
+    const b = document.createElement('button');
+    b.className = 'dot'+(i===1?' active':'');
+    b.onclick = () => goToPage(i);
+    b.setAttribute('aria-label','Page '+i);
+    c.appendChild(b);
   }
-}
+})();
 
-// ===== NAVIGATION =====
-function goSlide(idx) {
-  if(idx<0||idx>=TOTAL_PAGES) return;
-  currentPage = idx;
-  const wrap = document.getElementById('slidesWrap');
-  wrap.style.transform = `translateX(-${idx*100}%)`;
-  wrap.style.transition = 'transform .45s cubic-bezier(.25,.8,.25,1)';
-  document.querySelectorAll('.nav-dot').forEach((d,i)=>{
-    d.classList.toggle('active',i===idx);
-  });
-  document.getElementById('prevBtn').disabled = idx===0;
-  document.getElementById('nextBtn').disabled = idx===TOTAL_PAGES-1;
-  document.getElementById('nextBtn').innerHTML = idx===TOTAL_PAGES-2?'🏁 Finish':'▶';
-  const slide = document.querySelectorAll('.slide')[idx];
-  if(slide){
-    gsap.fromTo(slide.querySelectorAll('.book-card, .char-row, .letter-grid, .tracing-grid, .alpha-strip, .word-grid, .lyrics, .quiz-area, .order-area, .gate-area, .treasure-chest, .badge, .btn:not(.nav-btn):not(.read-btn), .sight-word, .gate-icon'),
-      {opacity:0,y:20},
-      {opacity:1,y:0,duration:.4,stagger:.08,ease:'power2.out',clearProps:'all'}
-    );
-  }
-  if(idx===TOTAL_PAGES-1) celebrate();
-}
-
-function goNext() { goSlide(currentPage+1); }
-function goPrev() { goSlide(currentPage-1); }
-
-// ===== READ ALOUD =====
-function speakText(text) {
+// ─── Speech ───────────────────────────────────────────────────
+function speak(text){
   if(!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US';
   u.rate = 0.85;
-  u.pitch = 1.1;
+  u.pitch = 1.0;
   window.speechSynthesis.speak(u);
 }
 
-function speakLetterClick(letter, word, sound) {
-  speakText(sound);
+const pageScripts = {
+  1:"ABC Adventure! Letters N to Z! N is for Nest. Sight words: my, not, one, the, up, we. Let's explore letters N through Z!",
+  2:"Letters N O P Q R. N for Nest. O for Orange. P for Pig. Q for Queen. R for Rabbit. Tap each card to hear more.",
+  3:"Tracing guide for letters N O P Q R. Follow the arrows with your finger to practice writing each letter.",
+  4:"Letters S T U V W. S for Sun. T for Tree. U for Umbrella. V for Volcano. W for Water. Tap each card to hear more.",
+  5:"Tracing guide for letters S T U V W. Follow the arrows with your finger to practice writing each letter.",
+  6:"Letters X Y Z. X for X-ray. Y for Yellow. Z for Zebra. These are the last three letters of the alphabet!",
+  7:"The full alphabet from A to Z. Letters N through Z are highlighted in green. There are 26 letters. Tap any letter to hear it.",
+  8:"Word bank for letters N through Z. Read each word and look at the picture. Practice reading these words out loud.",
+  9:"The ABC song. A B C D E F G. H I J K L M N O P. Q R S T U V. W X Y and Z. Now I know my ABCs. Next time won't you sing with me!",
+  10:"Practice exercises. Fill in the blanks and match the letters to the pictures. You can do it!",
+  11:"Treasure challenge. Answer three questions correctly to unlock the treasure chest. Good luck!",
+  12:"Congratulations! You did a great job learning letters N to Z. You are an alphabet star! Keep reading and practicing every day!",
+  song:"A B C D E F G. H I J K L M N O P. Q R S T U V. W X Y and Z. Now I know my ABCs. Next time won't you sing with me!"
+};
+
+function speakPage(n){
+  if(typeof n === 'string') n = 'song';
+  if(pageScripts[n]) speak(pageScripts[n]);
 }
 
-function readCurrentPage() {
-  const slide = document.querySelectorAll('.slide')[currentPage];
-  if(!slide) return;
-  const texts = [];
-  slide.querySelectorAll('.card-title, .card-text, .char-label, .speech, .letter-word, .lyrics, .w-letter').forEach(el=>{
-    const t = el.textContent.trim();
-    if(t) texts.push(t);
+// ─── Fill-in-the-blank ────────────────────────────────────────
+const answers = {1:'est',2:'ig',3:'ebra'};
+const answerWords = {1:'Nest',2:'Pig',3:'Zebra'};
+
+function checkFill(btn, ex, val){
+  if(exerciseAnswered[ex]) return;
+  exerciseAnswered[ex] = true;
+  const options = document.querySelectorAll('#ex'+ex+' .option-btn');
+  const fb = document.getElementById('exerciseFeedback');
+  const isCorrect = (val === answers[ex]);
+
+  options.forEach(b => {
+    b.disabled = true;
+    if(b.dataset.val === answers[ex]){
+      b.classList.add('correct');
+    } else if(b.dataset.val === val && !isCorrect){
+      b.classList.add('wrong');
+    }
   });
-  if(texts.length) speakText(texts.join('. '));
-}
 
-function speakAbcSong() {
-  speakText('A B C D E F G, H I J K L M N O P, Q R S T U V, W X Y and Z. Now I know my A B Cs, next time won\'t you sing with me?');
-}
-
-// ===== LETTER GRIDS =====
-function buildLetterGrid(id, data) {
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.innerHTML = '';
-  data.forEach(item => {
-    const card = document.createElement('div');
-    card.className = 'letter-card';
-    card.innerHTML = `<span class="letter">${item.letter}</span><span class="letter-emoji">${item.emoji}</span><span class="letter-word">${item.word}</span>`;
-    card.onclick = ()=>{
-      speakLetterClick(item.letter, item.word, item.sound);
-      gsap.fromTo(card,{scale:.9},{scale:1,duration:.2,ease:'back.out(2)'});
-    };
-    el.appendChild(card);
-  });
-}
-
-// ===== TRACING GRIDS =====
-function buildTracingGrid(id, letters) {
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.innerHTML = '';
-  letters.forEach(letter => {
-    const lc = letter.toLowerCase();
-    const card = document.createElement('div');
-    card.className = 'trace-card';
-    card.innerHTML = `<span class="trace-letter">${letter}</span><span class="trace-guide">${lc}</span><span class="trace-arrow">↘</span>`;
-    card.onclick = ()=>{
-      speakText(`${letter}, ${lc}`);
-      gsap.fromTo(card,{scale:.9},{scale:1,duration:.2,ease:'back.out(2)'});
-    };
-    el.appendChild(card);
-  });
-}
-
-// ===== ALPHA STRIP =====
-function buildAlphaStrip() {
-  const el = document.getElementById('alphaStrip');
-  if(!el) return;
-  el.innerHTML = '';
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  letters.forEach((l,i) => {
-    const d = document.createElement('div');
-    d.className = 'alpha-char' + (l <= 'M' ? ' done' : '') + (l === 'N' ? ' current' : '');
-    d.textContent = l;
-    d.onclick = ()=>{
-      speakText(l);
-      gsap.fromTo(d,{scale:.8},{scale:1,duration:.2,ease:'back.out(2)'});
-    };
-    el.appendChild(d);
-  });
-}
-
-// ===== WORD BANK =====
-function buildWordBank() {
-  const el = document.getElementById('wordBank');
-  if(!el) return;
-  el.innerHTML = '';
-  const shown = wordBankData.slice(0,13); // 13 words for N-Z bank
-  shown.forEach(item => {
-    const t = document.createElement('div');
-    t.className = 'word-tag';
-    t.innerHTML = `<span class="w-letter">${item.letter}</span> ${item.word} <span class="w-zh">${item.zh}</span>`;
-    t.onclick = ()=>{
-      speakText(item.word);
-      gsap.fromTo(t,{scale:.92},{scale:1,duration:.15,ease:'back.out(2)'});
-    };
-    el.appendChild(t);
-  });
-}
-
-function buildSightWordsBank() {
-  const el = document.getElementById('sightWordsBank');
-  if(!el) return;
-  el.innerHTML = '';
-  sightWordsData.forEach(item => {
-    const t = document.createElement('div');
-    t.className = 'word-tag';
-    t.style.background = '#FFF8E1';
-    t.style.borderColor = '#FFD54F';
-    t.innerHTML = `${item.word} <span class="w-zh">${item.zh}</span>`;
-    t.onclick = ()=>{
-      speakText(item.word);
-      gsap.fromTo(t,{scale:.92},{scale:1,duration:.15,ease:'back.out(2)'});
-    };
-    el.appendChild(t);
-  });
-}
-
-// ===== PAGE 10: ORDER =====
-function buildOrder() {
-  const target = ['N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-  // Shuffle a copy
-  const shuffled = [...target];
-  for(let i=shuffled.length-1;i>0;i--){
-    const j = Math.floor(Math.random()*(i+1));
-    [shuffled[i],shuffled[j]] = [shuffled[j],shuffled[i]];
+  if(isCorrect){
+    fb.textContent = '✅ That\'s right! ' + answerWords[ex] + ' is correct!';
+    fb.className = 'feedback good';
+    speak('Correct! ' + answerWords[ex] + '!');
+  } else {
+    fb.textContent = '❌ Not quite. The answer is ' + answerWords[ex] + '.';
+    fb.className = 'feedback bad';
+    speak('The answer is ' + answerWords[ex]);
   }
-  orderState = shuffled.map(l=>({val:l,selected:false}));
-  const area = document.getElementById('orderArea');
-  if(!area) return;
-  area.innerHTML = '<div class="order-items" id="orderItems"></div>';
-  renderOrderItems();
-}
 
-function renderOrderItems() {
-  const container = document.getElementById('orderItems');
-  if(!container) return;
-  container.innerHTML = '';
-  const remaining = orderState.filter(x=>!x.selected);
-  const chosen = orderState.filter(x=>x.selected);
-  chosen.forEach((item,i)=>{
-    const d = document.createElement('div');
-    d.className = 'order-item done';
-    d.innerHTML = `<span style="font-size:14px;color:#66BB6A">✅</span><span class="order-val">${item.val}</span>`;
-    container.appendChild(d);
-  });
-  remaining.forEach((item,i)=>{
-    const d = document.createElement('div');
-    d.className = 'order-item';
-    d.innerHTML = `<span style="font-size:14px;color:#A5D6A7">☝️</span><span class="order-val">${item.val}</span>`;
-    d.onclick = ()=>{
-      if(item.selected) return;
-      item.selected = true;
-      gsap.to(d,{scale:.9,duration:.1,onComplete:()=>{renderOrderItems();}});
-    };
-    container.appendChild(d);
-  });
-  let resetBtn = container.parentElement.querySelector('.order-reset-btn');
-  if(!resetBtn){
-    resetBtn = document.createElement('button');
-    resetBtn.className = 'btn btn-ghost btn-sm mt-2 order-reset-btn';
-    resetBtn.textContent = '🔄 Reset';
-    resetBtn.onclick = resetOrder;
-    container.parentElement.appendChild(resetBtn);
+  // Check if all fill-in-blank exercises done
+  let allDone = true;
+  for(let k in answers){
+    if(!exerciseAnswered[k]){ allDone = false; break; }
+  }
+  if(allDone && matchState.matched >= 3){
+    fb.textContent = '🎉 All exercises complete! You did fantastic!';
+    fb.className = 'feedback good';
+    speak('All exercises complete! You did fantastic!');
   }
 }
 
-function resetOrder() {
-  orderState.forEach(x=>x.selected=false);
-  renderOrderItems();
-  document.getElementById('orderResult').textContent = '';
-}
+// ─── Matching ──────────────────────────────────────────────────
+const matchMapping = {Q:'crown',R:'rabbit',S:'sun'};
 
-function checkOrder() {
-  const chosen = orderState.filter(x=>x.selected);
-  const vals = chosen.map(x=>x.val);
-  const target = ['N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-  const result = document.getElementById('orderResult');
-  if(chosen.length < orderState.length){
-    result.innerHTML = '⚠️ Tap all letters in order from N to Z!';
-    result.className = 'quiz-result';
+function matchClick(el){
+  const fb = document.getElementById('exerciseFeedback');
+  if(el.classList.contains('matched')) return;
+
+  document.querySelectorAll('.wrong-match').forEach(e=>e.classList.remove('wrong-match'));
+  const isLetter = el.parentElement.id === 'matchLetters';
+
+  if(!matchState.selected){
+    if(isLetter){
+      el.classList.add('active');
+      matchState.selected = el;
+    } else {
+      fb.textContent = '👆 First click a letter!';
+      fb.className = 'feedback bad';
+    }
     return;
   }
-  let correct = true;
-  for(let i=0;i<vals.length;i++){
-    if(vals[i] !== target[i]){ correct=false; break; }
+
+  if(isLetter){
+    matchState.selected.classList.remove('active');
+    el.classList.add('active');
+    matchState.selected = el;
+    return;
   }
+
+  const letterEl = matchState.selected;
+  const letter = letterEl.dataset.letter;
+  const pic = el.dataset.pic;
+
+  if(matchMapping[letter] === pic){
+    letterEl.classList.remove('active');
+    letterEl.classList.add('matched');
+    letterEl.textContent = '✓ ' + letter;
+    el.classList.add('matched');
+    el.textContent = '✓';
+    matchState.matched++;
+    fb.textContent = '✅ Match! ' + letter + ' → ' + pic;
+    fb.className = 'feedback good';
+    speak('Correct match! ' + letter + ' for ' + pic);
+
+    if(matchState.matched === 3){
+      fb.textContent = '🎉 All matches complete! Amazing work!';
+      fb.className = 'feedback good';
+      setTimeout(()=>speak('All matches complete! Amazing work!'), 200);
+      // Check if fill-in-blank also done
+      let allFill = true;
+      for(let k in answers){ if(!exerciseAnswered[k]){ allFill=false; break; } }
+      if(allFill){
+        fb.textContent = '🎉🎉 All exercises done! You\'re a superstar! 🎉🎉';
+        fb.className = 'feedback good';
+      }
+    }
+  } else {
+    el.classList.add('wrong-match');
+    letterEl.classList.add('wrong-match');
+    fb.textContent = '❌ Not a match. Try again!';
+    fb.className = 'feedback bad';
+    speak('Not quite. Try again!');
+    setTimeout(()=>{
+      el.classList.remove('wrong-match');
+      letterEl.classList.remove('wrong-match');
+    }, 600);
+  }
+  matchState.selected = null;
+}
+
+// ─── Quiz / Treasure Chest ────────────────────────────────────
+let quizAnswered = {};
+
+function checkQuiz(btn){
+  const q = btn.dataset.q;
+  if(quizAnswered[q]) return;
+  quizAnswered[q] = true;
+  const correct = btn.dataset.correct === 'true';
+  const siblings = btn.parentElement.querySelectorAll('.quiz-btn');
+  siblings.forEach(s => s.disabled = true);
+
   if(correct){
-    result.innerHTML = '🎉 N to Z order perfect! Amazing!';
-    result.className = 'quiz-result correct';
-    speakText('Perfect order!');
+    btn.classList.add('correct');
+    quizScore.correct++;
   } else {
-    result.innerHTML = '🤔 Order is wrong. Try again! N O P Q R S T U V W X Y Z';
-    result.className = 'quiz-result wrong';
+    btn.classList.add('wrong');
+    siblings.forEach(s => { if(s.dataset.correct === 'true') s.classList.add('correct'); });
   }
-}
+  quizScore.total++;
 
-// ===== PAGE 10: FILL QUIZ =====
-function buildFillQuiz() {
-  const area = document.getElementById('fillQuiz');
-  if(!area) return;
-  area.innerHTML = '';
-  fillQuizData.forEach((q,idx)=>{
-    const row = document.createElement('div');
-    row.className = 'fill-row';
-    let seqHtml = '';
-    q.seq.split('').forEach((ch,i)=>{
-      if(ch === '_'){
-        seqHtml += `<span class="fill-blank" id="fillBlank${idx}">?</span>`;
-      } else {
-        seqHtml += `<span class="fill-label">${ch}</span>`;
-      }
-    });
-    let optHtml = '';
-    q.options.forEach(o=>{
-      optHtml += `<button class="fill-opt" data-fidx="${idx}" data-val="${o}" onclick="selectFillOpt(${idx},'${o}')">${o}</button>`;
-    });
-    row.innerHTML = seqHtml + `<div class="fill-options">${optHtml}</div>`;
-    area.appendChild(row);
-  });
-  fillQuizState = {0:null,1:null,2:null,3:null};
-}
+  const fb = document.getElementById('chestFeedback');
+  if(correct){
+    fb.textContent = '✅ Correct! Well done!';
+    fb.className = 'feedback good';
+    speak('Correct!');
+  } else {
+    fb.textContent = '❌ Not quite. The correct answer is highlighted.';
+    fb.className = 'feedback bad';
+  }
 
-function selectFillOpt(idx, val) {
-  fillQuizState[idx] = val;
-  const btns = document.querySelectorAll(`.fill-opt[data-fidx="${idx}"]`);
-  btns.forEach(b=>{
-    b.classList.remove('selected');
-    if(b.dataset.val===val) b.classList.add('selected');
-  });
-  // Show in blank
-  const blank = document.getElementById('fillBlank'+idx);
-  if(blank) blank.textContent = val;
-}
-
-function checkFillQuiz() {
-  let correct = 0;
-  fillQuizData.forEach((q,idx)=>{
-    const btns = document.querySelectorAll(`.fill-opt[data-fidx="${idx}"]`);
-    btns.forEach(b=>{
-      b.classList.remove('correct','wrong');
-      if(b.dataset.val===q.answer){
-        b.classList.add('correct');
-      } else if(b.dataset.val===fillQuizState[idx] && fillQuizState[idx]!==q.answer){
-        b.classList.add('wrong');
-      }
-    });
-    if(fillQuizState[idx]===q.answer){
-      correct++;
-      const blank = document.getElementById('fillBlank'+idx);
-      if(blank){ blank.textContent = q.answer; blank.style.color = '#43A047'; }
+  if(quizScore.total >= 3){
+    if(quizScore.correct >= 2){
+      const chest = document.getElementById('treasureChest');
+      chest.textContent = '📦✨';
+      chest.classList.add('open');
+      document.getElementById('chestSparkle').style.display = 'block';
+      fb.textContent = '🎉🎉 Treasure unlocked! You got ' + quizScore.correct + ' out of 3 correct! 🎉🎉';
+      fb.className = 'feedback good';
+      speak('Treasure unlocked! You got ' + quizScore.correct + ' out of 3 correct! Great job!');
+      if(window.confettiCannon) launchConfetti();
     } else {
-      const blank = document.getElementById('fillBlank'+idx);
-      if(blank && fillQuizState[idx]){ blank.style.color = '#E53935'; }
+      fb.textContent = 'You got ' + quizScore.correct + ' out of 3. Let\'s try again!';
+      fb.className = 'feedback bad';
+      setTimeout(() => {
+        quizAnswered = {};
+        quizScore = {correct:0,total:0};
+        document.querySelectorAll('.quiz-btn').forEach(b => { b.disabled = false; b.className = 'quiz-btn'; });
+        fb.textContent = '🔄 Try again! Answer all 3 questions!';
+        fb.className = 'feedback';
+      }, 2500);
     }
-  });
-  const res = document.getElementById('fillQuizResult');
-  if(correct===fillQuizData.length){
-    res.innerHTML = '🎉 All correct! You know your ABCs!';
-    res.className = 'quiz-result correct';
-    speakText('All correct!');
-  } else {
-    res.innerHTML = `✅ ${correct}/${fillQuizData.length} correct. Green is the right answer!`;
-    res.className = 'quiz-result';
   }
 }
 
-// ===== PAGE 11: GATES =====
-function buildGates() {
-  const area = document.getElementById('gateArea');
-  if(!area) return;
-  area.innerHTML = '';
-  const gateEmojis = ['🚪','🚪','🚪','🚪','🚪'];
-  gateData.forEach((g,idx)=>{
-    const div = document.createElement('div');
-    div.className = 'gate-item';
-    let optHtml = '';
-    g.options.forEach(o=>{
-      optHtml += `<button data-gidx="${idx}" data-val="${o}" onclick="selectGate(${idx},'${o.replace(/'/g,"\\'")}')">${o}</button>`;
-    });
-    div.innerHTML = `
-      <span class="gate-icon">${gateEmojis[idx]}</span>
-      <span class="gate-label">Gate ${idx+1}: ${g.q}</span>
-      <div class="gate-options" data-gidx="${idx}">${optHtml}</div>
-    `;
-    area.appendChild(div);
+// ─── Alphabet Chart (Page 7) ──────────────────────────────────
+(function(){
+  const chart = document.getElementById('alphabetChart');
+  if(!chart) return;
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const highlightLetters = 'NOPQRSTUVWXYZ'.split('');
+  letters.forEach(l => {
+    const d = document.createElement('div');
+    d.className = 'ach' + (highlightLetters.includes(l) ? ' highlight' : '');
+    d.textContent = l;
+    d.title = 'Click to hear '+l;
+    d.onclick = () => {
+      speak(l);
+      gsap.fromTo(d, {scale:1.2}, {scale:1, duration:0.2});
+    };
+    chart.appendChild(d);
   });
-  gateState = [null,null,null,null,null];
-}
+})();
 
-function selectGate(idx, val) {
-  gateState[idx] = val;
-  const btns = document.querySelectorAll(`.gate-options[data-gidx="${idx}"] button`);
-  btns.forEach(b=>{
-    b.classList.remove('sel');
-    if(b.dataset.val===val) b.classList.add('sel');
-  });
-}
-
-function checkGates() {
-  let correct = 0;
-  gateData.forEach((g,idx)=>{
-    const btns = document.querySelectorAll(`.gate-options[data-gidx="${idx}"] button`);
-    btns.forEach(b=>{
-      b.classList.remove('g-correct','g-wrong');
-      if(b.dataset.val===g.answer){
-        b.classList.add('g-correct');
-      } else if(b.dataset.val===gateState[idx] && gateState[idx]!==g.answer){
-        b.classList.add('g-wrong');
-      }
-    });
-    if(gateState[idx]===g.answer) correct++;
-  });
-  const chest = document.getElementById('treasureChest');
-  const res = document.getElementById('gateResult');
-  if(correct===5){
-    chest.textContent = '🎁';
-    gsap.fromTo(chest,{scale:0.5,rotation:-20},{scale:1,rotation:0,duration:.6,ease:'back.out(2)'});
-    res.innerHTML = '🎉 All 5 gates open! The treasure is yours! 🎁';
-    res.className = 'quiz-result correct';
-    speakText('All gates open! Treasure unlocked!');
-    setTimeout(()=>{ goNext(); },2200);
-  } else {
-    chest.textContent = '🔒';
-    res.innerHTML = `🔑 ${correct}/5 gates correct. Keep trying!`;
-    res.className = 'quiz-result';
-  }
-}
-
-// ===== PAGE 12: CONFETTI =====
-function celebrate() {
-  const existing = document.querySelector('.confetti-container');
+// ─── Confetti (Page 12) ───────────────────────────────────────
+function launchConfetti(){
+  let existing = document.querySelector('.confetti-container');
   if(existing) existing.remove();
-  const container = document.createElement('div');
-  container.className = 'confetti-container';
-  document.body.appendChild(container);
-  const colors = ['#66BB6A','#FFD54F','#FF6B6B','#4D96FF','#FF6B9D','#C084FC','#FF8A65','#43A047'];
-  const shapes = ['■','●','▲','★','♦','♥','🔤','✨'];
-  const total = 100;
-  for(let i=0;i<total;i++){
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.textContent = shapes[Math.floor(Math.random()*shapes.length)];
-    piece.style.left = (Math.random()*100)+'%';
-    piece.style.color = colors[Math.floor(Math.random()*colors.length)];
-    piece.style.fontSize = (8+Math.random()*14)+'px';
-    piece.style.opacity = '0';
-    container.appendChild(piece);
+
+  const c = document.createElement('div');
+  c.className = 'confetti-container';
+  document.body.appendChild(c);
+
+  const colors = ['#66BB6A','#4CAF50','#FFC107','#FF5722','#2196F3','#E91E63','#9C27B0','#FF9800','#00BCD4','#8BC34A'];
+  const emojis = ['🌟','⭐','🎉','🎊','✨','💚','💛','🧡','❤️','💙'];
+  const shapes = ['■','●','▲','★','♦','♥','✿'];
+
+  for(let i=0;i<100;i++){
+    const el = document.createElement('div');
+    el.className = 'confetti';
+    const useEmoji = Math.random() > 0.6;
+    el.textContent = useEmoji ? emojis[Math.floor(Math.random()*emojis.length)] : shapes[Math.floor(Math.random()*shapes.length)];
+    el.style.left = Math.random()*100+'%';
+    el.style.color = colors[Math.floor(Math.random()*colors.length)];
+    el.style.fontSize = (10+Math.random()*16)+'px';
+    el.style.animationDuration = (2.5+Math.random()*3)+'s';
+    el.style.animationDelay = Math.random()*2.5+'s';
+    c.appendChild(el);
   }
-  gsap.to('.confetti-piece',{
-    y: window.innerHeight+100,
-    x: () => (Math.random()-0.5)*300,
-    rotation: () => Math.random()*720-360,
-    opacity: {value:1,duration:0.1},
-    duration: 2+Math.random()*2,
-    delay: () => Math.random()*0.5,
-    ease: 'power1.out',
-    stagger: 0.02,
-    onComplete: ()=>{
-      setTimeout(()=>{
-        gsap.to('.confetti-piece',{
-          opacity:0,
-          duration:.5,
-          onComplete:()=>{ container.remove(); }
-        });
-      },3000);
-    }
-  });
-  gsap.fromTo('#badge',{scale:0,rotation:-30},{scale:1,rotation:0,duration:.6,ease:'back.out(2)'});
-  speakText('Congratulations! You earned the Alpha Badge for letters N through Z!');
+
+  // Also play celebratory speech
+  setTimeout(() => speak('Congratulations! You are an alphabet star!'), 300);
+
+  // Clean up after animation
+  setTimeout(() => { if(c.parentNode) c.remove(); }, 8000);
 }
 
-// ===== KEYBOARD NAV =====
-document.addEventListener('keydown',e=>{
-  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goNext();}
-  if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}
-  if(e.key==='Home'){e.preventDefault();goSlide(0);}
+// ─── Keyboard Navigation ──────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextPage(); }
+  else if(e.key === 'ArrowLeft') { e.preventDefault(); prevPage(); }
+  else if(e.key === 'Home') { e.preventDefault(); goToPage(1); }
 });
 
-// ===== INIT =====
-window.addEventListener('DOMContentLoaded',init);
+// ─── Touch swipe detection ────────────────────────────────────
+(function(){
+  let startX = 0;
+  document.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = endX - startX;
+    if(Math.abs(diff) > 60){
+      if(diff < 0) nextPage();
+      else prevPage();
+    }
+  }, {passive:true});
+})();
+
+// ─── Init first page animation ────────────────────────────────
+gsap.fromTo('.page.active', {opacity:0, y:12}, {opacity:1, y:0, duration:0.4, ease:'power2.out', delay:0.15});
 </script>
 </body>
 </html>

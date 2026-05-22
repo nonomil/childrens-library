@@ -41,6 +41,9 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 .char-box .char-label{font-size:13px;font-weight:700;color:#1565C0;margin-top:2px}
 .char-box .speech{font-size:11px;color:#546E7A;background:#fff;border:1.5px solid #B0BEC5;border-radius:8px;padding:4px 8px;max-width:100px;text-align:center;position:relative;margin-bottom:2px}
 .char-box .speech::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #fff}
+/* Real image styling */
+.real-img{width:100%;max-width:400px;height:auto;border-radius:12px;margin:8px 0;display:block;box-shadow:0 3px 10px rgba(0,0,0,.12);border:2px solid #90CAF9}
+.real-img-sm{max-width:280px}
 /* Emerald display */
 .emerald-row{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin:8px 0}
 .emerald{width:36px;height:48px;background:linear-gradient(135deg,#4CAF50,#2E7D32);border-radius:8px 8px 4px 4px;position:relative;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 3px 0 #1B5E20,0 4px 8px rgba(46,125,50,.3);animation:emeraldPop .4s ease-out both}
@@ -80,23 +83,6 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 .quiz-result{font-size:18px;font-weight:700;min-height:28px;margin:4px 0;text-align:center}
 .quiz-result.correct{color:#43A047}
 .quiz-result.wrong{color:#E53935}
-/* Comparison bars for tall/short/long */
-.cmp-bars{display:flex;flex-direction:column;gap:10px;width:100%;margin:8px 0}
-.cmp-bar-item{display:flex;align-items:center;gap:10px}
-.cmp-bar-item .bar-label{font-size:14px;font-weight:700;color:#1565C0;min-width:50px;text-align:right}
-.cmp-bar-item .bar-track{flex:1;height:28px;background:#E3F2FD;border-radius:14px;overflow:hidden;position:relative}
-.cmp-bar-item .bar-fill{height:100%;border-radius:14px;transition:width .6s cubic-bezier(.34,1.56,.64,1);background:linear-gradient(90deg,#42A5F5,#1E88E5)}
-.cmp-bar-item .bar-fill.tall{width:90%}
-.cmp-bar-item .bar-fill.short{width:45%}
-.cmp-bar-item .bar-fill.long{width:85%}
-.cmp-bar-item .bar-fill.short-sword{width:40%}
-.cmp-bar-item .bar-fill.heavy{width:88%}
-.cmp-bar-item .bar-fill.light{width:30%}
-.cmp-bar-item .bar-val{font-size:14px;font-weight:700;color:#546E7A;min-width:30px}
-/* Tree / Sword SVG */
-.svg-illus{display:flex;justify-content:center;align-items:flex-end;gap:20px;margin:8px 0;width:100%}
-.svg-illus .svg-item{display:flex;flex-direction:column;align-items:center;gap:2px}
-.svg-illus .svg-item .item-label{font-size:13px;font-weight:700;color:#1565C0;margin-top:4px}
 /* Ordering exercise */
 .order-area{width:100%;margin:8px 0}
 .order-items{display:flex;flex-direction:column;gap:6px;width:100%}
@@ -189,22 +175,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           但是… <strong style="color:#E53935;">谁更多？谁更少？</strong><br>
           今天我们来学习 <strong style="color:#1565C0;">比多少、比大小</strong>！</div>
         </div>
-        <div class="mt-3 flex-center w-full gap-2" style="flex-wrap:wrap">
-          <div style="text-align:center;min-width:80px">
-            <div style="font-size:40px">🏡</div>
-            <div style="font-size:12px;color:#546E7A">村庄</div>
-          </div>
-          <div style="font-size:30px;color:#90A4AE">➕</div>
-          <div style="text-align:center;min-width:80px">
-            <div style="font-size:40px">💎</div>
-            <div style="font-size:12px;color:#546E7A">绿宝石</div>
-          </div>
-          <div style="font-size:30px;color:#90A4AE">＝</div>
-          <div style="text-align:center;min-width:80px">
-            <div style="font-size:40px">🛡️</div>
-            <div style="font-size:12px;color:#546E7A">装备</div>
-          </div>
-        </div>
+        <img class="real-img" src="images/math-03-compare/webp/page-01.webp" alt="村庄交易所" loading="lazy">
         <button class="btn btn-primary btn-lg mt-4 read-btn-big" onclick="goNext()">开始学习 ▶</button>
       </div>
     </div>
@@ -219,6 +190,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">💎 Steve vs Alex 的绿宝石</div>
           <div class="mc-text">我们来一对一配对，看看谁多谁少！</div>
         </div>
+        <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-02.webp" alt="绿宝石比较" loading="lazy">
         <div class="compare-visual mt-2">
           <div class="compare-side">
             <div class="cmp-label">⚡ Steve</div>
@@ -233,6 +205,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           </div>
         </div>
         <div class="cmp-match mt-2" id="matchArea"></div>
+        <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-04.webp" alt="一一对应比较" loading="lazy">
         <div class="mc-box mt-2" style="background:#E8F5E9;border-color:#66BB6A;box-shadow:0 4px 0 #388E3C,0 6px 12px rgba(76,175,80,.15)">
           <div class="mc-text" id="matchResult" style="font-size:15px;font-weight:700;color:#2E7D32">点击配对按钮看看结果！</div>
         </div>
@@ -252,6 +225,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">🔣 三个比较符号</div>
           <div class="mc-text">鳄鱼嘴巴总是朝向<strong>更大</strong>的数字！</div>
         </div>
+        <img class="real-img" src="images/math-03-compare/webp/page-06.webp" alt="大于小于等于符号" loading="lazy">
         <div class="symbol-display mt-3">
           <div class="symbol-card" onclick="speakText('大于号，表示左边大于右边');gsap.to(this,{scale:.95,duration:.1,yoyo:true,repeat:1})">
             <span class="symbol">&gt;</span>
@@ -287,45 +261,15 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
       <div class="slide-inner">
         <div class="mc-box">
           <div class="mc-title">🌳 高 vs 矮</div>
-          <div class="svg-illus">
-            <div class="svg-item">
-              <svg width="50" height="100" viewBox="0 0 50 100"><rect x="20" y="50" width="10" height="50" fill="#795548"/><circle cx="25" cy="45" r="22" fill="#4CAF50"/><circle cx="25" cy="42" r="16" fill="#66BB6A"/></svg>
-              <div class="item-label">🌳 高的</div>
-            </div>
-            <div style="font-size:32px;color:#1565C0">&gt;</div>
-            <div class="svg-item">
-              <svg width="50" height="65" viewBox="0 0 50 65"><rect x="20" y="35" width="10" height="30" fill="#795548"/><circle cx="25" cy="30" r="22" fill="#4CAF50"/><circle cx="25" cy="27" r="16" fill="#66BB6A"/></svg>
-              <div class="item-label">🌱 矮的</div>
-            </div>
-          </div>
+          <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-07.webp" alt="白桦树比橡树高" loading="lazy">
         </div>
         <div class="mc-box mt-2">
           <div class="mc-title">🗡️ 长 vs 短</div>
-          <div class="svg-illus">
-            <div class="svg-item">
-              <svg width="100" height="24" viewBox="0 0 100 24"><rect x="0" y="8" width="90" height="8" rx="4" fill="#78909C"/><rect x="84" y="4" width="6" height="16" rx="2" fill="#455A64"/><rect x="0" y="5" width="8" height="14" rx="2" fill="#8D6E63"/></svg>
-              <div class="item-label">🗡️ 长剑</div>
-            </div>
-            <div style="font-size:32px;color:#1565C0">&gt;</div>
-            <div class="svg-item">
-              <svg width="60" height="24" viewBox="0 0 60 24"><rect x="0" y="8" width="50" height="8" rx="4" fill="#78909C"/><rect x="44" y="4" width="6" height="16" rx="2" fill="#455A64"/><rect x="0" y="5" width="8" height="14" rx="2" fill="#8D6E63"/></svg>
-              <div class="item-label">🔪 短剑</div>
-            </div>
-          </div>
+          <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-08.webp" alt="铁剑比木剑长" loading="lazy">
         </div>
         <div class="mc-box mt-2">
           <div class="mc-title">⚖️ 重 vs 轻</div>
-          <div class="svg-illus">
-            <div class="svg-item">
-              <div style="font-size:54px;line-height:1">🪨</div>
-              <div class="item-label">⛰️ 重的</div>
-            </div>
-            <div style="font-size:32px;color:#1565C0">&gt;</div>
-            <div class="svg-item">
-              <div style="font-size:54px;line-height:1">🪶</div>
-              <div class="item-label">🍃 轻的</div>
-            </div>
-          </div>
+          <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-09.webp" alt="羽毛轻铁块重" loading="lazy">
         </div>
         <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
       </div>
@@ -341,6 +285,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">✏️ 填入正确的符号</div>
           <div class="mc-text">点击 &gt; &lt; = 填入空格！</div>
         </div>
+        <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-05.webp" alt="练习一" loading="lazy">
         <div class="quiz-area mt-2" id="quizArea1"></div>
         <div class="flex-center gap-2 mt-3 flex-col w-full">
           <div class="quiz-result" id="quizResult1"></div>
@@ -359,6 +304,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">🔢 从小到大排列</div>
           <div class="mc-text">点击数字，按<strong>从小到大</strong>的顺序排列！</div>
         </div>
+        <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-12.webp" alt="涂色挑战" loading="lazy">
         <div class="order-area mt-3" id="orderArea"></div>
         <div class="flex-center gap-2 mt-3 flex-col w-full">
           <div class="quiz-result" id="orderResult"></div>
@@ -367,6 +313,8 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
         <div class="mc-box mt-2" style="background:#E8F5E9;border-color:#66BB6A;display:none" id="matchGameBox">
           <div class="mc-title">🔗 连连看</div>
           <div class="mc-text">把左右相等的连起来</div>
+          <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-13.webp" alt="排序挑战" loading="lazy">
+          <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-14.webp" alt="连一连" loading="lazy">
           <div id="matchGameArea" class="mt-2"></div>
         </div>
       </div>
@@ -382,6 +330,7 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
           <div class="mc-title">🏆 修复交易价格</div>
           <div class="mc-text">村民的价格牌错了！<br>点击符号修复，让交易公平！</div>
         </div>
+        <img class="real-img real-img-sm" src="images/math-03-compare/webp/page-17.webp" alt="村民交易价格" loading="lazy">
         <div id="challengeArea" class="mt-2 w-full"></div>
         <div class="flex-center gap-2 mt-3 flex-col w-full">
           <div class="quiz-result" id="challengeResult"></div>
@@ -477,7 +426,7 @@ function goSlide(idx) {
   // Animate elements
   const slide = document.querySelectorAll('.slide')[idx];
   if(slide){
-    gsap.fromTo(slide.querySelectorAll('.mc-box, .char-row, .symbol-display, .quiz-area, .order-area, .svg-illus, .compare-visual, .cmp-match, .badge, .btn:not(.nav-btn):not(.read-btn)'),
+    gsap.fromTo(slide.querySelectorAll('.mc-box, .char-row, .symbol-display, .quiz-area, .order-area, .real-img, .badge, .btn:not(.nav-btn):not(.read-btn)'),
       {opacity:0,y:20},
       {opacity:1,y:0,duration:.4,stagger:.08,ease:'power2.out',clearProps:'all'}
     );
