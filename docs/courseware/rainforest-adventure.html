@@ -643,7 +643,7 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
     if (card) card.classList.remove('show');
   };
 
-  // ====== SPEECH ======
+  // ====== SPEECH (齿轮传动风格) ======
   var PANEL_TEXTS = {
     tree: '雨林里有好多好多大树！它们可以长到30层楼那么高！一棵大树就像一座小城市，很多动物住在上面。',
     sloth: '树懒是雨林里最慢的动物！它们每天要睡15到20个小时。树懒大部分时间都挂在树上，很少下地。它们的毛上会长绿藻，帮助它们躲起来！',
@@ -652,21 +652,26 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
     toucan: '大嘴鸟有雨林里最夸张的嘴巴！它的嘴巴占了身体的三分之一长。大嘴鸟的嘴巴虽然大，但是很轻，里面是空心的。它们用嘴巴摘水果吃，还能吓跑敌人！',
     flower: '雨林里有世界上最多种、最漂亮的花！它们五颜六色，形状也千奇百怪。有些花比盘子还大！大王花是世界上最大的花，直径可以长到1米！'
   };
+  var AUDIO_FILES = {
+    tree:'audio/rain-tree.mp3', sloth:'audio/rain-sloth.mp3',
+    parrot:'audio/rain-parrot.mp3', monkey:'audio/rain-monkey.mp3',
+    toucan:'audio/rain-toucan.mp3', flower:'audio/rain-flower.mp3'
+  };
+  var currentAudio = null;
   window.speakPanel = function(name) {
     var text = PANEL_TEXTS[name];
     if (!text) return;
-    playClick('audio/rain-' + name + '.mp3', text);
+    playAudio(AUDIO_FILES[name], text);
   };
-  var currentAudio = null;
-  function playClick(src, text){
-    showSpeechBubble(text||'');
-    if(currentAudio){currentAudio.pause();currentAudio=null;}
-    try{
-      const a=new Audio(src);
-      currentAudio=a;
-      a.volume=1;
-      a.play().catch(()=>{showSpeechBubble(text||'');});
-    }catch(e){showSpeechBubble(text||'');}
+  function playAudio(src, showText) {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (showText) showSpeechBubble(showText);
+    try {
+      const a = new Audio(src);
+      currentAudio = a; a.volume = 1;
+      a.play().catch(function(e){ console.log('Audio error:',e); });
+      a.onended = function(){ currentAudio = null; };
+    } catch(e) { console.log('Audio error:',e); }
   }
   function showSpeechBubble(text) {
     var old = document.querySelector('.speech-bubble');
