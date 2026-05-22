@@ -154,6 +154,47 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
   .info-panel .branch-btn .svg-icon { width:20px; height:20px; }
   .info-panel .btn-icon { font-size:13px; padding:5px 12px; }
   .speech-bubble { font-size:14px; padding:10px 14px; bottom:80px; max-width:88%; }
+  .quiz-btn-open {
+    background:#FFB347; border:none; border-radius:30px; padding:8px 18px;
+    font-size:15px; font-weight:bold; color:#FFF; cursor:pointer; font-family:inherit;
+    box-shadow:0 3px 10px rgba(255,179,71,0.4); transition:transform .15s;
+    display:inline-flex; align-items:center; gap:5px; margin:0 auto; touch-action:manipulation;
+  }
+  .quiz-btn-open:hover { transform:scale(1.06); }
+  .quiz-btn-open:active { transform:scale(0.93); }
+  .quiz-panel {
+    display:none; position:absolute; top:50%; left:50%; z-index:101;
+    transform:translate(-50%,-50%) scale(0.85);
+    width:92%; max-width:400px; max-height:85%; overflow-y:auto;
+    background:#FFFCF5; border-radius:20px; padding:16px 14px;
+    box-shadow:0 12px 48px rgba(0,0,0,0.2),0 0 0 3px #FFF,0 0 0 5px #FFB347;
+    animation:panelPop .35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    text-align:center;
+  }
+  .quiz-panel.show { display:block; }
+  .quiz-panel h2 { font-size:24px; color:#E8751A; margin-bottom:6px; }
+  .quiz-panel .q-title { font-size:18px; color:#6B4F3A; margin-bottom:10px; font-weight:bold; }
+  .quiz-panel .q-options { display:flex; flex-direction:column; gap:8px; width:100%; max-width:340px; margin:0 auto; }
+  .quiz-panel .q-opt {
+    background:#FFF8E1; border:3px solid #FFE0B2; border-radius:14px;
+    padding:12px; font-size:17px; cursor:pointer; font-family:inherit;
+    transition:all .2s; text-align:center; color:#5D4037;
+    touch-action:manipulation;
+  }
+  .quiz-panel .q-opt:hover { background:#FFE0B2; border-color:#FFB347; }
+  .quiz-panel .q-opt.correct { background:#C8E6C9; border-color:#6BCB77; color:#2E7D32; cursor:default; }
+  .quiz-panel .q-opt.wrong { background:#FFCDD2; border-color:#E57373; color:#C62828; cursor:default; }
+  .quiz-panel .q-opt.disabled { pointer-events:none; }
+  .quiz-feedback { margin-top:8px; font-size:16px; padding:8px; border-radius:12px; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.good { background:#C8E6C9; color:#2E7D32; }
+  .quiz-feedback.bad { background:#FFCDD2; color:#C62828; }
+  .quiz-progress { display:flex; gap:5px; justify-content:center; margin-bottom:10px; }
+  .quiz-progress .qdot { width:10px; height:10px; border-radius:50%; background:#E0D5C7; }
+  .quiz-progress .qdot.done { background:#6BCB77; }
+  .quiz-progress .qdot.wrong-dot { background:#E57373; }
+  .quiz-progress .qdot.active { background:#FFB347; transform:scale(1.3); }
+  .quiz-result { font-size:20px; color:#E8751A; font-weight:bold; margin:10px 0; }
 }
 /* Top navigation buttons */
 .top-nav-btn {
@@ -182,6 +223,9 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
   <button class="top-nav-btn next" onclick="nextPage()">下一个 ▶</button>
   <h1 class="site-title">🌴 雨林大冒险</h1>
   <p class="site-sub">👆 点击雨林里的动物植物，探索它们的秘密！</p>
+  <div style="text-align:center;margin-bottom:8px;">
+    <button class="quiz-btn-open" onclick="startQuiz()">🧠 雨林小测验</button>
+  </div>
 
   <div class="scene-wrap" id="sceneWrap">
     <!-- SVG Scene -->
@@ -539,6 +583,16 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
       </div>
     </div>
   </div>
+
+  <!-- ===== QUIZ PANEL ===== -->
+  <div class="panel-overlay" id="quizOverlay" onclick="closeQuiz()"></div>
+  <div class="quiz-panel" id="quizPanel">
+    <div class="quiz-progress" id="quizProgress"></div>
+    <h2>🧠 雨林小测验</h2>
+    <div class="q-title" id="quizQuestion"></div>
+    <div class="q-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  </div>
 </div>
 
 <!-- Toast -->
@@ -693,6 +747,98 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeAllPanels();
   });
+
+  // ====== RAINFOREST QUIZ ======
+  var QUIZ_DATA = [
+    {q:"🌳 大树有多高？", opts:["5层楼","30层楼","100层楼"], ans:1},
+    {q:"🦥 树懒每天睡多久？", opts:["5-8小时","10-12小时","15-20小时"], ans:2},
+    {q:"🦜 鹦鹉弯嘴有什么用？", opts:["咬开硬果壳","喝水","打架"], ans:0},
+    {q:"🐒 猴子用什么找食物？", opts:["石头","树枝","树叶"], ans:1},
+    {q:"👄 大嘴鸟的嘴为什么很轻？", opts:["塑料做的","里面空心","嘴很小"], ans:1},
+    {q:"🌺 最大的花叫什么？", opts:["向日葵","大王花","玫瑰"], ans:1}
+  ];
+  var quizState = {idx:0, score:0, answered:false};
+
+  window.startQuiz = function() {
+    closeAllPanels();
+    quizState = {idx:0, score:0, answered:false};
+    document.getElementById("quizOverlay").classList.add("show");
+    document.getElementById("quizPanel").classList.add("show");
+    showQuizQuestion();
+  };
+
+  window.closeQuiz = function() {
+    document.getElementById("quizPanel").classList.remove("show");
+    document.getElementById("quizOverlay").classList.remove("show");
+  };
+
+  function showQuizQuestion() {
+    var st = quizState;
+    var data = QUIZ_DATA[st.idx];
+    if (!data) { showQuizResult(); return; }
+    document.getElementById("quizQuestion").textContent = data.q;
+    var optsDiv = document.getElementById("quizOptions");
+    optsDiv.innerHTML = "";
+    st.answered = false;
+    document.getElementById("quizFeedback").className = "quiz-feedback";
+    document.getElementById("quizFeedback").style.display = "none";
+    var prog = document.getElementById("quizProgress");
+    prog.innerHTML = "";
+    for (var i=0; i<QUIZ_DATA.length; i++) {
+      var d = document.createElement("span");
+      d.className = "qdot" + (i===st.idx ? " active" : "");
+      prog.appendChild(d);
+    }
+    for (var i=0; i<data.opts.length; i++) {
+      var b = document.createElement("button");
+      b.className = "q-opt";
+      b.textContent = data.opts[i];
+      b.onclick = (function(idx) { return function() { answerQuiz(idx); }; })(i);
+      optsDiv.appendChild(b);
+    }
+  };
+
+  function answerQuiz(selected) {
+    var st = quizState;
+    if (st.answered) return;
+    st.answered = true;
+    var data = QUIZ_DATA[st.idx];
+    var btns = document.getElementById("quizOptions").querySelectorAll(".q-opt");
+    for (var i=0; i<btns.length; i++) btns[i].classList.add("disabled");
+    var fb = document.getElementById("quizFeedback");
+    if (selected === data.ans) {
+      btns[selected].classList.add("correct");
+      st.score++;
+      fb.textContent = "✅ 太棒了！答对了！";
+      fb.className = "quiz-feedback show good";
+    } else {
+      btns[selected].classList.add("wrong");
+      btns[data.ans].classList.add("correct");
+      fb.textContent = "❌ 正确答案是：" + data.opts[data.ans];
+      fb.className = "quiz-feedback show bad";
+    }
+    var dots = document.getElementById("quizProgress").querySelectorAll(".qdot");
+    if (dots[st.idx]) {
+      dots[st.idx].classList.remove("active");
+      dots[st.idx].classList.add(selected===data.ans ? "done" : "wrong-dot");
+    }
+    setTimeout(function() { st.idx++; showQuizQuestion(); }, 1500);
+  };
+
+  function showQuizResult() {
+    document.getElementById("quizQuestion").textContent = "🎉 测验完成！";
+    document.getElementById("quizOptions").innerHTML = "";
+    document.getElementById("quizFeedback").className = "quiz-feedback";
+    document.getElementById("quizFeedback").style.display = "none";
+    var prog = document.getElementById("quizProgress");
+    var s = quizState.score;
+    var tot = QUIZ_DATA.length;
+    var msg = s===tot ? '🏆 全对！你是雨林小专家！' : s>=3 ? '👍 不错哦，继续探索雨林吧！' : '💪 再探索一次，一定能全对！';
+    prog.innerHTML = '<div class="quiz-result">你答对了 ' + s + '/' + tot + ' 题！</div>';
+    prog.innerHTML += '<div style="font-size:18px;color:#6B4F3A;margin:8px 0">' + msg + '</div>';
+    prog.innerHTML += '<button class="quiz-btn-open" onclick="closeQuiz()">✅ 完成</button>';
+  };
+
 })();
 </script>
 </body>
