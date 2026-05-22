@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>💕 Skidamarink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+body {
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(145deg,#FCE4EC 0%,#F8BBD0 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:12px;
+}
+.book {
+  width:100%; max-width:840px; min-height:92vh;
+  background:#FFFCF5; border-radius:40px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;
+  padding:24px 20px; position:relative;
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+}
+.page-area { min-height:420px; }
+.page { display:none; flex-direction:column; align-items:center; animation:fadeIn .4s ease; width:100%; }
+.page.active { display:flex; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes noteFloat { 0%{opacity:0;transform:translateY(20px) scale(0.5)} 30%{opacity:1;transform:translateY(-10px) scale(1.2)} 100%{opacity:0;transform:translateY(-60px) scale(0.8)} }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+@keyframes popIn { 0%{opacity:0;transform:scale(0.3)} 100%{opacity:1;transform:scale(1)} }
+@keyframes confetti-fall { 0%{opacity:1;transform:translateY(0)rotate(0deg)} 100%{opacity:0;transform:translateY(500px)rotate(720deg)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.page-title { font-size:30px; color:#E8751A; text-align:center; margin-bottom:8px; font-weight:bold; }
+.page-desc { font-size:18px; color:#6B4F3A; text-align:center; line-height:1.5; margin-bottom:10px; }
+.scene-wrap { width:100%; max-width:460px; height:auto; margin:0 auto 10px; border-radius:20px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.08); position:relative; }
+.scene-wrap svg { display:block; width:100%; height:auto; }
+.lyrics { font-size:26px; color:#E8751A; text-align:center; padding:12px 16px; background:#FFF8E7; border-radius:16px; width:100%; margin-bottom:8px; line-height:1.5; font-weight:bold; }
+.lyrics .hl { color:#F44336; cursor:pointer; transition:all .2s; display:inline-block; }
+.lyrics .hl:active { transform:scale(1.2); }
+.lyrics .hl::after { content:'🔊'; font-size:14px; opacity:0.5; margin-left:4px; }
+
+/* Word game */
+/* Word buttons (English + Chinese) */
+.word-btn-row { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:4px 0 2px; }
+.word-btn {
+  background:#FFF8E7; border:2px solid #FFE0B2; border-radius:16px;
+  padding:6px 14px; cursor:pointer; transition:all .2s;
+  display:inline-flex; flex-direction:column; align-items:center;
+  font-family:inherit; touch-action:manipulation; min-width:90px;
+}
+.word-btn:hover { transform:scale(1.08); border-color:#FFB347; }
+.word-btn:active { transform:scale(0.95); }
+.word-btn .en { font-size:20px; font-weight:bold; color:#E8751A; }
+.word-btn .cn { font-size:13px; color:#8D6E63; margin-top:1px; }
+.word-btn .snd { font-size:14px; opacity:0.6; margin-left:4px; }
+
+.word-game { width:100%; padding:14px; background:#FFF8E7; border-radius:18px; text-align:center; margin:6px 0; border:2px solid #FFE8C8; }
+.word-game h3 { font-size:16px; color:#E8751A; margin-bottom:8px; display:flex; align-items:center; justify-content:center; gap:6px; }
+.word-slots { display:flex; gap:6px; justify-content:center; margin-bottom:8px; }
+.word-slot { width:48px; height:48px; border-bottom:4px solid #FFB347; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:bold; color:#E8751A; border-radius:8px 8px 0 0; background:rgba(255,248,231,0.5); transition:all .2s; }
+.word-slot.filled { border-bottom-color:#4CAF50; background:rgba(232,245,233,0.5); animation:popIn .2s ease; }
+.word-slot.drag-over { border-bottom-color:#66BB6A; border-bottom-width:6px; background:rgba(102,187,106,0.15); transform:scale(1.05); }
+.letter-tiles { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.letter-tile { width:48px; height:48px; border-radius:12px; border:3px solid #E0D5C7; background:white; font-size:24px; font-weight:bold; cursor:grab; display:flex; align-items:center; justify-content:center; transition:all .15s; user-select:none; touch-action:none; }
+.letter-tile:hover { border-color:#FFB347; background:#FFF8E7; }
+.letter-tile:active { cursor:grabbing; }
+.letter-tile.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
+.letter-tile.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
+.letter-tile.used { opacity:0.35; pointer-events:none; }
+.letter-tile.dragging { opacity:0.5; }
+
+/* Match game */
+.match-game { width:100%; padding:16px; background:#F1F8E9; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #C8E6C9; }
+.match-game h3 { font-size:18px; color:#2E7D32; margin-bottom:12px; }
+.sound-btn { width:100px; height:100px; border-radius:50%; border:4px solid #FFB347; background:#FFF; font-size:36px; cursor:pointer; transition:all .15s; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; }
+.sound-btn:active { transform:scale(1.1); background:#FFF8E7; }
+.word-choices { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.word-choice { padding:10px 20px; border-radius:20px; border:3px solid #E0D5C7; background:white; cursor:pointer; transition:all .15s; font-size:18px; font-weight:bold; color:#6B4F3A; font-family:inherit; }
+.word-choice:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
+.word-choice.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
+.word-choice.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
+
+/* Drag game - like gears */
+.drag-canvas { width:100%; min-height:180px; background:#F5F0E8; border-radius:20px; border:3px dashed #E0D5C7; position:relative; margin:6px 0; overflow:hidden; }
+.drag-zone { position:absolute; border:3px dashed #FFB347; border-radius:16px; background:rgba(255,179,71,0.08); transition:all .3s; display:flex; align-items:center; justify-content:center; font-size:14px; color:#B8956A; font-weight:bold; }
+.drag-zone.highlight { border-color:#4CAF50; background:rgba(76,175,80,0.12); transform:scale(1.05); }
+.drag-zone.filled { border-color:#4CAF50; border-style:solid; background:rgba(76,175,80,0.15); }
+.drag-tray { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding:8px; background:#FFF8E7; border-radius:16px; border:2px solid #FFE8C8; margin:4px 0; min-height:60px; }
+.drag-item { padding:8px 16px; border-radius:16px; background:white; border:3px solid #E0D5C7; font-size:18px; font-weight:bold; cursor:grab; display:inline-flex; align-items:center; gap:6px; transition:all .15s; user-select:none; touch-action:none; }
+.drag-item:hover { border-color:#FFB347; background:#FFF8E7; }
+.drag-item.used { opacity:0.3; pointer-events:none; }
+.drag-item.dragging { opacity:0.6; transform:scale(1.1); z-index:1000; }
+.drag-ghost { position:fixed; pointer-events:none; z-index:99999; opacity:0.85; transform:scale(1.15); font-size:24px; }
+.drag-status { text-align:center; font-size:16px; color:#6B4F3A; font-weight:bold; min-height:28px; margin:4px 0; }
+
+/* Quiz */
+.quiz-area { width:100%; padding:16px; background:#FFF3E0; border-radius:20px; text-align:center; margin:6px 0; border:2px solid #FFE0B2; }
+.quiz-area h3 { font-size:18px; color:#E65100; margin-bottom:12px; }
+.quiz-options { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.quiz-opt { padding:12px 24px; border-radius:20px; border:3px solid #E0D5C7; background:white; cursor:pointer; transition:all .15s; font-size:20px; font-weight:bold; color:#6B4F3A; font-family:inherit; min-width:120px; }
+.quiz-opt:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.05); }
+.quiz-opt.correct { border-color:#4CAF50; background:#E8F5E9; animation:popIn .3s ease; }
+.quiz-opt.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .3s; }
+.quiz-feedback { font-size:18px; font-weight:bold; margin-top:10px; min-height:32px; }
+
+/* Speech bubble */
+.speech-bubble { position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5); border-radius:20px; background:rgba(255,255,255,0.96); border:3px solid #FFB347; padding:14px 22px; font-size:20px; font-weight:600; max-width:80%; text-align:center; z-index:10000; opacity:0; pointer-events:none; box-shadow:0 8px 30px rgba(255,179,71,0.3); transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1); color:#5A3E2B; line-height:1.5; }
+.speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+.speech-bubble::before { content:'🔊'; display:block; font-size:22px; margin-bottom:4px; }
+
+/* Controls */
+.controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:8px; position:sticky; bottom:0; background:#FFFCF5; padding:8px 0; z-index:100; }
+.nav-btn { background:#FFB347; border:none; color:#FFF; font-size:28px; width:60px; height:60px; border-radius:50%; cursor:pointer; box-shadow:0 4px 12px rgba(255,179,71,0.4); transition:all .15s; display:flex; align-items:center; justify-content:center; flex-shrink:0; touch-action:manipulation; }
+.nav-btn:hover { transform:scale(1.1); background:#FF9F1C; }
+.nav-btn:disabled { opacity:0.3; cursor:default; transform:none; }
+.nav-btn.small { width:48px; height:48px; font-size:22px; }
+.read-btn { background:#6BCB77; border:none; color:#FFF; font-size:16px; padding:10px 18px; border-radius:30px; cursor:pointer; box-shadow:0 4px 12px rgba(107,203,119,0.4); font-family:inherit; font-weight:bold; display:flex; align-items:center; gap:5px; transition:all .15s; touch-action:manipulation; }
+.read-btn:hover { transform:scale(1.06); }
+.read-btn.pink { background:#FF8A80; }
+.page-dots { display:flex; gap:6px; }
+.page-dots .dot { width:10px; height:10px; border-radius:50%; background:#E0D5C7; cursor:pointer; transition:all .2s; }
+.page-dots .dot.active { background:#FFB347; transform:scale(1.3); }
+.page-dots .dot.done { background:#4CAF50; }
+.page-counter { font-size:13px; color:#999; text-align:center; margin-top:6px; }
+.big-start-btn { width:120px; height:120px; border-radius:50%; background:linear-gradient(145deg,#FFB347,#FF9F1C); border:6px solid #FFF; color:#FFF; font-size:32px; cursor:pointer; box-shadow:0 8px 30px rgba(255,179,71,0.5); transition:all .15s; margin:10px auto; display:flex; align-items:center; justify-content:center; animation:bounce 2s ease-in-out infinite; }
+.big-start-btn:active { transform:scale(0.95); }
+.big-start-btn.smaller { width:90px; height:90px; font-size:28px; }
+.cover-svg { width:100%; max-width:400px; margin:0 auto; }
+.cover-page { text-align:center; padding:20px 10px; }
+
+/* Final */
+.final-grid { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:10px 0; }
+.final-star-cell { width:44px; height:44px; display:inline-flex; align-items:center; justify-content:center; font-size:28px; cursor:pointer; border-radius:12px; transition:all .2s; background:#FFF8E7; border:2px solid #FFE8C8; color:#E0D5C7; }
+.final-star-cell.lit { color:#FFD700; background:#FFFDE7; border-color:#FFD700; transform:scale(1.2); }
+.home-link { color:#FFB347; text-decoration:none; font-size:18px; font-weight:bold; margin-top:10px; display:inline-block; }
+.home-link:hover { text-decoration:underline; }
+.celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+
+@media (max-width:500px) {
+  .book { padding:16px 12px; }
+  .page-title { font-size:24px; }
+  .lyrics { font-size:20px; padding:10px 12px; }
+  .letter-tile { width:40px; height:40px; font-size:20px; }
+  .word-slot { width:40px; height:40px; font-size:22px; }
+  .nav-btn { width:50px; height:50px; font-size:24px; }
+  .nav-btn.small { width:40px; height:40px; font-size:18px; }
+  .read-btn { font-size:14px; padding:8px 14px; }
+  .sound-btn { width:80px; height:80px; font-size:28px; }
+  .word-choice { font-size:16px; padding:8px 14px; }
+  .big-start-btn { width:90px; height:90px; font-size:26px; }
+  .quiz-opt { font-size:17px; padding:10px 18px; min-width:90px; }
+  .drag-item { font-size:15px; padding:6px 12px; }
+  .drag-zone { font-size:12px; }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+<div class="book">
+  <div class="page-area" id="pageArea"></div>
+  <div class="controls" id="controlsBar">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>◀</button>
+    <button class="nav-btn small" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+      <button class="read-btn" onclick="speakPage()">🔊 读</button>
+      <button class="read-btn pink" onclick="playSong();showMusicNotes()">🎵 唱</button>
+    </div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+  <div class="page-dots" id="progressDots"></div>
+  <div class="page-counter" id="pageCounter">第1页 / 共10页</div>
+</div>
+<div class="speech-bubble" id="speechBubble"></div>
+
+<script>
+// ====== SPEECH INIT ======
+(function initSpeech(){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function(){ window.speechSynthesis.getVoices(); };
+  }
+})();
+
+// ====== PAGE DATA ======
+const pages = [
+  { cover:true, title:'💕 Skidamarink', subtitle:'✏️ 爱之歌轻轻唱！' },
+  { sentence:'<span class="hl" data-word="Skidamarink">Skidamarink</span> a <span class="hl" data-word="dinky">dinky</span> dink, skidamarink a doo', desc:'爱之歌轻轻唱', words:['skidamarink:爱之歌','dinky:小小的'], game:'skida', svg:'0' },
+  { sentence:'I <span class="hl" data-word="love">love</span> <span class="hl" data-word="you">you</span>', desc:'我爱你', words:['love:爱','you:你'], game:'love', svg:'0' },
+  { sentence:'I love you in the <span class="hl" data-word="morning">morning</span> and in the <span class="hl" data-word="afternoon">afternoon</span>', desc:'早上下午都爱你', words:['morning:早上','afternoon:下午'], game:'love2', svg:'0' },
+  { sentence:'I love you in the <span class="hl" data-word="evening">evening</span> and underneath the <span class="hl" data-word="moon">moon</span>', desc:'晚上和月光下也爱你', words:['evening:晚上','moon:月亮'], game:'moon', svg:'0' },
+  { interact:true, title:'🎮 互动游戏' },
+  { match:true, title:'🔊 听声音找单词' },
+  { quiz:true, title:'❓ 小问答' },
+  { final:true, title:'🎉 太棒了!' }
+];
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+let buildingWord = [];
+let dragData = null;
+
+// ====== WEB AUDIO API ======
+const NOTE = { C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88, C5:523.25 };
+function playNote(freq, dur, type='triangle', vol=0.25) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if(ctx.state==='suspended') ctx.resume();
+    const osc = ctx.createOscillator(); const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = freq; osc.type = type;
+    const t = ctx.currentTime;
+    gain.gain.setValueAtTime(vol, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    osc.start(t); osc.stop(t + dur);
+  } catch(e){}
+}
+function playTick() { playNote(880, 0.08, 'square', 0.15); }
+function playGood() { playNote(523.25, 0.15, 'triangle', 0.2); setTimeout(function(){playNote(659.25, 0.15, 'triangle', 0.2);},100); setTimeout(function(){playNote(783.99, 0.3, 'triangle', 0.2);},200); }
+
+function playMelody(){const m=[[NOTE.C4,0.3],[NOTE.E4,0.3],[NOTE.G4,0.3],[NOTE.C5,0.3],[NOTE.G4,0.3],[NOTE.E4,0.3],[NOTE.C4,0.6]];m.forEach(function(n){setTimeout(function(){playNote(n[0],n[1],'triangle',0.2);},200);});}
+
+var songAudio = null;
+function playSong() {
+  if(songAudio) { songAudio.pause(); songAudio.currentTime = 0; }
+  songAudio = new Audio('audio/skidamarink.mp3');
+  songAudio.volume = 0.8;
+  songAudio.play().catch(function(){});
+}
+function showMusicNotes() {
+  const scene=document.querySelector('.scene-wrap'); if(!scene) return;
+  const notesArr=['♪','♫','♩','♬'];
+  for(let i=0;i<8;i++){
+    const n=document.createElement('div');
+    n.textContent=notesArr[i%4];
+    n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';
+    scene.appendChild(n);
+    setTimeout(function(e){e.remove()},3000,n);
+  }
+}
+
+// ====== SPEECH ======
+function speakText(text) {
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));
+    u.lang='en-US'; u.rate=0.75; u.pitch=1.0; u.volume=1.0;
+    window.speechSynthesis.speak(u);
+  }
+}
+function showBubble(text) {
+  const b=document.getElementById('speechBubble');
+  b.textContent=text; b.classList.add('show');
+  clearTimeout(b._t);
+  b._t=setTimeout(function(){b.classList.remove('show')},3000);
+}
+
+// ====== SVG ======
+var COVER_SVG = `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`;
+function svgCoverScene() { return COVER_SVG; }
+function getSVG(idx) {
+  if(idx===0) return svgCoverScene();
+  const p=pages[idx];
+  const scenes = [`<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`,
+    `<svg viewBox="0 0 460 220"><rect width="460" height="220" fill="url(#pink)"/><defs><radialGradient id="pink" cx="50%" cy="50%" r="70%"><stop offset="0%" stop-color="#FFE4EC"/><stop offset="100%" stop-color="#F8BBD0"/></radialGradient></defs><path d="M230 180 C230 180, 100 130, 100 80 C100 55, 130 40, 160 40 C185 40, 210 55, 230 80 C250 55, 275 40, 300 40 C330 40, 360 55, 360 80 C360 130, 230 180, 230 180Z" fill="#F44336" opacity="0.6"/><circle cx="120" cy="50" r="4" fill="#FFD700"/><circle cx="340" cy="60" r="5" fill="#FFD700"/><circle cx="80" cy="100" r="3" fill="#FFD700"/><circle cx="380" cy="100" r="3" fill="#FFD700"/><circle cx="150" cy="30" r="3" fill="#FFD700"/><circle cx="310" cy="30" r="4" fill="#FFD700"/></svg>`];
+  if(p.interact || p.match || p.quiz || p.final) return COVER_SVG.replace('height="220"','height="160"');
+  return scenes[parseInt(p.svg)] || scenes[0];
+}
+
+// ====== VOCAB BUTTONS (English + Chinese) ======
+function renderVocabRow(p) {
+  if(!p.words || p.words.length===0) return '';
+  let html='<div class="word-btn-row">';
+  for(let i=0;i<p.words.length;i++){
+    var parts=p.words[i].split(':');
+    var en=parts[0], cn=parts[1]||'';
+    html+='<div class="word-btn" onclick="speakWord(\''+en+'\',this)"><span class="en">'+en+' <span class="snd">🔊</span></span><span class="cn">'+cn+'</span></div>';
+  }
+  return html+'</div>';
+}
+function speakWord(word,el){
+  speakText(word);
+  showBubble('🔊 '+word);
+  el.style.transform='scale(1.12)';
+  setTimeout(function(){el.style.transform='';},300);
+}
+
+// ====== DRAG INTERACTIVE GAME (like gears) ======
+const INTERACT_ITEMS = [{"id": "love", "emoji": "💕", "label": "Love", "zone": "心中", "target": "200,130"}, {"id": "heart", "emoji": "❤️", "label": "Heart", "zone": "星旁", "target": "300,100"}, {"id": "moon", "emoji": "🌙", "label": "Moon", "zone": "夜空", "target": "120,80"}];
+let dragItemsPlaced = 0;
+let dragActive = false;
+
+function renderInteractGame() {
+  let html = '<div class="page-desc">把物品拖到对应位置！</div>';
+  // Canvas with drop zones
+  html += '<div class="drag-canvas" id="dragCanvas">';
+  for(let i=0;i<INTERACT_ITEMS.length;i++){
+    const item = INTERACT_ITEMS[i];
+    const pos = item.target.split(',');
+    html += '<div class="drag-zone" id="zone-'+i+'" data-idx="'+i+'" style="left:'+pos[0]+'px;top:'+pos[1]+'px;width:70px;height:50px">'+item.zone+'</div>';
+  }
+  html += '</div>';
+  // Tray with draggable items
+  html += '<div class="drag-status" id="dragStatus">👆 '+(dragItemsPlaced<INTERACT_ITEMS.length?'拖动物品到对应位置！':'✅ 全部完成！')+'</div>';
+  html += '<div class="drag-tray" id="dragTray">';
+  for(let i=0;i<INTERACT_ITEMS.length;i++){
+    const item = INTERACT_ITEMS[i];
+    html += '<div class="drag-item" id="ditem-'+i+'" data-idx="'+i+'" draggable="true">'+item.emoji+' '+item.label+'</div>';
+  }
+  html += '</div>';
+  if(dragItemsPlaced>=INTERACT_ITEMS.length){
+    html += '<div style="text-align:center;margin:8px 0"><button class="read-btn" onclick="resetInteract()">🔄 再来一次</button></div>';
+  }
+  return html;
+}
+
+function setupInteractDrag() {
+  document.querySelectorAll('.drag-item').forEach(function(el){
+    el.addEventListener('dragstart', function(e){
+      if(this.classList.contains('used')){e.preventDefault();return;}
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', this.dataset.idx);
+    });
+    el.addEventListener('dragend', function(e){
+      this.classList.remove('dragging');
+    });
+    // Touch support
+    el.addEventListener('touchstart', function(e){
+      if(this.classList.contains('used')) return;
+      const touch = e.touches[0];
+      dragActive = {idx:parseInt(this.dataset.idx), el:this, offsetX:20, offsetY:20};
+      // Create ghost
+      const ghost = document.createElement('div');
+      ghost.className = 'drag-ghost';
+      ghost.textContent = this.textContent;
+      ghost.style.left = (touch.clientX - 20) + 'px';
+      ghost.style.top = (touch.clientY - 20) + 'px';
+      ghost.id = 'dragGhost';
+      document.body.appendChild(ghost);
+      this.style.opacity = '0.4';
+    }, {passive:true});
+    el.addEventListener('touchmove', function(e){
+      if(!dragActive) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const ghost = document.getElementById('dragGhost');
+      if(ghost){
+        ghost.style.left = (touch.clientX - 20) + 'px';
+        ghost.style.top = (touch.clientY - 20) + 'px';
+      }
+      // Check proximity to zones
+      document.querySelectorAll('.drag-zone:not(.filled)').forEach(function(z){
+        const r = z.getBoundingClientRect();
+        const cx = r.left + r.width/2, cy = r.top + r.height/2;
+        const dist = Math.sqrt((touch.clientX-cx)*(touch.clientX-cx) + (touch.clientY-cy)*(touch.clientY-cy));
+        z.classList.toggle('highlight', dist < 80);
+      });
+    }, {passive:false});
+    el.addEventListener('touchend', function(e){
+      if(!dragActive) return;
+      const ghost = document.getElementById('dragGhost');
+      if(ghost) ghost.remove();
+      this.style.opacity = '1';
+      const touch = e.changedTouches[0];
+      // Check if over a zone
+      let matched = false;
+      document.querySelectorAll('.drag-zone:not(.filled)').forEach(function(z){
+        const r = z.getBoundingClientRect();
+        if(touch.clientX >= r.left && touch.clientX <= r.right && touch.clientY >= r.top && touch.clientY <= r.bottom){
+          const idx = parseInt(z.dataset.idx);
+          if(idx === dragActive.idx){
+            matched = true;
+            z.classList.add('filled');
+            z.textContent = INTERACT_ITEMS[idx].emoji;
+            dragActive.el.classList.add('used');
+            dragItemsPlaced++;
+            playGood();
+            showBubble('✅ '+INTERACT_ITEMS[idx].label+' 放好了!');
+            document.getElementById('dragStatus').textContent = '✅ '+(dragItemsPlaced)+'/'+INTERACT_ITEMS.length+' 完成!';
+            if(dragItemsPlaced >= INTERACT_ITEMS.length){
+              document.getElementById('dragStatus').textContent = '🎉 全部完成! 太棒了!';
+              gameDone[pages.findIndex(function(p){return p.interact;})] = true;
+              showBubble('🎉 太棒了! 全部组装完成!');
+              launchConfetti();
+              // Show reset button
+              const rm = document.querySelector('.drag-tray + div');
+              if(!rm) {
+                const div = document.createElement('div');
+                div.style.cssText = 'text-align:center;margin:8px 0';
+                div.innerHTML = '<button class="read-btn" onclick="resetInteract()">🔄 再来一次</button>';
+                document.getElementById('dragTray').after(div);
+              }
+            }
+          }
+        }
+      });
+      if(!matched){
+        showBubble('再试试~ 拖到对应的位置!');
+      }
+      document.querySelectorAll('.drag-zone').forEach(function(z){z.classList.remove('highlight');});
+      dragActive = null;
+    }, {passive:true});
+  });
+
+  // Mouse drag & drop for desktop
+  document.querySelectorAll('.drag-zone').forEach(function(zone){
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); });
+    zone.addEventListener('drop', function(e){
+      e.preventDefault();
+      if(this.classList.contains('filled')) return;
+      const idx = parseInt(e.dataTransfer.getData('text/plain'));
+      const zoneIdx = parseInt(this.dataset.idx);
+      if(idx !== zoneIdx) {
+        showBubble('❌ 位置不对! 再试试~');
+        return;
+      }
+      this.classList.add('filled');
+      this.textContent = INTERACT_ITEMS[idx].emoji;
+      const item = document.getElementById('ditem-'+idx);
+      if(item) item.classList.add('used');
+      dragItemsPlaced++;
+      playGood();
+      showBubble('✅ '+INTERACT_ITEMS[idx].label+' 放好了!');
+      document.getElementById('dragStatus').textContent = '✅ '+(dragItemsPlaced)+'/'+INTERACT_ITEMS.length+' 完成!';
+      if(dragItemsPlaced >= INTERACT_ITEMS.length){
+        document.getElementById('dragStatus').textContent = '🎉 全部完成! 太棒了!';
+        gameDone[pages.findIndex(function(p){return p.interact;})] = true;
+        showBubble('🎉 太棒了! 全部组装完成!');
+        launchConfetti();
+      }
+    });
+  });
+}
+
+function resetInteract() {
+  dragItemsPlaced = 0;
+  document.querySelectorAll('.drag-zone').forEach(function(z){z.classList.remove('filled');z.textContent=INTERACT_ITEMS[parseInt(z.dataset.idx)].zone;});
+  document.querySelectorAll('.drag-item').forEach(function(el){el.classList.remove('used');el.style.opacity='1';});
+  document.getElementById('dragStatus').textContent = '👆 拖动物品到对应位置！';
+  gameDone[pages.findIndex(function(p){return p.interact;})] = false;
+  showBubble('🔄 重新开始!');
+}
+
+// ====== WORD GAME ======
+function startWordGame(idx,word) {
+  if(gameDone[idx]) return '<div class="word-game" style="background:#E8F5E9"><h3>✅ 完成!</h3></div>';
+  const letters=[...word].sort(function(){return Math.random()-0.5});
+  buildingWord=[];
+  const slots=word.split('').map(function(_,i){return '<div class="word-slot" id="slot-'+idx+'-'+i+'"></div>';}).join('');
+  const tiles=letters.map(function(l){return '<div class="letter-tile" draggable="true" data-idx="'+idx+'" data-letter="'+l+'">'+l+'</div>';}).join('');
+  return '<div class="word-game"><h3>⚙️ 拼单词: <strong>"'+word+'"</strong> 🔊</h3><div class="word-slots" id="ws-'+idx+'">'+slots+'</div><div class="letter-tiles" id="tiles-'+idx+'">'+tiles+'</div></div>';
+}
+function pickTile(el){pickLetter(parseInt(el.dataset.idx),el.dataset.letter,el);}
+function pickLetter(idx,letter,el) {
+  if(gameDone[idx]||el.classList.contains('used')) return;
+  const word=pages[idx].game;
+  const slot=buildingWord.length;
+  if(slot>=word.length) return;
+  const slots=document.querySelectorAll('#ws-'+idx+' .word-slot');
+  if(letter===word[slot]){
+    buildingWord.push(letter); slots[slot].textContent=letter; slots[slot].classList.add('filled');
+    el.classList.add('correct','used'); playTick();
+    if(buildingWord.length===word.length){
+      gameDone[idx]=true;
+      setTimeout(function(){showBubble('Great! 🎉');launchConfetti();renderPage(idx);},500);
+    }
+  } else { el.classList.add('wrong'); setTimeout(function(){el.classList.remove('wrong');},400); }
+}
+function onDragStart(e,idx,letter){dragData={idx,letter,el:e.target};e.target.classList.add('dragging');e.dataTransfer.effectAllowed='move';}
+function onDragEnd(e){e.target.classList.remove('dragging');document.querySelectorAll('.word-slot.drag-over').forEach(function(s){s.classList.remove('drag-over');});}
+function onDragOver(e,idx){e.preventDefault();e.dataTransfer.dropEffect='move';document.querySelectorAll('#ws-'+idx+' .word-slot:not(.filled)').forEach(function(s){s.classList.add('drag-over');});}
+function onDragLeave(e,idx){document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(function(s){s.classList.remove('drag-over');});}
+function onDrop(e,idx){
+  e.preventDefault();document.querySelectorAll('#ws-'+idx+' .word-slot').forEach(function(s){s.classList.remove('drag-over');});
+  if(!dragData||dragData.idx!==idx||gameDone[idx]) return;
+  pickLetter(idx,dragData.letter,dragData.el);dragData=null;
+}
+
+// ====== MATCH GAME ======
+const MATCH_WORDS = ["love","you","moon","heart"];
+let matchRound = 0;
+let matchDone = [];
+function renderMatchGame() {
+  if(matchDone.length>=MATCH_WORDS.length) return '<div class="match-game" style="background:#E8F5E9"><h3>🎉 全部找到! 太棒了!</h3></div>';
+  const word=MATCH_WORDS[matchRound];
+  const shuffled=MATCH_WORDS.slice().sort(function(){return Math.random()-0.5;});
+  const opts=shuffled.map(function(w){
+    const d=matchDone.indexOf(w)>=0?'style="opacity:0.5"':'';
+    return '<div class="word-choice" data-word="'+w+'" onclick="checkMatchByData(this)" '+d+'>'+w+'</div>';
+  }).join('');
+  return '<div class="match-game"><h3>🔊 听单词: <strong>"'+word+'"</strong></h3><button class="sound-btn" onclick="speakMatchWord()">🔊</button><p style="font-size:14px;color:#6B4F3A;margin-bottom:8px;font-weight:bold">'+(matchRound+1)+'/'+MATCH_WORDS.length+'</p><div class="word-choices">'+opts+'</div></div>';
+}
+function speakMatchWord() {
+  if(matchRound>=MATCH_WORDS.length) return;
+  speakText(MATCH_WORDS[matchRound]);
+  showBubble('🔊 '+MATCH_WORDS[matchRound]);
+}
+function checkMatchByData(el){var w=el.dataset.word;if(w){checkMatch(w,el);}}
+function checkMatch(word,el) {
+  if(matchRound>=MATCH_WORDS.length||matchDone.indexOf(word)>=0) return;
+  if(word===MATCH_WORDS[matchRound]){
+    el.classList.add('correct'); matchDone.push(word);
+    showBubble('Great! Wonderful! 🎉'); playTick();
+    matchRound++;
+    setTimeout(function(){renderPage(pages.length-3)},600);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(function(){el.classList.remove('wrong')},400);
+    showBubble('再试试~ Try again!');
+  }
+}
+
+// ====== QUIZ ======
+const QUIZ_DATA = [{"q": "Skidamarink 这首歌是关于什么的？", "opts": ["💕 Love 爱", "🌳 Nature 自然", "🚗 Cars 汽车"], "ans": 0, "feedback": "对！是一首爱之歌！"}, {"q": "\"I love you\" 是什么意思？", "opts": ["👋 你好", "💕 我爱你", "👋 再见"], "ans": 1, "feedback": "没错！I love you 就是我爱你！"}, {"q": "晚上在什么下面说爱你？", "opts": ["🌞 Sun", "🌙 Moon", "⭐ Stars"], "ans": 1, "feedback": "Underneath the moon! 月光下！"}];
+let quizIdx = 0;
+let quizAnswered = false;
+function renderQuizGame() {
+  let html = '<div class="quiz-area"><h3>❓ 小问答</h3>';
+  if(quizIdx>=QUIZ_DATA.length){
+    html += '<p style="font-size:22px;color:#E65100;font-weight:bold">🎉 全部答对! 太聪明了!</p>';
+  } else {
+    const q = QUIZ_DATA[quizIdx];
+    html += '<p style="font-size:18px;color:#6B4F3A;margin-bottom:12px"><strong>Q'+(quizIdx+1)+': '+q.q+'</strong></p>';
+    html += '<div class="quiz-options">';
+    for(let i=0;i<q.opts.length;i++){
+      html += '<button class="quiz-opt" onclick="checkQuiz('+i+',this)">'+q.opts[i]+'</button>';
+    }
+    html += '</div><div class="quiz-feedback" id="quizFeedback"></div>';
+  }
+  html += '</div>';
+  return html;
+}
+function checkQuiz(idx,el) {
+  if(quizAnswered||quizIdx>=QUIZ_DATA.length) return;
+  quizAnswered = true;
+  const q = QUIZ_DATA[quizIdx];
+  if(idx===q.ans){
+    el.classList.add('correct');
+    document.getElementById('quizFeedback').textContent = '✅ 正确! '+q.feedback;
+    setTimeout(function(){quizIdx++; quizAnswered=false;renderPage(pages.length-2);},1500);
+  } else {
+    el.classList.add('wrong');
+    document.getElementById('quizFeedback').textContent = '❌ 再想想哦!';
+    setTimeout(function(){el.classList.remove('wrong');quizAnswered=false;},800);
+  }
+}
+
+// ====== RENDER ======
+function renderPage(idx) {
+  const area=document.getElementById('pageArea');
+  const p=pages[idx];
+
+  if(p.cover){
+    area.innerHTML='<div class="page active cover-page"><div class="cover-svg">'+getSVG(0)+'</div><div class="page-title">'+p.title+'</div><div class="page-desc">'+p.subtitle+'</div><div style="display:flex;gap:16px;justify-content:center;align-items:center;margin-top:4px"><button class="big-start-btn smaller" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button><button class="big-start-btn" onclick="nextPage()">▶</button></div></div>';
+    updateUI(idx); return;
+  }
+
+  if(p.final){
+    let stars='';
+    for(let i=0;i<15;i++) stars+='<span class="final-star-cell" onclick="this.classList.toggle(\'lit\');this.textContent=this.classList.contains(\'lit\')?\'★\':\'☆\'">☆</span>';
+    area.innerHTML='<div class="page active" style="text-align:center;padding:20px 10px"><div class="page-title">'+p.title+'</div><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div style="font-size:18px;margin:6px 0">👆 点击星星点亮!</div><div>'+stars+'</div><div style="margin:8px 0">🎉 ⭐ ⭐ ⭐ 🎉</div><a class="home-link" href="https://nonomil.github.io/childrens-library/courseware/">🏠 回课件列表</a></div>';
+    launchConfetti(); updateUI(idx); return;
+  }
+
+  if(p.interact){
+    area.innerHTML='<div class="page active"><div class="page-title">💕 装满爱心</div>'+renderInteractGame()+'</div>';
+    updateUI(idx);
+    setTimeout(setupInteractDrag, 100);
+    return;
+  }
+
+  if(p.match){
+    area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+renderMatchGame()+'</div>';
+    updateUI(idx); return;
+  }
+
+  if(p.quiz){
+    area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div>'+renderQuizGame()+'</div>';
+    updateUI(idx); return;
+  }
+
+  let gh='', vb='';
+  if(p.game){gh=startWordGame(idx,p.game);buildingWord=[];}
+  if(p.words){vb=renderVocabRow(p);}
+  area.innerHTML='<div class="page active"><div class="scene-wrap" style="position:relative">'+getSVG(idx)+'</div><div class="lyrics">'+p.sentence+'</div><div class="page-desc">'+p.desc+'</div>'+vb+gh+'</div>';
+
+  area.querySelectorAll('.hl[data-word]').forEach(function(el){
+    el.addEventListener('click',function(e){
+      e.stopPropagation();
+      speakText(this.getAttribute('data-word'));
+      showBubble('🔊 '+this.getAttribute('data-word'));
+    });
+  });
+  updateUI(idx);
+}
+
+function updateUI(idx) {
+  const dots=document.getElementById('progressDots');
+  let dhtml='';
+  for(let i=0;i<pages.length;i++){
+    dhtml+='<div class="dot'+(i===idx?' active':'')+(gameDone[i]?' done':'')+'" onclick="goToPage('+i+')"></div>';
+  }
+  dots.innerHTML=dhtml;
+  document.getElementById('prevBtn').disabled=(idx===0);
+  document.getElementById('nextBtn').disabled=(idx===pages.length-1);
+  document.getElementById('pageCounter').textContent='第'+(idx+1)+'页 / 共'+pages.length+'页';
+  document.getElementById('nextBtn').style.display=(idx===pages.length-1)?'none':'';
+  currentPage=idx;
+}
+
+function prevPage(){if(currentPage>0)goToPage(currentPage-1);}
+function nextPage(){if(currentPage<pages.length-1)goToPage(currentPage+1);}
+function goToPage(idx){renderPage(idx);}
+
+function speakPage() {
+  const p=pages[currentPage];
+  if(p.cover){showBubble('💕 Skidamarink!');speakText('Skidamarink');return;}
+  if(p.final){showBubble('You did it! Super English Star! 🌟');speakText('You did it! Super English Star!');return;}
+  if(p.interact){showBubble('把爱心拖到星星上！');speakText('把爱心拖到星星上！');return;}
+  if(p.match){showBubble('Listen to the words!');speakText('Listen to the words!');return;}
+  if(p.quiz){showBubble('Answer the quiz question!');speakText('Answer the quiz question!');return;}
+  const t=p.sentence.replace(/<[^>]+>/g,'');
+  showBubble('🔊 '+t);
+  speakText(t);
+}
+
+function launchConfetti() {
+  const d=document.createElement('div');d.className='celebration';
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
+  for(let i=0;i<40;i++){
+    const c=document.createElement('div');
+    c.style.cssText='position:absolute;width:'+(6+Math.random()*8)+'px;height:'+(6+Math.random()*8)+'px;border-radius:50%;left:'+(Math.random()*100)+'%;top:10%;background:'+colors[i%6]+';animation:confetti-fall '+(1.5+Math.random())+'s ease-out forwards;animation-delay:'+(Math.random()*0.5)+'s;';
+    d.appendChild(c);
+  }
+  document.body.appendChild(d);setTimeout(function(){d.remove()},3000);
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='ArrowLeft') prevPage();
+  if(e.key==='ArrowRight') nextPage();
+});
+
+renderPage(0);
+</script>
+</body>
+</html>

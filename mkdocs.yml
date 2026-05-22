@@ -1,66 +1,81 @@
-site_name: 🎪 小朋友的互动学习乐园
-site_description: 互动课件 · 幼儿启蒙 · 在玩中学
-theme:
-  name: material
-  language: zh
-  palette:
-    primary: teal
-    accent: deep orange
-  features:
-    - navigation.instant
-    - navigation.tabs
-    - navigation.indexes
-
-markdown_extensions:
-  - admonition
-  - attr_list
-  - pymdownx.details
-  - pymdownx.emoji
-  - pymdownx.superfences
-
-extra:
-  social:
-    - icon: fontawesome/solid/book
-      link: https://github.com/nonomil/my-notes
-
-nav:
-  - 首页: index.md
-  - 绘本列表:
-    - The Gruffalo: books/gruffalo.md
-    - Don't Let the Pigeon Drive the Bus!:
-      - 介绍: books/pigeon_bus.md
-      - 🎯 逐页阅读: books/pigeon_bus_reader.md
-    - Knuffle Bunny: books/knuffle_bunny.md
-    - Pete the Cat: books/pete_cat.md
-    - Little Critter: books/little_critter.md
-    - Where the Wild Things Are: books/wild_things.md
-    - Winnie the Witch: books/winnie_witch.md
-    - The Day the Crayons Quit: books/crayons_quit.md
-  - 🎯 互动课件:
-    - courseware/index.md
-    - 🎵 童谣:
-      - 🌟 Twinkle Twinkle: courseware/twinkle-twinkle.html
-      - 🚜 Old MacDonald: courseware/old-macdonald.html
-      - 🐵 Five Little Monkeys: courseware/five-little-monkeys.html
-      - 🚌 Wheels on the Bus: courseware/wheels-on-bus.html
-      - 🕷️ Itsy Bitsy Spider: courseware/itsy-bitsy-spider.html
-      - 🚣 Row Your Boat: courseware/row-your-boat.html
-      - 🐶 BINGO: courseware/bingo.html
-      - 🔤 ABC Song: courseware/abc-song.html
-      - 🧍 Head Shoulders: courseware/head-shoulders.html
-      - 🥚 Humpty Dumpty: courseware/humpty-dumpty.html
-      - 😊 If You're Happy: courseware/if-youre-happy.html
-      - 🌉 London Bridge: courseware/london-bridge.html
-      - 🐑 Mary's Little Lamb: courseware/mary-lamb.html
-    - 🔤 英语:
-      - 🐱 Fat Cat - Phonics: courseware/phonics-fat-cat.html
-      - 🎉 Come to the Party!: courseware/sight-word-tales-come-to-the-party.html
-      - 🐱 Can We Get a Pet?: courseware/sight-word-tales-can-we-get-a-pet.html
-      - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html
-    - 🌱 科学:
-      - 🍎 I Am an Apple: courseware/i-am-an-apple.html
-      - ⚙️ 齿轮传动: courseware/gears-transmission.html
-      - 🌴 雨林大冒险: courseware/rainforest-adventure.html
-    - 🀄 语文:
-      - 🌿 大自然识字: courseware/nature-lesson-4.html
-  - 全部PDF打包下载: download.md
+     1|site_name: 🎪 小朋友的互动学习乐园
+     2|site_description: 互动课件 · 幼儿启蒙 · 在玩中学
+     3|theme:
+     4|  name: material
+     5|  language: zh
+     6|  palette:
+     7|    primary: teal
+     8|    accent: deep orange
+     9|  features:
+    10|    - navigation.instant
+    11|    - navigation.tabs
+    12|    - navigation.indexes
+    13|
+    14|markdown_extensions:
+    15|  - admonition
+    16|  - attr_list
+    17|  - pymdownx.details
+    18|  - pymdownx.emoji
+    19|  - pymdownx.superfences
+    20|
+    21|extra:
+    22|  social:
+    23|    - icon: fontawesome/solid/book
+    24|      link: https://github.com/nonomil/my-notes
+    25|
+    26|nav:
+    27|  - 首页: index.md
+    28|  - 绘本列表:
+    29|    - The Gruffalo: books/gruffalo.md
+    30|    - Don't Let the Pigeon Drive the Bus!:
+    31|      - 介绍: books/pigeon_bus.md
+    32|      - 🎯 逐页阅读: books/pigeon_bus_reader.md
+    33|    - Knuffle Bunny: books/knuffle_bunny.md
+    34|    - Pete the Cat: books/pete_cat.md
+    35|    - Little Critter: books/little_critter.md
+    36|    - Where the Wild Things Are: books/wild_things.md
+    37|    - Winnie the Witch: books/winnie_witch.md
+    38|    - The Day the Crayons Quit: books/crayons_quit.md
+    39|  - 🎯 互动课件:
+    40|    - courseware/index.md
+    41|    - 🎵 童谣:
+    42|      - 🌟 Twinkle Twinkle: courseware/twinkle-twinkle.html
+    43|      - 🚜 Old MacDonald: courseware/old-macdonald.html
+    44|      - 🐵 Five Little Monkeys: courseware/five-little-monkeys.html
+    45|      - 🚌 Wheels on the Bus: courseware/wheels-on-bus.html
+    46|      - 🕷️ Itsy Bitsy Spider: courseware/itsy-bitsy-spider.html
+    47|      - 🚣 Row Your Boat: courseware/row-your-boat.html
+    48|      - 🐶 BINGO: courseware/bingo.html
+    49|      - 🔤 ABC Song: courseware/abc-song.html
+    50|      - 🧍 Head Shoulders: courseware/head-shoulders.html
+    51|      - 🥚 Humpty Dumpty: courseware/humpty-dumpty.html
+    52|      - 😊 If You're Happy: courseware/if-youre-happy.html
+    53|      - 🌉 London Bridge: courseware/london-bridge.html
+    54|      - 🐑 Mary's Little Lamb: courseware/mary-lamb.html
+      - ⛰️ Jack and Jill: courseware/jack-and-jill.html
+      - 🎂 Pat-A-Cake: courseware/pat-a-cake.html
+      - 🌙 Hush Little Baby: courseware/hush-little-baby.html
+      - 🌳 Mulberry Bush: courseware/mulberry-bush.html
+      - 💕 Skidamarink: courseware/skidamarink.html
+      - ⭐ Silent Night: courseware/silent-night.html
+      - 🐭 Three Blind Mice: courseware/three-blind-mice.html
+      - 🕰️ Hickory Dickory: courseware/hickory-dickory.html
+      - 🌧️ Rain Go Away: courseware/rain-go-away.html
+      - 🐑 Baa Baa Black Sheep: courseware/baa-baa-black-sheep.html
+      - 🎻 Cat and the Fiddle: courseware/cat-and-fiddle.html
+      - 🎩 Yankee Doodle: courseware/yankee-doodle.html
+      - 🌸 Ring Around Rosy: courseware/ring-around-rosy.html
+      - 🕯️ Jack Be Nimble: courseware/jack-be-nimble.html
+    55|    - 🔤 英语:
+    56|      - 🐱 Fat Cat - Phonics: courseware/phonics-fat-cat.html
+    57|      - 🎉 Come to the Party!: courseware/sight-word-tales-come-to-the-party.html
+    58|      - 🐱 Can We Get a Pet?: courseware/sight-word-tales-can-we-get-a-pet.html
+    59|      - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html
+    60|    - 🌱 科学:
+    61|      - 🍎 I Am an Apple: courseware/i-am-an-apple.html
+    62|      - ⚙️ 齿轮传动: courseware/gears-transmission.html
+    63|      - 🌴 雨林大冒险: courseware/rainforest-adventure.html
+    64|    - 🀄 语文:
+    65|      - 🌿 大自然识字: courseware/nature-lesson-4.html
+    66|  - 全部PDF打包下载: download.md
+    67|
