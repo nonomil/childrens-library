@@ -50,8 +50,8 @@
     <span class="stat-item">📚 共 <strong>35</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
     <span class="stat-item">🔤 <strong>5</strong> 个英语课</span>
-    <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
-    <span class="stat-item">🀄 <strong>1</strong> 个语文课</span>
+    <span class="stat-item">🌿 <strong>2</strong> 个科学课</span>
+    <span class="stat-item">🀄 <strong>2</strong> 个语文课</span>
   </div>
 </div>
 
@@ -118,12 +118,11 @@
 <div class="section-header">
   <span class="sh-icon">🌱</span>
   <span class="sh-name">科学</span>
-  <span class="sh-count">3 课</span>
+  <span class="sh-count">2 课</span>
 </div>
 <div class="scroll-row">
 
 <a href="courseware/gears-transmission.html" class="scroll-card"><span class="sc-icon">⚙️</span><span class="sc-name">齿轮传动</span></a>
-<a href="courseware/rainforest-adventure.html" class="scroll-card"><span class="sc-icon">🌴</span><span class="sc-name">雨林大冒险</span></a>
 <a href="courseware/nature-lesson-4.html" class="scroll-card"><span class="sc-icon">🌿</span><span class="sc-name">大自然识字</span></a>
 
 </div>
@@ -134,10 +133,11 @@
 <div class="section-header">
   <span class="sh-icon">🀄</span>
   <span class="sh-name">语文</span>
-  <span class="sh-count">1 课</span>
+  <span class="sh-count">2 课</span>
 </div>
 <div class="scroll-row">
 
+<a href="courseware/rainforest-adventure.html" class="scroll-card"><span class="sc-icon">🌴</span><span class="sc-name">雨林大冒险</span></a>
 <a href="courseware/nature-lesson-4.html" class="scroll-card"><span class="sc-icon">🌿</span><span class="sc-name">大自然识字</span></a>
 
 </div>

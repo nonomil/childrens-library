@@ -656,8 +656,18 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
     var text = PANEL_TEXTS[name];
     if (!text) return;
     showSpeechBubble(text);
-    speakText(text);
+    playEntityAudio(name, text);
   };
+  var currentAudio = null;
+  function playEntityAudio(name, text) {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    try {
+      var a = new Audio('audio/rain-' + name + '.mp3');
+      currentAudio = a;
+      a.volume = 1;
+      a.play().catch(function(){ speakText(text); });
+    } catch(e) { speakText(text); }
+  }
   function showSpeechBubble(text) {
     var old = document.querySelector('.speech-bubble');
     if (old) old.remove();
