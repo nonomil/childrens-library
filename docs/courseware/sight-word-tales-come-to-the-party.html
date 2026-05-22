@@ -838,7 +838,7 @@ function renderPage(idx) {
           📥 拖拽单词到这里
         </div>
         <div class="word-choices">
-          ${p.game.options.map((w, i) => `<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event, ${idx}, '${p.game.word}', '${w}')" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this)">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
+          ${p.game.options.map((w, i) => `<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event, ${idx}, '${p.game.word}', '${w}')" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this);speakText('${w}')">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -947,7 +947,17 @@ function speakPage() {
   }
 }
 
-function speakText(text) { ttsPlay(text); }
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
 function speakPartyItem(word) {
   showSpeechBubble(word);

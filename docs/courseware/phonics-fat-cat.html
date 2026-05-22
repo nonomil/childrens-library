@@ -743,7 +743,7 @@ function renderPage(idx) {
           ${p.game.word.split('').map((_, i) => `<div class="word-slot" id="slot-${idx}-${i}"></div>`).join('')}
         </div>
         <div class="letter-tiles" id="tiles-${idx}">
-          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" draggable="true" ondragstart="onTileDragStart(event, ${idx}, '${l}')" ondragend="onTileDragEnd(event)" onclick="pickLetter(${idx}, '${l}', this)">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
+          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" draggable="true" ondragstart="onTileDragStart(event, ${idx}, '${l}')" ondragend="onTileDragEnd(event)" onclick="pickLetter(${idx}, '${l}', this);speakText('${l}')">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
         </div>
       </div>
     `;
@@ -924,7 +924,17 @@ function speakPhonics(text) {
   ttsPlay(text);
 }
 
-function speakText(text) { ttsPlay(text); }
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
 // ===== Navigation =====
 function nextPage() {

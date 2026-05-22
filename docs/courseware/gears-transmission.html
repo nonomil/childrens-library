@@ -1760,7 +1760,7 @@ function showQuestion(){
     const b=document.createElement('button');b.className='quiz-opt';b.textContent=opt;
     // Add speaker for option
     const optText=opt.replace(/['"]/g,'');
-    b.onclick=function(){answerQuiz(i);};
+    b.onclick=function(){answerQuiz(i);speakText(optText);};
     const wrap=document.createElement('div');wrap.style.cssText='display:flex;align-items:center;gap:4px;width:100%';
     const labelSpan=document.createElement('span');labelSpan.textContent=opt;
     const speakBtn=document.createElement('button');speakBtn.className='quiz-opt-speak';speakBtn.textContent='🔊';
@@ -1812,7 +1812,17 @@ function finishQuiz(){
 function restartQuiz(){initQuiz();}
 
 // ========== QUIZ SPEAK ==========
-function speakText(text) { ttsPlay(text); }
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
 // ========== CONFETTI ==========
 function launchConfetti(){

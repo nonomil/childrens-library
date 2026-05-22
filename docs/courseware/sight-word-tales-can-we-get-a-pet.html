@@ -953,7 +953,7 @@ function renderGame(idx, game) {
   }
   var qSpeak = game.question.replace(/[??⚙️]/g, '').replace(/[""]/g, '').trim();
   var opts = game.options.map(function(w) {
-    return '<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event,' + idx + ",'" + game.word + "','" + w + "')" + '" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this)" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
+    return '<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event,' + idx + ",'" + game.word + "','" + w + "')" + '" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(' + idx + ",'" + game.word + "','" + w + "',this);speakText('" + w + "')" + '">' + w + ' <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\'' + w + '\')">🔊</button></div>';
   }).join('');
   
   return `
@@ -1009,7 +1009,17 @@ function checkWord(idx, target, chosen, el) {
   }
 }
 
-function speakText(text) { ttsPlay(text); }
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
 function speakWord(word) {
   showSpeechBubble('🔊 ' + word, 2000);

@@ -685,12 +685,23 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
       panel.classList.add('show');
       overlay.classList.add('show');
       currentPanel = name;
+      // Auto-speak the main panel text
+      speakPanel(name);
     }
   };
 
   window.showDeep = function(panel, topic) {
     var card = document.getElementById('deep-' + panel + '-' + topic);
     if (card) card.classList.add('show');
+    // Auto-speak the deep card text
+    if (card) {
+      var text = card.querySelector('.dc-text');
+      if (text) {
+        var title = card.querySelector('.dc-title');
+        var fullText = (title ? title.textContent + '：' : '') + text.textContent;
+        speakText(fullText);
+      }
+    }
   };
   window.hideDeep = function(panel, topic) {
     var card = document.getElementById('deep-' + panel + '-' + topic);
@@ -741,7 +752,18 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
       setTimeout(function(){ b.remove(); }, 350);
     }, 3500);
   }
-  function speakText(text) { ttsPlay(text); }
+  function speakText(text) { 
+    if (typeof ttsPlay === 'function') { 
+      ttsPlay(text); 
+    } else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[🌀-🗿🎀-🎓🎠-🏁🚀-🛿🐀-🦿🌂-🎄🎃🎄🎅🧙-🧟🧠-🧮🦴-🦷🪀-🪶]/g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
   // Escape key
   document.addEventListener('keydown', function(e) {

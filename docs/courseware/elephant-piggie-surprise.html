@@ -527,7 +527,17 @@ function speakPage() {
   }
 }
 
-function speakText(text) { ttsPlay(text); }
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
 
 // ===== Character Click Animation =====
 
@@ -609,7 +619,7 @@ function renderPage(idx) {
           <div class="quiz-options">
             ${p.game.options.map((opt, oi) => {
               const isCorrect = opt === p.game.correct;
-              return `<div class="quiz-opt" draggable="true" ondragstart="onQuizDragStart(event,${idx},${isCorrect})" ondragend="onQuizDragEnd(event)" onclick="checkAnswer(${idx}, ${isCorrect}, this)">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
+              return `<div class="quiz-opt" draggable="true" ondragstart="onQuizDragStart(event,${idx},${isCorrect})" ondragend="onQuizDragEnd(event)" onclick="checkAnswer(${idx}, ${isCorrect}, this);speakText('${opt.replace(/'/g, "\\'")}')">${opt} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${opt.replace(/'/g, "\\'")}')">🔊</button></div>`;
             }).join('')}
           </div>
         </div>
