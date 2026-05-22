@@ -655,18 +655,18 @@ h1.site-title { text-align:center; color:#2E7D32; font-size:28px; margin-bottom:
   window.speakPanel = function(name) {
     var text = PANEL_TEXTS[name];
     if (!text) return;
-    showSpeechBubble(text);
-    playEntityAudio(name, text);
+    playClick('audio/rain-' + name + '.mp3', text);
   };
   var currentAudio = null;
-  function playEntityAudio(name, text) {
-    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-    try {
-      var a = new Audio('audio/rain-' + name + '.mp3');
-      currentAudio = a;
-      a.volume = 1;
-      a.play().catch(function(){ speakText(text); });
-    } catch(e) { speakText(text); }
+  function playClick(src, text){
+    showSpeechBubble(text||'');
+    if(currentAudio){currentAudio.pause();currentAudio=null;}
+    try{
+      const a=new Audio(src);
+      currentAudio=a;
+      a.volume=1;
+      a.play().catch(()=>{showSpeechBubble(text||'');});
+    }catch(e){showSpeechBubble(text||'');}
   }
   function showSpeechBubble(text) {
     var old = document.querySelector('.speech-bubble');
