@@ -234,6 +234,7 @@ body {
   .top-nav-btn { font-size:12px; padding:3px 10px; }
 }
 </style>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 <div class="book">
@@ -526,15 +527,7 @@ function speakPage() {
   }
 }
 
-function speakText(text){
-  if('speechSynthesis' in window){
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
-    window.speechSynthesis.speak(u);
-  }
-  playAudio('', text);
-}
+function speakText(text) { ttsPlay(text); }
 
 // ===== Character Click Animation =====
 

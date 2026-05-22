@@ -150,6 +150,7 @@ body {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 <div class="book">
@@ -306,17 +307,7 @@ function speakPage(){
   else {showSpeechBubble(txt);speakText(txt);}
 }
 
-function speakText(text){
-  window.speechSynthesis.cancel();
-  try{
-    // Remove emoji + non-ASCII but keep letters, numbers, punctuation
-    var clean = text.replace(/<[^>]+>/g,'').replace(/[\u{1F300}-\u{1FFFF}\u2600-\u27BF\uFE00-\uFE0F\u200D\u{1F000}-\u{1FFFF}]/gu,'').replace(/\s+/g,' ').trim();
-    if(clean.length===0) return;
-    const u=new SpeechSynthesisUtterance(clean);
-u.lang='en-US';u.rate=0.75;u.pitch=1.0;u.volume=1.0;
-    window.speechSynthesis.speak(u);
-  }catch(e){}
-}
+function speakText(text) { ttsPlay(text); }
 
 // ====== SVG BUILDER ======
 function s(tag,attrs,children){

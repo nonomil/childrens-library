@@ -336,6 +336,7 @@ body {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 
@@ -920,22 +921,10 @@ function speakPage() {
 
 function speakPhonics(text) {
   showSpeechBubble(text + ' — ' + text + '!');
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.7;
-  u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
+  ttsPlay(text);
 }
 
-function speakText(text){
-  if('speechSynthesis' in window){
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
-    window.speechSynthesis.speak(u);
-  }
-}
+function speakText(text) { ttsPlay(text); }
 
 // ===== Navigation =====
 function nextPage() {

@@ -169,6 +169,7 @@ body {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 <div class="book">
@@ -264,9 +265,7 @@ function showMusicNotes() {
   for(let i=0;i<8;i++){const n=document.createElement('div');n.textContent=notes[i%notes.length];n.style.cssText='position:absolute;font-size:'+(14+Math.random()*18)+'px;color:#FFB347;opacity:0;pointer-events:none;z-index:10;left:'+(Math.random()*80+10)+'%;top:'+(Math.random()*50+10)+'%;animation:noteFloat '+(1+Math.random())+'s ease-out forwards;animation-delay:'+(i*0.15)+'s;';scene.appendChild(n);setTimeout(function(e){e.remove()},3000,n);}
 }
 
-function speakText(text) {
-  if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;u.volume=1.0;window.speechSynthesis.speak(u);}
-}
+function speakText(text) { ttsPlay(text); }
 
 function showBubble(text) {
   const b=document.getElementById('speechBubble');b.textContent=text;b.classList.add('show');

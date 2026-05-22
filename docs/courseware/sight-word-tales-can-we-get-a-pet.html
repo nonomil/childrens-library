@@ -358,6 +358,7 @@ body {
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 
@@ -875,14 +876,8 @@ function showSpeechBubble(text, duration) {
   textEl.textContent = text;
   bubble.style.display = 'flex';
   
-  // Speak aloud
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.8;
-  u.pitch = 1.1;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
-  
+  // Audio is played by the caller (playAudio or speakText)
+
   // Auto-hide
   clearTimeout(bubble._hideTimer);
   const dur = duration || Math.max(2500, text.length * 120);
@@ -890,18 +885,13 @@ function showSpeechBubble(text, duration) {
     bubble.style.display = 'none';
   }, dur);
   
-  // Hide when speech ends
-  u.onend = function() {
-    setTimeout(function() {
-      bubble.style.display = 'none';
-    }, 500);
-  };
 }
+}
+
 
 function hideSpeechBubble() {
   const bubble = document.getElementById('speechBubble');
   bubble.style.display = 'none';
-  window.speechSynthesis.cancel();
 }
 
 // ===== Rendering =====
@@ -1021,14 +1011,7 @@ function checkWord(idx, target, chosen, el) {
   }
 }
 
-function speakText(text){
-  if('speechSynthesis' in window){
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
-    window.speechSynthesis.speak(u);
-  }
-}
+function speakText(text) { ttsPlay(text); }
 
 function speakWord(word) {
   showSpeechBubble('🔊 ' + word, 2000);

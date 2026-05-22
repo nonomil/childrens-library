@@ -518,6 +518,7 @@ body {
   .top-nav-btn { font-size:12px; padding:3px 10px; }
 }
 </style>
+<script src="audio/tts/tts-engine.js"></script>
 </head>
 <body>
 <div class="book" id="app">
@@ -1811,14 +1812,7 @@ function finishQuiz(){
 function restartQuiz(){initQuiz();}
 
 // ========== QUIZ SPEAK ==========
-function speakText(text){
-  if('speechSynthesis' in window){
-    window.speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);
-    u.lang='zh-CN';u.rate=0.85;u.pitch=1.1;
-    window.speechSynthesis.speak(u);
-  }
-}
+function speakText(text) { ttsPlay(text); }
 
 // ========== CONFETTI ==========
 function launchConfetti(){
