@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABC Adventure A-M — 互动英语课件</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:#e8f5e9;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px;}
+.container{width:100%;max-width:820px;background:#fff;border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,.12);overflow:hidden;position:relative;}
+/* header */
+.header{background:linear-gradient(135deg,#66BB6A,#43A047);padding:18px 28px;display:flex;justify-content:space-between;align-items:center;}
+.header h1{color:#fff;font-size:20px;font-weight:800;letter-spacing:.5px;}
+.header .lesson-badge{background:rgba(255,255,255,.25);padding:4px 14px;border-radius:20px;color:#fff;font-size:13px;font-weight:700;}
+/* slides */
+.slides-wrapper{position:relative;min-height:520px;}
+.slide{display:none;padding:32px 36px 28px;animation:fadeIn .4s ease;}
+.slide.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+/* nav */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 28px 18px;border-top:2px solid #e8f5e9;}
+.nav-btn{background:#66BB6A;color:#fff;border:none;width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 8px rgba(102,187,106,.3);}
+.nav-btn:hover{background:#43A047;transform:scale(1.06);}
+.nav-btn:disabled{background:#cfd8dc;box-shadow:none;cursor:default;transform:none;}
+.dots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
+.dot{width:12px;height:12px;border-radius:50%;background:#c8e6c9;border:none;cursor:pointer;transition:all .2s;padding:0;}
+.dot.active{background:#66BB6A;transform:scale(1.25);}
+.dot:hover{background:#a5d6a7;}
+/* common */
+h2{color:#2e7d32;font-size:22px;font-weight:800;margin-bottom:14px;}
+h3{color:#388E3C;font-size:17px;font-weight:700;margin-bottom:10px;}
+.subtitle{color:#558b2f;font-size:14px;font-weight:600;margin-bottom:16px;}
+.speak-btn{display:inline-flex;align-items:center;gap:5px;cursor:pointer;color:#2e7d32;font-weight:700;transition:.2s;border:none;background:none;font-size:inherit;font-family:inherit;padding:2px 8px;border-radius:8px;}
+.speak-btn:hover{background:#e8f5e9;}
+.speak-btn .icon{font-size:1.1em;}
+.letter-block{display:inline-block;font-size:52px;font-weight:900;color:#43A047;cursor:pointer;transition:.2s;padding:0 6px;user-select:none;}
+.letter-block:hover{color:#1b5e20;transform:scale(1.12);}
+.word-card{display:inline-flex;align-items:center;gap:8px;background:#e8f5e9;padding:8px 16px;border-radius:14px;font-weight:700;font-size:18px;cursor:pointer;transition:.2s;border:2px solid transparent;}
+.word-card:hover{background:#c8e6c9;border-color:#66BB6A;transform:translateY(-2px);}
+.word-card .emoji{font-size:24px;}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;margin:12px 0;}
+.character-pair{display:flex;gap:12px;align-items:center;margin:10px 0 14px;}
+.character-pair .steve,.character-pair .alex{font-size:42px;line-height:1;}
+.dialog-bubble{background:#f1f8e9;border-radius:18px 18px 18px 4px;padding:12px 16px;margin:8px 0;position:relative;font-size:15px;line-height:1.5;border-left:4px solid #66BB6A;}
+.dialog-bubble.alex{border-left-color:#ffa726;}
+.dialog-bubble .speaker{font-weight:800;font-size:13px;color:#666;display:block;margin-bottom:2px;}
+.learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.learn-item{background:#f9fbe7;border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:.2s;border:2px solid transparent;}
+.learn-item:hover{background:#e8f5e9;border-color:#66BB6A;transform:translateY(-3px);box-shadow:0 6px 16px rgba(102,187,106,.15);}
+.learn-item .big-letter{font-size:40px;font-weight:900;color:#43A047;}
+.learn-item .word{font-size:17px;font-weight:700;color:#333;margin-top:4px;}
+.learn-item .emoji{font-size:30px;display:block;margin-top:4px;}
+.trace-cards{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;}
+.trace-card{background:#fff;border:2px dashed #a5d6a7;border-radius:14px;padding:12px 18px;text-align:center;font-size:36px;font-weight:900;color:#388E3C;min-width:70px;}
+.tip-box{background:#fff8e1;border-radius:14px;padding:12px 16px;margin:8px 0;font-size:14px;border-left:4px solid #ffb300;}
+.match-area{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;justify-content:center;}
+.match-item{padding:10px 16px;background:#e8f5e9;border-radius:12px;font-weight:700;font-size:18px;cursor:pointer;transition:.2s;border:2px solid transparent;min-width:60px;text-align:center;}
+.match-item.selected{background:#c8e6c9;border-color:#43A047;transform:scale(1.05);}
+.match-item.matched{background:#a5d6a7;border-color:#2e7d32;cursor:default;opacity:.7;}
+.match-item.wrong{animation:shake .4s;border-color:#e53935;background:#ffebee;}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+input.fill-input{border:2px solid #c8e6c9;border-radius:10px;padding:6px 12px;font-size:16px;font-family:'Nunito',sans-serif;font-weight:700;outline:none;width:100px;text-align:center;transition:.2s;}
+input.fill-input:focus{border-color:#66BB6A;box-shadow:0 0 0 3px rgba(102,187,106,.2);}
+input.fill-input.correct{border-color:#43A047;background:#e8f5e9;}
+input.fill-input.wrong{border-color:#e53935;background:#ffebee;}
+.check-btn{background:#66BB6A;color:#fff;border:none;padding:8px 22px;border-radius:20px;font-weight:700;font-size:15px;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif;}
+.check-btn:hover{background:#43A047;transform:scale(1.04);}
+.feedback{font-size:15px;font-weight:700;margin-top:6px;min-height:24px;}
+.sight-word{display:inline-block;background:#fff3e0;border-radius:10px;padding:2px 12px;font-weight:800;color:#e65100;font-size:18px;margin:0 3px;}
+.flash-card{background:#fff;border-radius:20px;padding:20px;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.08);margin:10px 0;}
+.flash-card .big{font-size:48px;font-weight:900;color:#43A047;}
+.flash-card .cn{font-size:22px;color:#555;margin-top:6px;}
+.flash-card .ex{font-size:16px;color:#888;margin-top:8px;font-style:italic;}
+.song-lyrics{font-size:18px;line-height:2.2;text-align:center;margin:14px 0;}
+.song-lyrics .highlight{background:#e8f5e9;padding:2px 8px;border-radius:6px;font-weight:700;}
+.gate-box{background:#f1f8e9;border-radius:16px;padding:16px 20px;margin:10px 0;border-left:5px solid #66BB6A;}
+.gate-box .q{font-size:16px;font-weight:700;margin-bottom:8px;}
+.gate-options{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.gate-options button{background:#fff;border:2px solid #c8e6c9;border-radius:12px;padding:8px 18px;font-size:16px;font-weight:700;cursor:pointer;transition:.2s;font-family:'Nunito',sans-serif;}
+.gate-options button:hover{background:#e8f5e9;border-color:#66BB6A;}
+.gate-options button.correct{background:#a5d6a7;border-color:#2e7d32;}
+.gate-options button.wrong{background:#ffebee;border-color:#e53935;}
+.celebration{text-align:center;padding:20px 0;}
+.celebration .big-icon{font-size:72px;}
+.badge{display:inline-block;background:linear-gradient(135deg,#ffd54f,#ffb300);color:#5d4037;padding:10px 28px;border-radius:40px;font-size:22px;font-weight:900;box-shadow:0 4px 16px rgba(255,179,0,.3);margin:12px 0;}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin:10px auto;max-width:400px;}
+.summary-item{background:#e8f5e9;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;}
+.star{color:#ffb300;}
+@media(max-width:600px){
+  .slide{padding:20px 16px 20px;}
+  .nav-bar{padding:12px 14px 14px;}
+  .header{padding:12px 16px;}
+  .header h1{font-size:16px;}
+  .letter-block{font-size:38px;}
+  .grid-4{grid-template-columns:repeat(2,1fr);}
+  .learn-grid{grid-template-columns:repeat(2,1fr);}
+  .summary-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <h1>🌟 ABC Adventure A-M</h1>
+    <span class="lesson-badge">Lesson 2</span>
+  </div>
+
+  <!-- Slides -->
+  <div class="slides-wrapper" id="slidesWrapper">
+
+    <!-- ============ PAGE 1: Alphabet Forest ============ -->
+    <div class="slide active" data-page="1">
+      <h2>🌳 The Alphabet Forest</h2>
+      <p class="subtitle">Steve and Alex arrive at a magical forest!</p>
+      <div class="character-pair">
+        <span class="steve">🧑‍🦰</span>
+        <span class="alex">👩</span>
+      </div>
+      <div class="dialog-bubble">
+        <span class="speaker">🗣️ Steve</span>
+        <span class="speak-btn" onclick="speakText('What is this place?')">"What is this place?" 🔊</span>
+      </div>
+      <div class="dialog-bubble alex">
+        <span class="speaker">🗣️ Alex</span>
+        <span class="speak-btn" onclick="speakText('This is the Alphabet Forest. Every tree grows a letter, and every letter has a word.')">"This is the Alphabet Forest! Every tree grows a letter, and every letter has a word!" 🔊</span>
+      </div>
+      <div style="text-align:center;margin:16px 0;">
+        <span class="letter-block" onclick="speakText('A')">A</span>
+        <span style="font-size:20px;color:#888;">→</span>
+        <span class="word-card" onclick="speakText('apple')"><span class="emoji">🍎</span> apple</span>
+      </div>
+      <p style="text-align:center;font-size:15px;color:#555;">Click the letter or word to hear it! 👆</p>
+      <div class="dialog-bubble">
+        <span class="speaker">🗣️ Steve</span>
+        <span class="speak-btn" onclick="speakText('A says ah. Apple! A is for apple!')">"A says /a/... Apple! A is for apple!" 🔊</span>
+      </div>
+      <div class="dialog-bubble alex" style="margin-top:8px;">
+        <span class="speaker">🗣️ Alex</span>
+        <span class="speak-btn" onclick="speakText('I see an apple! It is red!')">"I see an apple! It is red!" 🔊</span>
+      </div>
+      <div style="text-align:center;margin-top:10px;">
+        <button class="check-btn" onclick="speakText('apple');gsap.fromTo(this,{scale:1},{scale:1.06,duration:.2,yoyo:true,repeat:1})">🍎 Click to hear "apple"</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 2: Letters A-B-C-D ============ -->
+    <div class="slide" data-page="2">
+      <h2>🔤 Letters A · B · C · D</h2>
+      <p class="subtitle">Tap a card to hear the letter and word!</p>
+      <div class="learn-grid" id="abcdGrid">
+        <div class="learn-item" onclick="speakText('A, apple');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">A a</div>
+          <div class="word">apple</div>
+          <span class="emoji">🍎</span>
+        </div>
+        <div class="learn-item" onclick="speakText('B, ball');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">B b</div>
+          <div class="word">ball</div>
+          <span class="emoji">⚽</span>
+        </div>
+        <div class="learn-item" onclick="speakText('C, cat');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">C c</div>
+          <div class="word">cat</div>
+          <span class="emoji">🐱</span>
+        </div>
+        <div class="learn-item" onclick="speakText('D, dog');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">D d</div>
+          <div class="word">dog</div>
+          <span class="emoji">🐶</span>
+        </div>
+      </div>
+      <div class="character-pair">
+        <span class="steve">🧑‍🦰</span>
+      </div>
+      <div class="dialog-bubble">
+        <span class="speaker">🗣️ Steve</span>
+        <span class="speak-btn" onclick="speakText('It is a cat. It is a dog. I see the cat. Is it in the tree?')">"It is a cat. It is a dog. I see the cat. Is it in the tree?" 🔊</span>
+      </div>
+      <div class="dialog-bubble alex">
+        <span class="speaker">🗣️ Alex</span>
+        <span class="speak-btn" onclick="speakText('No! The cat is on the ball!')">"No! The cat is on the ball!" 🔊</span>
+      </div>
+      <!-- interactive: click to find -->
+      <div style="text-align:center;margin-top:10px;">
+        <p style="font-size:14px;color:#666;margin-bottom:6px;">🐱 Where is the cat? Click:</p>
+        <button class="check-btn" onclick="speakText('The cat is on the ball!')">🎯 On the ball!</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 3: Trace A-D + Match ============ -->
+    <div class="slide" data-page="3">
+      <h2>✏️ Trace & Match A-D</h2>
+      <p class="subtitle">Memory tricks & matching game</p>
+      <div class="trace-cards">
+        <div class="trace-card">A</div>
+        <div class="trace-card">B</div>
+        <div class="trace-card">C</div>
+        <div class="trace-card">D</div>
+      </div>
+      <div class="tip-box">
+        💡 <strong>Tips:</strong> A = pointy top + cross | B = stick + two bumps | C = half circle | D = stick + one bump
+      </div>
+      <h3>🎯 Match Letter → Word</h3>
+      <p style="font-size:13px;color:#888;margin-bottom:8px;">Click a letter, then click its word!</p>
+      <div class="match-area" id="matchAD">
+        <div class="match-item" data-letter="A" data-word="apple" onclick="matchClick(this)">A</div>
+        <div class="match-item" data-letter="B" data-word="ball" onclick="matchClick(this)">B</div>
+        <div class="match-item" data-letter="C" data-word="cat" onclick="matchClick(this)">C</div>
+        <div class="match-item" data-letter="D" data-word="dog" onclick="matchClick(this)">D</div>
+        <div class="match-item" data-word="apple" data-letter="A" onclick="matchClick(this)">🍎 apple</div>
+        <div class="match-item" data-word="ball" data-letter="B" onclick="matchClick(this)">⚽ ball</div>
+        <div class="match-item" data-word="cat" data-letter="C" onclick="matchClick(this)">🐱 cat</div>
+        <div class="match-item" data-word="dog" data-letter="D" onclick="matchClick(this)">🐶 dog</div>
+      </div>
+      <div id="matchFeedbackAD" class="feedback"></div>
+    </div>
+
+    <!-- ============ PAGE 4: Letters E-F-G-H ============ -->
+    <div class="slide" data-page="4">
+      <h2>🔤 Letters E · F · G · H</h2>
+      <p class="subtitle">Tap a card to hear the letter and word!</p>
+      <div class="learn-grid">
+        <div class="learn-item" onclick="speakText('E, egg');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">E e</div>
+          <div class="word">egg</div>
+          <span class="emoji">🥚</span>
+        </div>
+        <div class="learn-item" onclick="speakText('F, fish');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">F f</div>
+          <div class="word">fish</div>
+          <span class="emoji">🐟</span>
+        </div>
+        <div class="learn-item" onclick="speakText('G, girl');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">G g</div>
+          <div class="word">girl</div>
+          <span class="emoji">👧</span>
+        </div>
+        <div class="learn-item" onclick="speakText('H, hat');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">H h</div>
+          <div class="word">hat</div>
+          <span class="emoji">🎩</span>
+        </div>
+      </div>
+      <div class="character-pair">
+        <span class="steve">🧑‍🦰</span>
+        <span class="alex">👩</span>
+      </div>
+      <div class="dialog-bubble">
+        <span class="speaker">🗣️ Alex</span>
+        <span class="speak-btn" onclick="speakText('Ha ha! A fish in a hat!')">"Ha ha! A fish in a hat!" 🔊</span>
+      </div>
+      <div class="dialog-bubble alex" style="margin-top:6px;">
+        <span class="speaker">🗣️ Steve</span>
+        <span class="speak-btn" onclick="speakText('It is funny! I like it!')">"It is funny! I like it!" 🔊</span>
+      </div>
+      <div style="text-align:center;margin-top:8px;">
+        <button class="check-btn" onclick="speakText('A fish in a hat! Ha ha!');gsap.fromTo(this,{scale:1},{scale:1.06,duration:.2,yoyo:true,repeat:1})">🐟🎩 Hear the sentence</button>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 5: Trace E-H + Match ============ -->
+    <div class="slide" data-page="5">
+      <h2>✏️ Trace & Match E-H</h2>
+      <p class="subtitle">Memory tricks & matching game</p>
+      <div class="trace-cards">
+        <div class="trace-card">E</div>
+        <div class="trace-card">F</div>
+        <div class="trace-card">G</div>
+        <div class="trace-card">H</div>
+      </div>
+      <div class="tip-box">
+        💡 <strong>Tips:</strong> E = stick + three bars | F = E missing bottom | G = C with a line | H = two sticks + bridge
+      </div>
+      <h3>🎯 Match Letter → Word</h3>
+      <div class="match-area" id="matchEH">
+        <div class="match-item" data-letter="E" data-word="egg" onclick="matchClick(this)">E</div>
+        <div class="match-item" data-letter="F" data-word="fish" onclick="matchClick(this)">F</div>
+        <div class="match-item" data-letter="G" data-word="girl" onclick="matchClick(this)">G</div>
+        <div class="match-item" data-letter="H" data-word="hat" onclick="matchClick(this)">H</div>
+        <div class="match-item" data-word="egg" data-letter="E" onclick="matchClick(this)">🥚 egg</div>
+        <div class="match-item" data-word="fish" data-letter="F" onclick="matchClick(this)">🐟 fish</div>
+        <div class="match-item" data-word="girl" data-letter="G" onclick="matchClick(this)">👧 girl</div>
+        <div class="match-item" data-word="hat" data-letter="H" onclick="matchClick(this)">🎩 hat</div>
+      </div>
+      <div id="matchFeedbackEH" class="feedback"></div>
+    </div>
+
+    <!-- ============ PAGE 6: Letters I-J-K-L-M ============ -->
+    <div class="slide" data-page="6">
+      <h2>🔤 Letters I · J · K · L · M</h2>
+      <p class="subtitle">Tap a card to hear the letter and word!</p>
+      <div class="learn-grid" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
+        <div class="learn-item" onclick="speakText('I, igloo');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">I i</div>
+          <div class="word">igloo</div>
+          <span class="emoji">🧊</span>
+        </div>
+        <div class="learn-item" onclick="speakText('J, juice');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">J j</div>
+          <div class="word">juice</div>
+          <span class="emoji">🧃</span>
+        </div>
+        <div class="learn-item" onclick="speakText('K, kite');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">K k</div>
+          <div class="word">kite</div>
+          <span class="emoji">🪁</span>
+        </div>
+        <div class="learn-item" onclick="speakText('L, lion');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">L l</div>
+          <div class="word">lion</div>
+          <span class="emoji">🦁</span>
+        </div>
+        <div class="learn-item" onclick="speakText('M, moon');gsap.fromTo(this,{y:0},{y:-6,duration:.15,yoyo:true,repeat:1})">
+          <div class="big-letter">M m</div>
+          <div class="word">moon</div>
+          <span class="emoji">🌙</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;justify-content:center;">
+        <span class="speak-btn" onclick="speakText('An igloo is cold.')">🧊 "An igloo is cold." 🔊</span>
+        <span class="speak-btn" onclick="speakText('Juice is sweet.')">🧃 "Juice is sweet." 🔊</span>
+        <span class="speak-btn" onclick="speakText('A kite is in the sky.')">🪁 "A kite is in the sky." 🔊</span>
+        <span class="speak-btn" onclick="speakText('A lion is big.')">🦁 "A lion is big." 🔊</span>
+        <span class="speak-btn" onclick="speakText('The moon is bright at night.')">🌙 "The moon is bright." 🔊</span>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 7: Trace I-M + Practice ============ -->
+    <div class="slide" data-page="7">
+      <h2>✏️ Trace Letters I-M</h2>
+      <p class="subtitle">Memory tricks</p>
+      <div class="trace-cards">
+        <div class="trace-card">I</div>
+        <div class="trace-card">J</div>
+        <div class="trace-card">K</div>
+        <div class="trace-card">L</div>
+        <div class="trace-card">M</div>
+      </div>
+      <div class="tip-box">
+        💡 <strong>Tips:</strong> I = one tall stick | J = I with a hook | K = stick + two arms | L = two lines in a corner | M = two mountains ⛰️⛰️
+      </div>
+      <h3>🎯 Quick Quiz — What letter?</h3>
+      <div style="display:flex;flex-direction:column;gap:10px;margin:10px 0;">
+        <div><span style="font-size:28px;">🧊</span> I is for <strong style="color:#43A047;">igloo</strong> → letter <span class="letter-block" style="font-size:28px;" onclick="speakText('I')">I</span></div>
+        <div><span style="font-size:28px;">🧃</span> J is for <strong style="color:#43A047;">juice</strong> → letter <span class="letter-block" style="font-size:28px;" onclick="speakText('J')">J</span></div>
+        <div><span style="font-size:28px;">🪁</span> K is for <strong style="color:#43A047;">kite</strong> → letter <span class="letter-block" style="font-size:28px;" onclick="speakText('K')">K</span></div>
+        <div><span style="font-size:28px;">🦁</span> L is for <strong style="color:#43A047;">lion</strong> → letter <span class="letter-block" style="font-size:28px;" onclick="speakText('L')">L</span></div>
+        <div><span style="font-size:28px;">🌙</span> M is for <strong style="color:#43A047;">moon</strong> → letter <span class="letter-block" style="font-size:28px;" onclick="speakText('M')">M</span></div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 8: Word Bank + Sight Words ============ -->
+    <div class="slide" data-page="8">
+      <h2>📖 Word Bank</h2>
+      <p class="subtitle">Click any card to hear pronunciation</p>
+      <div class="learn-grid" style="grid-template-columns:repeat(auto-fit,minmax(110px,1fr));">
+        <div class="learn-item" onclick="speakText('apple')"><div class="big-letter" style="font-size:28px;">🍎</div><div class="word">apple</div><div style="font-size:13px;color:#888;">苹果</div></div>
+        <div class="learn-item" onclick="speakText('ball')"><div class="big-letter" style="font-size:28px;">⚽</div><div class="word">ball</div><div style="font-size:13px;color:#888;">球</div></div>
+        <div class="learn-item" onclick="speakText('cat')"><div class="big-letter" style="font-size:28px;">🐱</div><div class="word">cat</div><div style="font-size:13px;color:#888;">猫</div></div>
+        <div class="learn-item" onclick="speakText('dog')"><div class="big-letter" style="font-size:28px;">🐶</div><div class="word">dog</div><div style="font-size:13px;color:#888;">狗</div></div>
+        <div class="learn-item" onclick="speakText('egg')"><div class="big-letter" style="font-size:28px;">🥚</div><div class="word">egg</div><div style="font-size:13px;color:#888;">鸡蛋</div></div>
+        <div class="learn-item" onclick="speakText('fish')"><div class="big-letter" style="font-size:28px;">🐟</div><div class="word">fish</div><div style="font-size:13px;color:#888;">鱼</div></div>
+        <div class="learn-item" onclick="speakText('girl')"><div class="big-letter" style="font-size:28px;">👧</div><div class="word">girl</div><div style="font-size:13px;color:#888;">女孩</div></div>
+        <div class="learn-item" onclick="speakText('hat')"><div class="big-letter" style="font-size:28px;">🎩</div><div class="word">hat</div><div style="font-size:13px;color:#888;">帽子</div></div>
+        <div class="learn-item" onclick="speakText('igloo')"><div class="big-letter" style="font-size:28px;">🧊</div><div class="word">igloo</div><div style="font-size:13px;color:#888;">冰屋</div></div>
+        <div class="learn-item" onclick="speakText('juice')"><div class="big-letter" style="font-size:28px;">🧃</div><div class="word">juice</div><div style="font-size:13px;color:#888;">果汁</div></div>
+        <div class="learn-item" onclick="speakText('kite')"><div class="big-letter" style="font-size:28px;">🪁</div><div class="word">kite</div><div style="font-size:13px;color:#888;">风筝</div></div>
+        <div class="learn-item" onclick="speakText('lion')"><div class="big-letter" style="font-size:28px;">🦁</div><div class="word">lion</div><div style="font-size:13px;color:#888;">狮子</div></div>
+        <div class="learn-item" onclick="speakText('moon')"><div class="big-letter" style="font-size:28px;">🌙</div><div class="word">moon</div><div style="font-size:13px;color:#888;">月亮</div></div>
+      </div>
+
+      <h3 style="margin-top:16px;">👁️ Sight Words</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;">
+        <div class="flash-card" onclick="speakText('I. I see a cat.')" style="cursor:pointer;">
+          <div class="big" style="font-size:36px;">I</div>
+          <div class="cn">我</div>
+          <div class="ex">"I see a cat."</div>
+        </div>
+        <div class="flash-card" onclick="speakText('is. It is red.')" style="cursor:pointer;">
+          <div class="big" style="font-size:36px;">is</div>
+          <div class="cn">是</div>
+          <div class="ex">"It is red."</div>
+        </div>
+        <div class="flash-card" onclick="speakText('in. The cat is in the hat.')" style="cursor:pointer;">
+          <div class="big" style="font-size:36px;">in</div>
+          <div class="cn">在里面</div>
+          <div class="ex">"The cat is in the hat."</div>
+        </div>
+        <div class="flash-card" onclick="speakText('it. It is a ball.')" style="cursor:pointer;">
+          <div class="big" style="font-size:36px;">it</div>
+          <div class="cn">它</div>
+          <div class="ex">"It is a ball."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 9: Practice ============ -->
+    <div class="slide" data-page="9">
+      <h2>✏️ Practice Time!</h2>
+      <p class="subtitle">Exercise 1: What letter is it?</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
+        <div style="background:#f9fbe7;border-radius:14px;padding:14px;text-align:center;">
+          <span style="font-size:40px;">🐱</span>
+          <p style="font-weight:700;">C is for <span style="color:#43A047;cursor:pointer;" onclick="speakText('cat')">cat 🐱</span></p>
+          <span class="letter-block" style="font-size:30px;" onclick="speakText('C')">C</span>
+        </div>
+        <div style="background:#f9fbe7;border-radius:14px;padding:14px;text-align:center;">
+          <span style="font-size:40px;">🐶</span>
+          <p style="font-weight:700;">D is for <span style="color:#43A047;cursor:pointer;" onclick="speakText('dog')">dog 🐶</span></p>
+          <span class="letter-block" style="font-size:30px;" onclick="speakText('D')">D</span>
+        </div>
+        <div style="background:#f9fbe7;border-radius:14px;padding:14px;text-align:center;">
+          <span style="font-size:40px;">🍎</span>
+          <p style="font-weight:700;">A is for <span style="color:#43A047;cursor:pointer;" onclick="speakText('apple')">apple 🍎</span></p>
+          <span class="letter-block" style="font-size:30px;" onclick="speakText('A')">A</span>
+        </div>
+        <div style="background:#f9fbe7;border-radius:14px;padding:14px;text-align:center;">
+          <span style="font-size:40px;">🪁</span>
+          <p style="font-weight:700;">K is for <span style="color:#43A047;cursor:pointer;" onclick="speakText('kite')">kite 🪁</span></p>
+          <span class="letter-block" style="font-size:30px;" onclick="speakText('K')">K</span>
+        </div>
+      </div>
+
+      <h3>Exercise 2: Fill in the blank</h3>
+      <div id="fillBlanks" style="display:flex;flex-direction:column;gap:12px;">
+        <div><span style="font-weight:700;">1.</span> <input class="fill-input" id="fill1" placeholder="?" data-answer="It"> ____ is a cat.</div>
+        <div><span style="font-weight:700;">2.</span> The apple <input class="fill-input" id="fill2" placeholder="?" data-answer="is"> ____ red.</div>
+        <div><span style="font-weight:700;">3.</span> <input class="fill-input" id="fill3" placeholder="?" data-answer="I"> ____ see a fish.</div>
+        <div><span style="font-weight:700;">4.</span> The fish is <input class="fill-input" id="fill4" placeholder="?" data-answer="in"> ____ the hat.</div>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="check-btn" onclick="checkFillBlanks()">✅ Check Answers</button>
+        <span id="fillFeedback" class="feedback" style="display:inline-block;margin-left:12px;"></span>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 10: ABC Song ============ -->
+    <div class="slide" data-page="10">
+      <h2 style="text-align:center;">🎤 ABC Song (A-M)</h2>
+      <div style="text-align:center;margin:10px 0;">
+        <button class="check-btn" onclick="playABCSong()" style="font-size:18px;padding:12px 30px;">🎵 Sing with me!</button>
+      </div>
+      <div class="song-lyrics" id="songLyrics">
+        <div><span class="highlight" data-letter="A">A</span>-<span data-letter="B">B</span>-<span data-letter="C">C</span>-<span data-letter="D">D</span>-<span data-letter="E">E</span>-<span data-letter="F">F</span>-<span data-letter="G">G</span>,</div>
+        <div>Letters are so fun, you see!</div>
+        <div><span data-letter="H">H</span>-<span data-letter="I">I</span>-<span data-letter="J">J</span>-<span data-letter="K">K</span>-<span data-letter="L">L</span>-<span data-letter="M">M</span>,</div>
+        <div>Let's go learn them all again!</div>
+        <div style="margin-top:10px;">A for <strong>apple</strong>, B for <strong>ball</strong>,</div>
+        <div>Letters standing straight and tall!</div>
+        <div style="margin-top:10px;">A-B-C-D-E-F-G,</div>
+        <div>Come and learn your ABCs with me! 🎶</div>
+      </div>
+      <p style="text-align:center;font-size:13px;color:#888;margin-top:8px;">Click any letter in the song to hear it! 👇</p>
+      <div style="text-align:center;">
+        <span class="letter-block" onclick="speakText('A')">A</span>
+        <span class="letter-block" onclick="speakText('B')">B</span>
+        <span class="letter-block" onclick="speakText('C')">C</span>
+        <span class="letter-block" onclick="speakText('D')">D</span>
+        <span class="letter-block" onclick="speakText('E')">E</span>
+        <span class="letter-block" onclick="speakText('F')">F</span>
+        <span class="letter-block" onclick="speakText('G')">G</span>
+        <span class="letter-block" onclick="speakText('H')">H</span>
+        <span class="letter-block" onclick="speakText('I')">I</span>
+        <span class="letter-block" onclick="speakText('J')">J</span>
+        <span class="letter-block" onclick="speakText('K')">K</span>
+        <span class="letter-block" onclick="speakText('L')">L</span>
+        <span class="letter-block" onclick="speakText('M')">M</span>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 11: Challenge ============ -->
+    <div class="slide" data-page="11">
+      <h2>🏆 Alphabet Path Challenge</h2>
+      <p class="subtitle">Help Steve get through the Alphabet Forest! 🌳</p>
+      <div id="gatesContainer">
+        <!-- Gate 1 -->
+        <div class="gate-box" id="gate1">
+          <div class="q">🚪 <strong>Gate 1:</strong> What letter comes <em>after</em> A? <span style="font-size:20px;">A → ?</span></div>
+          <div class="gate-options">
+            <button onclick="gateAnswer(this,'B','gate1')">B</button>
+            <button onclick="gateAnswer(this,'C','gate1')">C</button>
+            <button onclick="gateAnswer(this,'D','gate1')">D</button>
+          </div>
+          <div class="gate-feedback" style="font-weight:700;font-size:14px;min-height:22px;"></div>
+        </div>
+        <!-- Gate 2 -->
+        <div class="gate-box" id="gate2">
+          <div class="q">🚪 <strong>Gate 2:</strong> What letter comes <em>before</em> D? <span style="font-size:20px;">? → D</span></div>
+          <div class="gate-options">
+            <button onclick="gateAnswer(this,'A','gate2')">A</button>
+            <button onclick="gateAnswer(this,'B','gate2')">B</button>
+            <button onclick="gateAnswer(this,'C','gate2')">C</button>
+          </div>
+          <div class="gate-feedback" style="font-weight:700;font-size:14px;min-height:22px;"></div>
+        </div>
+        <!-- Gate 3 -->
+        <div class="gate-box" id="gate3">
+          <div class="q">🚪 <strong>Gate 3:</strong> Name 3 animals from A-M! (Click all 3)</div>
+          <div class="gate-options">
+            <button onclick="gateMulti(this,'cat','gate3')">🐱 cat</button>
+            <button onclick="gateMulti(this,'dog','gate3')">🐶 dog</button>
+            <button onclick="gateMulti(this,'fish','gate3')">🐟 fish</button>
+            <button onclick="gateMulti(this,'ball','gate3')">⚽ ball</button>
+            <button onclick="gateMulti(this,'apple','gate3')">🍎 apple</button>
+          </div>
+          <div class="gate-feedback" style="font-weight:700;font-size:14px;min-height:22px;"></div>
+        </div>
+        <!-- Gate 4 -->
+        <div class="gate-box" id="gate4">
+          <div class="q">🚪 <strong>Gate 4:</strong> What's missing? <span style="font-size:18px;">A B C D E ___ G H I J ___ L M</span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0;">
+            <span>First blank:</span>
+            <button onclick="gateAnswer(this,'F','gate4a')">F</button>
+            <button onclick="gateAnswer(this,'K','gate4a')">K</button>
+            <button onclick="gateAnswer(this,'N','gate4a')">N</button>
+            <span style="margin-left:8px;">Second:</span>
+            <button onclick="gateAnswer(this,'K','gate4b')">K</button>
+            <button onclick="gateAnswer(this,'L','gate4b')">L</button>
+            <button onclick="gateAnswer(this,'N','gate4b')">N</button>
+          </div>
+          <div class="gate-feedback" style="font-weight:700;font-size:14px;min-height:22px;"></div>
+        </div>
+        <!-- Gate 5 -->
+        <div class="gate-box" id="gate5">
+          <div class="q">🚪 <strong>Gate 5:</strong> "____ is a cat." → Choose the right word!</div>
+          <div class="gate-options">
+            <button onclick="gateAnswer(this,'It','gate5')">It</button>
+            <button onclick="gateAnswer(this,'I','gate5')">I</button>
+            <button onclick="gateAnswer(this,'is','gate5')">is</button>
+          </div>
+          <div class="gate-feedback" style="font-weight:700;font-size:14px;min-height:22px;"></div>
+        </div>
+      </div>
+      <div id="challengeComplete" style="display:none;text-align:center;padding:14px;background:#e8f5e9;border-radius:16px;margin-top:10px;">
+        <span style="font-size:36px;">🎉</span>
+        <p style="font-weight:800;color:#2e7d32;font-size:18px;">All gates passed! You're an Alphabet Star! ⭐</p>
+      </div>
+    </div>
+
+    <!-- ============ PAGE 12: Celebration ============ -->
+    <div class="slide" data-page="12">
+      <div class="celebration">
+        <div class="big-icon">🎊</div>
+        <h2 style="font-size:26px;margin:8px 0;">We did it! A to M!</h2>
+        <div style="font-size:48px;margin:6px 0;">🧑‍🦰👩</div>
+        <div class="badge">⭐ Alpha Badge (A-M) ⭐</div>
+        <p style="font-size:16px;color:#555;margin:8px 0;">Steve opens the treasure chest! Inside: a golden apple 🍎✨</p>
+        <div style="margin:14px 0;padding:14px;background:#f1f8e9;border-radius:16px;">
+          <p style="font-weight:800;color:#2e7d32;font-size:16px;">📚 13 New Words</p>
+          <p style="font-size:14px;color:#555;">apple · ball · cat · dog · egg · fish · girl · hat · igloo · juice · kite · lion · moon</p>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-item">✅ <span class="star">★</span> Letters A-M</div>
+          <div class="summary-item">✅ <span class="star">★</span> 13 new words</div>
+          <div class="summary-item">✅ <span class="star">★</span> Sight words: I, is, in, it</div>
+          <div class="summary-item">✅ <span class="star">★</span> "It is a ___."</div>
+        </div>
+        <button class="check-btn" onclick="celebrate()" style="margin-top:14px;font-size:16px;padding:10px 28px;">🎉 Celebrate! 🎉</button>
+      </div>
+    </div>
+
+  </div><!-- /slides-wrapper -->
+
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">◀</button>
+    <div class="dots" id="dotsContainer"></div>
+    <button class="nav-btn" id="nextBtn" onclick="changePage(1)">▶</button>
+  </div>
+</div>
+
+<script>
+/* ===== Speech Synthesis ===== */
+function speakText(text, lang, rate) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang || 'en-US';
+  u.rate = rate || 0.75;
+  u.pitch = 1.05;
+  window.speechSynthesis.speak(u);
+}
+
+/* ===== Page Navigation ===== */
+let currentPage = 1;
+const totalPages = 12;
+
+function initDots() {
+  const container = document.getElementById('dotsContainer');
+  container.innerHTML = '';
+  for (let i = 1; i <= totalPages; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === currentPage ? ' active' : '');
+    dot.setAttribute('data-page', i);
+    dot.onclick = function(){ goToPage(i); };
+    container.appendChild(dot);
+  }
+  updateNav();
+}
+
+function goToPage(num) {
+  if (num < 1 || num > totalPages) return;
+  const oldEl = document.querySelector('.slide.active');
+  const newEl = document.querySelector('.slide[data-page="' + num + '"]');
+  if (!newEl) return;
+  if (oldEl) {
+    oldEl.classList.remove('active');
+    gsap.fromTo(newEl,{opacity:0,y:16},{opacity:1,y:0,duration:.35,ease:'power2.out'});
+  }
+  newEl.classList.add('active');
+  currentPage = num;
+  updateDots();
+  updateNav();
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  // confetti on last page
+  if (num === totalPages) triggerConfetti();
+}
+
+function changePage(delta) {
+  goToPage(currentPage + delta);
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach(d => {
+    d.classList.toggle('active', parseInt(d.getAttribute('data-page')) === currentPage);
+  });
+}
+
+function updateNav() {
+  document.getElementById('prevBtn').disabled = currentPage === 1;
+  document.getElementById('nextBtn').disabled = currentPage === totalPages;
+}
+
+/* ===== Matching Game ===== */
+let matchSelected = null;
+
+function matchClick(el) {
+  if (el.classList.contains('matched')) return;
+
+  if (!matchSelected) {
+    matchSelected = el;
+    el.classList.add('selected');
+    return;
+  }
+
+  if (matchSelected === el) {
+    el.classList.remove('selected');
+    matchSelected = null;
+    return;
+  }
+
+  const a = matchSelected;
+  const b = el;
+  a.classList.remove('selected');
+
+  const letterA = a.getAttribute('data-letter');
+  const wordA = a.getAttribute('data-word');
+  const letterB = b.getAttribute('data-letter');
+  const wordB = b.getAttribute('data-word');
+
+  const isMatch = (letterA === letterB && wordA === wordB) ||
+                  (letterA === wordB && wordA === letterB);
+
+  const feedbackId = a.closest('.match-area') ? (a.closest('.match-area').id === 'matchAD' ? 'matchFeedbackAD' : 'matchFeedbackEH') : 'matchFeedbackAD';
+  const fb = document.getElementById(feedbackId);
+
+  if (isMatch) {
+    a.classList.add('matched');
+    b.classList.add('matched');
+    fb.textContent = '✅ Correct!';
+    fb.style.color = '#2e7d32';
+    speakText(a.getAttribute('data-word'));
+    gsap.fromTo(a,{scale:1},{scale:1.12,duration:.15,yoyo:true,repeat:1});
+    gsap.fromTo(b,{scale:1},{scale:1.12,duration:.15,yoyo:true,repeat:1});
+    // check if all matched
+    const area = a.closest('.match-area');
+    if (area && area.querySelectorAll('.match-item:not(.matched)').length === 0) {
+      fb.textContent = '🎉 All matched! Great job!';
+    }
+  } else {
+    a.classList.add('wrong');
+    b.classList.add('wrong');
+    fb.textContent = '❌ Try again!';
+    fb.style.color = '#e53935';
+    setTimeout(() => {
+      a.classList.remove('wrong');
+      b.classList.remove('wrong');
+    }, 500);
+  }
+
+  matchSelected = null;
+}
+
+/* ===== Fill in Blanks ===== */
+function checkFillBlanks() {
+  const inputs = document.querySelectorAll('#fillBlanks .fill-input');
+  let allCorrect = true;
+  inputs.forEach(inp => {
+    const ans = inp.getAttribute('data-answer').toLowerCase().trim();
+    const val = inp.value.trim().toLowerCase();
+    if (val === ans) {
+      inp.classList.remove('wrong');
+      inp.classList.add('correct');
+    } else {
+      inp.classList.remove('correct');
+      inp.classList.add('wrong');
+      allCorrect = false;
+    }
+  });
+  const fb = document.getElementById('fillFeedback');
+  if (allCorrect) {
+    fb.textContent = '🎉 All correct! Amazing!';
+    fb.style.color = '#2e7d32';
+    triggerConfetti();
+  } else {
+    fb.textContent = '🤔 Some answers need fixing. Try again!';
+    fb.style.color = '#e53935';
+  }
+}
+
+/* ===== Challenge Gates ===== */
+const gateState = {
+  gate1: false,
+  gate2: false,
+  gate3: { selected: new Set(), done: false },
+  gate4: { a: false, b: false },
+  gate5: false
+};
+
+function gateAnswer(btn, answer, gateId) {
+  if (btn.disabled) return;
+  const parent = btn.closest('.gate-box');
+  const fb = parent.querySelector('.gate-feedback');
+  const options = parent.querySelectorAll('.gate-options button');
+
+  if (gateId === 'gate1' && answer === 'B') {
+    markCorrect(btn, options, fb, '✅ Right! B comes after A!', gateId);
+    gateState.gate1 = true;
+  } else if (gateId === 'gate2' && answer === 'C') {
+    markCorrect(btn, options, fb, '✅ Yes! C comes before D!', gateId);
+    gateState.gate2 = true;
+  } else if (gateId === 'gate5' && answer === 'It') {
+    markCorrect(btn, options, fb, '✅ "It is a cat." — Right!', gateId);
+    gateState.gate5 = true;
+  } else if (gateId === 'gate4a' && answer === 'F') {
+    markCorrect(btn, options, fb, '✅ F is correct!', gateId);
+    gateState.gate4.a = true;
+  } else if (gateId === 'gate4b' && answer === 'K') {
+    markCorrect(btn, options, fb, '✅ K is correct!', gateId);
+    gateState.gate4.b = true;
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Not quite. Try again!';
+    fb.style.color = '#e53935';
+    setTimeout(() => btn.classList.remove('wrong'), 500);
+  }
+  checkAllGates();
+}
+
+function gateMulti(btn, answer, gateId) {
+  if (btn.disabled) return;
+  const parent = btn.closest('.gate-box');
+  const fb = parent.querySelector('.gate-feedback');
+  const animals = ['cat','dog','fish'];
+
+  if (btn.classList.contains('correct')) {
+    btn.classList.remove('correct');
+    gateState.gate3.selected.delete(answer);
+  } else if (btn.classList.contains('wrong')) {
+    btn.classList.remove('wrong');
+    gateState.gate3.selected.delete(answer);
+  } else {
+    if (animals.includes(answer)) {
+      btn.classList.add('correct');
+      gateState.gate3.selected.add(answer);
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = `❌ "${answer}" is not an animal. Try again!`;
+      fb.style.color = '#e53935';
+      setTimeout(() => btn.classList.remove('wrong'), 500);
+    }
+  }
+
+  if (gateState.gate3.selected.size === 3) {
+    const allAnimals = ['cat','dog','fish'].every(a => gateState.gate3.selected.has(a));
+    if (allAnimals) {
+      fb.textContent = '✅ All 3 animals found: cat, dog, fish! 🐱🐶🐟';
+      fb.style.color = '#2e7d32';
+      gateState.gate3.done = true;
+      parent.querySelectorAll('.gate-options button').forEach(b => b.disabled = true);
+    } else {
+      fb.textContent = '❌ That\'s not right. Try different animals!';
+      fb.style.color = '#e53935';
+      gateState.gate3.selected.clear();
+      parent.querySelectorAll('.gate-options button.correct').forEach(b => b.classList.remove('correct'));
+    }
+  }
+  checkAllGates();
+}
+
+function markCorrect(btn, options, fb, msg, gateId) {
+  options.forEach(b => b.disabled = true);
+  btn.classList.add('correct');
+  fb.textContent = msg;
+  fb.style.color = '#2e7d32';
+  speakText(msg.replace(/[✅❌]/g,'').trim());
+  gsap.fromTo(btn,{scale:1},{scale:1.1,duration:.15,yoyo:true,repeat:1});
+}
+
+function checkAllGates() {
+  const g1 = gateState.gate1;
+  const g2 = gateState.gate2;
+  const g3 = gateState.gate3.done;
+  const g4 = gateState.gate4.a && gateState.gate4.b;
+  const g5 = gateState.gate5;
+  if (g1 && g2 && g3 && g4 && g5) {
+    document.getElementById('challengeComplete').style.display = 'block';
+    triggerConfetti();
+  }
+}
+
+/* ===== ABC Song ===== */
+function playABCSong() {
+  const lyrics = [
+    "A B C D E F G",
+    "Letters are so fun, you see!",
+    "H I J K L M",
+    "Let's go learn them all again!",
+    "A for apple, B for ball",
+    "Letters standing straight and tall!",
+    "A B C D E F G",
+    "Come and learn your ABCs with me!"
+  ];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= lyrics.length) { clearInterval(interval); return; }
+    speakText(lyrics[i]);
+    // highlight current line
+    const lines = document.querySelectorAll('.song-lyrics div');
+    lines.forEach((l,idx) => {
+      l.style.background = idx === i ? '#c8e6c9' : 'transparent';
+      l.style.borderRadius = '8px';
+      l.style.transition = '.3s';
+    });
+    i++;
+  }, 2200);
+}
+
+/* ===== Confetti ===== */
+function triggerConfetti() {
+  const colors = ['#66BB6A','#43A047','#FFD54F','#FF8A65','#4FC3F7','#CE93D8','#EF5350','#FFB300'];
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 80; i++) {
+    const piece = document.createElement('div');
+    piece.style.cssText = `
+      position: fixed;
+      width: ${6 + Math.random() * 8}px;
+      height: ${6 + Math.random() * 8}px;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+      top: ${-10 + Math.random() * 20}px;
+      left: ${10 + Math.random() * 80}vw;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 1;
+    `;
+    document.body.appendChild(piece);
+    gsap.to(piece, {
+      y: window.innerHeight + 100,
+      x: (Math.random() - 0.5) * 200,
+      rotation: Math.random() * 720 - 360,
+      opacity: 0,
+      duration: 2 + Math.random() * 2,
+      delay: Math.random() * 0.6,
+      ease: 'power2.out',
+      onComplete: () => piece.remove()
+    });
+  }
+}
+
+function celebrate() {
+  triggerConfetti();
+  speakText('Congratulations! We did it! A to M! Great job!');
+  gsap.fromTo('.badge',{scale:1,rotation:0},{scale:1.2,rotation:5,duration:.3,yoyo:true,repeat:3,ease:'power1.inOut'});
+}
+
+/* ===== Init ===== */
+document.addEventListener('DOMContentLoaded', function() {
+  initDots();
+  // animate first page
+  gsap.from('.slide.active .letter-block',{scale:0,opacity:0,duration:.4,stagger:.12,ease:'back.out(2)'});
+  gsap.from('.slide.active .dialog-bubble',{x:-20,opacity:0,duration:.35,stagger:.15,ease:'power2.out',delay:.3});
+  // keyboard nav
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight') changePage(1);
+    if (e.key === 'ArrowLeft') changePage(-1);
+  });
+  // make song letters clickable
+  document.querySelectorAll('.song-lyrics [data-letter]').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function() {
+      speakText(this.getAttribute('data-letter'));
+    });
+  });
+});
+</script>
+</body>
+</html>
