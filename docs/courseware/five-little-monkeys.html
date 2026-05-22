@@ -143,6 +143,16 @@ body {
 </div>
 
 <script>
+// ====== SPEECH INIT (fix Chrome silent TTS) ======
+(function initSpeech(){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function(){
+      window.speechSynthesis.getVoices();
+    };
+  }
+})();
+
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'Five Little Monkeys', subtitle:'Jumping on the Bed! 🛏️ A counting rhyme!' },
@@ -276,7 +286,7 @@ function speakText(text){
     var clean = text.replace(/<[^>]+>/g,'').replace(/[\u{1F300}-\u{1FFFF}\u2600-\u27BF\uFE00-\uFE0F\u200D\u{1F000}-\u{1FFFF}]/gu,'').replace(/\s+/g,' ').trim();
     if(clean.length===0) return;
     const u=new SpeechSynthesisUtterance(clean);
-    u.lang='en-US';u.rate=0.7;u.pitch=1.0;
+u.lang='en-US';u.rate=0.75;u.pitch=1.0;u.volume=1.0;
     window.speechSynthesis.speak(u);
   }catch(e){}
 }

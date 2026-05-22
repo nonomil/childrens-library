@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐵 Five Little Monkeys Jumping on the Bed!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+body {
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
+  min-height:100vh; display:flex; justify-content:center; align-items:center; padding:12px;
+}
+.book {
+  width:100%; max-width:840px; min-height:92vh;
+  background:#FFFCF5; border-radius:40px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;
+  padding:24px 20px; position:relative;
+  font-family:'Fredoka One','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+}
+.page-area { min-height:420px; }
+.page { display:none; flex-direction:column; align-items:center; animation:fadeIn .4s ease; }
+.page.active { display:flex; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+.page-title { font-size:34px; color:#E8751A; text-align:center; margin-bottom:8px; font-weight:bold; }
+.page-desc { font-size:19px; color:#6B4F3A; text-align:center; line-height:1.5; margin-bottom:10px; }
+
+@keyframes noteFloat { 0%{opacity:0;transform:translateY(20px) scale(0.5)} 30%{opacity:1;transform:translateY(-10px) scale(1.2)} 100%{opacity:0;transform:translateY(-60px) scale(0.8)} }
+
+.bed-scene { width:100%; max-width:440px; height:240px; border-radius:20px; position:relative; margin-bottom:10px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+.bed-scene svg { display:block; width:100%; height:100%; }
+
+.sentence {
+  font-size:22px; line-height:1.6; text-align:center; padding:14px 20px;
+  background:#FFF8E7; border-radius:16px; width:100%; margin-bottom:8px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.sentence .num { color:#E8751A; font-weight:bold; font-size:28px; }
+.sentence .bump { color:#f5576c; font-weight:bold; }
+
+/* Speech Bubble */
+.speech-bubble {
+  position:fixed; bottom:120px; left:50%; transform:translateX(-50%) scale(0.5);
+  border-radius:24px; background:rgba(255,255,255,0.96); border:3px solid #FFB347;
+  padding:18px 28px; font-size:22px; font-weight:600; max-width:82%;
+  text-align:center; z-index:10000; opacity:0; pointer-events:none;
+  box-shadow:0 10px 40px rgba(255,179,71,0.35);
+  transition:opacity .35s,transform .35s cubic-bezier(0.34,1.56,0.64,1);
+  color:#5A3E2B; line-height:1.5;
+}
+.speech-bubble.show { opacity:1; transform:translateX(-50%) scale(1); }
+.speech-bubble::before { content:'🔊'; display:block; font-size:26px; margin-bottom:4px; }
+.speech-bubble::after { content:''; position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); border:10px solid transparent; border-top-color:#FFB347; }
+
+/* Quiz */
+.quiz-area {
+  width:100%; padding:16px; background:#F3E5F5; border-radius:20px;
+  text-align:center; margin:10px 0;
+}
+.quiz-area h3 { font-size:18px; color:#7B1FA2; margin-bottom:12px; }
+.quiz-options { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.quiz-opt {
+  padding:14px 26px; border-radius:18px; border:3px solid #DDB8E8;
+  background:white; font-size:22px; font-weight:bold; cursor:grab; user-select:none;
+  transition:all .15s; font-family:inherit; color:#5A3E2B; min-width:60px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+.quiz-opt:hover { border-color:#FFB347; background:#FFF8E7; transform:scale(1.1); }
+.quiz-opt.correct { border-color:#4CAF50; background:#E8F5E9; transform:scale(1.12); }
+.quiz-opt.wrong { border-color:#F44336; background:#FFEBEE; animation:shake .4s; }
+@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)rotate(-2deg)}
+  40%{transform:translateX(8px)rotate(2deg)} 60%{transform:translateX(-6px)rotate(-1deg)}
+  80%{transform:translateX(6px)rotate(1deg)}
+}
+
+/* Page Dots */
+.page-dots { display:flex; gap:6px; }
+.page-dots .dot { width:10px; height:10px; border-radius:50%; background:#E0D5C7; cursor:pointer; transition:all .2s; }
+.page-dots .dot.active { background:#FFB347; transform:scale(1.3); }
+.page-dots .dot.done { background:#4CAF50; }
+
+/* Navigation */
+.controls { display:flex; align-items:center; justify-content:space-between; margin-top:10px; gap:8px; position:sticky; bottom:0; background:#FFFCF5; padding:8px 0; z-index:100; }
+.nav-btn { background:#FFB347; border:none; color:#FFF; font-size:28px; width:60px; height:60px; border-radius:50%; cursor:pointer; box-shadow:0 4px 12px rgba(255,179,71,0.4); transition:all .15s; display:flex; align-items:center; justify-content:center; flex-shrink:0; touch-action:manipulation; }
+.nav-btn:hover { transform:scale(1.1); background:#FF9F1C; }
+.nav-btn:disabled { opacity:0.3; cursor:default; transform:none; }
+.nav-btn.small { width:48px; height:48px; font-size:22px; }
+.read-btn { background:#6BCB77; border:none; color:#FFF; font-size:16px; padding:10px 18px; border-radius:30px; cursor:pointer; box-shadow:0 4px 12px rgba(107,203,119,0.4); font-family:inherit; font-weight:bold; display:flex; align-items:center; gap:5px; transition:all .15s; touch-action:manipulation; }
+.read-btn:hover { transform:scale(1.06); }
+.read-btn.pink { background:#FF8A80; }
+.page-counter { font-size:13px; color:#999; text-align:center; margin-top:6px; }
+.celebration { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+@keyframes confetti-fall { 0%{opacity:1;transform:translateY(0)rotate(0deg)} 100%{opacity:0;transform:translateY(600px)rotate(1080deg)} }
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+
+.cover-page { text-align:center; padding:20px 20px 10px; }
+.cover-page h2 { font-size:32px; color:#E8751A; margin-top:8px; }
+.cover-page p { font-size:18px; color:#6B4F3A; margin-top:4px; }
+
+@media (max-width:500px) {
+  .book { padding:16px 12px; }
+  .sentence { font-size:18px; }
+  .bed-scene { height:200px; }
+  .page-title { font-size:24px; }
+  .speech-bubble { font-size:18px; padding:14px 20px; bottom:100px; max-width:90%; }
+  .nav-btn { width:50px; height:50px; font-size:24px; }
+  .nav-btn.small { width:40px; height:40px; font-size:18px; }
+  .read-btn { font-size:14px; padding:8px 14px; }
+}
+/* Speak buttons */
+.speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.speak-btn:active { transform:scale(0.9); }
+.quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+/* Drag & Drop for quiz */
+.drop-zone { border:3px dashed #FFB347; border-radius:16px; padding:16px; text-align:center; font-size:16px; color:#AAA; margin-bottom:10px; transition:all 0.2s; min-height:50px; display:flex; align-items:center; justify-content:center; }
+.drop-zone.drag-over { border-color:#66BB6A; background:rgba(102,187,106,0.1); color:#4CAF50; transform:scale(1.02); }
+.quiz-opt:active { cursor:grabbing; }
+.quiz-opt.dragging { opacity:0.5; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+<div class="book">
+  <div class="page-area" id="pageArea"></div>
+  <div class="controls">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()" disabled>◀</button>
+    <button class="nav-btn small" onclick="playSong();showMusicNotes()" style="animation:float 2s ease-in-out infinite">🎵</button>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">
+      <button class="read-btn" onclick="speakPage()">🔊 读</button>
+      <button class="read-btn pink" onclick="playSong();showMusicNotes()">🎵 唱</button>
+    </div>
+    <div class="page-dots" id="progressDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+  <div class="page-counter" id="pageCounter">第1页 / 共8页</div>
+</div>
+
+<script>
+// ====== PAGE DATA ======
+const pages = [
+  { cover:true, title:'Five Little Monkeys', subtitle:'Jumping on the Bed! 🛏️ A counting rhyme!' },
+  { count:5 }, { count:4, fallen:1 }, { count:3, fallen:2 },
+  { count:2, fallen:3 }, { count:1, fallen:4 },
+  { count:0, fallen:5, done:true },
+  { count:-1, final:true, sentence:'🎉 No more monkeys jumping on the bed! ★★★' }
+];
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+
+// ====== MELODY ENGINE (Web Audio API) ======
+let audioCtx = null;
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+const NOTES = {
+  'C4':261.63,'D4':293.66,'E4':329.63,'F4':349.23,'G4':392.00,'A4':440.00,'B4':493.88,'C5':523.25,'R':0
+};
+
+const MONKEY_MELODY = [
+  // "Five little monkeys jumping on the bed" — G G E G A G E C
+  ['G4',0.35], ['G4',0.2], ['E4',0.3], ['G4',0.35], ['A4',0.25], ['G4',0.15], ['E4',0.15], ['C4',0.6],
+  // "One fell off and bumped his head" — D D E F G (hold)
+  ['D4',0.25], ['D4',0.25], ['E4',0.3], ['F4',0.3], ['G4',0.8],
+  // "Mama called the doctor and the doctor said" — C C A A G E D C
+  ['C5',0.25], ['C5',0.25], ['A4',0.25], ['A4',0.25], ['G4',0.25], ['E4',0.25], ['D4',0.2], ['C4',0.4],
+  // "No more monkeys jumping on the bed!" — repeat first phrase: G G E G A G E C
+  ['G4',0.35], ['G4',0.2], ['E4',0.3], ['G4',0.35], ['A4',0.25], ['G4',0.15], ['E4',0.15], ['C4',1.0]
+];
+function playMelody() {
+  const ctx = getAudioCtx();
+  if (ctx.state === 'suspended') ctx.resume();
+  let t = ctx.currentTime + 0.1;
+  MONKEY_MELODY.forEach(function(note) {
+    const freq = NOTES[note[0]];
+    const dur = note[1];
+    if (freq > 0) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.3, t);
+      gain.gain.exponentialRampToValueAtTime(0.01, t + dur - 0.05);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(t);
+      osc.stop(t + dur);
+    }
+    t += dur + 0.04;
+  });
+  showMusicNotes();
+}
+
+function showMusicNotes() {
+  const scene = document.querySelector('.bed-scene');
+  if (!scene) return;
+  const notes = ['♪','♫','♩','♬'];
+  for (let i = 0; i < 10; i++) {
+    const n = document.createElement('div');
+    n.textContent = notes[i % notes.length];
+    n.style.cssText = 'position:absolute;font-size:' + (16+Math.random()*20) + 'px;' +
+      'color:#FFB347;opacity:0;pointer-events:none;z-index:10;' +
+      'left:' + (Math.random()*80+10) + '%;top:' + (Math.random()*50+10) + '%;' +
+      'animation:noteFloat ' + (1+Math.random()) + 's ease-out forwards;' +
+      'animation-delay:' + (i*0.15) + 's;';
+    scene.appendChild(n);
+    setTimeout(function(el){el.remove();}, 3000);
+  }
+}
+
+// ====== PLAY FULL SONG MP3 ======
+var songAudio = null;
+function playSong() {
+  if(songAudio) { songAudio.pause(); songAudio = null; }
+  songAudio = new Audio('audio/5littlemonkeys.mp3');
+  songAudio.volume = 0.8;
+  songAudio.play().catch(function(e){});
+}
+
+// ====== SPEECH (Hybrid: Real Audio + Speech Bubble) ======
+let currentAudio = null;
+
+function showSpeechBubble(text) {
+  const e=document.querySelector('.speech-bubble');if(e)e.remove();
+  const b=document.createElement('div');b.className='speech-bubble';b.textContent=text;
+  document.body.appendChild(b);void b.offsetWidth;b.classList.add('show');
+  setTimeout(()=>{b.classList.remove('show');setTimeout(()=>b.remove(),400);},3500);
+}
+
+function playAudio(src, text) {
+  showSpeechBubble(text);
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  try {
+    const a=new Audio(src);
+    currentAudio=a;a.volume=1;
+    a.play().catch(function(){ speakText(text); });
+  } catch(e){ speakText(text); }
+}
+
+function speakPage(){
+  const p=pages[currentPage];
+  const AUDIO_BASE='audio/';
+  const AUDIO_MAP={0:'monkeys-page1',1:'monkeys-page2',2:'monkeys-page3',3:'monkeys-page4',4:'monkeys-page5',5:'monkeys-page6',6:'monkeys-page7'};
+  const TEXTS=[
+    '🐵 Five Little Monkeys Jumping on the Bed!',
+    '5 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '4 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '3 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '2 little monkeys jumping on the bed. One fell off and bumped his head!',
+    '1 little monkey jumping on the bed. One fell off and bumped his head!',
+    '😴 No more monkeys jumping on the bed! Mama said, Time for bed!',
+    '🎉 The End! You read the whole story!'
+  ];
+  let idx=-1,txt='';
+  if(p.cover){idx=-1;txt=TEXTS[0];}
+  else if(p.final){idx=-1;txt=TEXTS[7];}
+  else if(p.count>=0){idx=5-p.count;txt=TEXTS[idx+1];}
+  else{txt='The End!';}
+
+  if(idx>=0&&idx<7) playAudio(AUDIO_BASE+AUDIO_MAP[idx]+'.mp3',txt);
+  else {showSpeechBubble(txt);speakText(txt);}
+}
+
+function speakText(text){
+  window.speechSynthesis.cancel();
+  try{
+    // Remove emoji + non-ASCII but keep letters, numbers, punctuation
+    var clean = text.replace(/<[^>]+>/g,'').replace(/[\u{1F300}-\u{1FFFF}\u2600-\u27BF\uFE00-\uFE0F\u200D\u{1F000}-\u{1FFFF}]/gu,'').replace(/\s+/g,' ').trim();
+    if(clean.length===0) return;
+    const u=new SpeechSynthesisUtterance(clean);
+    u.lang='en-US';u.rate=0.7;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+// ====== SVG BUILDER ======
+function s(tag,attrs,children){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  if(attrs)Object.keys(attrs).forEach(k=>el.setAttribute(k,attrs[k]));
+  if(children)children.forEach(c=>{if(typeof c==='string')el.textContent=c;else el.appendChild(c);});
+  return el;
+}
+function path(d,attrs){return s('path',Object.assign({d:d},attrs));}
+function circle(cx,cy,r,attrs){return s('circle',Object.assign({cx:cx,cy:cy,r:r},attrs));}
+function ellipse(cx,cy,rx,ry,attrs){return s('ellipse',Object.assign({cx:cx,cy:cy,rx:rx,ry:ry},attrs));}
+function rect(x,y,w,h,attrs){return s('rect',Object.assign({x:x,y:y,width:w,height:h},attrs));}
+
+// ====== CREATE MONKEY SVG ======
+function makeMonkey(x,y,isFallen,isClickable,monkeyId){
+  const g=s('g',{id:'mk-'+monkeyId});
+  if(isClickable){g.setAttribute('style','cursor:pointer');g.setAttribute('onclick','jumpMonkey("'+monkeyId+'")');}
+  const body='#8B5E3C',face='#D4A574',dark='#5C3A1E',dark2='#7A4E2E';
+  const sy=isFallen?3:0;
+
+  // Tail
+  g.appendChild(path('M'+(x+4)+','+(y+10+sy)+' Q'+(x+22)+','+(y-2+sy)+' '+(x+16)+','+(y-12+sy),{stroke:dark2,'stroke-width':3,'stroke-linecap':'round',fill:'none'}));
+
+  // Legs
+  g.appendChild(ellipse(x-5,y+16+sy,5,7,{fill:dark2}));
+  g.appendChild(ellipse(x+5,y+16+sy,5,7,{fill:dark2}));
+  // Feet
+  g.appendChild(ellipse(x-6,y+22+sy,5,3.5,{fill:body}));
+  g.appendChild(ellipse(x+6,y+22+sy,5,3.5,{fill:body}));
+
+  // Body
+  g.appendChild(ellipse(x,y+6+sy,10,12,{fill:body}));
+  // Belly
+  g.appendChild(ellipse(x,y+8+sy,6,7,{fill:face,opacity:0.4}));
+
+  // Arms
+  g.appendChild(ellipse(x-11,y+2+sy,6,4,{fill:dark2,transform:'rotate(-20,'+(x-11)+','+(y+2+sy)+')'}));
+  g.appendChild(ellipse(x+11,y+2+sy,6,4,{fill:dark2,transform:'rotate(20,'+(x+11)+','+(y+2+sy)+')'}));
+  // Hands
+  g.appendChild(circle(x-14,y+3+sy,3,{fill:body}));
+  g.appendChild(circle(x+14,y+3+sy,3,{fill:body}));
+
+  // Ears
+  g.appendChild(circle(x-10,y-7+sy,5,{fill:body}));
+  g.appendChild(circle(x+10,y-7+sy,5,{fill:body}));
+  g.appendChild(circle(x-10,y-7+sy,3,{fill:face}));
+  g.appendChild(circle(x+10,y-7+sy,3,{fill:face}));
+
+  // Head
+  g.appendChild(circle(x,y-4+sy,11,{fill:body}));
+
+  // Face
+  g.appendChild(ellipse(x,y-2+sy,8,7,{fill:face}));
+
+  // Eyes
+  if(isFallen){
+    g.appendChild(path('M'+(x-4)+','+(y-4+sy)+' Q'+(x-2.5)+','+(y-5+sy)+' '+(x-1)+','+(y-4+sy),{stroke:dark,'stroke-width':1.5,'stroke-linecap':'round',fill:'none'}));
+    g.appendChild(path('M'+(x+1)+','+(y-4+sy)+' Q'+(x+2.5)+','+(y-5+sy)+' '+(x+4)+','+(y-4+sy),{stroke:dark,'stroke-width':1.5,'stroke-linecap':'round',fill:'none'}));
+    // Zzz
+    g.appendChild(path('M'+(x+7)+','+(y-9+sy)+' L'+(x+11)+','+(y-13+sy)+' L'+(x+7)+','+(y-13+sy),{stroke:'#999','stroke-width':1.2,'stroke-linecap':'round','stroke-linejoin':'round',fill:'none',opacity:0.6}));
+  } else {
+    g.appendChild(circle(x-3,y-4+sy,3.5,{fill:'white'}));
+    g.appendChild(circle(x+3,y-4+sy,3.5,{fill:'white'}));
+    g.appendChild(circle(x-3,y-4+sy,2,{fill:dark}));
+    g.appendChild(circle(x+3,y-4+sy,2,{fill:dark}));
+    // Eye shine
+    g.appendChild(circle(x-2.5,y-5+sy,0.8,{fill:'white'}));
+    g.appendChild(circle(x+3.5,y-5+sy,0.8,{fill:'white'}));
+  }
+
+  // Cheeks (blush)
+  g.appendChild(ellipse(x-6,y+1+sy,3,2,{fill:'#FFB5B5',opacity:0.5}));
+  g.appendChild(ellipse(x+6,y+1+sy,3,2,{fill:'#FFB5B5',opacity:0.5}));
+
+  // Nose
+  g.appendChild(circle(x,y,1.5,{fill:dark}));
+
+  // Mouth
+  if(isFallen){
+    g.appendChild(path('M'+(x-2)+','+(y+3+sy)+' Q'+x+','+(y+1+sy)+' '+(x+2)+','+(y+3+sy),{stroke:dark,'stroke-width':1.2,'stroke-linecap':'round',fill:'none'}));
+  } else {
+    g.appendChild(path('M'+(x-2.5)+','+(y+2+sy)+' Q'+x+','+(y+5+sy)+' '+(x+2.5)+','+(y+2+sy),{stroke:dark,'stroke-width':1.2,'stroke-linecap':'round',fill:'none'}));
+    // Teeth
+    g.appendChild(rect(x-2,y+2+sy,4,2,{fill:'white',rx:1}));
+  }
+
+  return g;
+}
+
+// ====== DRAW BED SCENE ======
+function drawBedScene(parentId,count,fallen,isCover){
+  const parent=document.getElementById(parentId);
+  if(!parent)return;
+  parent.innerHTML='';
+
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('viewBox','0 0 440 240');
+  parent.appendChild(svg);
+
+  // Defs
+  const defs=s('defs');
+  defs.appendChild(s('linearGradient',{id:'wallGrad',x1:0,y1:0,x2:0,y2:1},[
+    s('stop',{offset:'0%','stop-color':'#FFF8E1'}),
+    s('stop',{offset:'100%','stop-color':'#FFECB3'})
+  ]));
+  defs.appendChild(s('linearGradient',{id:'floorGrad',x1:0,y1:0,x2:0,y2:1},[
+    s('stop',{offset:'0%','stop-color':'#D4A574'}),
+    s('stop',{offset:'100%','stop-color':'#B8956A'})
+  ]));
+  defs.appendChild(s('linearGradient',{id:'woodGrad',x1:0,y1:0,x2:0,y2:1},[
+    s('stop',{offset:'0%','stop-color':'#8B4513'}),
+    s('stop',{offset:'100%','stop-color':'#6B3A2A'})
+  ]));
+  defs.appendChild(s('linearGradient',{id:'woodLight',x1:0,y1:0,x2:0,y2:1},[
+    s('stop',{offset:'0%','stop-color':'#A0522D'}),
+    s('stop',{offset:'100%','stop-color':'#8B4513'})
+  ]));
+  defs.appendChild(s('linearGradient',{id:'matGrad',x1:0,y1:0,x2:0,y2:1},[
+    s('stop',{offset:'0%','stop-color':'#FFF8EE'}),
+    s('stop',{offset:'100%','stop-color':'#F0E6D3'})
+  ]));
+  defs.appendChild(s('filter',{id:'shadow',x:-5+'%',y:-5+'%',width:'110%',height:'110%'},[
+    s('feDropShadow',{dx:0,dy:2,'stdDeviation':3,'flood-opacity':0.15})
+  ]));
+  defs.appendChild(s('filter',{id:'softShadow',x:-10+'%',y:-10+'%',width:'120%',height:'120%'},[
+    s('feDropShadow',{dx:0,dy:3,'stdDeviation':4,'flood-opacity':0.2})
+  ]));
+  svg.appendChild(defs);
+
+  // Wall
+  svg.appendChild(rect(0,0,440,240,{fill:'url(#wallGrad)'}));
+
+  // Wall decoration - window
+  svg.appendChild(rect(360,20,60,55,{fill:'#B3D9FF',rx:3,stroke:'#8B4513','stroke-width':2}));
+  svg.appendChild(path('M390,20 L390,75',{stroke:'#8B4513','stroke-width':1.5}));
+  svg.appendChild(path('M360,47 L420,47',{stroke:'#8B4513','stroke-width':1.5}));
+
+  // Picture frame on wall
+  svg.appendChild(rect(50,25,45,40,{fill:'#FFE0B2',rx:2,stroke:'#A0522D','stroke-width':2}));
+  svg.appendChild(circle(72,42,6,{fill:'#FFB347'}));
+  svg.appendChild(circle(62,50,4,{fill:'#6BCB77'}));
+  svg.appendChild(circle(82,48,3,{fill:'#FF6B6B'}));
+
+  // Floor
+  svg.appendChild(rect(0,165,440,75,{fill:'url(#floorGrad)'}));
+
+  // Headboard
+  svg.appendChild(rect(10,25,420,22,{fill:'url(#woodGrad)',rx:4,filter:'url(#shadow)'}));
+  svg.appendChild(ellipse(14,20,10,10,{fill:'url(#woodLight)'}));
+  svg.appendChild(ellipse(426,20,10,10,{fill:'url(#woodLight)'}));
+
+  // Side rails
+  svg.appendChild(rect(10,45,420,6,{fill:'url(#woodLight)',rx:2}));
+
+  // Bottom frame
+  svg.appendChild(rect(0,165,440,36,{fill:'url(#woodGrad)',rx:3,filter:'url(#shadow)'}));
+  // Wood grain lines on bottom frame
+  svg.appendChild(path('M15,172 Q60,170 110,173',{stroke:'#7A3E1A','stroke-width':1,opacity:0.4,fill:'none'}));
+  svg.appendChild(path('M150,176 Q220,174 310,177',{stroke:'#7A3E1A','stroke-width':1,opacity:0.4,fill:'none'}));
+  svg.appendChild(path('M330,171 Q380,169 430,172',{stroke:'#7A3E1A','stroke-width':1,opacity:0.4,fill:'none'}));
+
+  // Bed legs
+  svg.appendChild(rect(10,198,16,22,{fill:'#5C3A1E',rx:2}));
+  svg.appendChild(rect(414,198,16,22,{fill:'#5C3A1E',rx:2}));
+  svg.appendChild(rect(190,201,12,16,{fill:'#5C3A1E',rx:1}));
+  svg.appendChild(rect(238,201,12,16,{fill:'#5C3A1E',rx:1}));
+
+  // Mattress
+  svg.appendChild(rect(20,52,400,115,{fill:'url(#matGrad)',rx:6,filter:'url(#shadow)'}));
+
+  // Sheet wrinkles
+  svg.appendChild(path('M20,90 Q80,100 160,92 Q240,84 320,95 Q380,101 420,92',{stroke:'#E0D5C7','stroke-width':1.5,fill:'none',opacity:0.5}));
+
+  // Pillow
+  svg.appendChild(ellipse(50,75,50,28,{fill:'white',filter:'url(#shadow)'}));
+  svg.appendChild(path('M50,58 L50,92',{stroke:'#E8D5B7','stroke-width':1,opacity:0.4}));
+
+  // Blanket accent
+  svg.appendChild(rect(120,52,300,30,{fill:'#FFD4A8',rx:4,opacity:0.3}));
+
+  // ====== DRAW MONKEYS ======
+  let positions = [];
+  const total = count + fallen;
+
+  if(isCover){
+    positions = [
+      {x:72,y:95},{x:148,y:85},{x:222,y:78},
+      {x:296,y:88},{x:368,y:98}
+    ];
+  } else {
+    if(count===0 && fallen>0){
+      // No monkeys jumping - all fallen on floor/bed
+      for(let i=0;i<fallen;i++){
+        positions.push({x:45+i*85,y:160,isFallen:true});
+      }
+    } else {
+      for(let i=0;i<total;i++){
+        const row = Math.floor(i/4);
+        const col = i%4;
+        const x = 50 + col*88;
+        const y = 85 + row*48;
+        const isF = i>=count;
+        positions.push({x,y,isFallen:isF});
+      }
+    }
+  }
+
+  positions.forEach((pos,i)=>{
+    const monkeyId = parentId+'-'+i;
+    const clickable = !pos.isFallen && count>0 && !gameDone[parseInt(parentId.replace('bedScene-','')||'0')] && !isCover;
+    const monkeyEl = makeMonkey(pos.x,pos.y,pos.isFallen,clickable,monkeyId);
+    // Fallen get a drop shadow
+    if(pos.isFallen && monkeyEl.querySelector('ellipse')){
+      monkeyEl.querySelector('ellipse').setAttribute('filter','url(#softShadow)');
+    }
+    svg.appendChild(monkeyEl);
+  });
+}
+
+// ====== RENDER PAGE ======
+function renderPage(idx){
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+
+  if(p.cover){
+    area.innerHTML = `
+      <div class="page active cover-page">
+        <h2>🐵 ${p.title}</h2>
+        <p>${p.subtitle}</p>
+        <div class="bed-scene" id="coverScene"></div>
+      </div>
+    `;
+    setTimeout(()=>drawBedScene('coverScene',5,0,true),30);
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = true;
+    return;
+  }
+
+  if(p.final){
+    area.innerHTML = `
+      <div class="page active" style="padding:40px 20px;text-align:center">
+        <div style="font-size:100px;margin-bottom:20px">😴</div>
+        <div class="page-title">故事结束啦！🎉</div>
+        <div class="sentence" style="font-size:28px">${p.sentence}</div>
+        <div style="margin-top:20px;font-size:48px">⭐ ⭐ ⭐</div>
+        <div class="quiz-area" style="background:#E8F5E9">
+          <h3 style="color:#4CAF50">📖 你读完了整个故事！</h3>
+          <p style="margin-top:8px;color:#4CAF50;font-size:18px">数数小能手，真棒！🎉</p>
+        </div>
+      </div>
+    `;
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = false;
+    return;
+  }
+
+  const count = p.count;
+  const fallen = p.fallen||0;
+  const isDone = gameDone[idx];
+  const storyText = count>0
+    ? '<span class="num">'+count+'</span> little monkey'+(count>1?'s':'')+' jumping on the bed!<br>One fell off and <span class="bump">bumped</span> his head!'
+    : '😴 No more monkeys jumping on the bed!<br>Mama said, "Time for bed!"';
+
+  let gameHTML = '';
+  if(count>0 && !isDone){
+    const answers = [count-1, count, count+1].filter(n=>n>=0&&n<=5);
+    for(let i=answers.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[answers[i],answers[j]]=[answers[j],answers[i]];}
+    const correct = count-1;
+    gameHTML = '<div class="quiz-area"><h3>🔢 还剩下几只猴子？ <span class="speak-btn" onclick="event.stopPropagation();speakText(\'How many monkeys are left?\')">🔊</span></h3>'
+      +'<div class="drop-zone" id="dropzone-'+idx+'" ondragover="onQuizDragOver(event)" ondrop="onQuizDrop(event,'+idx+')" ondragleave="onQuizDragLeave(event)">📥 把答案拖到这里</div>'
+      +'<div class="quiz-options">'
+      +answers.map(n=>'<div class="quiz-opt" draggable="true" ondragstart="onQuizDragStart(event,'+n+')" ondragend="onQuizDragEnd(event)" onclick="checkAnswer('+idx+','+correct+','+n+',this)">'+n+' <span class="quiz-opt-speak" onclick="event.stopPropagation();speakText(\''+n+'\')">🔊</span></div>').join('')
+      +'</div></div>';
+  } else if(isDone && count>0){
+    gameHTML = '<div class="quiz-area" style="background:#E8F5E9"><h3 style="color:#4CAF50">✅ 还剩 '+(count-1)+' 只猴子！</h3><p style="color:#4CAF50;font-size:24px">⭐</p></div>';
+  }
+
+  area.innerHTML = '<div class="page active">'
+    +'<div class="page-title">🐵 第 '+(count>0?Math.min(count,5):'0')+' 只猴子</div>'
+    +'<div class="bed-scene" id="bedScene-'+idx+'"></div>'
+    +'<div class="sentence" onclick="speakPage()">'+storyText+'</div>'
+    +gameHTML
+    +'</div>';
+
+  setTimeout(()=>drawBedScene('bedScene-'+idx,count,fallen,false),30);
+  updateUI(idx);
+  document.getElementById('prevBtn').disabled = idx===0;
+}
+
+// ====== JUMP MONKEY ======
+function jumpMonkey(id){
+  const el = document.getElementById('mk-'+id);
+  if(!el) return;
+
+  // Animate jump
+  el.style.transition = 'transform 0.5s cubic-bezier(0.22,1,0.36,1)';
+  el.style.transform = 'translateY(-20px) scale(1.1)';
+
+  speakText('Bump! 💫');
+  showSpeechBubble('Bump! 💫');
+
+  setTimeout(()=>{
+    el.style.transform = 'translateY(0) scale(1)';
+    el.style.transition = 'transform 0.3s ease';
+    // Grey out this monkey (fallen)
+    el.style.opacity = '0.5';
+    el.style.filter = 'grayscale(0.5)';
+    el.removeAttribute('onclick');
+    el.style.cursor = 'default';
+  },550);
+
+  // Check if all monkeys have fallen
+  setTimeout(()=>{
+    const p = pages[currentPage];
+    if(!p || p.cover || p.final) return;
+
+    const remaining = document.querySelectorAll('#pageArea [onclick*="jumpMonkey"]').length;
+    if(remaining===0 && p.count>0){
+      gameDone[currentPage]=true;
+      launchConfetti();
+      setTimeout(()=>renderPage(currentPage),700);
+    }
+  },200);
+}
+
+// ====== DRAG & DROP FOR QUIZ ======
+let dragQuizData = null;
+let dragChosenNum = null;
+
+function onQuizDragStart(event, num) {
+  dragQuizData = event.target;
+  dragChosenNum = num;
+  event.dataTransfer.setData('text/plain', num.toString());
+  event.target.classList.add('dragging');
+}
+
+function onQuizDragEnd(event) {
+  event.target.classList.remove('dragging');
+}
+
+function onQuizDragOver(event) {
+  event.preventDefault();
+  event.currentTarget.classList.add('drag-over');
+}
+
+function onQuizDragLeave(event) {
+  event.currentTarget.classList.remove('drag-over');
+}
+
+function onQuizDrop(event, idx) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  if (dragQuizData) {
+    const p = pages[idx];
+    const correct = p.count - 1;
+    checkAnswer(idx, correct, dragChosenNum, dragQuizData);
+    dragQuizData = null;
+    dragChosenNum = null;
+  }
+}
+
+// ====== CHECK ANSWER ======
+function checkAnswer(idx,correct,chosen,el){
+  if(gameDone[idx]) return;
+  if(chosen===correct){
+    el.classList.add('correct');
+    gameDone[idx]=true;
+    launchConfetti();
+    setTimeout(()=>renderPage(idx),800);
+  } else {
+    el.classList.add('wrong');
+    setTimeout(()=>el.classList.remove('wrong'),500);
+  }
+}
+
+// ====== NAVIGATION ======
+function nextPage(){
+  const p=pages[currentPage];
+  if(p.count>0 && !gameDone[currentPage] && !p.cover && !p.final) return;
+  if(currentPage<pages.length-1){currentPage++;renderPage(currentPage);}
+}
+function prevPage(){
+  if(currentPage>0){currentPage--;renderPage(currentPage);}
+}
+
+// ====== CONFETTI ======
+function launchConfetti(){
+  const div=document.createElement('div');div.className='celebration';
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3','#FF8A65','#81C784'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    const s=6+Math.random()*10;
+    const star=Math.random()>0.7;
+    const shapes=star?'polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)':'';
+    c.style.cssText='position:absolute;width:'+s+'px;height:'+(star?s:s*0.6)+'px;border-radius:'+(star?'0':'3px')+';left:'+Math.random()*100+'%;top:-5%;background:'+colors[i%colors.length]+';animation:confetti-fall '+(1.5+Math.random())+'s ease-out forwards;animation-delay:'+Math.random()*0.8+'s;'+(star?'clip-path:'+shapes+';':'');
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),3000);
+}
+
+// ====== UI ======
+function updateUI(idx){
+  document.getElementById('pageCounter').textContent='第'+(idx+1)+'页 / 共'+pages.length+'页';
+  const dots=document.getElementById('progressDots');
+  dots.innerHTML=pages.map((_,i)=>'<div class="dot '+(i===idx?'active':'')+' '+(gameDone[i]?'done':'')+'" onclick="currentPage='+i+';renderPage('+i+')"></div>').join('');
+}
+
+// ====== BOOTSTRAP ======
+renderPage(0);
+</script>
+</body>
+</html>

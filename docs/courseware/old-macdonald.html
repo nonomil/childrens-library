@@ -135,6 +135,16 @@ body {
 <div class="speech-bubble" id="speechBubble"></div>
 
 <script>
+// ====== SPEECH INIT (fix Chrome silent TTS) ======
+(function initSpeech(){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = function(){
+      window.speechSynthesis.getVoices();
+    };
+  }
+})();
+
 // ====== PAGE DATA ======
 const pages = [
   { cover:true, title:'Old MacDonald Had a Farm', subtitle:'🚜 一首关于农场动物的英语儿歌！' },
@@ -220,7 +230,7 @@ function showMusicNotes() {
 }
 
 function speakText(text) {
-  if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;window.speechSynthesis.speak(u);}
+  if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.replace(/<[^>]+>/g,''));u.lang='en-US';u.rate=0.75;u.pitch=1.0;u.volume=1.0;window.speechSynthesis.speak(u);}
 }
 
 function showBubble(text) {

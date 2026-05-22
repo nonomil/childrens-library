@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🐱 Fat Cat on a Mat - Phonics Reader</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+/* === Gears Style Template (No Cursive) === */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Fredoka One','Comic Sans MS','Chalkboard SE','Segoe UI',sans-serif;
+  background: linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
+  min-height: 100vh; display: flex; justify-content: center;
+  align-items: center; padding: 20px;
+}
+.book {
+  max-width: 800px; width: 100%;
+  background: #FFFCF5;
+  border-radius: 40px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;
+  padding: 24px 20px;
+  position: relative;
+}
+
+/* === Animations === */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes spin-cw { to { transform: rotate(360deg); } }
+@keyframes spin-ccw { to { transform: rotate(-360deg); } }
+@keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes confetti-fall { 0% { opacity: 1; transform: translateY(0) rotate(0deg); } 100% { opacity: 0; transform: translateY(500px) rotate(720deg); } }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@keyframes popIn { 0% { opacity: 0; transform: scale(0.5); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+/* === Pages === */
+.page-area { min-height: 360px; }
+.page {
+  display: none; flex-direction: column; align-items: center;
+  animation: fadeIn 0.4s ease; width: 100%;
+}
+.page.active { display: flex; }
+
+/* Cover Page */
+.cover-page { text-align: center; padding: 20px 10px; }
+.cover-page .svg-illustration {
+  width: 200px; height: 180px;
+  margin: 0 auto 20px;
+  animation: float 3s ease-in-out infinite;
+}
+.cover-page .page-title {
+  font-size: 36px; color: #E8751A; margin-bottom: 10px;
+}
+.cover-page .page-desc {
+  color: #6B4F3A; font-size: 19px; margin-bottom: 16px;
+}
+.cover-hint {
+  margin-top: 16px; font-size: 14px; color: #bbb;
+}
+
+/* Page Title Structure */
+.page-title {
+  font-size: 34px;
+  color: #E8751A;
+  text-align: center;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+.page-desc {
+  color: #6B4F3A;
+  font-size: 19px;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* SVG Illustration */
+.svg-illustration {
+  width: 220px; height: 200px;
+  margin-bottom: 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.svg-illustration svg {
+  width: 100%; height: 100%;
+}
+.svg-illustration svg .anim-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Sentence */
+.sentence {
+  font-size: 26px; line-height: 1.6; text-align: center;
+  padding: 14px 20px; background: #FFFCF5; border-radius: 16px;
+  width: 100%; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 2px solid #FFE8C8;
+}
+.sentence .ph-word {
+  color: #E8751A; font-weight: bold; cursor: pointer;
+  border-bottom: 3px solid #FFB347; transition: background 0.15s;
+}
+.sentence .ph-word:hover { background: #FFF8E7; border-radius: 4px; }
+
+/* Phonics Word Family Bar */
+.phonics-bar {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.sound-tag {
+  background: #FFB347; color: white; padding: 6px 18px;
+  border-radius: 20px; font-size: 16px; font-weight: bold;
+  cursor: pointer; transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 2px 8px rgba(255,179,71,0.3);
+  user-select: none;
+}
+.sound-tag:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(255,179,71,0.5);
+}
+
+/* Game Area with Gear Theme */
+.game-area {
+  width: 100%; margin-top: 6px; padding: 16px;
+  background: #FFF8E7; border-radius: 20px; text-align: center;
+  border: 2px solid #FFE8C8;
+  position: relative;
+}
+.game-area h3 {
+  font-size: 16px; color: #E8751A; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.gear-spin {
+  display: inline-block;
+  animation: spin-cw 4s linear infinite;
+  font-size: 20px;
+}
+.letter-tiles { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.letter-tile {
+  width: 52px; height: 52px; border-radius: 12px; border: 3px solid #E0D5C7;
+  background: white; font-size: 28px; font-weight: bold; cursor: grab;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; user-select: none; touch-action: none;
+  position: relative;
+}
+.letter-tile:hover { border-color: #FFB347; background: #FFF8E7; }
+.letter-tile:active { cursor: grabbing; }
+.letter-tile.correct {
+  border-color: #4CAF50; background: #E8F5E9;
+  animation: popIn 0.3s ease, spin-cw 0.4s ease;
+}
+.letter-tile.wrong { border-color: #F44336; background: #FFEBEE; animation: shake 0.3s; }
+.letter-tile.used { opacity: 0.35; pointer-events: none; }
+.letter-tile.dragging { opacity: 0.5; transform: scale(1.1); border-color: #66BB6A; }
+.word-build {
+  display: flex; gap: 4px; justify-content: center; margin-bottom: 10px;
+  min-height: 48px;
+}
+.word-slot {
+  width: 48px; height: 48px; border-bottom: 4px solid #FFB347;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: bold; color: #E8751A;
+  transition: all 0.2s;
+  border-radius: 8px 8px 0 0;
+  background: rgba(255,248,231,0.5);
+}
+.word-slot.filled {
+  border-bottom-color: #4CAF50;
+  background: rgba(232,245,233,0.5);
+  animation: popIn 0.2s ease, spin-ccw 0.3s ease;
+}
+.word-slot.drag-over {
+  border-bottom-color: #66BB6A; border-bottom-width: 6px;
+  background: rgba(102,187,106,0.15);
+  transform: scale(1.05);
+}
+
+/* === Speech Bubble === */
+.speech-bubble {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border: 3px solid #FFB347;
+  border-radius: 24px;
+  padding: 18px 28px 18px 58px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  font-size: 20px;
+  color: #6B4F3A;
+  display: none;
+  align-items: center;
+  z-index: 999;
+  max-width: 85%;
+  animation: popIn 0.3s ease;
+  line-height: 1.4;
+}
+.speech-bubble::before {
+  content: '🔊';
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+}
+.speech-bubble.show {
+  display: flex;
+}
+
+/* === Navigation Bar === */
+.nav-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 16px; padding: 4px 0; gap: 6px;
+}
+.nav-btn {
+  width: 50px; height: 50px; border-radius: 50%;
+  background: #FFB347; color: white; border: none;
+  font-size: 22px; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(255,179,71,0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.nav-btn:hover:not(:disabled) {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(255,179,71,0.5);
+}
+.nav-btn:active:not(:disabled) { transform: scale(0.95); }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+.read-btn {
+  background: #6BCB77; color: white; border: none;
+  border-radius: 30px; padding: 8px 18px;
+  font-size: 16px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 12px rgba(107,203,119,0.4);
+  font-family: inherit;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.read-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(107,203,119,0.5);
+}
+.read-btn:active { transform: scale(0.95); }
+
+/* Progress Dots */
+.page-dots {
+  display: flex; gap: 6px; justify-content: center; align-items: center;
+  flex: 1;
+}
+.dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #E0D5C7; cursor: pointer; transition: all 0.2s;
+}
+.dot:hover { background: #FFB347; }
+.dot.active { background: #FFB347; transform: scale(1.3); }
+.dot.done { background: #4CAF50; }
+
+/* Page Counter */
+.page-counter {
+  font-size: 14px; color: #6B4F3A; text-align: center;
+  margin-top: 6px; font-weight: 500;
+}
+
+/* === Celebration / Confetti === */
+.celebration {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999;
+}
+
+/* Back Link */
+.back-link {
+  display: inline-block; margin-top: 8px; padding: 8px 20px;
+  background: #FFF8E7; border-radius: 10px; color: #6B4F3A;
+  text-decoration: none; font-size: 13px;
+  transition: background 0.2s;
+}
+.back-link:hover { background: #FFE8C8; }
+
+/* === Speak Buttons === */
+.speak-btn {
+  background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px;
+  border-radius:50%; cursor:pointer; transition:all 0.15s;
+  display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  box-shadow:0 2px 6px rgba(255,179,71,0.3);
+}
+.speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+.quiz-opt-speak {
+  background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px;
+  border-radius:50%; cursor:pointer; transition:all 0.15s;
+  display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+  margin-left:6px; vertical-align:middle;
+}
+.quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
+/* === Responsive === */
+@media (max-width: 500px) {
+  .svg-illustration { width: 160px; height: 145px; }
+  .sentence { font-size: 20px; }
+  .page-title { font-size: 26px; }
+  .page-desc { font-size: 16px; }
+  .letter-tile { width: 44px; height: 44px; font-size: 22px; }
+  .word-slot { width: 40px; height: 40px; font-size: 22px; }
+  .nav-btn { width: 42px; height: 42px; font-size: 18px; }
+  .read-btn { padding: 6px 14px; font-size: 13px; }
+  .book { padding: 16px 12px; }
+  .cover-page .svg-illustration { width: 140px; height: 126px; }
+  .cover-page .page-title { font-size: 26px; }
+  .speech-bubble { font-size: 16px; padding: 14px 20px 14px 46px; bottom: 100px; }
+  .speech-bubble::before { font-size: 22px; left: 12px; }
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+<div class="book">
+  <div class="page-area" id="pageArea"></div>
+
+  <!-- Navigation Bar (Gears Style) -->
+  <div class="nav-bar">
+    <button class="nav-btn nav-btn-prev" id="prevBtn" onclick="prevPage()" disabled aria-label="上一页">◀</button>
+    <button class="read-btn" id="speakBtn" onclick="speakPage()">🔊 读给我听</button>
+    <div class="page-dots" id="progressDots"></div>
+    <button class="nav-btn nav-btn-next" id="nextBtn" onclick="nextPage()" aria-label="下一页">▶</button>
+  </div>
+  <div class="page-counter" id="pageCounter">第1页 / 共9页</div>
+</div>
+
+<!-- Speech Bubble -->
+<div class="speech-bubble" id="speechBubble">
+  <span class="speech-bubble-text" id="speechBubbleText"></span>
+</div>
+
+<script>
+// === SVG ILLUSTRATIONS ===
+
+// ===== SCENE SVG ILLUSTRATIONS (story scenes, not headshots) =====
+function sceneBackground() {
+  return `
+    <!-- Room background -->
+    <rect width="220" height="200" fill="#FFF8E1" rx="12"/>
+    <!-- Floor -->
+    <rect x="0" y="130" width="220" height="70" fill="#FFE0B2" rx="4"/>
+    <!-- Baseboard -->
+    <rect x="0" y="128" width="220" height="6" fill="#FFCC80"/>
+    <!-- Mat -->
+    <rect x="35" y="140" width="150" height="40" rx="6" fill="#E8F5E9" stroke="#A5D6A7" stroke-width="3"/>
+    <rect x="45" y="148" width="130" height="24" rx="4" fill="#C8E6C9" opacity="0.5"/>
+    <!-- Mat stripes -->
+    <line x1="50" y1="148" x2="50" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="65" y1="148" x2="65" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="80" y1="148" x2="80" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="95" y1="148" x2="95" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="110" y1="148" x2="110" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="125" y1="148" x2="125" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="140" y1="148" x2="140" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="155" y1="148" x2="155" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>
+    <line x1="170" y1="148" x2="170" y2="172" stroke="#A5D6A7" stroke-width="1.5" stroke-dasharray="3,4"/>`;
+}
+
+function svgCatBody(cx, cy, scale) {
+  scale = scale || 1;
+  return `
+    <g transform="translate(${cx},${cy}) scale(${scale})">
+      <!-- Tail -->
+      <path d="M-15,20 Q-40,0 -35,-20 Q-30,-35 -20,-25" fill="none" stroke="#F9A825" stroke-width="4" stroke-linecap="round"/>
+      <!-- Body -->
+      <ellipse cx="0" cy="20" rx="22" ry="16" fill="#F9A825"/>
+      <ellipse cx="0" cy="20" rx="18" ry="12" fill="#FFE082" opacity="0.4"/>
+      <!-- Ears -->
+      <polygon points="-18,-8 -14,-30 -2,-12" fill="#F9A825"/>
+      <polygon points="18,-8 14,-30 2,-12" fill="#F9A825"/>
+      <polygon points="-15,-10 -13,-25 -6,-13" fill="#FFB74D"/>
+      <polygon points="15,-10 13,-25 6,-13" fill="#FFB74D"/>
+      <!-- Head -->
+      <circle cx="0" cy="-5" r="20" fill="#F9A825"/>
+      <!-- Eyes -->
+      <ellipse cx="-8" cy="-8" rx="3.5" ry="4" fill="#333"/>
+      <ellipse cx="8" cy="-8" rx="3.5" ry="4" fill="#333"/>
+      <ellipse cx="-8" cy="-9" rx="1.5" ry="2" fill="white"/>
+      <ellipse cx="8" cy="-9" rx="1.5" ry="2" fill="white"/>
+      <!-- Nose -->
+      <polygon points="0,-1 -2,2 2,2" fill="#E91E63"/>
+      <!-- Mouth -->
+      <path d="M-5,4 Q0,8 5,4" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Whiskers -->
+      <line x1="-20" y1="-3" x2="-10" y2="0" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="-20" y1="2" x2="-10" y2="2" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="20" y1="-3" x2="10" y2="0" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <line x1="20" y1="2" x2="10" y2="2" stroke="#8D6E63" stroke-width="1" stroke-linecap="round"/>
+      <!-- Front legs -->
+      <ellipse cx="-12" cy="34" rx="6" ry="4" fill="#F9A825"/>
+      <ellipse cx="12" cy="34" rx="6" ry="4" fill="#F9A825"/>
+    </g>`;
+}
+
+function svgRatBody(cx, cy, scale) {
+  scale = scale || 1;
+  return `
+    <g transform="translate(${cx},${cy}) scale(${scale})">
+      <!-- Tail -->
+      <path d="M0,22 Q30,35 40,20 Q50,5 45,0" fill="none" stroke="#F48FB1" stroke-width="3" stroke-linecap="round"/>
+      <!-- Body -->
+      <ellipse cx="0" cy="18" rx="18" ry="14" fill="#B0BEC5"/>
+      <!-- Ears -->
+      <circle cx="-16" cy="-12" r="8" fill="#B0BEC5"/>
+      <circle cx="-16" cy="-12" r="5" fill="#FFCDD2"/>
+      <circle cx="16" cy="-12" r="8" fill="#B0BEC5"/>
+      <circle cx="16" cy="-12" r="5" fill="#FFCDD2"/>
+      <!-- Head -->
+      <ellipse cx="0" cy="-2" rx="16" ry="13" fill="#B0BEC5"/>
+      <ellipse cx="0" cy="-2" rx="14" ry="11" fill="#CFD8DC"/>
+      <!-- Eyes -->
+      <circle cx="-6" cy="-5" r="2.5" fill="#333"/>
+      <circle cx="6" cy="-5" r="2.5" fill="#333"/>
+      <!-- Nose -->
+      <circle cx="0" cy="2" r="2.5" fill="#F48FB1"/>
+      <!-- Whiskers -->
+      <line x1="-16" y1="0" x2="-28" y2="-3" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="-16" y1="3" x2="-28" y2="5" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="16" y1="0" x2="28" y2="-3" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <line x1="16" y1="3" x2="28" y2="5" stroke="#78909C" stroke-width="1" stroke-linecap="round"/>
+      <!-- Teeth -->
+      <rect x="-2" y="4" width="2" height="4" rx="0.5" fill="white"/>
+      <rect x="1" y="4" width="2" height="4" rx="0.5" fill="white"/>
+      <!-- Feet -->
+      <ellipse cx="-8" cy="30" rx="5" ry="3" fill="#90A4AE"/>
+      <ellipse cx="8" cy="30" rx="5" ry="3" fill="#90A4AE"/>
+    </g>`;
+}
+
+function svgBaseScene() {
+  return `<svg viewBox="0 0 220 200">${sceneBackground()}</svg>`;
+}
+
+function svgCoverScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 95, 1.2)}
+      <!-- Sparkles -->
+      <circle cx="30" cy="30" r="3" fill="#FFB347" opacity="0.8"/>
+      <circle cx="190" cy="25" r="4" fill="#FFB347" opacity="0.8"/>
+      <circle cx="45" cy="170" r="2" fill="#FFB347" opacity="0.6"/>
+      <circle cx="175" cy="175" r="3" fill="#FFB347" opacity="0.6"/>
+      <circle cx="200" cy="65" r="2" fill="#FFB347" opacity="0.7"/>
+      <text x="110" y="22" text-anchor="middle" font-size="10" fill="#E8751A" font-weight="bold">🐱 Fat Cat</text>
+    </g>
+  </svg>`;
+}
+
+function svgCatOnMat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.1)}
+    </g>
+  </svg>`;
+}
+
+function svgRatWithCat() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(140, 100, 0.9)}
+      ${svgRatBody(80, 105, 0.85)}
+      <!-- Action lines: rat running -->
+      <line x1="55" y1="115" x2="40" y2="110" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <line x1="50" y1="120" x2="35" y2="118" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <line x1="55" y1="125" x2="40" y2="128" stroke="#F48FB1" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+    </g>
+  </svg>`;
+}
+
+function svgHatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Hat on mat -->
+      <g transform="translate(155,140)">
+        <ellipse cx="0" cy="18" rx="24" ry="6" fill="#D7CCC8"/>
+        <rect x="-16" y="-18" width="32" height="36" rx="4" fill="#FF6B6B"/>
+        <rect x="-16" y="-10" width="32" height="6" rx="1" fill="#FFB347"/>
+        <rect x="-16" y="-1" width="32" height="6" rx="1" fill="#4ECDC4"/>
+        <circle cx="0" cy="-18" r="4" fill="#FFB347"/>
+      </g>
+    </g>
+  </svg>`;
+}
+
+function svgBatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 0.9)}
+      <!-- Bat flying above -->
+      <g transform="translate(100,45) scale(0.7)">
+        <path d="M0,0 Q-30,-20 -50,10 Q-35,5 -28,15 Q-38,12 -50,25 Q-30,18 -22,22 Q-20,18 -22,28" fill="#455A64"/>
+        <path d="M0,0 Q30,-20 50,10 Q35,5 28,15 Q38,12 50,25 Q30,18 22,22 Q20,18 22,28" fill="#455A64"/>
+        <ellipse cx="0" cy="10" rx="10" ry="16" fill="#37474F"/>
+        <polygon points="-5,-2 -6,-10 -3,-4" fill="#37474F"/>
+        <polygon points="5,-2 6,-10 3,-4" fill="#37474F"/>
+      </g>
+      <!-- Motion lines -->
+      <path d="M68,38 Q72,34 76,38" fill="none" stroke="#90A4AE" stroke-width="1" stroke-linecap="round"/>
+      <path d="M68,44 Q74,40 78,44" fill="none" stroke="#90A4AE" stroke-width="1" stroke-linecap="round"/>
+    </g>
+  </svg>`;
+}
+
+function svgPatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(130, 100, 0.85)}
+      ${svgRatBody(80, 105, 0.8)}
+      <!-- Rat arm reaching to pat -->
+      <path d="M95,95 Q105,85 115,90" fill="none" stroke="#B0BEC5" stroke-width="4" stroke-linecap="round"/>
+      <!-- Heart -->
+      <path d="M108,82 Q110,78 114,80 Q118,78 118,83 Q118,86 114,90 Q110,86 108,82Z" fill="#F48FB1" opacity="0.8"/>
+    </g>
+  </svg>`;
+}
+
+function svgNapScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Closed eyes overlay -->
+      <path d="M100,90 Q105,87 110,90" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+      <path d="M115,90 Q120,87 125,90" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+      <!-- Zzz -->
+      <text x="135" y="65" font-size="16" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">Z</text>
+      <text x="148" y="50" font-size="13" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">z</text>
+      <text x="158" y="38" font-size="10" fill="#90CAF9" font-weight="bold" font-family="Segoe UI, sans-serif">z</text>
+    </g>
+  </svg>`;
+}
+
+function svgHappyFatScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.2)}
+      <!-- Happy mouth -->
+      <path d="M103,100 Q110,108 117,100" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Blush -->
+      <ellipse cx="95" cy="96" rx="5" ry="3" fill="#FFCDD2" opacity="0.7"/>
+      <ellipse cx="125" cy="96" rx="5" ry="3" fill="#FFCDD2" opacity="0.7"/>
+      <!-- Fat belly -->
+      <ellipse cx="110" cy="108" rx="28" ry="18" fill="#FFE082" opacity="0.3"/>
+      <!-- Heart -->
+      <path d="M55,75 Q57,72 60,73 Q63,72 64,76 Q64,78 60,81 Q57,78 55,75Z" fill="#F48FB1" opacity="0.7"/>
+      <path d="M165,70 Q167,67 170,68 Q173,67 174,71 Q174,73 170,76 Q167,73 165,70Z" fill="#F48FB1" opacity="0.7"/>
+    </g>
+  </svg>`;
+}
+
+function svgStarScene() {
+  return `<svg viewBox="0 0 220 200">
+    <g class="anim-float">
+      ${sceneBackground()}
+      ${svgCatBody(110, 100, 1.0)}
+      <!-- Star -->
+      <g transform="translate(110,30)">
+        <circle cx="0" cy="0" r="28" fill="#FFF8E1" opacity="0.4"/>
+        <polygon points="0,-18 6,-6 18,-6 8,3 12,16 0,9 -12,16 -8,3 -18,-6 -6,-6" fill="#FFB347" stroke="#E8751A" stroke-width="1.5"/>
+      </g>
+      <!-- Small stars -->
+      <circle cx="35" cy="45" r="2" fill="#FFE082"/>
+      <circle cx="185" cy="40" r="2" fill="#FFE082"/>
+      <circle cx="30" cy="160" r="2" fill="#FFE082"/>
+      <circle cx="190" cy="165" r="2" fill="#FFE082"/>
+    </g>
+  </svg>`;
+}
+
+function getSVG(pageIdx) {
+  const svgMap = {
+    0: svgCoverScene(),
+    1: svgCatOnMat(),
+    2: svgRatWithCat(),
+    3: svgHatScene(),
+    4: svgBatScene(),
+    5: svgPatScene(),
+    6: svgNapScene(),
+    7: svgHappyFatScene(),
+    8: svgStarScene()
+  };
+  return svgMap[pageIdx] || svgCatOnMat();
+}
+
+// === COVER + 8 STORY PAGES ===
+const pages = [
+  // Page 0: Cover
+  {
+    cover: true,
+    title: 'Fat Cat on a Mat',
+    subtitle: 'A phonics story about a cat, a rat, and a hat!',
+    sentence: ''
+  },
+  // Page 1
+  {
+    sentence: 'A <span class="ph-word">fat</span> cat sat on a <span class="ph-word">mat</span>.',
+    game: { word: 'fat', letters: ['f', 'a', 't', 'c', 'r', 'h'] },
+    pageTitle: 'Fat Cat'
+  },
+  // Page 2
+  {
+    sentence: 'A <span class="ph-word">rat</span> ran to the <span class="ph-word">cat</span>.',
+    game: { word: 'rat', letters: ['r', 'a', 't', 'm', 's', 'p'] },
+    pageTitle: 'Rat and Cat'
+  },
+  // Page 3
+  {
+    sentence: '"<span class="ph-word">Hat</span> on the <span class="ph-word">mat</span>!" said the cat.',
+    game: { word: 'hat', letters: ['h', 'a', 't', 'b', 'f', 'm'] },
+    pageTitle: 'Hat on the Mat'
+  },
+  // Page 4
+  {
+    sentence: 'A <span class="ph-word">bat</span> flew to the <span class="ph-word">mat</span>.',
+    game: { word: 'bat', letters: ['b', 'a', 't', 'r', 'l', 'p'] },
+    pageTitle: 'Bat and Mat'
+  },
+  // Page 5
+  {
+    sentence: '"<span class="ph-word">Pat</span> the <span class="ph-word">cat</span>!" said the rat.',
+    game: { word: 'pat', letters: ['p', 'a', 't', 'd', 'c', 'b'] },
+    pageTitle: 'Pat the Cat'
+  },
+  // Page 6
+  {
+    sentence: 'The cat had a <span class="ph-word">nap</span> on the <span class="ph-word">mat</span>.',
+    game: { word: 'nap', letters: ['n', 'a', 'p', 't', 'c', 'f'] },
+    pageTitle: 'Nap Time'
+  },
+  // Page 7
+  {
+    sentence: 'The <span class="ph-word">cat</span> was <span class="ph-word">fat</span> and <span class="ph-word">happy</span>!',
+    game: { word: 'cat', letters: ['c', 'a', 't', 'f', 'n', 'p'] },
+    pageTitle: 'Happy Cat'
+  },
+  // Page 8: Completion
+  {
+    sentence: '🎉 You read the whole story! Great <span class="ph-word">reading</span>!',
+    game: null,
+    pageTitle: 'Great Reading!'
+  }
+];
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+let buildingWord = [];
+let currentTarget = [];
+
+// ===== Speech Bubble =====
+function showSpeechBubble(text) {
+  const bubble = document.getElementById('speechBubble');
+  const textEl = document.getElementById('speechBubbleText');
+  textEl.textContent = text;
+  bubble.classList.add('show');
+  clearTimeout(bubble._hideTimeout);
+  bubble._hideTimeout = setTimeout(() => {
+    bubble.classList.remove('show');
+  }, 3500);
+}
+
+// ===== Gears-Style launchConfetti =====
+function launchConfetti() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#FF6B6B','#FFB347','#4ECDC4','#FFE66D','#A78BFA','#FF9FF3'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.style.cssText = `position:absolute;width:${8+Math.random()*10}px;height:${8+Math.random()*10}px;border-radius:50%;left:${Math.random()*100}%;top:15%;background:${colors[i%colors.length]};animation:confetti-fall ${1.5+Math.random()}s ease-out forwards;animation-delay:${Math.random()*0.6}s;`;
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
+// ===== Render Page =====
+function renderPage(idx) {
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+
+  if (p.cover) {
+    area.innerHTML = `
+      <div class="page active cover-page" id="page-${idx}">
+        <div class="svg-illustration">${getSVG(idx)}</div>
+        <div class="page-title">${p.title}</div>
+        <div class="page-desc">${p.subtitle}</div>
+        <div class="cover-hint">👆 点击 "▶" 开始阅读！</div>
+      </div>
+    `;
+    updateUI(idx);
+    return;
+  }
+
+  // Game rendering
+  const isDone = !p.game || gameDone[idx];
+  let gameHTML = '';
+  if (p.game && !gameDone[idx]) {
+    const shuffled = [...p.game.letters].sort(() => Math.random() - 0.5);
+    currentTarget = p.game.word.split('');
+    buildingWord = [];
+    gameHTML = `
+      <div class="game-area" id="game-${idx}">
+        <h3><span class="gear-spin">⚙️</span> 拼单词: <strong>"${p.game.word}"</strong> <button class="speak-btn" onclick="speakText('${p.game.word}');event.stopPropagation();" title="Listen">🔊</button></h3>
+        <div class="word-build" id="wordBuild-${idx}" ondragover="onWordDragOver(event, ${idx})" ondrop="onWordDrop(event, ${idx})" ondragleave="onWordDragLeave(event, ${idx})">
+          ${p.game.word.split('').map((_, i) => `<div class="word-slot" id="slot-${idx}-${i}"></div>`).join('')}
+        </div>
+        <div class="letter-tiles" id="tiles-${idx}">
+          ${shuffled.map((l, i) => `<div style="display:inline-flex;align-items:center;margin:2px;"><div class="letter-tile" data-letter="${l}" draggable="true" ondragstart="onTileDragStart(event, ${idx}, '${l}')" ondragend="onTileDragEnd(event)" onclick="pickLetter(${idx}, '${l}', this)">${l}</div><button class="quiz-opt-speak" onclick="speakText('${l}');event.stopPropagation();" title="Listen">🔊</button></div>`).join('')}
+        </div>
+      </div>
+    `;
+    gameDone[idx] = false;
+  } else if (isDone && p.game) {
+    gameHTML = `<div class="game-area" style="background:#E8F5E9"><h3>✅ 拼词完成！</h3><p style="color:#4CAF50;font-size:30px">⭐ ⭐ ⭐</p></div>`;
+  } else {
+    gameHTML = `<div class="game-area" style="background:#FFF8E7"><h3>🎉 太棒了！★★★</h3></div>`;
+  }
+
+  // Phonics word family bar
+  const phonicsBar = `
+    <div class="phonics-bar">
+      <span class="sound-tag" onclick="speakPhonics('at')">🔊 at</span>
+      <span class="sound-tag" onclick="speakPhonics('an')">🔊 an</span>
+      <span class="sound-tag" onclick="speakPhonics('ap')">🔊 ap</span>
+      <span class="sound-tag" onclick="speakPhonics('ad')">🔊 ad</span>
+    </div>
+  `;
+
+  area.innerHTML = `
+    <div class="page active" id="page-${idx}">
+      <div class="page-title">${p.pageTitle || ''}</div>
+      <div class="page-desc">${p.sentence.replace(/<[^>]+>/g, '')}</div>
+      ${phonicsBar}
+      <div class="svg-illustration">${getSVG(idx)}</div>
+      <div class="sentence">${p.sentence}</div>
+      ${gameHTML}
+    </div>
+  `;
+
+  // Make ph-words clickable to speak
+  document.querySelectorAll('#page-' + idx + ' .ph-word').forEach(function(el){
+    el.addEventListener('click', function(e){
+      e.stopPropagation();
+      speakText(this.textContent);
+    });
+  });
+
+  updateUI(idx);
+}
+
+// ===== Pick Letter (Word Building Game) =====
+function pickLetter(idx, letter, el) {
+  if (gameDone[idx]) return;
+  if (el.classList.contains('used')) return;
+
+  const target = pages[idx].game.word;
+  const slotIdx = buildingWord.length;
+  if (slotIdx >= target.length) return;
+
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  if (letter === target[slotIdx]) {
+    // Correct!
+    buildingWord.push(letter);
+    slots[slotIdx].textContent = letter;
+    slots[slotIdx].classList.add('filled');
+    el.classList.add('correct');
+    el.classList.add('used');
+
+    // Check if word completed
+    if (buildingWord.length === target.length) {
+      gameDone[idx] = true;
+      setTimeout(() => {
+        launchConfetti();
+        renderPage(idx);
+      }, 600);
+    }
+  } else {
+    el.classList.add('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 400);
+  }
+}
+
+// ===== Drag & Drop Handlers =====
+let dragData = null;
+
+function onTileDragStart(e, idx, letter) {
+  dragData = { idx: idx, letter: letter, el: e.target };
+  e.target.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', letter);
+}
+
+function onTileDragEnd(e) {
+  e.target.classList.remove('dragging');
+  // Clear drag-over on all slots
+  document.querySelectorAll('.word-slot.drag-over').forEach(s => s.classList.remove('drag-over'));
+}
+
+function onWordDragOver(e, idx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  // Highlight all empty slots
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => { if (!s.classList.contains('filled')) s.classList.add('drag-over'); });
+}
+
+function onWordDragLeave(e, idx) {
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => s.classList.remove('drag-over'));
+}
+
+function onWordDrop(e, idx) {
+  e.preventDefault();
+  // Remove drag-over highlight
+  const slots = document.querySelectorAll(`#wordBuild-${idx} .word-slot`);
+  slots.forEach(s => s.classList.remove('drag-over'));
+
+  if (!dragData || dragData.idx !== idx) return;
+  if (gameDone[idx]) return;
+
+  const letter = dragData.letter;
+  const el = dragData.el;
+
+  // Same logic as pickLetter
+  const target = pages[idx].game.word;
+  const slotIdx = buildingWord.length;
+  if (slotIdx >= target.length) return;
+
+  if (letter === target[slotIdx]) {
+    buildingWord.push(letter);
+    slots[slotIdx].textContent = letter;
+    slots[slotIdx].classList.add('filled');
+    el.classList.add('correct');
+    el.classList.add('used');
+
+    if (buildingWord.length === target.length) {
+      gameDone[idx] = true;
+      setTimeout(() => {
+        launchConfetti();
+        renderPage(idx);
+      }, 600);
+    }
+  } else {
+    el.classList.add('wrong');
+    setTimeout(() => el.classList.remove('wrong'), 400);
+  }
+
+  dragData = null;
+}
+
+// ===== Text-to-Speech =====
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+  } catch(e) { console.log('Audio error:', e); }
+}
+
+function speakPage() {
+  const AUDIO_MAP = ['phonics-cover', 'phonics-page1', 'phonics-page2', 'phonics-page3', 'phonics-page4', 'phonics-page5', 'phonics-page6', 'phonics-page7', 'phonics-page8'];
+  const TEXTS = [
+    'Fat Cat on a Mat. A phonics story about a cat, a rat, and a hat!',
+    'A fat cat sat on a mat.',
+    'A rat ran to the cat.',
+    '"Hat on the mat!" said the cat.',
+    'A bat flew to the mat.',
+    '"Pat the cat!" said the rat.',
+    'The cat had a nap on the mat.',
+    'The cat was fat and happy!',
+    'You read the whole story! Great reading!'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
+}
+
+function speakPhonics(text) {
+  showSpeechBubble(text + ' — ' + text + '!');
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.7;
+  u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+function speakText(text){
+  if('speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='en-US';u.rate=0.75;u.pitch=1.0;
+    window.speechSynthesis.speak(u);
+  }
+}
+
+// ===== Navigation =====
+function nextPage() {
+  const p = pages[currentPage];
+  if (p.game && !gameDone[currentPage]) return;
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage(currentPage);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage(currentPage);
+  }
+}
+
+function goToPage(idx) {
+  currentPage = idx;
+  renderPage(idx);
+}
+
+// ===== Update UI =====
+function updateUI(idx) {
+  document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${pages.length}页`;
+
+  const dotsContainer = document.getElementById('progressDots');
+  dotsContainer.innerHTML = pages.map((_, i) =>
+    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] && !pages[i].cover ? 'done' : ''}" onclick="goToPage(${i})"></div>`
+  ).join('');
+
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').disabled = idx === pages.length - 1;
+}
+
+// ===== Bootstrap =====
+renderPage(0);
+</script>
+</body>
+</html>
