@@ -126,6 +126,7 @@ function render(n){
   }else{
     h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
     if(p.svg)h+=p.svg;
+if(p.text||p.items||p.svg){h+=`<div style="text-align:center;margin-bottom:10px"><img src="images/math-14-addsub2digit/webp/page-${String(n+1).padStart(2,"0")}.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>`;}
     if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
     if(p.items){
       p.items.forEach(it=>{
