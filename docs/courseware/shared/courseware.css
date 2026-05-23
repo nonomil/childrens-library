@@ -1,0 +1,31 @@
+/* FadeIn page transition */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Confetti pieces */
+.confetti-piece { position: fixed; width: 10px; height: 10px; border-radius: 2px; z-index: 9999; pointer-events: none; }
+
+/* Nav bar base */
+.nav-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 12px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border-top: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+
+.nav-bar button { min-width: 44px; min-height: 44px; font-size: 22px; border: none; border-radius: 12px; background: #f0f0f0; cursor: pointer; display: flex; align-items: center; justify-content: center; touch-action: manipulation; transition: all 0.15s; }
+.nav-bar button:active { transform: scale(0.9); }
+.nav-bar button:disabled { opacity: 0.3; pointer-events: none; }
+.nav-bar .btn-home { background: #e3f2fd; }
+.nav-bar .btn-speak { background: #e8f5e9; min-width: 48px; }
+.nav-bar .read-btn { background: #fff3e0; padding: 8px 16px; font-size: 16px; border-radius: 20px; font-weight: 600; }
+
+/* Page dots */
+.page-dots { display: flex; gap: 6px; flex: 1; justify-content: center; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; border: none; cursor: pointer; padding: 0; transition: all 0.2s; }
+.dot.active { background: #4A90D9; transform: scale(1.3); }
+
+/* Quiz option styles */
+.quiz-option.correct { background: #c8e6c9 !important; border-color: #4caf50 !important; }
+.quiz-option.wrong { background: #ffcdd2 !important; border-color: #f44336 !important; }
+
+/* Speak button animation */
+.speak-pulse { animation: speakPulse 0.8s ease infinite; }
+@keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(76,175,80,0.4); } 50% { box-shadow: 0 0 0 12px rgba(76,175,80,0); } }
+
+/* Active page animation */
+.page.active, .content.active, .slide.active { animation: fadeIn 0.3s ease; display: flex; }
