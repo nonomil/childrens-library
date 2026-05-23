@@ -2,968 +2,222 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>数学课 13 · 认识100以内的数</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-/* ===== RESET & BASE ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
-body{font-family:'Nunito',sans-serif;background:#1565C0;display:flex;align-items:center;justify-content:center;min-height:100dvh}
-
-/* ===== SLIDE CONTAINER ===== */
-.slider{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0;box-shadow:none}
-@media(min-width:460px){.slider{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
-
-/* ===== TOP BAR ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
 .top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
-.top-bar a,.top-bar button{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s,transform .2s}
-.top-bar a:hover,.top-bar button:hover{background:rgba(255,255,255,.32);transform:scale(1.08)}
-.top-bar a:active,.top-bar button:active{transform:scale(.92)}
-
-/* ===== SLIDES ===== */
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s}
+.top-bar a:hover{background:rgba(255,255,255,.32)}
 .slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 18px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;gap:6px;-webkit-overflow-scrolling:touch}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px;-webkit-overflow-scrolling:touch}
 .slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
 .slide.exit{opacity:0;visibility:hidden;position:absolute;z-index:1}
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px 10px;background:rgba(0,0,0,.07);backdrop-filter:blur(4px)}
-.bottom-nav button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.1);border-radius:30px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
-.bottom-nav button:hover{background:rgba(255,255,255,.35);transform:scale(1.08)}
-.bottom-nav button:active{transform:scale(.92)}
-.bottom-nav button:disabled{opacity:.25;pointer-events:none;transform:none!important}
-.dots{display:flex;gap:5px}
-.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.08);padding:0;cursor:pointer;transition:all .35s ease}
-.dot.active{background:#fff;transform:scale(1.3);box-shadow:0 0 10px rgba(255,255,255,.55);border-color:#fff}
-
-/* ===== TYPOGRAPHY ===== */
-h1{font-size:27px;font-weight:900;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.22);text-align:center;line-height:1.2}
-h2{font-size:23px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.18);text-align:center;letter-spacing:.5px}
-h3{font-size:19px;font-weight:700;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.15);text-align:center}
-p{font-size:16px;font-weight:400;color:rgba(255,255,255,.9);text-align:center;line-height:1.5;max-width:360px}
-p.big{font-size:20px;font-weight:700}
-p.small{font-size:14px;color:rgba(255,255,255,.7)}
-
-/* ===== PAGE LABEL ===== */
-.page-label{position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:20;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.1)}
-
-/* ===== IMAGES ===== */
-.image-wrap{width:100%;max-width:360px;margin:4px auto;display:flex;justify-content:center}
-.image-wrap img{width:100%;max-width:400px;border-radius:16px;display:block;box-shadow:0 4px 20px rgba(0,0,0,.12)}
-
-/* ===== CONTENT CARDS ===== */
-.card{width:100%;max-width:360px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px;padding:14px 16px;margin:4px 0;border:1px solid rgba(255,255,255,.1)}
-.card h3{font-size:16px;font-weight:800;color:#fff;text-align:left;margin-bottom:4px}
-.card p{font-size:14px;color:rgba(255,255,255,.85);text-align:left;line-height:1.5}
-.card .highlight-text{color:#FFD54F;font-weight:700}
-
-/* ===== CHARACTER BUBBLES ===== */
-.char-bubble{display:flex;gap:10px;align-items:flex-start;margin:4px 0;width:100%;max-width:360px;animation:fadeUp .5s ease both}
-.char-bubble.steve{flex-direction:row}
-.char-bubble.alex{flex-direction:row-reverse}
-.char-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 3px 8px rgba(0,0,0,.15)}
-.char-avatar.steve-avatar{background:rgba(255,243,224,.9)}
-.char-avatar.alex-avatar{background:rgba(232,245,233,.9)}
-.bubble{max-width:78%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.char-bubble.steve .bubble{background:rgba(255,243,224,.9);border-bottom-left-radius:4px;color:#4e342e}
-.char-bubble.alex .bubble{background:rgba(232,245,233,.9);border-bottom-right-radius:4px;color:#1b5e20}
-
-/* ===== INTERACTIVE ===== */
-.interact-area{width:100%;max-width:360px;background:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:2px dashed rgba(255,255,255,.2);border-radius:16px;padding:14px;margin:4px 0;min-height:80px}
-.interact-area .q-text{font-weight:700;color:#fff;margin-bottom:8px;font-size:15px;text-align:center}
-.option-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.option-btn{padding:8px 20px;border:2px solid rgba(255,255,255,.25);border-radius:14px;background:rgba(255,255,255,.12);font-family:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;min-width:50px;text-align:center;-webkit-tap-highlight-color:transparent}
-.option-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.05)}
-.option-btn:active{transform:scale(.95)}
-.option-btn.selected{background:rgba(255,255,255,.3);border-color:#fff;box-shadow:0 4px 12px rgba(255,255,255,.2)}
-.option-btn.correct{background:#66BB6A;border-color:#fff;color:#fff;animation:pulse .5s}
-.option-btn.wrong{background:#EF5350;border-color:#fff;color:#fff;animation:shake .4s}
-.option-btn.disabled{pointer-events:none;opacity:.5}
-.feedback{margin-top:8px;font-weight:700;text-align:center;min-height:24px;font-size:14px}
-.feedback.correct{color:#A5D6A7}
-.feedback.wrong{color:#EF9A9A}
-
-/* ===== NUMBER GRID ===== */
-.num-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;width:100%;max-width:340px;margin:4px 0}
-.num-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border-radius:4px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);transition:all .3s}
-.num-cell.tens{background:rgba(255,213,79,.25);color:#FFD54F;font-weight:800}
-.num-cell.highlight{background:rgba(255,255,255,.3);color:#fff;transform:scale(1.08);box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.num-cell.round{background:rgba(66,165,245,.4);color:#fff;font-weight:900}
-
-/* ===== BLOCKS ===== */
-.block-row{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;margin:4px 0}
-.block-unit{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:rgba(255,255,255,.2);color:#fff;border-radius:6px;font-weight:800;font-size:12px;box-shadow:0 2px 4px rgba(0,0,0,.12);animation:popIn .35s ease both}
-.block-unit.tens-block{background:#FFD54F;color:#1565C0}
-.block-unit.ones-block{background:rgba(255,255,255,.35);color:#fff}
-.block-label{font-weight:700;color:rgba(255,255,255,.7);font-size:12px;margin:0 4px}
-
-/* ===== NUMBER DISPLAY ===== */
-.number-display{font-size:2.5rem;font-weight:900;color:#fff;text-align:center;margin:4px 0;text-shadow:0 2px 8px rgba(0,0,0,.15)}
-.small-num{font-size:1.4rem;font-weight:800;color:#FFD54F;text-align:center}
-
-/* ===== SEQUENCE SLOTS ===== */
-.seq-slots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
-.seq-slot{width:40px;height:46px;border:2px dashed rgba(255,255,255,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#fff;background:rgba(255,255,255,.06);transition:all .2s}
-.seq-slot.filled{border-style:solid;border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.15)}
-.seq-slot.empty{color:rgba(255,255,255,.4);font-size:.8rem}
-
-/* ===== CONFETTI ===== */
-.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
-.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0}
-
-/* ===== KEYFRAMES ===== */
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-
-/* ===== SPECIAL STYLES ===== */
-.spacer{flex:1}
-.mt-4{margin-top:4px}
-.mt-8{margin-top:8px}
-.emoji-big{font-size:2.2rem;line-height:1}
-.emoji-huge{font-size:3.5rem;line-height:1}
-.text-gold{color:#FFD54F}
-.text-white{color:#fff}
-.text-small{font-size:13px;color:rgba(255,255,255,.6)}
-
-/* ===== TENS FRAME ===== */
-.tens-frame{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;width:100%;max-width:340px;margin:4px 0}
-.tens-bundle{display:flex;flex-direction:column;align-items:center;gap:2px;background:rgba(255,255,255,.08);border-radius:10px;padding:6px 8px;border:1px solid rgba(255,255,255,.1)}
-.tens-bundle .bundle-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.5)}
-.tens-bundle .dots-row{display:flex;gap:2px}
-.tens-bundle .dot-unit{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3)}
-
-/* ===== PAIR GRID ===== */
-.pair-grid{display:flex;flex-direction:column;gap:8px;margin:6px 0;width:100%}
-.pair-row{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
-.pair-item{padding:6px 14px;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none}
-.pair-item.left-item{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);color:#fff;min-width:70px;text-align:center}
-.pair-item.right-item{background:rgba(255,213,79,.15);border:2px solid rgba(255,213,79,.3);color:#FFD54F;min-width:70px;text-align:center}
-.pair-item.matched{background:#66BB6A;border-color:#fff;color:#fff;pointer-events:none}
-.pair-item.selected{box-shadow:0 0 0 3px #fff;transform:scale(1.05)}
-
-/* ===== CELEBRATION ===== */
-.celebration-icon{font-size:4rem;animation:bounce 1.4s infinite}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-.check-list{list-style:none;padding:0;width:100%;max-width:320px}
-.check-list li{padding:6px 0 6px 28px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD54F'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E") left center/20px no-repeat;font-size:14px;font-weight:600;color:rgba(255,255,255,.9)}
+.page-title{font-size:28px;font-weight:900;color:#fff;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.page-sub{font-size:14px;color:rgba(255,255,255,.8);text-align:center}
+.card{background:rgba(255,255,255,.92);border-radius:16px;padding:12px 14px;width:100%;max-width:380px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card h4{font-size:14px;color:#1565C0;margin-bottom:4px}
+.card p{font-size:13px;color:#333;line-height:1.6}
+.cell{cursor:pointer;transition:all .15s;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;touch-action:manipulation;user-select:none}
+.cell:hover{background:rgba(255,255,255,.3)}
+.cell.highlight{background:rgba(255,213,79,.3);color:#FFD54F}
+.block-row{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;padding:4px}
+.block{width:28px;height:28px;background:rgba(255,255,255,.2);border-radius:4px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;transition:all .2s}
+.block.tens{background:#FFD54F;color:#1565C0}
+.block.on{background:rgba(255,255,255,.4)}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
+.quiz-opt:hover{border-color:#42A5F5;background:#E3F2FD}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;padding:4px 10px;border-radius:8px;display:none;text-align:center}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
+.nav-btn{background:rgba(255,255,255,.25);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.nav-btn:hover:not(:disabled){background:rgba(255,255,255,.4)}
+.dots{display:flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
+.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
+.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none}
+.goal-card li::before{content:'✅ '}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 </style>
-
-/* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
-  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
-    width: 100% !important;
-  }
-  body { padding: 12px 24px !important; }
-  .page, .slide-inner { padding: 32px 40px !important; }
-  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
-    max-width: 600px !important;
-  }
-  .page-num { font-size: 14px !important; }
-  h1, .title { font-size: 32px !important; }
-  h2 { font-size: 26px !important; }
-  h3 { font-size: 22px !important; }
-  p, li, .text { font-size: 18px !important; }
-  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
-  .scroll-card { flex: 0 0 180px !important; }
-  .scroll-card .sc-icon { font-size: 42px !important; }
-  .scroll-card .sc-name { font-size: 14px !important; }
-}
-
 </head>
 <body>
-
-<div class="slider" id="app">
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <a href="../" onclick="goSlide(0)" aria-label="首页">🏠</a>
-    <button onclick="speakPage()" aria-label="朗读">🔊</button>
-  </div>
-
-  <div class="slides" id="slides">
-
-    <!-- ============ SLIDE 0: COVER ============ -->
-    <div class="slide active" data-page="0">
-      <div class="page-label">LESSON 13</div>
-      <div class="spacer"></div>
-      <div class="emoji-huge">🔢</div>
-      <h1 style="margin-top:6px">认识<b style="color:#FFD54F">100以内</b>的数</h1>
-      <p class="small" style="margin-bottom:8px">Numbers Within 100</p>
-      <div class="image-wrap">
-        <img src="images/math-13/webp/page-00-cover.webp" onerror="this.style.display=\'none\'" alt="认识100以内的数 封面" loading="lazy">
-      </div>
-      <div class="card" style="text-align:center">
-        <p style="text-align:center">和 <b>Steve</b> &amp; <b>Alex</b> 一起<br>探索 0 到 100 的数字王国！</p>
-      </div>
-      <div class="spacer"></div>
-      <button class="option-btn" onclick="goSlide(1)" style="padding:12px 36px;font-size:16px;margin-bottom:4px">开始学习 🚀</button>
-      <p class="text-small">👆 滑动翻页 · 点击 🔊 听朗读</p>
-      <div class="spacer"></div>
-    </div>
-
-    <!-- ============ SLIDE 1: STORY INTRO ============ -->
-    <div class="slide" data-page="1">
-      <div class="page-label">PAGE 01 · 故事引入</div>
-      <div class="spacer" style="flex:0.2"></div>
-      <div class="emoji-big">🗺️⛰️</div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">Alex，快看这张地图！宝藏岛上有 100 级台阶！但我们只会数到 20……</div>
-      </div>
-      <div class="char-bubble alex">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble">别担心！我们只要学会用"十"来数，100 也能轻松搞定！</div>
-      </div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">"十"？你是说像 10 个一捆那种？</div>
-      </div>
-      <div class="char-bubble alex">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble">没错！10 个十就是 100！跟我来学吧！</div>
-      </div>
-      <div class="card" style="margin-top:4px">
-        <p style="text-align:center;font-weight:700">🎯 今日目标：认识 0~100 的所有数字！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 2: COUNTING BY TENS ============ -->
-    <div class="slide" data-page="2">
-      <div class="page-label">PAGE 02 · 十个十个数</div>
-      <div class="spacer" style="flex:0.15"></div>
-      <h2>🎯 10 个十个数</h2>
-      <p class="small">Counting by Tens</p>
-      <div class="image-wrap">
-        <img src="images/math-13/webp/page-02-tens.webp" onerror="this.style.display=\'none\'" alt="十个十个数" loading="lazy">
-      </div>
-      <div class="card">
-        <p>就像把 10 个东西捆成一捆，一捆就是一个"十"。</p>
-        <p style="margin-top:4px">10 个十 = <b class="highlight-text">100</b></p>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🔢 点击下面的按钮，十个十个数：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-bottom:6px">
-          <button class="option-btn" onclick="countByTens(1)">10</button>
-          <button class="option-btn" onclick="countByTens(2)">20</button>
-          <button class="option-btn" onclick="countByTens(3)">30</button>
-          <button class="option-btn" onclick="countByTens(4)">40</button>
-          <button class="option-btn" onclick="countByTens(5)">50</button>
-          <button class="option-btn" onclick="countByTens(6)">60</button>
-          <button class="option-btn" onclick="countByTens(7)">70</button>
-          <button class="option-btn" onclick="countByTens(8)">80</button>
-          <button class="option-btn" onclick="countByTens(9)">90</button>
-          <button class="option-btn" onclick="countByTens(10)">100</button>
-        </div>
-        <div id="tensDisplay" class="number-display" style="font-size:2rem;min-height:40px">10</div>
-        <div id="tensWords" style="font-size:14px;color:rgba(255,255,255,.6);min-height:20px">十</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 3: NUMBER CHART 1-100 ============ -->
-    <div class="slide" data-page="3">
-      <div class="page-label">PAGE 03 · 数字表 1~100</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>📊 数字表</h2>
-      <p class="small">Number Chart 1–100</p>
-      <div class="image-wrap">
-        <img src="images/math-13/webp/page-03-chart.webp" onerror="this.style.display=\'none\'" alt="数字表" loading="lazy">
-      </div>
-      <div class="card" style="padding:8px 10px">
-        <div class="num-grid" id="numGrid"></div>
-        <p class="text-small" style="margin-top:4px">高亮的行：<b style="color:#FFD54F">整十数</b> · 点击数字听读音</p>
-      </div>
-      <p style="font-size:13px;color:rgba(255,255,255,.6)">👆 点击格子里的数字可以听发音哦</p>
-    </div>
-
-    <!-- ============ SLIDE 4: TENS AND ONES ============ -->
-    <div class="slide" data-page="4">
-      <div class="page-label">PAGE 04 · 十位和个位</div>
-      <div class="spacer" style="flex:0.15"></div>
-      <h2>🧱 十位 · 个位</h2>
-      <p class="small">Tens Place &amp; Ones Place</p>
-      <div class="image-wrap">
-        <img src="images/math-13/webp/page-04-place.webp" onerror="this.style.display=\'none\'" alt="十位和个位" loading="lazy">
-      </div>
-      <div class="card">
-        <p><b class="highlight-text">十位</b>：有几个十 &nbsp;·&nbsp; <b class="highlight-text">个位</b>：有几个一</p>
-        <p style="margin-top:2px">例如：<b>24</b> = <b>2</b>个十 + <b>4</b>个一</p>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🎛️ 拖动滑块组成两位数：</p>
-        <div style="display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap">
-          <span style="font-weight:700;color:#FFD54F;font-size:13px">十位：</span>
-          <input type="range" id="tensSlider" min="1" max="9" value="2" step="1" oninput="updatePlaceValue()" style="width:80px;accent-color:#FFD54F">
-          <span id="tensVal" style="font-weight:800;color:#FFD54F;font-size:1.1rem">2</span>
-          <span style="font-weight:700;color:rgba(255,255,255,.7);font-size:13px">个位：</span>
-          <input type="range" id="onesSlider" min="0" max="9" value="4" step="1" oninput="updatePlaceValue()" style="width:80px;accent-color:#fff">
-          <span id="onesVal" style="font-weight:800;color:#fff;font-size:1.1rem">4</span>
-        </div>
-        <div id="pvDisplay" class="number-display">24</div>
-        <div id="pvBlocks" style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;min-height:32px"></div>
-        <div id="pvFormula" style="font-weight:700;color:rgba(255,255,255,.7);font-size:14px;margin-top:4px">2个十 + 4个一 = 24</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 5: NUMBERS 20-99 PATTERNS ============ -->
-    <div class="slide" data-page="5">
-      <div class="page-label">PAGE 05 · 几十几</div>
-      <div class="spacer" style="flex:0.15"></div>
-      <h2>🔢 20~99 的规律</h2>
-      <p class="small">The Pattern of Numbers 20–99</p>
-      <div class="image-wrap">
-        <img src="images/math-13/webp/page-05-pattern.webp" onerror="this.style.display=\'none\'" alt="20到99的规律" loading="lazy">
-      </div>
-      <div class="card">
-        <p style="text-align:center">
-          <span style="font-size:18px;font-weight:800">20</span> = <span style="color:#FFD54F">二</span><span style="color:#fff">十</span> &nbsp;·&nbsp;
-          <span style="font-size:18px;font-weight:800">35</span> = <span style="color:#FFD54F">三</span><span style="color:#fff">十</span><span style="color:#FFD54F">五</span> &nbsp;·&nbsp;
-          <span style="font-size:18px;font-weight:800">99</span> = <span style="color:#FFD54F">九</span><span style="color:#fff">十</span><span style="color:#FFD54F">九</span>
-        </p>
-        <p style="margin-top:4px;font-size:13px">十位数字读"几十"，个位数字读"几"</p>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🎯 点击按钮，听听数字的读法：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:5px;justify-content:center">
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(23)">23</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(37)">37</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(42)">42</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(56)">56</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(68)">68</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(74)">74</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(81)">81</button>
-          <button class="option-btn" style="padding:6px 14px;font-size:13px" onclick="speakNumber(99)">99</button>
-        </div>
-        <div id="speakNumDisplay" style="font-size:1.8rem;font-weight:900;color:#FFD54F;margin-top:6px;min-height:36px">&nbsp;</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 6: COUNTING PRACTICE ============ -->
-    <div class="slide" data-page="6">
-      <div class="page-label">PAGE 06 · 数一数</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>✏️ 数一数，选数字</h2>
-      <p class="small">Count and Choose</p>
-      <div class="interact-area" style="text-align:center;min-height:120px">
-        <div id="countEmoji" style="font-size:1.8rem;margin-bottom:6px;letter-spacing:2px;line-height:1.4">🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎🍎</div>
-        <p style="font-size:13px;color:rgba(255,255,255,.6)">数一数上面有多少个？</p>
-        <div id="countOptions" class="option-grid" style="margin-top:6px"></div>
-        <div id="countFeedback" class="feedback"></div>
-        <button class="option-btn" onclick="nextCountItem()" style="margin-top:4px;padding:6px 20px;font-size:13px">下一题 →</button>
-      </div>
-      <div class="card" style="padding:8px 12px;margin-top:2px">
-        <p style="font-size:13px;text-align:center">💡 先数有几个十，再数有几个一！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 7: FILL IN THE BLANKS ============ -->
-    <div class="slide" data-page="7">
-      <div class="page-label">PAGE 07 · 填一填</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🔢 数字接龙</h2>
-      <p class="small">Fill in the Missing Numbers</p>
-      <div class="interact-area" style="text-align:center;min-height:100px">
-        <p style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:6px">点击 <b style="color:#FFD54F">?</b> 填入正确的数字</p>
-        <div id="seqSlots" class="seq-slots" style="justify-content:center"></div>
-        <div id="seqFeedback" class="feedback"></div>
-        <button class="option-btn" onclick="checkSequence()" style="margin-top:6px;padding:6px 24px;font-size:13px">✅ 检查答案</button>
-      </div>
-      <div class="interact-area" style="text-align:center;margin-top:4px;min-height:80px">
-        <p class="q-text">🔗 连一连：数字 ↔ 分解</p>
-        <div class="pair-grid" id="pairGrid">
-          <div class="pair-row" data-pair="0">
-            <span class="pair-item left-item" data-pair-id="0">36</span>
-            <span style="color:rgba(255,255,255,.3)">⟷</span>
-            <span class="pair-item right-item" data-pair-id="0">3个十+6个一</span>
-          </div>
-          <div class="pair-row" data-pair="1">
-            <span class="pair-item left-item" data-pair-id="1">50</span>
-            <span style="color:rgba(255,255,255,.3)">⟷</span>
-            <span class="pair-item right-item" data-pair-id="1">5个十</span>
-          </div>
-          <div class="pair-row" data-pair="2">
-            <span class="pair-item left-item" data-pair-id="2">84</span>
-            <span style="color:rgba(255,255,255,.3)">⟷</span>
-            <span class="pair-item right-item" data-pair-id="2">8个十+4个一</span>
-          </div>
-          <div class="pair-row" data-pair="3">
-            <span class="pair-item left-item" data-pair-id="3">100</span>
-            <span style="color:rgba(255,255,255,.3)">⟷</span>
-            <span class="pair-item right-item" data-pair-id="3">10个十</span>
-          </div>
-        </div>
-        <div id="pairFeedback" class="feedback"></div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 8: CHALLENGE QUIZ ============ -->
-    <div class="slide" data-page="8">
-      <div class="page-label">PAGE 08 · 闯关挑战</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <div class="emoji-big">🏆</div>
-      <h2>🎯 闯关挑战</h2>
-      <p class="small">Challenge Quiz</p>
-      <div class="interact-area" style="text-align:center;min-height:140px">
-        <p class="q-text" id="challengeQ">🧮 第 1 题：6个十 + 3个一 = ？</p>
-        <div id="challengeOptions" class="option-grid"></div>
-        <div id="challengeFeedback" class="feedback"></div>
-        <div id="challengeScore" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">得分：0 / 5</div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💪 全部答对可获得宝藏徽章！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 9: CELEBRATION ============ -->
-    <div class="slide" data-page="9">
-      <div class="page-label">🎉 完成</div>
-      <div class="spacer"></div>
-      <div class="celebration-icon">🏆</div>
-      <h2 style="margin-top:8px">恭喜你完成学习！</h2>
-      <p class="small">你已掌握 100 以内的数！</p>
-      <div class="char-bubble steve" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble" style="background:rgba(255,243,224,.9)">太棒了！我现在能从 1 数到 100 了！</div>
-      </div>
-      <div class="char-bubble alex" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble" style="background:rgba(232,245,233,.9)">做得好！100 级台阶我们也能轻松数清了！</div>
-      </div>
-      <ul class="check-list" style="margin:6px 0">
-        <li>✅ 我认识 0~100 的数字</li>
-        <li>✅ 我知道整十数的规律</li>
-        <li>✅ 我会拆成"十位"和"个位"</li>
-        <li>✅ 我会读 20~99 的数字</li>
-      </ul>
-      <div class="emoji-big" style="margin:4px 0">🗺️💎</div>
-      <p style="font-weight:800;color:#FFD54F;font-size:16px">获得宝藏徽章！</p>
-      <button class="option-btn" onclick="restartLesson()" style="margin-top:8px;padding:10px 32px;font-size:14px;margin-bottom:8px">🔄 重新学习</button>
-      <div class="spacer"></div>
-    </div>
-
-  </div><!-- /slides -->
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <button id="prevBtn" onclick="prevSlide()">◀</button>
-    <div class="dots" id="dots"></div>
-    <button id="nextBtn" onclick="nextSlide()">▶</button>
-  </div>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-14-addsub2digit.html">▶</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
 </div>
-
-<!-- ===== CONFETTI CONTAINER ===== -->
-<div class="confetti-container" id="confettiContainer"></div>
-
+</div>
+<div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
 <script>
-// ===== CONFIG =====
-const TOTAL_SLIDES = 10; // 0-9
-let currentSlide = 0;
-let countItemIndex = 0;
-let challengeIdx = 0;
-let challengeScore = 0;
-let selectedLeft = null;
-let selectedRight = null;
-let matchedPairs = new Set();
+const pages=[{
+cover:true,icon:'💯',title:'认识100以内的数',subtitle:'数学课 第13课',goals:['认识数字 0 到 100','理解十位和个位','会数整十数','会用数字玩游戏']
+},{
+title:'🎬 数字王国',text:'Steve和Alex来到数字王国。"这里有好多数字！从0到100，每个数字都有它的位置。"<br><br>"10个1就是10！10个10就是100！"<br>Alex说："让我们从1数到100吧！"',svg:'<svg viewBox="0 0 280 80" style="width:90%;max-width:280px"><text x="10" y="25" font-size="14" fill="white" font-weight="700">1 2 3 4 5 6 7 8 9 10</text><text x="10" y="45" font-size="14" fill="rgba(255,255,255,.7)">11 12 ... 20</text><text x="10" y="65" font-size="14" fill="rgba(255,255,255,.5)">... 90 91 ... 100</text></svg>'
+},{
+title:'🔢 十位和个位',text:'一个十 = 10个一<br><br>23 = 2个十 + 3个一<br>47 = 4个十 + 7个一<br>80 = 8个十 + 0个一<br><br>左边是十位，右边是个位！',svg:'<svg viewBox="0 0 300 110" style="width:90%;max-width:300px"><rect x="10" y="10" width="110" height="20" rx="4" fill="#FFD54F"/><text x="20" y="24" font-size="11" fill="#1565C0" font-weight="700">十位 2个十=20</text><rect x="10" y="40" width="110" height="20" rx="4" fill="rgba(255,255,255,.4)"/><text x="20" y="54" font-size="11" fill="#fff" font-weight="700">个位 3个一=3</text><text x="65" y="85" font-size="14" fill="#fff" font-weight="800">20+3=23</text></svg>'
+},{
+title:'🔢 百数表',text:'1到100的表格。每行10个数字。<br><br>整十数：10, 20, 30...一直到100！<br>这些数字的个位都是0。',grid:true
+},{
+title:'👆 数一数',interactive:true,subtitle:'点击方块，数到10！',countGame:true
+},{
+title:'🤔 常见误解',items:[
+{title:'5 > 50?',w:'数字5比50大？',r:'不对！50有5个十，比5大得多！'},
+{title:'100写错',w:'100写成1000？',r:'100只有三个数字：1-0-0！'},
+{title:'整十数',w:'55是整十数？',r:'个位是0才是整十数！55的个位是5，不是整十数。'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'哪个数字更大？',options:['23','32','一样大'],correct:1
+},{
+title:'🧠 比一比',interactive:true,type:'quiz2',q:'哪个是整十数？',options:['45','70','99'],correct:1
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了认识100以内的数！🏅<br>获得「数字小达人」徽章！<br><br>从1到100，每个数字都有它的故事。<br>继续加油！'
+}];
 
-// ===== SPEECH =====
-function speakText(text) {
-  if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.9;
-    u.pitch = 1.1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
-  }
-}
+let cur=0,score=0,quizA={};
 
-function speakNumber(n) {
-  const names = ['零','一','二','三','四','五','六','七','八','九'];
-  let text = '';
-  if (n === 100) { text = '一百'; }
-  else if (n === 0) { text = '零'; }
-  else {
-    const tens = Math.floor(n / 10);
-    const ones = n % 10;
-    if (tens === 1) { text = '十'; }
-    else { text = names[tens] + '十'; }
-    if (ones > 0) { text += names[ones]; }
-  }
-  document.getElementById('speakNumDisplay').textContent = n + ' → ' + text;
-  speakText(text);
-}
-
-function speakPage() {
-  const title = document.querySelector('.slide.active h2, .slide.active h1');
-  if (title) speakText(title.innerText);
-}
-
-// ===== NAVIGATION =====
-function buildDots() {
-  const c = document.getElementById('dots');
-  c.innerHTML = '';
-  for (let i = 0; i < TOTAL_SLIDES; i++) {
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goSlide(i);
-    c.appendChild(d);
-  }
-}
-
-function goSlide(idx) {
-  if (idx < 0 || idx >= TOTAL_SLIDES) return;
-  const slides = document.querySelectorAll('.slide');
-  slides.forEach((s, i) => {
-    s.classList.remove('active', 'exit');
-    if (i === idx) s.classList.add('active');
-    else s.classList.add('exit');
-  });
-  currentSlide = idx;
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.className = 'dot' + (i === idx ? ' active' : '');
-  });
-  document.getElementById('prevBtn').disabled = idx === 0;
-  document.getElementById('nextBtn').disabled = idx === TOTAL_SLIDES - 1;
-
-  // Animate elements
-  gsap.fromTo('.slide.active .char-bubble, .slide.active .card, .slide.active .interact-area, .slide.active .image-wrap',
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
-  );
-
-  if (idx === TOTAL_SLIDES - 1) launchConfetti();
-}
-
-function nextSlide() { goSlide(currentSlide + 1); }
-function prevSlide() { goSlide(currentSlide - 1); }
-
-function restartLesson() {
-  resetAll();
-  goSlide(0);
-}
-
-function resetAll() {
-  countItemIndex = 0;
-  challengeIdx = 0;
-  challengeScore = 0;
-  matchedPairs = new Set();
-  selectedLeft = null;
-  selectedRight = null;
-  document.querySelectorAll('.pair-item').forEach(el => el.classList.remove('matched', 'selected'));
-  document.getElementById('pairFeedback').textContent = '';
-  document.getElementById('challengeScore').textContent = '得分：0 / 5';
-  initCountExercise();
-  initSequence();
-  initChallenge();
-  updatePlaceValue();
-}
-
-// ===== SLIDE 2: COUNT BY TENS =====
-function countByTens(n) {
-  const num = n * 10;
-  const names = ['零','一','二','三','四','五','六','七','八','九','十'];
-  let text;
-  if (n === 1) text = '十';
-  else if (n === 10) text = '一百';
-  else text = names[n] + '十';
-  document.getElementById('tensDisplay').textContent = num;
-  document.getElementById('tensWords').textContent = text;
-  speakText(text);
-  gsap.fromTo('#tensDisplay', { scale: 1.5, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out' });
-}
-
-// ===== SLIDE 3: NUMBER GRID =====
-function buildNumGrid() {
-  const grid = document.getElementById('numGrid');
-  grid.innerHTML = '';
-  for (let i = 1; i <= 100; i++) {
-    const cell = document.createElement('div');
-    cell.className = 'num-cell';
-    if (i % 10 === 0) cell.classList.add('round');
-    cell.textContent = i;
-    cell.onclick = (function(n) { return function() { speakNumber(n); }; })(i);
-    grid.appendChild(cell);
-  }
-  // Highlight tens row after render
-  setTimeout(() => {
-    const cells = grid.querySelectorAll('.num-cell');
-    cells.forEach((c, i) => {
-      const n = i + 1;
-      if (n % 10 === 0 || n === 1) c.classList.add('tens');
-    });
-  }, 100);
-}
-
-// ===== SLIDE 4: PLACE VALUE =====
-function updatePlaceValue() {
-  const t = parseInt(document.getElementById('tensSlider').value);
-  const o = parseInt(document.getElementById('onesSlider').value);
-  document.getElementById('tensVal').textContent = t;
-  document.getElementById('onesVal').textContent = o;
-  const num = t * 10 + o;
-  document.getElementById('pvDisplay').textContent = num;
-  document.getElementById('pvFormula').textContent = t + '个十 + ' + o + '个一 = ' + num;
-  const container = document.getElementById('pvBlocks');
-  container.innerHTML = '';
-  for (let i = 0; i < t; i++) {
-    const b = document.createElement('span');
-    b.className = 'block-unit tens-block';
-    b.textContent = '10';
-    container.appendChild(b);
-  }
-  for (let i = 0; i < o; i++) {
-    const b = document.createElement('span');
-    b.className = 'block-unit ones-block';
-    b.textContent = '1';
-    container.appendChild(b);
-  }
-  const names = ['零','一','二','三','四','五','六','七','八','九'];
-  let text = '';
-  if (t === 1) text = '十';
-  else text = names[t] + '十';
-  if (o > 0) text += names[o];
-  speakText(text);
-}
-
-// ===== SLIDE 6: COUNTING EXERCISE =====
-const countItems = [
-  { emoji: '🍎', count: 23, options: [21, 23, 25] },
-  { emoji: '⭐', count: 37, options: [35, 37, 39] },
-  { emoji: '🧱', count: 42, options: [40, 42, 44] },
-  { emoji: '🌻', count: 56, options: [54, 56, 58] },
-  { emoji: '💎', count: 64, options: [62, 64, 66] },
-];
-
-function initCountExercise() {
-  countItemIndex = 0;
-  renderCountItem();
-}
-
-function renderCountItem() {
-  if (countItemIndex >= countItems.length) {
-    document.getElementById('countEmoji').textContent = '🎉';
-    document.getElementById('countOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700">全部完成！太棒了！</span>';
-    document.getElementById('countFeedback').textContent = '';
-    return;
-  }
-  const item = countItems[countItemIndex];
-  document.getElementById('countEmoji').textContent = item.emoji.repeat(Math.min(item.count, 80));
-  const cont = document.getElementById('countOptions');
-  cont.innerHTML = '';
-  item.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.answer = opt;
-    btn.onclick = function() { checkCountAnswer(this, opt, item.count); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('countFeedback').textContent = '';
-}
-
-function checkCountAnswer(btn, selected, correct) {
-  const fb = document.getElementById('countFeedback');
-  document.querySelectorAll('#countOptions .option-btn').forEach(b => b.classList.add('disabled'));
-  if (selected === correct) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 正确！数得真准！' + correct + '个！';
-    speakText('正确，一共' + correct + '个');
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再数数看，仔细一点哦！';
-  }
-}
-
-function nextCountItem() {
-  countItemIndex++;
-  renderCountItem();
-}
-
-// ===== SLIDE 7: SEQUENCE =====
-const seqData = [
-  { filled: [21, 22, '__', 24, 25, '__', 27, 28, 29, 30], answers: [23, 26] },
-  { filled: [45, '__', 47, 48, '__', 50, 51, 52, 53, 54], answers: [46, 49] },
-  { filled: [68, 69, '__', 71, 72, '__', 74, 75, 76, 77], answers: [70, 73] },
-  { filled: [92, 93, 94, '__', 96, 97, '__', 99, 100], answers: [95, 98] },
-];
-let seqIdx = 0;
-let seqFilled = {};
-let seqCurrent = null;
-
-function initSequence() {
-  seqIdx = 0;
-  seqFilled = {};
-  renderSequence();
-}
-
-function renderSequence() {
-  if (seqIdx >= seqData.length) {
-    document.getElementById('seqSlots').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:16px">🎉 全部完成！</span>';
-    document.getElementById('seqFeedback').textContent = '';
-    document.getElementById('seqFeedback').className = 'feedback correct';
-    document.getElementById('seqFeedback').textContent = '数字接龙高手！';
-    return;
-  }
-  seqFilled = {};
-  const item = seqData[seqIdx];
-  const cont = document.getElementById('seqSlots');
-  cont.innerHTML = '';
-  item.filled.forEach((val, i) => {
-    const slot = document.createElement('div');
-    slot.className = 'seq-slot';
-    if (val === '__') {
-      slot.classList.add('empty');
-      slot.textContent = '?';
-      slot.dataset.idx = i;
-      slot.onclick = function() { fillSeqSlot(this, i); };
-    } else {
-      slot.classList.add('filled');
-      slot.textContent = val;
+function render(n){
+  const el=document.getElementById('slides');
+  const p=pages[n];
+  if(!p)return;
+  let h='';
+  if(p.cover){
+    h=`<div class="slide active"><div style="font-size:64px;margin:4px 0">${p.icon}</div><div class="page-title">${p.title}</div>`;
+    if(p.subtitle)h+=`<p class="page-sub">${p.subtitle}</p>`;
+    if(p.goals){
+      h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;
+      p.goals.forEach(g=>h+=`<li>${g}</li>`);
+      h+=`</ul></div><p style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px">👆 点下一步</p>`;
     }
-    cont.appendChild(slot);
-  });
-  document.getElementById('seqFeedback').textContent = '';
-  const seqLabel = document.createElement('p');
-  seqLabel.style.cssText = 'font-size:12px;color:rgba(255,255,255,.5);margin-top:4px';
-  seqLabel.textContent = '第 ' + (seqIdx + 1) + ' 行';
-  cont.parentNode.insertBefore(seqLabel, cont.nextSibling);
-  seqCurrent = item;
-}
-
-function fillSeqSlot(slot, idx) {
-  const blankIdx = seqCurrent.filled.slice(0, idx).filter(v => v === '__').length;
-  if (blankIdx >= seqCurrent.answers.length) return;
-  const correctVal = seqCurrent.answers[blankIdx];
-  const opts = [correctVal - 1, correctVal, correctVal + 1];
-  // Replace slot with option picker
-  const selDiv = document.createElement('div');
-  selDiv.style.display = 'flex';
-  selDiv.style.gap = '4px';
-  opts.forEach(v => {
-    const b = document.createElement('button');
-    b.className = 'option-btn';
-    b.style.padding = '4px 10px';
-    b.style.fontSize = '.8rem';
-    b.textContent = v;
-    b.onclick = function(e) {
-      e.stopPropagation();
-      slot.textContent = v;
-      slot.classList.remove('empty');
-      slot.classList.add('filled');
-      slot.style.cursor = 'default';
-      seqFilled[idx] = v;
-      slot.onclick = null;
-      selDiv.replaceWith(slot.cloneNode(true));
-    };
-    selDiv.appendChild(b);
-  });
-  slot.replaceWith(selDiv);
-}
-
-function checkSequence() {
-  const fb = document.getElementById('seqFeedback');
-  if (seqIdx >= seqData.length) { return; }
-  const item = seqData[seqIdx];
-  const blanks = [];
-  item.filled.forEach((v, i) => { if (v === '__') blanks.push(i); });
-  const filledKeys = Object.keys(seqFilled);
-  if (filledKeys.length < blanks.length) {
-    fb.className = 'feedback wrong';
-    fb.textContent = '⚠️ 还有 ? 没有填完哦！';
-    return;
-  }
-  let correct = true;
-  for (let i = 0; i < blanks.length; i++) {
-    const idx = blanks[i];
-    if (seqFilled[idx] === undefined || seqFilled[idx] !== item.answers[i]) {
-      correct = false;
-      break;
+    h+=`</div>`;
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:26px;color:#fff">${p.title}</h2><p style="font-size:15px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.15)">${p.title}</h3>`;
+    if(p.subtitle)h+=`<p style="font-size:13px;color:rgba(255,255,255,.8);text-align:center">${p.subtitle}</p>`;
+    if(p.countGame){
+      h+=`<div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;max-width:300px" id="blocks">`;
+      for(let i=0;i<10;i++)h+=`<div class="block" id="b${i}" onclick="clickBlock(${i})">${i+1}</div>`;
+      h+=`</div><div style="font-size:24px;color:#fff;font-weight:800" id="countDisplay">已数: 0</div>`;
     }
-  }
-  if (correct) {
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 正确！继续下一行！';
-    speakText('正确');
-    seqIdx++;
-    renderSequence();
-  } else {
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 有填错的地方，再检查一下吧！';
-  }
-}
-
-// ===== SLIDE 7: PAIR EXERCISE =====
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('.pair-item').forEach(function(el) {
-    el.addEventListener('click', function() {
-      if (this.classList.contains('matched')) return;
-      const pid = this.dataset.pairId;
-      if (this.classList.contains('left-item')) {
-        if (selectedLeft) selectedLeft.classList.remove('selected');
-        selectedLeft = this;
-        this.classList.add('selected');
-      } else {
-        if (selectedRight) selectedRight.classList.remove('selected');
-        selectedRight = this;
-        this.classList.add('selected');
-      }
-      if (selectedLeft && selectedRight) {
-        checkPair();
-      }
-    });
-  });
-});
-
-function checkPair() {
-  const fb = document.getElementById('pairFeedback');
-  const lid = selectedLeft.dataset.pairId;
-  const rid = selectedRight.dataset.pairId;
-  if (lid === rid && !matchedPairs.has(lid)) {
-    matchedPairs.add(lid);
-    selectedLeft.classList.remove('selected');
-    selectedRight.classList.remove('selected');
-    selectedLeft.classList.add('matched');
-    selectedRight.classList.add('matched');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 配对成功！';
-    speakText('配对正确');
-    if (matchedPairs.size === 4) {
-      fb.textContent = '🎉 全部配对完成！太棒了！';
-      launchConfetti();
-    }
-  } else {
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 不匹配，再试试！';
-    setTimeout(function() {
-      selectedLeft.classList.remove('selected');
-      selectedRight.classList.remove('selected');
-    }, 600);
-  }
-  selectedLeft = null;
-  selectedRight = null;
-}
-
-// ===== SLIDE 8: CHALLENGE =====
-const challengeData = [
-  { q: '🧮 第 1 题：6个十 + 3个一 = ？', options: ['36', '63', '93'], answer: '63' },
-  { q: '🧮 第 2 题：85 等于几个十和几个一？', options: ['8个十+5个一', '5个十+8个一', '85个一'], answer: '8个十+5个一' },
-  { q: '🧮 第 3 题：100 是什么？', options: ['10个十', '100个一', '都是'], answer: '都是' },
-  { q: '🧮 第 4 题：七十八写作什么？', options: ['68', '78', '87'], answer: '78' },
-  { q: '🧮 第 5 题：几个十是 90？', options: ['7个十', '8个十', '9个十'], answer: '9个十' },
-];
-
-function initChallenge() {
-  challengeIdx = 0;
-  challengeScore = 0;
-  renderChallenge();
-}
-
-function renderChallenge() {
-  if (challengeIdx >= challengeData.length) {
-    document.getElementById('challengeQ').textContent = '🎉 全部答对！获得宝藏徽章！';
-    document.getElementById('challengeOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:1.1rem">🏆 你太厉害了！</span>';
-    document.getElementById('challengeFeedback').textContent = '';
-    document.getElementById('challengeScore').textContent = '最终得分：' + challengeScore + ' / ' + challengeData.length;
-    launchConfetti();
-    return;
-  }
-  const item = challengeData[challengeIdx];
-  document.getElementById('challengeQ').textContent = item.q;
-  document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-  const cont = document.getElementById('challengeOptions');
-  cont.innerHTML = '';
-  item.options.forEach(function(opt) {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.val = opt;
-    btn.onclick = function() { checkChallenge(this, opt, item.answer); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('challengeFeedback').textContent = '';
-}
-
-function checkChallenge(btn, selected, answer) {
-  const fb = document.getElementById('challengeFeedback');
-  document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) { b.classList.add('disabled'); });
-  if (selected === answer) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 回答正确！';
-    challengeScore++;
-    document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-    speakText('回答正确');
-    setTimeout(function() {
-      challengeIdx++;
-      renderChallenge();
-    }, 1200);
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再想想！仔细看看十位和个位！';
-    setTimeout(function() {
-      document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) {
-        b.classList.remove('disabled', 'wrong');
+    if(p.type==='quiz'||p.type==='quiz2'){
+      h+=`<div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+      p.options.forEach((o,i)=>{
+        h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;
       });
-      fb.textContent = '';
-    }, 1200);
+      h+=`<div class="feedback" id="fb${n}"></div></div>`;
+    }
+    h+=`</div>`;
+  }else if(p.grid){
+    h=`<div class="slide active" style="gap:2px"><h3 style="font-size:18px;color:#fff">百数表</h3><svg viewBox="0 0 300 270" style="width:95%;max-width:300px">`;
+    for(let r=0;r<10;r++){
+      for(let c=0;c<10;c++){
+        let num=r*10+c+1;
+        let col=r%2===0?'rgba(255,255,255,.15)':'rgba(255,255,255,.08)';
+        if(num%10===0)col='rgba(255,213,79,.25)';
+        h+=`<rect x="${c*30}" y="${r*27}" width="28" height="25" rx="3" fill="${col}"/>`;
+        h+=`<text x="${c*30+14}" y="${r*27+17}" font-size="11" fill="${num%10===0?'#FFD54F':'rgba(255,255,255,.8)'}" text-anchor="middle" font-weight="${num%10===0?'800':'400'}">${num}</text>`;
+      }
+    }
+    h+=`</svg><p style="font-size:12px;color:rgba(255,255,255,.6)">🟡 黄色=整十数</p></div>`;
+  }else{
+    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.15)">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;
+    if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
+    if(p.items){
+      p.items.forEach(it=>{
+        h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="color:#1565C0">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;
+      });
+    }
+    h+=`</div>`;
+  }
+  el.innerHTML=h;
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===pages.length-1;
+  updateDots(n);
+  gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
+}
+
+let blockCount=0,blockDone=false;
+function clickBlock(i){
+  if(blockDone)return;
+  const el=document.getElementById('b'+i);
+  if(el&&!el.classList.contains('on')){
+    el.classList.add('on');
+    el.style.background='#FFD54F';
+    el.style.color='#1565C0';
+    blockCount++;
+    document.getElementById('countDisplay').textContent='已数: '+blockCount+' / 10';
+    if(blockCount===10){
+      blockDone=true;
+      document.getElementById('countDisplay').innerHTML='🎉 数到10了！太棒了！';
+      gsap.fromTo('#countDisplay',{scale:1.3},{scale:1,duration:.3,ease:'back.out(3)'});
+    }
   }
 }
 
-// ===== CONFETTI =====
-function launchConfetti() {
-  const container = document.getElementById('confettiContainer');
-  container.innerHTML = '';
-  const colors = ['#42A5F5','#FFA726','#EF5350','#66BB6A','#AB47BC','#FFD54F','#26C6DA','#EC407A'];
-  for (let i = 0; i < 80; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const left = Math.random() * 100;
-    const size = 6 + Math.random() * 8;
-    const rotation = Math.random() * 360;
-    piece.style.cssText =
-      'left:' + left + '%;' +
-      'top:-20px;' +
-      'width:' + size + 'px;' +
-      'height:' + size + 'px;' +
-      'background:' + color + ';' +
-      'transform:rotate(' + rotation + 'deg);' +
-      'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
-    container.appendChild(piece);
-    gsap.to(piece, {
-      y: window.innerHeight + 100,
-      x: (-100 + Math.random() * 200),
-      rotation: rotation + 360 * Math.random() * 3,
-      duration: 2 + Math.random() * 2,
-      delay: Math.random() * 0.8,
-      ease: 'power1.out',
-      opacity: 1,
-    });
+function clickQuiz(n,i){
+  const p=pages[n];
+  if(quizA[n])return;
+  quizA[n]=true;
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach((el,j)=>{
+    el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');
+  });
+  const fb=document.getElementById('fb'+n);
+  if(fb){
+    fb.className='feedback show '+(i===p.correct?' good':' bad');
+    fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';
   }
-  setTimeout(function() {
-    gsap.to('.confetti-piece', { opacity: 0, duration: 0.5, onComplete: function() { container.innerHTML = ''; } });
-  }, 4000);
 }
 
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', function() {
-  buildDots();
-  buildNumGrid();
-  updatePlaceValue();
-  initCountExercise();
-  initSequence();
-  initChallenge();
-  gsap.from('.slide[data-page="0"] .emoji-huge, .slide[data-page="0"] h1, .slide[data-page="0"] .image-wrap, .slide[data-page="0"] .card, .slide[data-page="0"] .option-btn',
-    { opacity: 0, y: 20, duration: 0.5, stagger: 0.12, ease: 'power2.out' });
-});
+function go(d){
+  cur=Math.max(0,Math.min(pages.length-1,cur+d));
+  render(cur);
+}
+
+function updateDots(n){
+  const el=document.getElementById('dots');
+  el.innerHTML='';
+  for(let i=0;i<pages.length;i++){
+    const d=document.createElement('button');
+    d.className='dot'+(i===n?' active':'');
+    d.onclick=()=>{cur=i;render(cur);};
+    el.appendChild(d);
+  }
+}
+
+function doConfetti(){
+  const el=document.getElementById('confetti');
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div');
+    const s=5+Math.random()*8,c=colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText=`position:absolute;left:${Math.random()*100}%;top:-10px;width:${s}px;height:${s}px;background:${c};border-radius:${Math.random()>.5?'50%':'2px'};animation:confetti-fall ${2+Math.random()*2}s ease-in ${Math.random()*2}s forwards;`;
+    el.appendChild(p);
+    setTimeout(()=>p.remove(),4500);
+  }
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render(0);
 </script>
-
 </body>
 </html>

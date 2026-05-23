@@ -8,681 +8,113 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-/* ===== RESET & BASE ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
-body{font-family:'Nunito',sans-serif;background:#1565C0;display:flex;align-items:center;justify-content:center;min-height:100dvh}
-
-/* ===== SLIDE CONTAINER ===== */
-.slider{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0;box-shadow:none}
-@media(min-width:460px){.slider{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
-
-/* ===== TOP BAR ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
 .top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
-.top-bar a,.top-bar button{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s,transform .2s}
-.top-bar a:hover,.top-bar button:hover{background:rgba(255,255,255,.32);transform:scale(1.08)}
-.top-bar a:active,.top-bar button:active{transform:scale(.92)}
-
-/* ===== SLIDES ===== */
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer}
 .slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 18px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;gap:6px;-webkit-overflow-scrolling:touch}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px}
 .slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
-.slide.exit{opacity:0;visibility:hidden;position:absolute;z-index:1}
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px 10px;background:rgba(0,0,0,.07);backdrop-filter:blur(4px)}
-.bottom-nav button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.1);border-radius:30px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
-.bottom-nav button:hover{background:rgba(255,255,255,.35);transform:scale(1.08)}
-.bottom-nav button:active{transform:scale(.92)}
-.bottom-nav button:disabled{opacity:.25;pointer-events:none;transform:none!important}
-.dots{display:flex;gap:5px}
-.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.08);padding:0;cursor:pointer;transition:all .35s ease}
-.dot.active{background:#fff;transform:scale(1.3);box-shadow:0 0 10px rgba(255,255,255,.55);border-color:#fff}
-
-/* ===== TYPOGRAPHY ===== */
-h1{font-size:27px;font-weight:900;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.22);text-align:center;line-height:1.2}
-h2{font-size:23px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.18);text-align:center;letter-spacing:.5px}
-h3{font-size:19px;font-weight:700;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.15);text-align:center}
-p{font-size:16px;font-weight:400;color:rgba(255,255,255,.9);text-align:center;line-height:1.5;max-width:360px}
-p.big{font-size:20px;font-weight:700}
-p.small{font-size:14px;color:rgba(255,255,255,.7)}
-
-/* ===== PAGE LABEL ===== */
-.page-label{position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:20;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.1)}
-
-/* ===== IMAGES ===== */
-.image-wrap{width:100%;max-width:360px;margin:4px auto;display:flex;justify-content:center}
-.image-wrap img{width:100%;max-width:400px;border-radius:16px;display:block;box-shadow:0 4px 20px rgba(0,0,0,.12)}
-
-/* ===== CONTENT CARDS ===== */
-.card{width:100%;max-width:360px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px;padding:14px 16px;margin:4px 0;border:1px solid rgba(255,255,255,.1)}
-.card h3{font-size:16px;font-weight:800;color:#fff;text-align:left;margin-bottom:4px}
-.card p{font-size:14px;color:rgba(255,255,255,.85);text-align:left;line-height:1.5}
-.card .highlight-text{color:#FFD54F;font-weight:700}
-
-/* ===== CHARACTER BUBBLES ===== */
-.char-bubble{display:flex;gap:10px;align-items:flex-start;margin:4px 0;width:100%;max-width:360px;animation:fadeUp .5s ease both}
-.char-bubble.steve{flex-direction:row}
-.char-bubble.alex{flex-direction:row-reverse}
-.char-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 3px 8px rgba(0,0,0,.15)}
-.char-avatar.steve-avatar{background:rgba(255,243,224,.9)}
-.char-avatar.alex-avatar{background:rgba(232,245,233,.9)}
-.bubble{max-width:78%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.char-bubble.steve .bubble{background:rgba(255,243,224,.9);border-bottom-left-radius:4px;color:#4e342e}
-.char-bubble.alex .bubble{background:rgba(232,245,233,.9);border-bottom-right-radius:4px;color:#1b5e20}
-
-/* ===== INTERACTIVE ===== */
-.interact-area{width:100%;max-width:360px;background:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:2px dashed rgba(255,255,255,.2);border-radius:16px;padding:14px;margin:4px 0;min-height:80px}
-.interact-area .q-text{font-weight:700;color:#fff;margin-bottom:8px;font-size:15px;text-align:center}
-.option-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.option-btn{padding:8px 20px;border:2px solid rgba(255,255,255,.25);border-radius:14px;background:rgba(255,255,255,.12);font-family:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;min-width:50px;text-align:center;-webkit-tap-highlight-color:transparent}
-.option-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.05)}
-.option-btn:active{transform:scale(.95)}
-.option-btn.selected{background:rgba(255,255,255,.3);border-color:#fff;box-shadow:0 4px 12px rgba(255,255,255,.2)}
-.option-btn.correct{background:#66BB6A;border-color:#fff;color:#fff;animation:pulse .5s}
-.option-btn.wrong{background:#EF5350;border-color:#fff;color:#fff;animation:shake .4s}
-.option-btn.disabled{pointer-events:none;opacity:.5}
-.feedback{margin-top:8px;font-weight:700;text-align:center;min-height:24px;font-size:14px}
-.feedback.correct{color:#A5D6A7}
-.feedback.wrong{color:#EF9A9A}
-
-/* ===== CLOCK SPECIFIC ===== */
-.clock-svg-wrap{width:100%;max-width:280px;margin:2px auto;display:flex;justify-content:center}
-.clock-svg-wrap svg{width:100%;height:auto;display:block;filter:drop-shadow(0 4px 16px rgba(0,0,0,.15));border-radius:50%}
-.hand-label{display:inline-flex;align-items:center;gap:4px;margin:2px 6px;font-size:13px;color:rgba(255,255,255,.85)}
-.hand-label .h-icon{font-size:18px}
-.hand-label .h-name{font-weight:700}
-.hand-label .h-desc{font-size:12px;color:rgba(255,255,255,.6)}
-.clock-card{background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.12);border-radius:14px;padding:8px 12px;margin:3px 0;width:100%;max-width:340px;text-align:center}
-.clock-card .clock-time{font-size:28px;font-weight:900;color:#FFD54F;letter-spacing:1px}
-.clock-card .clock-desc{font-size:13px;color:rgba(255,255,255,.7)}
-.time-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:4px 0}
-
-/* ===== SVG CLOCK ===== */
-.clock-dial-svg{width:100%;max-width:220px;height:auto}
-
-/* ===== PRACTICE GRID ===== */
-.prac-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px;margin:6px 0}
-.prac-card{background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:10px 4px;text-align:center;cursor:pointer;transition:all .25s ease;-webkit-tap-highlight-color:transparent;user-select:none}
-.prac-card:active{transform:scale(.94);background:rgba(255,255,255,.18)}
-.prac-card .label{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px}
-.prac-card .ans{font-size:19px;font-weight:900;color:#FFD54F;min-height:26px;transition:all .3s}
-.prac-card .ans.hidden{opacity:0;visibility:hidden}
-.prac-card.revealed{border-color:rgba(255,213,79,.5);background:rgba(255,213,79,.12)}
-.prac-card.revealed .ans{opacity:1;visibility:visible}
-
-/* ===== CLOCK DIGITAL DISPLAY ===== */
-.digital-clock{display:inline-flex;align-items:center;background:rgba(0,0,0,.2);border-radius:10px;padding:4px 14px;font-family:'Nunito',monospace;font-size:24px;font-weight:900;color:#FFD54F;letter-spacing:2px;box-shadow:inset 0 2px 6px rgba(0,0,0,.15)}
-
-/* ===== CONFETTI ===== */
-.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
-.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0}
-
-/* ===== KEYFRAMES ===== */
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-@keyframes tickTock{0%,100%{transform:rotate(0deg)}50%{transform:rotate(3deg)}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-
-/* ===== SPECIAL STYLES ===== */
-.spacer{flex:1}
-.mt-4{margin-top:4px}
-.mt-8{margin-top:8px}
-.emoji-big{font-size:2.2rem;line-height:1}
-.emoji-huge{font-size:3.5rem;line-height:1}
-.text-gold{color:#FFD54F}
-.text-white{color:#fff}
-.text-small{font-size:13px;color:rgba(255,255,255,.6)}
-.number-display{font-size:2.5rem;font-weight:900;color:#fff;text-align:center;margin:4px 0;text-shadow:0 2px 8px rgba(0,0,0,.15)}
-.step-label{display:inline-block;background:rgba(255,255,255,.1);border-radius:6px;padding:2px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin:2px}
-.check-list{list-style:none;padding:0;width:100%;max-width:320px}
-.check-list li{padding:6px 0 6px 28px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD54F'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/%3E%3C/svg%3E") left center/20px no-repeat;font-size:14px;font-weight:600;color:rgba(255,255,255,.9)}
-.clock-tick{animation:tickTock .6s ease-in-out infinite}
+.page-title{font-size:26px;font-weight:900;color:#fff;text-align:center}
+.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 12px;width:100%;max-width:380px}
+.card p{font-size:13px;color:#333;line-height:1.6}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;border-radius:8px;display:none;text-align:center;padding:4px}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
+.nav-btn{background:rgba(255,255,255,.25);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.dots{display:flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
+.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
+.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none;line-height:1.5}
+.goal-card li::before{content:'✅ '}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 </style>
-
-/* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
-  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
-    width: 100% !important;
-  }
-  body { padding: 12px 24px !important; }
-  .page, .slide-inner { padding: 32px 40px !important; }
-  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
-    max-width: 600px !important;
-  }
-  .page-num { font-size: 14px !important; }
-  h1, .title { font-size: 32px !important; }
-  h2 { font-size: 26px !important; }
-  h3 { font-size: 22px !important; }
-  p, li, .text { font-size: 18px !important; }
-  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
-  .scroll-card { flex: 0 0 180px !important; }
-  .scroll-card .sc-icon { font-size: 42px !important; }
-  .scroll-card .sc-name { font-size: 14px !important; }
-}
-
 </head>
 <body>
-
-<div class="slider" id="app">
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <a href="../" onclick="goSlide(0)" aria-label="首页">🏠</a>
-    <button onclick="speakPage()" aria-label="朗读">🔊</button>
-  </div>
-
-  <div class="slides" id="slides">
-
-    <!-- ============ SLIDE 0: COVER ============ -->
-    <div class="slide active" data-page="0">
-      <div class="page-label">LESSON 16</div>
-      <div class="spacer"></div>
-      <div class="emoji-huge">🕐</div>
-      <h1 style="margin-top:6px"><b style="color:#FFD54F">认识</b>钟表</h1>
-      <p class="small" style="margin-bottom:8px">Learning to Tell Time</p>
-      <div class="image-wrap">
-        <img src="images/math-16/webp/page-00-cover.webp" onerror="this.style.display=\'none\'" alt="认识钟表 封面" loading="lazy">
-      </div>
-      <div class="card" style="text-align:center">
-        <p style="text-align:center">和 <b>Steve</b> &amp; <b>Alex</b> 一起<br>学会看钟表，认识时间！</p>
-      </div>
-      <div class="spacer"></div>
-      <button class="option-btn" onclick="goSlide(1)" style="padding:12px 36px;font-size:16px;margin-bottom:4px">开始学习 🚀</button>
-      <p class="text-small">👆 滑动翻页 · 点击 🔊 听朗读</p>
-      <div class="spacer"></div>
-    </div>
-
-    <!-- ============ SLIDE 1: STORY INTRO ============ -->
-    <div class="slide" data-page="1">
-      <div class="page-label">PAGE 01 · 故事引入</div>
-      <div class="spacer" style="flex:0.2"></div>
-      <div class="emoji-big">⏰✨</div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">Alex！妈妈让我8点去上学，可是现在几点了呀？我看不懂钟表……😅</div>
-      </div>
-      <div class="char-bubble alex">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble">别担心！学会看钟表其实很简单。今天我们就一起来认识钟表吧！</div>
-      </div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">太好啦！学会了我就能自己看时间，再也不会迟到啦！</div>
-      </div>
-      <div class="card" style="margin-top:4px">
-        <p style="text-align:center;font-weight:700">🎯 今日目标：学会看钟表，认识整时和半时！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 2: CLOCK FACE ============ -->
-    <div class="slide" data-page="2">
-      <div class="page-label">PAGE 02 · 认识钟面</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🕐 认识钟面</h2>
-      <p class="small">Parts of a Clock</p>
-      <div class="image-wrap">
-        <img src="images/math-16/webp/page-02-clockface.webp" onerror="this.style.display=\'none\'" alt="钟面结构" loading="lazy">
-      </div>
-      <div class="card">
-        <p><b class="highlight-text">钟面</b>上有：</p>
-        <p style="margin-top:4px">
-          <span class="hand-label"><span class="h-icon">➡️</span><span class="h-name">12 个数字</span><span class="h-desc">1~12</span></span><br>
-          <span class="hand-label"><span class="h-icon">⏰</span><span class="h-name">时针</span><span class="h-desc">短而粗，走得慢</span></span><br>
-          <span class="hand-label"><span class="h-icon">⏰</span><span class="h-name">分针</span><span class="h-desc">长而细，走得快</span></span>
-        </p>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💡 <b class="highlight-text">口诀</b>：时针短，分针长；时针慢，分针快！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 3: WHOLE HOURS ============ -->
-    <div class="slide" data-page="3">
-      <div class="page-label">PAGE 03 · 认识整时</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🕒 认识整时</h2>
-      <p class="small">O'Clock — Whole Hours</p>
-      <div class="image-wrap">
-        <img src="images/math-16/webp/page-03-o-clock.webp" onerror="this.style.display=\'none\'" alt="整时" loading="lazy">
-      </div>
-      <div class="card">
-        <p><b class="highlight-text">整时</b>：分针指向 12，时针指向几就是几时。</p>
-        <div class="time-row" style="margin-top:6px">
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">7:00</div>
-            <div class="clock-desc">🕐 7 时</div>
-          </div>
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">8:00</div>
-            <div class="clock-desc">🕐 8 时</div>
-          </div>
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">3:00</div>
-            <div class="clock-desc">🕐 3 时</div>
-          </div>
-        </div>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🧩 点击查看整时示例：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:4px">
-          <button class="option-btn" onclick="showOClock(1)" style="padding:6px 16px;font-size:14px">7时</button>
-          <button class="option-btn" onclick="showOClock(2)" style="padding:6px 16px;font-size:14px">10时</button>
-          <button class="option-btn" onclick="showOClock(3)" style="padding:6px 16px;font-size:14px">2时</button>
-        </div>
-        <div id="oClockDisplay" class="number-display" style="font-size:2rem;min-height:40px">🕐 7:00</div>
-        <div id="oClockDesc" style="font-size:14px;color:rgba(255,255,255,.7);min-height:24px">分针指12，时针指7 → 7时</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 4: HALF HOURS ============ -->
-    <div class="slide" data-page="4">
-      <div class="page-label">PAGE 04 · 认识半时</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🕡 认识半时</h2>
-      <p class="small">Half Past — Half Hours</p>
-      <div class="image-wrap">
-        <img src="images/math-16/webp/page-04-half-past.webp" onerror="this.style.display=\'none\'" alt="半时" loading="lazy">
-      </div>
-      <div class="card">
-        <p><b class="highlight-text">半时</b>：分针指向 6，时针走过几就是几时半。</p>
-        <div class="time-row" style="margin-top:6px">
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">7:30</div>
-            <div class="clock-desc">🕐 7 时半</div>
-          </div>
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">8:30</div>
-            <div class="clock-desc">🕐 8 时半</div>
-          </div>
-          <div class="clock-card" style="max-width:100px">
-            <div class="clock-time">3:30</div>
-            <div class="clock-desc">🕐 3 时半</div>
-          </div>
-        </div>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🧩 点击查看半时示例：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:4px">
-          <button class="option-btn" onclick="showHalfPast(1)" style="padding:6px 16px;font-size:14px">7时半</button>
-          <button class="option-btn" onclick="showHalfPast(2)" style="padding:6px 16px;font-size:14px">10时半</button>
-          <button class="option-btn" onclick="showHalfPast(3)" style="padding:6px 16px;font-size:14px">2时半</button>
-        </div>
-        <div id="halfPastDisplay" class="number-display" style="font-size:2rem;min-height:40px">🕡 7:30</div>
-        <div id="halfPastDesc" style="font-size:14px;color:rgba(255,255,255,.7);min-height:24px">分针指6，时针走过7 → 7时半</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 5: PRACTICE ============ -->
-    <div class="slide" data-page="5">
-      <div class="page-label">PAGE 05 · 认钟练习</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>✏️ 认钟练习</h2>
-      <p class="small">Practice: What time is it?</p>
-      <div class="image-wrap">
-        <img src="images/math-16/webp/page-05-practice.webp" onerror="this.style.display=\'none\'" alt="认钟练习" loading="lazy">
-      </div>
-      <div class="interact-area" style="text-align:center;min-height:100px">
-        <p class="q-text" id="pracQ">🧮 第 1 题：钟表显示几点？</p>
-        <div id="pracOptions" class="option-grid"></div>
-        <div id="pracFeedback" class="feedback"></div>
-        <div id="pracScore" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">答对：0 / 5</div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💡 <b class="highlight-text">口诀</b>：看看分针，再算时针！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 6: CHALLENGE ============ -->
-    <div class="slide" data-page="6">
-      <div class="page-label">PAGE 06 · 闯关挑战</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <div class="emoji-big">🏆</div>
-      <h2>🎯 闯关挑战</h2>
-      <p class="small">Challenge Quiz</p>
-      <div class="interact-area" style="text-align:center;min-height:140px">
-        <p class="q-text" id="challengeQ">🧮 第 1 题：分针指向12，时针指向6，是几点？</p>
-        <div id="challengeOptions" class="option-grid"></div>
-        <div id="challengeFeedback" class="feedback"></div>
-        <div id="challengeScore" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">得分：0 / 5</div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💪 全部答对可获得时间小管家徽章！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 7: CELEBRATION ============ -->
-    <div class="slide" data-page="7">
-      <div class="page-label">🎉 完成</div>
-      <div class="spacer"></div>
-      <div class="celebration-icon" style="font-size:4rem;animation:bounce 1.4s infinite">🏅</div>
-      <h2 style="margin-top:8px">恭喜你完成学习！</h2>
-      <p class="small">你已经学会认识钟表了！</p>
-      <div class="char-bubble steve" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble" style="background:rgba(255,243,224,.9)">太棒了！我现在会看时间啦！一定不会迟到！</div>
-      </div>
-      <div class="char-bubble alex" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble" style="background:rgba(232,245,233,.9)">做得好！你已经是个时间小管家了！</div>
-      </div>
-      <div class="card" style="padding:10px 14px;max-width:320px">
-        <ul class="check-list">
-          <li>我认识了钟面上的数字和指针</li>
-          <li>我知道分针指向12是整时</li>
-          <li>我知道分针指向6是半时</li>
-          <li>我会看钟表认时间了</li>
-        </ul>
-      </div>
-      <div class="emoji-big" style="margin:4px 0">🕐⏰</div>
-      <p style="font-weight:800;color:#FFD54F;font-size:16px">获得时间小管家徽章！</p>
-      <button class="option-btn" onclick="restartLesson()" style="margin-top:8px;padding:10px 32px;font-size:14px;margin-bottom:8px">🔄 重新学习</button>
-      <div class="spacer"></div>
-    </div>
-
-  </div><!-- /slides -->
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <button id="prevBtn" onclick="prevSlide()">◀</button>
-    <div class="dots" id="dots"></div>
-    <button id="nextBtn" onclick="nextSlide()">▶</button>
-  </div>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-17-shapes.html">▶</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
 </div>
-
-<!-- ===== CONFETTI CONTAINER ===== -->
-<div class="confetti-container" id="confettiContainer"></div>
-
+</div>
+<div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
 <script>
-// ===== CONFIG =====
-const TOTAL_SLIDES = 8; // 0-7
-let currentSlide = 0;
-let pracIdx = 0;
-let pracScore = 0;
-let challengeIdx = 0;
-let challengeScore = 0;
-
-// ===== SPEECH =====
-function speakText(text) {
-  if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.9;
-    u.pitch = 1.1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+const pages=[{
+cover:true,icon:'⏰',title:'认识钟表',subtitle:'数学课 第16课',goals:['认识钟面：时针和分针','会看整点和半点','知道早上、中午、晚上的时间','学会合理安排时间']
+},{
+title:'🕐 钟面',text:'钟面上有12个数字，从1到12。<br><br>⏱️ 时针(短) — 指向几点<br>⏱️ 分针(长) — 指向几分<br><br>整点：分针指向12，时针指向数字<br>例如：3点整 → 时针指向3，分针指向12！',
+svg:'<svg viewBox="0 0 200 200" style="width:80%;max-width:200px"><circle cx="100" cy="100" r="85" fill="none" stroke="#fff" stroke-width="3"/><circle cx="100" cy="100" r="82" fill="rgba(255,255,255,.08)"/>'+
+Array.from({length:12},(_,i)=>'<text x="'+(100+68*Math.sin((i+1)*30*Math.PI/180))+'" y="'+(100-68*Math.cos((i+1)*30*Math.PI/180))+'" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="central" font-weight="700">'+(i+1)+'</text>').join('')+
+'<line x1="100" y1="100" x2="100" y2="55" stroke="#FFD54F" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="100" r="4" fill="#fff"/><text x="100" y="185" font-size="10" fill="rgba(255,255,255,.6)" text-anchor="middle">3:00 整点</text></svg>'
+},{
+title:'🕐 半点',text:'半点：分针指向6，时针在两个数字中间<br><br>例如：3:30 → 分针指向6，时针在3和4之间<br>"三点半"！<br><br>分针走一圈=60分钟<br>分针走半圈=30分钟=半点',
+svg:'<svg viewBox="0 0 200 200" style="width:80%;max-width:200px"><circle cx="100" cy="100" r="85" fill="none" stroke="#fff" stroke-width="3"/><circle cx="100" cy="100" r="82" fill="rgba(255,255,255,.08)"/>'+
+Array.from({length:12},(_,i)=>'<text x="'+(100+68*Math.sin((i+1)*30*Math.PI/180))+'" y="'+(100-68*Math.cos((i+1)*30*Math.PI/180))+'" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="central" font-weight="700">'+(i+1)+'</text>').join('')+
+'<line x1="100" y1="100" x2="80" y2="55" stroke="#FFD54F" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="100" r="4" fill="#fff"/><text x="100" y="185" font-size="10" fill="rgba(255,255,255,.6)" text-anchor="middle">3:30 半点</text></svg>'
+},{
+title:'🔄 一天的时间',text:'早上7点 — 起床🛌<br>早上8点 — 上学🏫<br>中午12点 — 午饭🍚<br>下午3点 — 上课📖<br>下午5点 — 放学回家🏠<br>晚上7点 — 晚饭🍽️<br>晚上9点 — 睡觉😴',
+svg:'<svg viewBox="0 0 280 100" style="width:90%;max-width:280px"><text x="10" y="15" font-size="11" fill="#FFD54F">🌅 早上</text><text x="10" y="35" font-size="11" fill="#fff">☀️ 中午</text><text x="10" y="55" font-size="11" fill="#FFD54F">🌆 下午</text><text x="10" y="75" font-size="11" fill="rgba(255,255,255,.6)">🌙 晚上</text><text x="100" y="15" font-size="11" fill="#fff">7:00 起床</text><text x="100" y="35" font-size="11" fill="#fff">12:00 午饭</text><text x="100" y="55" font-size="11" fill="#fff">15:00 上课</text><text x="100" y="75" font-size="11" fill="#fff">21:00 睡觉</text></svg>'
+},{
+title:'❌ 常见误解',items:[
+{title:'时针和分针弄反',w:'短针看分钟，长针看小时',r:'短针=时针→看小时，长针=分针→看分钟！'},
+{title:'半点读错',w:'3:30读成4:30',r:'3:30时针在3和4之间，分针指向6！'},
+{title:'整点读错',w:'12:00看成6:00',r:'12:00时针和分针都指向12！'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'分针指向12，时针指向7，是几点？',options:['7:00','7:30','12:00'],correct:0
+},{
+title:'✏️ 再选一选',interactive:true,type:'quiz2',q:'分针指向6，时针在5和6之间，是几点？',options:['5:00','5:30','6:00'],correct:1
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了认识钟表！🏅<br>获得「时间小管家」徽章！<br><br>记住：短针看小时，长针看分钟！<br>你会看时间了！'
+}];
+let cur=0,quizA={};
+function render(n){
+  const el=document.getElementById('slides');const p=pages[n];
+  if(!p)return;let h='';
+  if(p.cover){
+    h=`<div class="slide active"><div style="font-size:64px;margin:4px">${p.icon}</div><div class="page-title">${p.title}</div><p style="font-size:13px;color:rgba(255,255,255,.7);text-align:center">${p.subtitle}</p>`;
+    h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;p.goals.forEach(g=>h+=`<li>${g}</li>`);h+=`</ul></div></div>`;
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:24px;color:#fff">${p.title}</h2><p style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff">${p.title}</h3><div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+    p.options.forEach((o,i)=>{h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;});
+    h+=`<div class="feedback" id="fb${n}"></div></div></div>`;
+  }else{
+    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
+    if(p.items){p.items.forEach(it=>{h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="font-size:13px;color:#1565C0">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;});}
+    h+=`</div>`;
   }
+  el.innerHTML=h;
+  document.getElementById('prevBtn').disabled=n===0;document.getElementById('nextBtn').disabled=n===pages.length-1;
+  updateDots(n);
+  gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
 }
-
-function speakPage() {
-  const title = document.querySelector('.slide.active h2, .slide.active h1');
-  if (title) speakText(title.innerText);
+function clickQuiz(n,i){const p=pages[n];if(quizA[n])return;quizA[n]=true;
+  document.querySelectorAll('.quiz-opt').forEach((el,j)=>{el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');});
+  const fb=document.getElementById('fb'+n);if(fb){fb.className='feedback show '+(i===p.correct?' good':' bad');fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';}
 }
-
-// ===== NAVIGATION =====
-function buildDots() {
-  const c = document.getElementById('dots');
-  c.innerHTML = '';
-  for (let i = 0; i < TOTAL_SLIDES; i++) {
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goSlide(i);
-    c.appendChild(d);
-  }
-}
-
-function goSlide(idx) {
-  if (idx < 0 || idx >= TOTAL_SLIDES) return;
-  const slides = document.querySelectorAll('.slide');
-  slides.forEach((s, i) => {
-    s.classList.remove('active', 'exit');
-    if (i === idx) s.classList.add('active');
-    else s.classList.add('exit');
-  });
-  currentSlide = idx;
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.className = 'dot' + (i === idx ? ' active' : '');
-  });
-  document.getElementById('prevBtn').disabled = idx === 0;
-  document.getElementById('nextBtn').disabled = idx === TOTAL_SLIDES - 1;
-
-  // Animate elements
-  gsap.fromTo('.slide.active .char-bubble, .slide.active .card, .slide.active .interact-area, .slide.active .image-wrap',
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
-  );
-
-  if (idx === TOTAL_SLIDES - 1) launchConfetti();
-}
-
-function nextSlide() { goSlide(currentSlide + 1); }
-function prevSlide() { goSlide(currentSlide - 1); }
-
-function restartLesson() {
-  resetAll();
-  goSlide(0);
-}
-
-function resetAll() {
-  pracIdx = 0;
-  pracScore = 0;
-  challengeIdx = 0;
-  challengeScore = 0;
-  document.getElementById('challengeScore').textContent = '得分：0 / 5';
-  initPrac();
-  initChallenge();
-}
-
-// ===== DATA: O'CLOCK =====
-const oClockData = [
-  { display: '🕐 7:00', desc: '分针指12，时针指7 → 7时' },
-  { display: '🕐 10:00', desc: '分针指12，时针指10 → 10时' },
-  { display: '🕐 2:00', desc: '分针指12，时针指2 → 2时' },
-];
-
-function showOClock(n) {
-  const d = oClockData[n - 1];
-  document.getElementById('oClockDisplay').textContent = d.display;
-  document.getElementById('oClockDesc').textContent = d.desc;
-  speakText(d.display + '，' + d.desc);
-  gsap.fromTo('#oClockDisplay', { scale: 1.5, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out' });
-}
-
-// ===== DATA: HALF PAST =====
-const halfPastData = [
-  { display: '🕡 7:30', desc: '分针指6，时针走过7 → 7时半' },
-  { display: '🕡 10:30', desc: '分针指6，时针走过10 → 10时半' },
-  { display: '🕡 2:30', desc: '分针指6，时针走过2 → 2时半' },
-];
-
-function showHalfPast(n) {
-  const d = halfPastData[n - 1];
-  document.getElementById('halfPastDisplay').textContent = d.display;
-  document.getElementById('halfPastDesc').textContent = d.desc;
-  speakText(d.display + '，' + d.desc);
-  gsap.fromTo('#halfPastDisplay', { scale: 1.5, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out' });
-}
-
-// ===== SLIDE 5: PRACTICE =====
-const pracData = [
-  { q: '🧮 第 1 题：钟表上分针指向12，时针指向3，是几点？', options: ['3时', '6时', '12时'], answer: '3时' },
-  { q: '🧮 第 2 题：钟表上分针指向6，时针走过8，是几点？', options: ['8时', '8时半', '9时'], answer: '8时半' },
-  { q: '🧮 第 3 题：钟表上分针指向12，时针指向10，是几点？', options: ['9时', '10时', '11时'], answer: '10时' },
-  { q: '🧮 第 4 题：钟表上分针指向6，时针走过4，是几点？', options: ['4时', '4时半', '5时'], answer: '4时半' },
-  { q: '🧮 第 5 题：妈妈叫小明下午3时去公园，分针应该指向几？', options: ['3', '6', '12'], answer: '12' },
-];
-
-function initPrac() {
-  pracIdx = 0;
-  pracScore = 0;
-  renderPrac();
-}
-
-function renderPrac() {
-  if (pracIdx >= pracData.length) {
-    document.getElementById('pracQ').textContent = '🎉 全部答对！太棒了！';
-    document.getElementById('pracOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:1.1rem">🏆 认钟小达人！</span>';
-    document.getElementById('pracFeedback').textContent = '';
-    document.getElementById('pracScore').textContent = '最终得分：' + pracScore + ' / ' + pracData.length;
-    return;
-  }
-  const item = pracData[pracIdx];
-  document.getElementById('pracQ').textContent = item.q;
-  document.getElementById('pracScore').textContent = '答对：' + pracScore + ' / ' + pracData.length;
-  const cont = document.getElementById('pracOptions');
-  cont.innerHTML = '';
-  item.options.forEach(function(opt) {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.val = opt;
-    btn.onclick = function() { checkPrac(this, opt, item.answer); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('pracFeedback').textContent = '';
-}
-
-function checkPrac(btn, selected, answer) {
-  const fb = document.getElementById('pracFeedback');
-  document.querySelectorAll('#pracOptions .option-btn').forEach(function(b) { b.classList.add('disabled'); });
-  if (selected === answer) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 回答正确！';
-    pracScore++;
-    document.getElementById('pracScore').textContent = '答对：' + pracScore + ' / ' + pracData.length;
-    speakText('回答正确');
-    setTimeout(function() {
-      pracIdx++;
-      renderPrac();
-    }, 1200);
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再想想！先看分针指几，再看时针！';
-    setTimeout(function() {
-      document.querySelectorAll('#pracOptions .option-btn').forEach(function(b) {
-        b.classList.remove('disabled', 'wrong');
-      });
-      fb.textContent = '';
-    }, 1200);
-  }
-}
-
-// ===== SLIDE 6: CHALLENGE =====
-const challengeData = [
-  { q: '🧮 第 1 题：分针指向12，时针指向6，是几点？', options: ['6时', '6时半', '12时'], answer: '6时' },
-  { q: '🧮 第 2 题：分针指向6，时针走过1，是几点？', options: ['1时', '1时半', '2时'], answer: '1时半' },
-  { q: '🧮 第 3 题：下午2时，分针指向几？', options: ['2', '6', '12'], answer: '12' },
-  { q: '🧮 第 4 题：时针走一圈是几小时？', options: ['12小时', '24小时', '60分钟'], answer: '12小时' },
-  { q: '🧮 第 5 题：分针从12走到6，走了多少分钟？', options: ['30分钟', '15分钟', '60分钟'], answer: '30分钟' },
-];
-
-function initChallenge() {
-  challengeIdx = 0;
-  challengeScore = 0;
-  renderChallenge();
-}
-
-function renderChallenge() {
-  if (challengeIdx >= challengeData.length) {
-    document.getElementById('challengeQ').textContent = '🎉 全部答对！获得时间小管家徽章！';
-    document.getElementById('challengeOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:1.1rem">🏆 你太厉害了！</span>';
-    document.getElementById('challengeFeedback').textContent = '';
-    document.getElementById('challengeScore').textContent = '最终得分：' + challengeScore + ' / ' + challengeData.length;
-    launchConfetti();
-    return;
-  }
-  const item = challengeData[challengeIdx];
-  document.getElementById('challengeQ').textContent = item.q;
-  document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-  const cont = document.getElementById('challengeOptions');
-  cont.innerHTML = '';
-  item.options.forEach(function(opt) {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.val = opt;
-    btn.onclick = function() { checkChallenge(this, opt, item.answer); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('challengeFeedback').textContent = '';
-}
-
-function checkChallenge(btn, selected, answer) {
-  const fb = document.getElementById('challengeFeedback');
-  document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) { b.classList.add('disabled'); });
-  if (selected === answer) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 回答正确！';
-    challengeScore++;
-    document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-    speakText('回答正确');
-    setTimeout(function() {
-      challengeIdx++;
-      renderChallenge();
-    }, 1200);
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再想想！回忆一下整时和半时的特点哦！';
-    setTimeout(function() {
-      document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) {
-        b.classList.remove('disabled', 'wrong');
-      });
-      fb.textContent = '';
-    }, 1200);
-  }
-}
-
-// ===== CONFETTI =====
-function launchConfetti() {
-  const container = document.getElementById('confettiContainer');
-  container.innerHTML = '';
-  const colors = ['#42A5F5','#FFA726','#EF5350','#66BB6A','#AB47BC','#FFD54F','#26C6DA','#EC407A'];
-  for (let i = 0; i < 80; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const left = Math.random() * 100;
-    const size = 6 + Math.random() * 8;
-    const rotation = Math.random() * 360;
-    piece.style.cssText =
-      'left:' + left + '%;' +
-      'top:-20px;' +
-      'width:' + size + 'px;' +
-      'height:' + size + 'px;' +
-      'background:' + color + ';' +
-      'transform:rotate(' + rotation + 'deg);' +
-      'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
-    container.appendChild(piece);
-    gsap.to(piece, {
-      y: window.innerHeight + 100,
-      x: (-100 + Math.random() * 200),
-      rotation: rotation + 360 * Math.random() * 3,
-      duration: 2 + Math.random() * 2,
-      delay: Math.random() * 0.8,
-      ease: 'power1.out',
-      opacity: 1,
-    });
-  }
-  setTimeout(function() {
-    gsap.to('.confetti-piece', { opacity: 0, duration: 0.5, onComplete: function() { container.innerHTML = ''; } });
-  }, 4000);
-}
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', function() {
-  buildDots();
-  initPrac();
-  initChallenge();
-  gsap.from('.slide[data-page="0"] .emoji-huge, .slide[data-page="0"] h1, .slide[data-page="0"] .image-wrap, .slide[data-page="0"] .card, .slide[data-page="0"] .option-btn',
-    { opacity: 0, y: 20, duration: 0.5, stagger: 0.12, ease: 'power2.out' });
-});
+function go(d){cur=Math.max(0,Math.min(pages.length-1,cur+d));render(cur);}
+function updateDots(n){const el=document.getElementById('dots');el.innerHTML='';for(let i=0;i<pages.length;i++){const d=document.createElement('button');d.className='dot'+(i===n?' active':'');d.onclick=()=>{cur=i;render(cur);};el.appendChild(d);}}
+function doConfetti(){const el=document.getElementById('confetti');const c=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];for(let i=0;i<50;i++){const p=document.createElement('div');p.style.cssText='position:absolute;left:'+(Math.random()*100)+'%;top:-10px;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*6)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confetti-fall '+(2+Math.random()*2)+'s ease-in '+(Math.random()*2)+'s forwards;';el.appendChild(p);setTimeout(()=>p.remove(),4500);}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render(0);
 </script>
-
 </body>
 </html>

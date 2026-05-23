@@ -8,674 +8,118 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <style>
-/* ===== RESET & BASE ===== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
-body{font-family:'Nunito',sans-serif;background:#1565C0;display:flex;align-items:center;justify-content:center;min-height:100dvh}
-
-/* ===== SLIDE CONTAINER ===== */
-.slider{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0;box-shadow:none}
-@media(min-width:460px){.slider{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
-
-/* ===== TOP BAR ===== */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
 .top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
-.top-bar a,.top-bar button{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s,transform .2s}
-.top-bar a:hover,.top-bar button:hover{background:rgba(255,255,255,.32);transform:scale(1.08)}
-.top-bar a:active,.top-bar button:active{transform:scale(.92)}
-
-/* ===== SLIDES ===== */
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer}
 .slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 18px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;gap:6px;-webkit-overflow-scrolling:touch}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px}
 .slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
-.slide.exit{opacity:0;visibility:hidden;position:absolute;z-index:1}
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px 10px;background:rgba(0,0,0,.07);backdrop-filter:blur(4px)}
-.bottom-nav button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.1);border-radius:30px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
-.bottom-nav button:hover{background:rgba(255,255,255,.35);transform:scale(1.08)}
-.bottom-nav button:active{transform:scale(.92)}
-.bottom-nav button:disabled{opacity:.25;pointer-events:none;transform:none!important}
-.dots{display:flex;gap:5px}
-.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.08);padding:0;cursor:pointer;transition:all .35s ease}
-.dot.active{background:#fff;transform:scale(1.3);box-shadow:0 0 10px rgba(255,255,255,.55);border-color:#fff}
-
-/* ===== TYPOGRAPHY ===== */
-h1{font-size:27px;font-weight:900;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.22);text-align:center;line-height:1.2}
-h2{font-size:23px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.18);text-align:center;letter-spacing:.5px}
-h3{font-size:19px;font-weight:700;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.15);text-align:center}
-p{font-size:16px;font-weight:400;color:rgba(255,255,255,.9);text-align:center;line-height:1.5;max-width:360px}
-p.big{font-size:20px;font-weight:700}
-p.small{font-size:14px;color:rgba(255,255,255,.7)}
-
-/* ===== PAGE LABEL ===== */
-.page-label{position:absolute;top:52px;left:50%;transform:translateX(-50%);z-index:20;font-size:12px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,.1)}
-
-/* ===== IMAGES ===== */
-.image-wrap{width:100%;max-width:360px;margin:4px auto;display:flex;justify-content:center}
-.image-wrap img{width:100%;max-width:400px;border-radius:16px;display:block;box-shadow:0 4px 20px rgba(0,0,0,.12)}
-
-/* ===== CONTENT CARDS ===== */
-.card{width:100%;max-width:360px;background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:18px;padding:14px 16px;margin:4px 0;border:1px solid rgba(255,255,255,.1)}
-.card h3{font-size:16px;font-weight:800;color:#fff;text-align:left;margin-bottom:4px}
-.card p{font-size:14px;color:rgba(255,255,255,.85);text-align:left;line-height:1.5}
-.card .highlight-text{color:#FFD54F;font-weight:700}
-
-/* ===== CHARACTER BUBBLES ===== */
-.char-bubble{display:flex;gap:10px;align-items:flex-start;margin:4px 0;width:100%;max-width:360px;animation:fadeUp .5s ease both}
-.char-bubble.steve{flex-direction:row}
-.char-bubble.alex{flex-direction:row-reverse}
-.char-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 3px 8px rgba(0,0,0,.15)}
-.char-avatar.steve-avatar{background:rgba(255,243,224,.9)}
-.char-avatar.alex-avatar{background:rgba(232,245,233,.9)}
-.bubble{max-width:78%;padding:10px 14px;border-radius:18px;font-size:14px;line-height:1.5;position:relative;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.char-bubble.steve .bubble{background:rgba(255,243,224,.9);border-bottom-left-radius:4px;color:#4e342e}
-.char-bubble.alex .bubble{background:rgba(232,245,233,.9);border-bottom-right-radius:4px;color:#1b5e20}
-
-/* ===== INTERACTIVE ===== */
-.interact-area{width:100%;max-width:360px;background:rgba(255,255,255,.08);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:2px dashed rgba(255,255,255,.2);border-radius:16px;padding:14px;margin:4px 0;min-height:80px}
-.interact-area .q-text{font-weight:700;color:#fff;margin-bottom:8px;font-size:15px;text-align:center}
-.option-grid{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.option-btn{padding:8px 20px;border:2px solid rgba(255,255,255,.25);border-radius:14px;background:rgba(255,255,255,.12);font-family:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;min-width:50px;text-align:center;-webkit-tap-highlight-color:transparent}
-.option-btn:hover{background:rgba(255,255,255,.25);transform:scale(1.05)}
-.option-btn:active{transform:scale(.95)}
-.option-btn.selected{background:rgba(255,255,255,.3);border-color:#fff;box-shadow:0 4px 12px rgba(255,255,255,.2)}
-.option-btn.correct{background:#66BB6A;border-color:#fff;color:#fff;animation:pulse .5s}
-.option-btn.wrong{background:#EF5350;border-color:#fff;color:#fff;animation:shake .4s}
-.option-btn.disabled{pointer-events:none;opacity:.5}
-.feedback{margin-top:8px;font-weight:700;text-align:center;min-height:24px;font-size:14px}
-.feedback.correct{color:#A5D6A7}
-.feedback.wrong{color:#EF9A9A}
-
-/* ===== MONEY SPECIFIC ===== */
-.money-coin{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;background:rgba(255,215,0,.25);border:3px solid rgba(255,215,0,.4);color:#FFD54F;font-size:20px;font-weight:900;margin:3px;box-shadow:0 3px 10px rgba(0,0,0,.15)}
-.money-coin.small{width:42px;height:42px;font-size:16px}
-.money-coin.gold{background:rgba(255,215,0,.35);border-color:#FFD54F}
-.money-coin.silver{background:rgba(200,200,210,.25);border-color:rgba(200,200,210,.4)}
-.money-coin.copper{background:rgba(205,133,63,.2);border-color:rgba(205,133,63,.3)}
-.money-bill{display:inline-flex;align-items:center;justify-content:center;width:70px;height:38px;border-radius:6px;background:rgba(255,215,0,.2);border:2px solid rgba(255,215,0,.3);color:#FFD54F;font-size:14px;font-weight:800;margin:3px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-.money-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center;justify-content:center;margin:4px 0}
-.conv-arrow{font-size:20px;color:rgba(255,255,255,.6);margin:0 6px;font-weight:700}
-.money-total{display:inline-block;background:rgba(255,215,0,.2);border-radius:10px;padding:4px 14px;color:#FFD54F;font-weight:800;font-size:16px;margin:2px}
-
-/* ===== PRACTICE GRID ===== */
-.prac-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:360px;margin:6px 0}
-.prac-card{background:rgba(255,255,255,.10);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:10px 4px;text-align:center;cursor:pointer;transition:all .25s ease;-webkit-tap-highlight-color:transparent;user-select:none}
-.prac-card:active{transform:scale(.94);background:rgba(255,255,255,.18)}
-.prac-card .label{font-size:13px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:3px}
-.prac-card .ans{font-size:19px;font-weight:900;color:#FFD54F;min-height:26px;transition:all .3s}
-.prac-card .ans.hidden{opacity:0;visibility:hidden}
-.prac-card.revealed{border-color:rgba(255,213,79,.5);background:rgba(255,213,79,.12)}
-.prac-card.revealed .ans{opacity:1;visibility:visible}
-
-/* ===== CONFETTI ===== */
-.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
-.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;opacity:0}
-
-/* ===== KEYFRAMES ===== */
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
-@keyframes popIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.12)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-
-/* ===== SPECIAL STYLES ===== */
-.spacer{flex:1}
-.mt-4{margin-top:4px}
-.mt-8{margin-top:8px}
-.emoji-big{font-size:2.2rem;line-height:1}
-.emoji-huge{font-size:3.5rem;line-height:1}
-.text-gold{color:#FFD54F}
-.text-white{color:#fff}
-.text-small{font-size:13px;color:rgba(255,255,255,.6)}
-.number-display{font-size:2.5rem;font-weight:900;color:#fff;text-align:center;margin:4px 0;text-shadow:0 2px 8px rgba(0,0,0,.15)}
-.step-label{display:inline-block;background:rgba(255,255,255,.1);border-radius:6px;padding:2px 10px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin:2px}
-
-/* ===== SHOP DISPLAY ===== */
-.shop-item{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border-radius:12px;padding:6px 12px;margin:3px 0;width:100%;max-width:320px}
-.shop-item .item-emoji{font-size:1.8rem;width:40px;text-align:center}
-.shop-item .item-name{font-size:14px;font-weight:700;color:#fff;flex:1}
-.shop-item .item-price{font-size:14px;font-weight:800;color:#FFD54F}
+.page-title{font-size:26px;font-weight:900;color:#fff;text-align:center}
+.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 12px;width:100%;max-width:380px}
+.card p{font-size:13px;color:#333;line-height:1.6}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;border-radius:8px;display:none;text-align:center;padding:4px}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
+.nav-btn{background:rgba(255,255,255,.25);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.dots{display:flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
+.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
+.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none}
+.goal-card li::before{content:'✅ '}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 </style>
-
-/* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
-  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
-    width: 100% !important;
-  }
-  body { padding: 12px 24px !important; }
-  .page, .slide-inner { padding: 32px 40px !important; }
-  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
-    max-width: 600px !important;
-  }
-  .page-num { font-size: 14px !important; }
-  h1, .title { font-size: 32px !important; }
-  h2 { font-size: 26px !important; }
-  h3 { font-size: 22px !important; }
-  p, li, .text { font-size: 18px !important; }
-  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
-  .scroll-card { flex: 0 0 180px !important; }
-  .scroll-card .sc-icon { font-size: 42px !important; }
-  .scroll-card .sc-name { font-size: 14px !important; }
-}
-
 </head>
 <body>
-
-<div class="slider" id="app">
-  <!-- Top Bar -->
-  <div class="top-bar">
-    <a href="../" onclick="goSlide(0)" aria-label="首页">🏠</a>
-    <button onclick="speakPage()" aria-label="朗读">🔊</button>
-  </div>
-
-  <div class="slides" id="slides">
-
-    <!-- ============ SLIDE 0: COVER ============ -->
-    <div class="slide active" data-page="0">
-      <div class="page-label">LESSON 15</div>
-      <div class="spacer"></div>
-      <div class="emoji-huge">💰</div>
-      <h1 style="margin-top:6px"><b style="color:#FFD54F">认识</b>钱币</h1>
-      <p class="small" style="margin-bottom:8px">Learning About Money</p>
-      <div class="image-wrap">
-        <img src="images/math-15/webp/page-00-cover.webp" onerror="this.style.display=\'none\'" alt="认识钱币 封面" loading="lazy">
-      </div>
-      <div class="card" style="text-align:center">
-        <p style="text-align:center">和 <b>Steve</b> &amp; <b>Alex</b> 一起<br>认识人民币，学会用钱买东西！</p>
-      </div>
-      <div class="spacer"></div>
-      <button class="option-btn" onclick="goSlide(1)" style="padding:12px 36px;font-size:16px;margin-bottom:4px">开始学习 🚀</button>
-      <p class="text-small">👆 滑动翻页 · 点击 🔊 听朗读</p>
-      <div class="spacer"></div>
-    </div>
-
-    <!-- ============ SLIDE 1: STORY INTRO ============ -->
-    <div class="slide" data-page="1">
-      <div class="page-label">PAGE 01 · 故事引入</div>
-      <div class="spacer" style="flex:0.2"></div>
-      <div class="emoji-big">🏪✨</div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">Alex！你看这个铅笔盒好漂亮！我要买！可是……我该付多少钱呢？</div>
-      </div>
-      <div class="char-bubble alex">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble">买东西要用钱哦！我们中国用的是<strong>人民币</strong>。今天我们就来认识一下！</div>
-      </div>
-      <div class="char-bubble steve">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble">好呀好呀！学会了我就能自己去买东西啦！</div>
-      </div>
-      <div class="card" style="margin-top:4px">
-        <p style="text-align:center;font-weight:700">🎯 今日目标：认识人民币，学会看价格和付钱！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 2: COINS AND BILLS ============ -->
-    <div class="slide" data-page="2">
-      <div class="page-label">PAGE 02 · 认识人民币</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🪙 认识人民币</h2>
-      <p class="small">Chinese Currency: Coins &amp; Bills</p>
-      <div class="image-wrap">
-        <img src="images/math-15/webp/page-02-coins-bills.webp" onerror="this.style.display=\'none\'" alt="人民币硬币和纸币" loading="lazy">
-      </div>
-      <div class="card">
-        <p style="margin-bottom:4px"><b class="highlight-text">硬币（Coins）</b></p>
-        <div class="money-row">
-          <span class="money-coin gold">1元</span>
-          <span class="money-coin silver">5角</span>
-          <span class="money-coin copper">1角</span>
-        </div>
-        <p style="margin-top:6px;margin-bottom:4px"><b class="highlight-text">纸币（Bills）</b></p>
-        <div class="money-row">
-          <span class="money-bill">100元</span>
-          <span class="money-bill">50元</span>
-          <span class="money-bill">20元</span>
-          <span class="money-bill">10元</span>
-          <span class="money-bill">5元</span>
-          <span class="money-bill">1元</span>
-        </div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💡 人民币的单位有 <b class="highlight-text">元</b>、<b class="highlight-text">角</b>、<b class="highlight-text">分</b>。</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 3: CONVERSION ============ -->
-    <div class="slide" data-page="3">
-      <div class="page-label">PAGE 03 · 元角分换算</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🔄 元角分换算</h2>
-      <p class="small">Conversion Between Units</p>
-      <div class="image-wrap">
-        <img src="images/math-15/webp/page-03-conversion.webp" onerror="this.style.display=\'none\'" alt="元角分换算" loading="lazy">
-      </div>
-      <div class="card">
-        <p style="text-align:center;font-size:16px">
-          <b class="highlight-text">1 元</b> <span class="conv-arrow">=</span> <b class="highlight-text">10 角</b><br>
-          <b class="highlight-text">1 角</b> <span class="conv-arrow">=</span> <b class="highlight-text">10 分</b><br>
-          <b class="highlight-text">1 元</b> <span class="conv-arrow">=</span> <b class="highlight-text">100 分</b>
-        </p>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🧩 点击查看换算示例：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:4px">
-          <button class="option-btn" onclick="showConversion(1)" style="padding:6px 16px;font-size:14px">2元=？角</button>
-          <button class="option-btn" onclick="showConversion(2)" style="padding:6px 16px;font-size:14px">30角=？元</button>
-          <button class="option-btn" onclick="showConversion(3)" style="padding:6px 16px;font-size:14px">5元3角=？角</button>
-        </div>
-        <div id="convDisplay" class="number-display" style="font-size:1.8rem;min-height:36px">点击按钮查看</div>
-        <div id="convSteps" style="font-size:14px;color:rgba(255,255,255,.7);min-height:24px"></div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💡 <b class="highlight-text">换算口诀</b>：元变角加个0，角变元去掉0！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 4: COUNTING MONEY ============ -->
-    <div class="slide" data-page="4">
-      <div class="page-label">PAGE 04 · 数钱</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🧮 数一数</h2>
-      <p class="small">Counting Money</p>
-      <div class="image-wrap">
-        <img src="images/math-15/webp/page-04-counting.webp" onerror="this.style.display=\'none\'" alt="数钱" loading="lazy">
-      </div>
-      <div class="card">
-        <p>把元加起来，再把角加起来，合在一起就是总数！</p>
-        <p style="margin-top:4px">例如：<b>1元 + 5角 + 1元 =</b> <b class="highlight-text">2元5角</b></p>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text">🧩 算一算一共有多少钱：</p>
-        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:4px">
-          <button class="option-btn" onclick="showCountMoney(1)" style="padding:6px 16px;font-size:14px">1元+5角</button>
-          <button class="option-btn" onclick="showCountMoney(2)" style="padding:6px 16px;font-size:14px">2元+1元+5角</button>
-          <button class="option-btn" onclick="showCountMoney(3)" style="padding:6px 16px;font-size:14px">5元+2角+1角</button>
-        </div>
-        <div id="countDisplay" class="number-display" style="font-size:1.8rem;min-height:36px">点击按钮查看</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 5: SHOPPING PRACTICE ============ -->
-    <div class="slide" data-page="5">
-      <div class="page-label">PAGE 05 · 购物实践</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <h2>🛒 购物实践</h2>
-      <p class="small">Buying Things</p>
-      <div class="image-wrap">
-        <img src="images/math-15/webp/page-05-shopping.webp" onerror="this.style.display=\'none\'" alt="购物" loading="lazy">
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">🏪 商店里有这些商品：</p>
-        <div class="shop-item"><span class="item-emoji">✏️</span><span class="item-name">铅笔</span><span class="item-price">1元</span></div>
-        <div class="shop-item"><span class="item-emoji">📒</span><span class="item-name">笔记本</span><span class="item-price">3元</span></div>
-        <div class="shop-item"><span class="item-emoji">🍭</span><span class="item-name">棒棒糖</span><span class="item-price">5角</span></div>
-        <div class="shop-item"><span class="item-emoji">🧸</span><span class="item-name">小熊橡皮</span><span class="item-price">1元5角</span></div>
-        <div class="shop-item"><span class="item-emoji">✂️</span><span class="item-name">儿童剪刀</span><span class="item-price">4元</span></div>
-      </div>
-      <div class="interact-area" style="text-align:center">
-        <p class="q-text" id="shopQ">🧮 第 1 题：买1支铅笔和1个棒棒糖，一共多少钱？</p>
-        <div id="shopOptions" class="option-grid"></div>
-        <div id="shopFeedback" class="feedback"></div>
-        <div id="shopScore" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">答对：0 / 4</div>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 6: CHALLENGE ============ -->
-    <div class="slide" data-page="6">
-      <div class="page-label">PAGE 06 · 闯关挑战</div>
-      <div class="spacer" style="flex:0.1"></div>
-      <div class="emoji-big">🏆</div>
-      <h2>🎯 闯关挑战</h2>
-      <p class="small">Challenge Quiz</p>
-      <div class="interact-area" style="text-align:center;min-height:140px">
-        <p class="q-text" id="challengeQ">🧮 第 1 题：1元可以换几个5角？</p>
-        <div id="challengeOptions" class="option-grid"></div>
-        <div id="challengeFeedback" class="feedback"></div>
-        <div id="challengeScore" style="font-size:13px;color:rgba(255,255,255,.5);margin-top:4px">得分：0 / 5</div>
-      </div>
-      <div class="card" style="padding:8px 12px">
-        <p style="font-size:13px;text-align:center">💪 全部答对可获得理财小能手徽章！</p>
-      </div>
-    </div>
-
-    <!-- ============ SLIDE 7: CELEBRATION ============ -->
-    <div class="slide" data-page="7">
-      <div class="page-label">🎉 完成</div>
-      <div class="spacer"></div>
-      <div class="celebration-icon" style="font-size:4rem;animation:bounce 1.4s infinite">🏅</div>
-      <h2 style="margin-top:8px">恭喜你完成学习！</h2>
-      <p class="small">你已经学会认识人民币啦！</p>
-      <div class="char-bubble steve" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar steve-avatar">⛑️</div>
-        <div class="bubble" style="background:rgba(255,243,224,.9)">太棒了！我现在知道怎么用钱买东西了！</div>
-      </div>
-      <div class="char-bubble alex" style="justify-content:center;margin:6px 0">
-        <div class="char-avatar alex-avatar">🌿</div>
-        <div class="bubble" style="background:rgba(232,245,233,.9)">做得好！你已经是个理财小能手了！</div>
-      </div>
-      <div class="card" style="padding:10px 14px;max-width:320px">
-        <p style="font-size:13px;text-align:center;line-height:1.6">
-          ✅ 我认识了硬币和纸币<br>
-          ✅ 我知道1元=10角，1角=10分<br>
-          ✅ 我会数钱了<br>
-          ✅ 我会算该付多少钱
-        </p>
-      </div>
-      <div class="emoji-big" style="margin:4px 0">💰💎</div>
-      <p style="font-weight:800;color:#FFD54F;font-size:16px">获得理财小能手徽章！</p>
-      <button class="option-btn" onclick="restartLesson()" style="margin-top:8px;padding:10px 32px;font-size:14px;margin-bottom:8px">🔄 重新学习</button>
-      <div class="spacer"></div>
-    </div>
-
-  </div><!-- /slides -->
-
-  <!-- Bottom Navigation -->
-  <div class="bottom-nav">
-    <button id="prevBtn" onclick="prevSlide()">◀</button>
-    <div class="dots" id="dots"></div>
-    <button id="nextBtn" onclick="nextSlide()">▶</button>
-  </div>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-16-clock.html">▶</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
 </div>
-
-<!-- ===== CONFETTI CONTAINER ===== -->
-<div class="confetti-container" id="confettiContainer"></div>
-
+</div>
+<div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
 <script>
-// ===== CONFIG =====
-const TOTAL_SLIDES = 8; // 0-7
-let currentSlide = 0;
-let shopIdx = 0;
-let shopScore = 0;
-let challengeIdx = 0;
-let challengeScore = 0;
-
-// ===== SPEECH =====
-function speakText(text) {
-  if ('speechSynthesis' in window) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'zh-CN';
-    u.rate = 0.9;
-    u.pitch = 1.1;
-    speechSynthesis.cancel();
-    speechSynthesis.speak(u);
+const pages=[{
+cover:true,icon:'💰',title:'认识钱币',subtitle:'数学课 第15课',goals:['认识人民币：元、角、分','会看钱币面值','会简单计算钱数','学会合理花钱']
+},{
+title:'🪙 认识钱币',text:'中国的钱叫人民币。<br>单位：元(¥)、角(角)、分(分)<br><br>常见纸币：100元、50元、20元、10元、5元、1元<br>常见硬币：1元、5角、1角<br><br>1元 = 10角<br>1角 = 10分',
+svg:'<svg viewBox="0 0 280 80" style="width:90%;max-width:280px"><rect x="10" y="10" width="60" height="30" rx="4" fill="#4CAF50"/><text x="40" y="30" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">1元</text><rect x="80" y="10" width="60" height="30" rx="4" fill="#FF9800"/><text x="110" y="30" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">5角</text><rect x="150" y="10" width="60" height="30" rx="4" fill="#9E9E9E"/><text x="180" y="30" font-size="12" fill="#fff" font-weight="700" text-anchor="middle">1角</text><text x="40" y="65" font-size="13" fill="#FFD54F" text-anchor="middle">1元=10角</text><text x="140" y="65" font-size="13" fill="#FFD54F" text-anchor="middle">1角=10分</text></svg>'
+},{
+title:'🛒 买东西',text:'Steve去商店买东西：<br><br>🍎 苹果 3元<br>🍦 冰淇淋 5元<br>🚌 公交车 2元<br>📚 故事书 8元<br><br>买一个苹果和一个冰淇淋一共多少钱？<br>3+5=8元！<br><br>付10元买冰淇淋，找零多少？<br>10-5=5元！',
+svg:'<svg viewBox="0 0 260 60" style="width:90%;max-width:260px"><text x="10" y="20" font-size="13" fill="#fff">🍎3元+🍦5元=8元</text><text x="10" y="45" font-size="13" fill="#FFD54F">💰10元-🍦5元=找零5元</text></svg>'
+},{
+title:'❌ 常见误解',items:[
+{title:'元角混淆',w:'1元=1角？',r:'不对！1元=10角！'},
+{title:'面值大小',w:'5角比1元大？',r:'5角=0.5元，比1元小！'},
+{title:'计算错误',w:'10元买3元的东西，找7元',r:'10-3=7，没错！但如果是10元买3元+5元，找2元'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'一个书包35元，付50元，找零多少？',options:['15元','10元','25元'],correct:0
+},{
+title:'✏️ 再选一选',interactive:true,type:'quiz2',q:'5元+3元+2元=？',options:['8元','10元','11元'],correct:1
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了认识钱币！🏅<br>获得「理财小达人」徽章！<br><br>记住：1元=10角，<br>买东西要学会算钱哦！'
+}];
+let cur=0,quizA={};
+function render(n){
+  const el=document.getElementById('slides');
+  const p=pages[n];
+  if(!p)return;
+  let h='';
+  if(p.cover){
+    h=`<div class="slide active"><div style="font-size:64px;margin:4px">${p.icon}</div><div class="page-title">${p.title}</div>`;
+    if(p.subtitle)h+=`<p class="page-sub" style="font-size:13px;color:rgba(255,255,255,.7)">${p.subtitle}</p>`;
+    if(p.goals){
+      h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;
+      p.goals.forEach(g=>h+=`<li>${g}</li>`);
+      h+=`</ul></div></div>`;
+    }
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:24px;color:#fff">${p.title}</h2><p style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    h+=`<div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+    p.options.forEach((o,i)=>{h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;});
+    h+=`<div class="feedback" id="fb${n}"></div></div></div>`;
+  }else{
+    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;
+    if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
+    if(p.items){p.items.forEach(it=>{h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="font-size:13px;color:#1565C0">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;});}
+    h+=`</div>`;
   }
+  el.innerHTML=h;
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===pages.length-1;
+  updateDots(n);
+  gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
 }
-
-function speakPage() {
-  const title = document.querySelector('.slide.active h2, .slide.active h1');
-  if (title) speakText(title.innerText);
+function clickQuiz(n,i){
+  const p=pages[n];if(quizA[n])return;quizA[n]=true;
+  document.querySelectorAll('.quiz-opt').forEach((el,j)=>{el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');});
+  const fb=document.getElementById('fb'+n);
+  if(fb){fb.className='feedback show '+(i===p.correct?' good':' bad');fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';}
 }
-
-// ===== NAVIGATION =====
-function buildDots() {
-  const c = document.getElementById('dots');
-  c.innerHTML = '';
-  for (let i = 0; i < TOTAL_SLIDES; i++) {
-    const d = document.createElement('button');
-    d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goSlide(i);
-    c.appendChild(d);
-  }
-}
-
-function goSlide(idx) {
-  if (idx < 0 || idx >= TOTAL_SLIDES) return;
-  const slides = document.querySelectorAll('.slide');
-  slides.forEach((s, i) => {
-    s.classList.remove('active', 'exit');
-    if (i === idx) s.classList.add('active');
-    else s.classList.add('exit');
-  });
-  currentSlide = idx;
-  document.querySelectorAll('.dot').forEach((d, i) => {
-    d.className = 'dot' + (i === idx ? ' active' : '');
-  });
-  document.getElementById('prevBtn').disabled = idx === 0;
-  document.getElementById('nextBtn').disabled = idx === TOTAL_SLIDES - 1;
-
-  // Animate elements
-  gsap.fromTo('.slide.active .char-bubble, .slide.active .card, .slide.active .interact-area, .slide.active .image-wrap',
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'power2.out' }
-  );
-
-  if (idx === TOTAL_SLIDES - 1) launchConfetti();
-}
-
-function nextSlide() { goSlide(currentSlide + 1); }
-function prevSlide() { goSlide(currentSlide - 1); }
-
-function restartLesson() {
-  resetAll();
-  goSlide(0);
-}
-
-function resetAll() {
-  shopIdx = 0;
-  shopScore = 0;
-  challengeIdx = 0;
-  challengeScore = 0;
-  document.getElementById('challengeScore').textContent = '得分：0 / 5';
-  initShop();
-  initChallenge();
-}
-
-// ===== DATA: CONVERSION =====
-const convData = [
-  { display: '2 元 = 20 角', steps: '1元=10角，2元就是2个10角，2×10=20角' },
-  { display: '30 角 = 3 元', steps: '10角=1元，30角里有3个10角，30÷10=3元' },
-  { display: '5 元 3 角 = 53 角', steps: '5元=50角，加上3角，一共53角' },
-];
-
-function showConversion(n) {
-  const d = convData[n - 1];
-  document.getElementById('convDisplay').textContent = d.display;
-  document.getElementById('convSteps').textContent = d.steps;
-  speakText(d.display);
-  gsap.fromTo('#convDisplay', { scale: 1.5, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out' });
-}
-
-// ===== DATA: COUNTING MONEY =====
-const countData = [
-  { display: '1 元 5 角', elements: ['1元', '5角'] },
-  { display: '3 元 5 角', elements: ['2元', '1元', '5角'] },
-  { display: '5 元 3 角', elements: ['5元', '2角', '1角'] },
-];
-
-function showCountMoney(n) {
-  const d = countData[n - 1];
-  document.getElementById('countDisplay').textContent = '= ' + d.display;
-  // Build visual
-  const html = '<div class="money-row">' +
-    d.elements.map(e => '<span class="money-bill" style="font-size:12px;width:auto;padding:4px 10px">' + e + '</span>').join('') +
-    '</div>';
-  // We'll use the steps area to show the visual
-  document.getElementById('countDisplay').innerHTML = '<span style="font-size:1rem;color:rgba(255,255,255,.7)">' + d.elements.join(' + ') + '</span> <span style="font-size:1.8rem">= ' + d.display + '</span>';
-  speakText(d.display);
-  gsap.fromTo('#countDisplay', { scale: 1.3, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out' });
-}
-
-// ===== SLIDE 5: SHOPPING PRACTICE =====
-const shopData = [
-  { q: '🧮 第 1 题：买1支铅笔（1元）和1个棒棒糖（5角），一共多少钱？', options: ['1元5角', '2元', '1元'], answer: '1元5角' },
-  { q: '🧮 第 2 题：买1个笔记本（3元）和1支铅笔（1元），一共多少钱？', options: ['3元', '4元', '5元'], answer: '4元' },
-  { q: '🧮 第 3 题：你有5元，买1个儿童剪刀（4元），应找回多少钱？', options: ['1元', '2元', '0元'], answer: '1元' },
-  { q: '🧮 第 4 题：买1个小熊橡皮（1元5角）和1个棒棒糖（5角），一共多少钱？', options: ['1元5角', '2元', '2元5角'], answer: '2元' },
-  { q: '🧮 第 5 题：你有10元，想买1个笔记本（3元）和1个儿童剪刀（4元），够吗？', options: ['够', '不够', '正好'], answer: '够' },
-];
-
-function initShop() {
-  shopIdx = 0;
-  shopScore = 0;
-  renderShop();
-}
-
-function renderShop() {
-  if (shopIdx >= shopData.length) {
-    document.getElementById('shopQ').textContent = '🎉 全部答对！太棒了！';
-    document.getElementById('shopOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:1.1rem">🏆 购物小达人！</span>';
-    document.getElementById('shopFeedback').textContent = '';
-    document.getElementById('shopScore').textContent = '最终得分：' + shopScore + ' / ' + shopData.length;
-    return;
-  }
-  const item = shopData[shopIdx];
-  document.getElementById('shopQ').textContent = item.q;
-  document.getElementById('shopScore').textContent = '答对：' + shopScore + ' / ' + shopData.length;
-  const cont = document.getElementById('shopOptions');
-  cont.innerHTML = '';
-  item.options.forEach(function(opt) {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.val = opt;
-    btn.onclick = function() { checkShop(this, opt, item.answer); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('shopFeedback').textContent = '';
-}
-
-function checkShop(btn, selected, answer) {
-  const fb = document.getElementById('shopFeedback');
-  document.querySelectorAll('#shopOptions .option-btn').forEach(function(b) { b.classList.add('disabled'); });
-  if (selected === answer) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 回答正确！';
-    shopScore++;
-    document.getElementById('shopScore').textContent = '答对：' + shopScore + ' / ' + shopData.length;
-    speakText('回答正确');
-    setTimeout(function() {
-      shopIdx++;
-      renderShop();
-    }, 1200);
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再算算看！把元和角分开加哦！';
-    setTimeout(function() {
-      document.querySelectorAll('#shopOptions .option-btn').forEach(function(b) {
-        b.classList.remove('disabled', 'wrong');
-      });
-      fb.textContent = '';
-    }, 1200);
-  }
-}
-
-// ===== SLIDE 6: CHALLENGE =====
-const challengeData = [
-  { q: '🧮 第 1 题：1元可以换几个5角？', options: ['2个', '5个', '10个'], answer: '2个' },
-  { q: '🧮 第 2 题：下面哪个硬币面值最大？', options: ['1元', '5角', '1角'], answer: '1元' },
-  { q: '🧮 第 3 题：3元5角等于多少角？', options: ['35角', '53角', '30角'], answer: '35角' },
-  { q: '🧮 第 4 题：一个文具盒标价8元，你付了10元，应找回多少钱？', options: ['2元', '1元', '3元'], answer: '2元' },
-  { q: '🧮 第 5 题：妈妈给你20元，你买了15元的故事书，还剩多少钱？', options: ['5元', '10元', '15元'], answer: '5元' },
-  { q: '🧮 第 6 题：1元 + 2元 + 5角 = ？', options: ['3元5角', '2元5角', '3元'], answer: '3元5角' },
-];
-
-function initChallenge() {
-  challengeIdx = 0;
-  challengeScore = 0;
-  renderChallenge();
-}
-
-function renderChallenge() {
-  if (challengeIdx >= challengeData.length) {
-    document.getElementById('challengeQ').textContent = '🎉 全部答对！获得理财小能手徽章！';
-    document.getElementById('challengeOptions').innerHTML = '<span style="color:#A5D6A7;font-weight:700;font-size:1.1rem">🏆 你太厉害了！</span>';
-    document.getElementById('challengeFeedback').textContent = '';
-    document.getElementById('challengeScore').textContent = '最终得分：' + challengeScore + ' / ' + challengeData.length;
-    launchConfetti();
-    return;
-  }
-  const item = challengeData[challengeIdx];
-  document.getElementById('challengeQ').textContent = item.q;
-  document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-  const cont = document.getElementById('challengeOptions');
-  cont.innerHTML = '';
-  item.options.forEach(function(opt) {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.textContent = opt;
-    btn.dataset.val = opt;
-    btn.onclick = function() { checkChallenge(this, opt, item.answer); };
-    cont.appendChild(btn);
-  });
-  document.getElementById('challengeFeedback').textContent = '';
-}
-
-function checkChallenge(btn, selected, answer) {
-  const fb = document.getElementById('challengeFeedback');
-  document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) { b.classList.add('disabled'); });
-  if (selected === answer) {
-    btn.classList.add('correct');
-    fb.className = 'feedback correct';
-    fb.textContent = '✅ 回答正确！';
-    challengeScore++;
-    document.getElementById('challengeScore').textContent = '得分：' + challengeScore + ' / ' + challengeData.length;
-    speakText('回答正确');
-    setTimeout(function() {
-      challengeIdx++;
-      renderChallenge();
-    }, 1200);
-  } else {
-    btn.classList.add('wrong');
-    fb.className = 'feedback wrong';
-    fb.textContent = '❌ 再想想！回忆一下元角分的换算哦！';
-    setTimeout(function() {
-      document.querySelectorAll('#challengeOptions .option-btn').forEach(function(b) {
-        b.classList.remove('disabled', 'wrong');
-      });
-      fb.textContent = '';
-    }, 1200);
-  }
-}
-
-// ===== CONFETTI =====
-function launchConfetti() {
-  const container = document.getElementById('confettiContainer');
-  container.innerHTML = '';
-  const colors = ['#42A5F5','#FFA726','#EF5350','#66BB6A','#AB47BC','#FFD54F','#26C6DA','#EC407A'];
-  for (let i = 0; i < 80; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    const left = Math.random() * 100;
-    const size = 6 + Math.random() * 8;
-    const rotation = Math.random() * 360;
-    piece.style.cssText =
-      'left:' + left + '%;' +
-      'top:-20px;' +
-      'width:' + size + 'px;' +
-      'height:' + size + 'px;' +
-      'background:' + color + ';' +
-      'transform:rotate(' + rotation + 'deg);' +
-      'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px') + ';';
-    container.appendChild(piece);
-    gsap.to(piece, {
-      y: window.innerHeight + 100,
-      x: (-100 + Math.random() * 200),
-      rotation: rotation + 360 * Math.random() * 3,
-      duration: 2 + Math.random() * 2,
-      delay: Math.random() * 0.8,
-      ease: 'power1.out',
-      opacity: 1,
-    });
-  }
-  setTimeout(function() {
-    gsap.to('.confetti-piece', { opacity: 0, duration: 0.5, onComplete: function() { container.innerHTML = ''; } });
-  }, 4000);
-}
-
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', function() {
-  buildDots();
-  initShop();
-  initChallenge();
-  gsap.from('.slide[data-page="0"] .emoji-huge, .slide[data-page="0"] h1, .slide[data-page="0"] .image-wrap, .slide[data-page="0"] .card, .slide[data-page="0"] .option-btn',
-    { opacity: 0, y: 20, duration: 0.5, stagger: 0.12, ease: 'power2.out' });
-});
+function go(d){cur=Math.max(0,Math.min(pages.length-1,cur+d));render(cur);}
+function updateDots(n){const el=document.getElementById('dots');el.innerHTML='';for(let i=0;i<pages.length;i++){const d=document.createElement('button');d.className='dot'+(i===n?' active':'');d.onclick=()=>{cur=i;render(cur);};el.appendChild(d);}}
+function doConfetti(){const el=document.getElementById('confetti');const c=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];for(let i=0;i<50;i++){const p=document.createElement('div');p.style.cssText='position:absolute;left:'+(Math.random()*100)+'%;top:-10px;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*6)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confetti-fall '+(2+Math.random()*2)+'s ease-in '+(Math.random()*2)+'s forwards;';el.appendChild(p);setTimeout(()=>p.remove(),4500);}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render(0);
 </script>
-
 </body>
 </html>
