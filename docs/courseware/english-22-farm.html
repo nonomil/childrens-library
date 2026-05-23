@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>English Lesson 22: At the Farm 🐄</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Nunito', sans-serif;
+  background: #2d2d2d;
+}
+.page {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  background: #66BB6A;
+  transition: opacity 0.5s ease;
+}
+.page.active {
+  display: flex;
+}
+.page-cover {
+  justify-content: center;
+  background: linear-gradient(135deg, #66BB6A 0%, #43A047 50%, #2E7D32 100%);
+  text-align: center;
+  padding: 2rem;
+}
+.page-cover .cover-icon { font-size: 6rem; margin-bottom: 1rem; }
+.page-cover h1 { font-size: 2.8rem; font-weight: 900; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 0.5rem; }
+.page-cover .subtitle { font-size: 1.3rem; font-weight: 600; color: rgba(255,255,255,0.9); margin-bottom: 2rem; }
+.page-cover .sound-block { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 1rem 2rem; display: inline-block; margin-bottom: 1.5rem; }
+.page-cover .sound-block span { font-size: 1.2rem; font-weight: 700; color: #fff; }
+.page-cover .sound-block .sh-sound { font-size: 2rem; color: #FFD54F; font-weight: 900; }
+.page-cover .new-words { display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: center; max-width: 500px; margin: 1rem auto; }
+.page-cover .new-words .word-tag { background: rgba(255,255,255,0.25); color: #fff; font-weight: 700; padding: 0.4rem 1rem; border-radius: 30px; font-size: 1rem; backdrop-filter: blur(4px); }
+.page-cover .start-btn { margin-top: 2rem; background: #FFD54F; border: none; border-radius: 50px; padding: 1rem 3rem; font-family: 'Nunito', sans-serif; font-size: 1.4rem; font-weight: 800; color: #2E7D32; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.3); transition: transform 0.2s, box-shadow 0.2s; }
+.page-cover .start-btn:active { transform: scale(0.95); box-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+.top-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1.2rem;
+  background: rgba(46,125,50,0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 2px solid rgba(255,255,255,0.15);
+}
+.top-bar a { color: #fff; text-decoration: none; font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+.top-bar .lesson-label { font-size: 0.9rem; color: rgba(255,255,255,0.8); font-weight: 600; }
+.story-page {
+  padding-top: 4rem;
+  background: #f5f5f0;
+}
+.story-page .story-card {
+  max-width: 900px;
+  width: 92%;
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+  overflow: hidden;
+  margin: 1rem auto;
+}
+.story-page .story-img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  background: #e0e0e0;
+}
+.story-page .story-text {
+  padding: 1.5rem 2rem;
+}
+.story-page .story-text p {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 0.6rem;
+  font-weight: 600;
+}
+.story-page .story-text .highlight-sh {
+  color: #C62828;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #FFD54F;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+}
+.story-page .story-text .highlight-word {
+  color: #2E7D32;
+  font-weight: 800;
+  background: #E8F5E9;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+}
+.story-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 900px;
+  width: 92%;
+  margin: 0 auto 1rem;
+}
+.story-nav button {
+  background: #66BB6A;
+  border: none;
+  border-radius: 40px;
+  padding: 0.8rem 2rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  flex: 1;
+  box-shadow: 0 4px 12px rgba(102,187,106,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.story-nav button:active { transform: scale(0.96); box-shadow: 0 2px 6px rgba(102,187,106,0.3); }
+.story-nav button:disabled { opacity: 0.4; cursor: default; transform: none; }
+.story-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+.story-dots .dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: rgba(102,187,106,0.3);
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+.story-dots .dot.active { background: #66BB6A; transform: scale(1.3); }
+
+/* Quiz pages */
+.quiz-page {
+  padding-top: 4rem;
+  background: #f5f5f0;
+}
+.quiz-container {
+  max-width: 900px;
+  width: 92%;
+  margin: 1rem auto;
+  background: #fff;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+.quiz-container h2 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2E7D32;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.quiz-container .quiz-desc {
+  font-size: 1.05rem;
+  color: #555;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+.sh-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.sh-card {
+  background: #f9fbe7;
+  border: 3px solid #e0e0e0;
+  border-radius: 18px;
+  padding: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+  touch-action: manipulation;
+}
+.sh-card:active { transform: scale(0.96); }
+.sh-card img { width: 64px; height: 64px; object-fit: contain; margin-bottom: 0.5rem; display: block; margin-left: auto; margin-right: auto; }
+.sh-card .word-label { font-size: 1.2rem; font-weight: 700; color: #333; }
+.sh-card.selected { border-color: #66BB6A; background: #E8F5E9; box-shadow: 0 0 0 4px rgba(102,187,106,0.2); }
+.sh-card.correct { border-color: #43A047; background: #C8E6C9; }
+.sh-card.wrong { border-color: #E53935; background: #FFEBEE; }
+
+/* Animal matching */
+.animal-match-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+.animal-match-col { display: flex; flex-direction: column; gap: 0.8rem; }
+.animal-match-item {
+  background: #f5f5f0;
+  border: 3px solid #ddd;
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s;
+  touch-action: manipulation;
+  color: #333;
+}
+.animal-match-item:active { transform: scale(0.96); }
+.animal-match-item.matched { background: #C8E6C9; border-color: #43A047; cursor: default; opacity: 0.7; }
+.animal-match-item.selected-match { border-color: #66BB6A; background: #E8F5E9; box-shadow: 0 0 0 4px rgba(102,187,106,0.2); }
+.animal-match-item .animal-emoji { font-size: 2rem; display: block; margin-bottom: 0.3rem; }
+
+/* Fill-in */
+.fill-grid { display: flex; flex-direction: column; gap: 1rem; }
+.fill-item { background: #f9fbe7; border-radius: 16px; padding: 1rem; }
+.fill-item .fill-sentence { font-size: 1.1rem; font-weight: 600; color: #333; margin-bottom: 0.5rem; }
+.fill-item .fill-sentence .blank { background: #fff3cd; padding: 0.1rem 0.6rem; border-radius: 8px; border-bottom: 3px solid #FFD54F; font-weight: 800; }
+.fill-options { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.fill-options .fill-btn {
+  background: #e8e8e8;
+  border: 2px solid #ccc;
+  border-radius: 30px;
+  padding: 0.4rem 1rem;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  touch-action: manipulation;
+  color: #333;
+}
+.fill-options .fill-btn:active { transform: scale(0.94); }
+.fill-options .fill-btn.selected-fill { background: #66BB6A; color: #fff; border-color: #43A047; }
+.fill-options .fill-btn.correct-fill { background: #43A047; color: #fff; border-color: #2E7D32; }
+.fill-options .fill-btn.wrong-fill { background: #E53935; color: #fff; border-color: #B71C1C; }
+
+/* Speech button */
+.speak-btn {
+  background: rgba(102,187,106,0.15);
+  border: 2px solid #66BB6A;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  touch-action: manipulation;
+}
+.speak-btn:active { background: #66BB6A; color: #fff; }
+
+/* Congrats */
+.congrats-page { justify-content: center; background: linear-gradient(135deg, #66BB6A, #43A047); text-align: center; }
+.congrats-page h1 { font-size: 2.5rem; color: #fff; font-weight: 900; margin-bottom: 1rem; }
+.congrats-page p { font-size: 1.2rem; color: rgba(255,255,255,0.9); max-width: 500px; margin: 0 auto 2rem; font-weight: 600; }
+.congrats-page .finish-btn { background: #FFD54F; border: none; border-radius: 50px; padding: 1rem 3rem; font-family: 'Nunito', sans-serif; font-size: 1.3rem; font-weight: 800; color: #2E7D32; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+/* Landscape tablet portrait fallback */
+@media (orientation: portrait) {
+  .page { justify-content: flex-start; }
+  .sh-grid { grid-template-columns: repeat(2, 1fr); }
+  .animal-match-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .story-page .story-text p { font-size: 1.3rem; }
+  .sh-grid { grid-template-columns: repeat(4, 1fr); }
+  .animal-match-grid { grid-template-columns: repeat(2, 1fr); }
+  .quiz-container { padding: 2.5rem; }
+}
+@media (max-width: 500px) {
+  .page-cover h1 { font-size: 2rem; }
+  .page-cover .cover-icon { font-size: 4rem; }
+  .sh-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-bar a { font-size: 1.2rem; }
+  .story-page .story-text { padding: 1rem 1.2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<div class="page page-cover active" id="page-cover">
+  <div class="cover-icon">🐄</div>
+  <h1>At the Farm</h1>
+  <p class="subtitle">English Lesson 22</p>
+  <div class="sound-block">
+    <span>🔊 Sound Block: </span>
+    <span class="sh-sound">sh</span>
+    <span> — <em>sheep, ship, shop, fish, wish</em></span>
+  </div>
+  <div class="new-words">
+    <span class="word-tag">⬡ live</span>
+    <span class="word-tag">⬡ work</span>
+    <span class="word-tag">⬡ grow</span>
+    <span class="word-tag">⬡ eat</span>
+    <span class="word-tag">⬡ sleep</span>
+  </div>
+  <button class="start-btn" onclick="goToPage('page-story-0')">▶ Let's Go!</button>
+</div>
+
+<!-- ============ TOP BAR ============ -->
+<div class="top-bar" id="topBar" style="display:none;">
+  <a href="../index.html" aria-label="Home">🏠</a>
+  <span class="lesson-label">Lesson 22: At the Farm</span>
+  <a href="../english-23-treasure.html" aria-label="Next Lesson">▶</a>
+</div>
+
+<!-- ============ STORY PAGES ============ -->
+<div class="page story-page" id="page-story-0">
+  <div class="story-card">
+    <img class="story-img" id="story-img-0" src="images/english-22/webp/page-00.webp" alt="Steve at the farm" loading="lazy">
+    <div class="story-text">
+      <p>Steve visits a big <span class="highlight-sh">farm</span> today. He sees many animals and learns about farm life.</p>
+      <p>"Welcome to Green Valley Farm!" says Farmer Tom. "Let me <span class="highlight-word">show</span> you around."</p>
+      <p>Steve is excited! 🐄</p>
+      <button class="speak-btn" onclick="speakText('Steve visits a big farm today. He sees many animals and learns about farm life. Welcome to Green Valley Farm! says Farmer Tom. Let me show you around. Steve is excited!')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button disabled>◀ Back</button>
+    <button onclick="goToPage('page-story-1')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-1">
+  <div class="story-card">
+    <img class="story-img" id="story-img-1" src="images/english-22/webp/page-01.webp" alt="Sheep and chickens" loading="lazy">
+    <div class="story-text">
+      <p>First, Steve sees fluffy <span class="highlight-sh">sheep</span>. The <span class="highlight-sh">sheep</span> make soft sounds: "Baa baa!"</p>
+      <p>"<span class="highlight-sh">Sheep</span> <span class="highlight-word">live</span> in the field," says Farmer Tom. "They <span class="highlight-word">eat</span> grass all day."</p>
+      <p>Steve laughs and pets a baby lamb. 🐑</p>
+      <button class="speak-btn" onclick="speakText('First, Steve sees fluffy sheep. The sheep make soft sounds: Baa baa! Sheep live in the field, says Farmer Tom. They eat grass all day. Steve laughs and pets a baby lamb.')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-0')">◀ Back</button>
+    <button onclick="goToPage('page-story-2')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-2">
+  <div class="story-card">
+    <img class="story-img" id="story-img-2" src="images/english-22/webp/page-02.webp" alt="Cows and horses" loading="lazy">
+    <div class="story-text">
+      <p>Next, Steve meets the <span class="highlight-word">cow</span> and <span class="highlight-word">horse</span>. The <span class="highlight-word">cow</span> is black and white. Moooo!</p>
+      <p>"Cows <span class="highlight-word">live</span> in the barn and <span class="highlight-word">eat</span> hay," says Tom. "Horses <span class="highlight-word">work</span> on the farm."</p>
+      <p>Steve feeds a carrot to the <span class="highlight-word">horse</span>. It neighs happily! 🐴</p>
+      <button class="speak-btn" onclick="speakText('Next, Steve meets the cow and horse. The cow is black and white. Moooo! Cows live in the barn and eat hay, says Tom. Horses work on the farm. Steve feeds a carrot to the horse. It neighs happily!')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-1')">◀ Back</button>
+    <button onclick="goToPage('page-story-3')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-3">
+  <div class="story-card">
+    <img class="story-img" id="story-img-3" src="images/english-22/webp/page-03.webp" alt="Pigs and chickens" loading="true">
+    <div class="story-text">
+      <p>Steve sees pink <span class="highlight-word">pigs</span> rolling in mud. Oink oink! 🐷</p>
+      <p>"<span class="highlight-word">Pigs</span> <span class="highlight-word">eat</span> and <span class="highlight-word">sleep</span> in the <span class="highlight-word">barn</span>," says Tom. "They love to roll in mud to stay cool."</p>
+      <p>Nearby, <span class="highlight-word">chickens</span> peck at seeds. Cluck cluck! 🐔</p>
+      <button class="speak-btn" onclick="speakText('Steve sees pink pigs rolling in mud. Oink oink! Pigs eat and sleep in the barn, says Tom. They love to roll in mud to stay cool. Nearby, chickens peck at seeds. Cluck cluck!')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-2')">◀ Back</button>
+    <button onclick="goToPage('page-story-4')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-4">
+  <div class="story-card">
+    <img class="story-img" id="story-img-4" src="images/english-22/webp/page-04.webp" alt="The barn" loading="true">
+    <div class="story-text">
+      <p>Farmer Tom takes Steve to the big red <span class="highlight-word">barn</span>. Inside it is warm and cozy.</p>
+      <p>"Many animals <span class="highlight-word">live</span> here. Farmers <span class="highlight-word">work</span> hard to take care of them."</p>
+      <p>Steve sees a <span class="highlight-word">horse</span> in its stall and <span class="highlight-word">chickens</span> on perches. 🐓</p>
+      <button class="speak-btn" onclick="speakText('Farmer Tom takes Steve to the big red barn. Inside it is warm and cozy. Many animals live here. Farmers work hard to take care of them. Steve sees a horse in its stall and chickens on perches.')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-3')">◀ Back</button>
+    <button onclick="goToPage('page-story-5')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-5">
+  <div class="story-card">
+    <img class="story-img" id="story-img-5" src="images/english-22/webp/page-05.webp" alt="Farm field" loading="true">
+    <div class="story-text">
+      <p>Last, Steve visits the big <span class="highlight-word">field</span>. Crops <span class="highlight-word">grow</span> tall in the warm sun.</p>
+      <p>"Food doesn't just appear at the <span class="highlight-sh">shop</span>," says Tom. "It <span class="highlight-word">grows</span> right here on the farm!"</p>
+      <p>Steve picks a ripe tomato. He makes a <span class="highlight-sh">wish</span> to come back again. 🍅</p>
+      <button class="speak-btn" onclick="speakText('Last, Steve visits the big field. Crops grow tall in the warm sun. Food doesn\'t just appear at the shop, says Tom. It grows right here on the farm! Steve picks a ripe tomato. He makes a wish to come back again.')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-4')">◀ Back</button>
+    <button onclick="goToPage('page-story-6')">Next ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+</div>
+
+<div class="page story-page" id="page-story-6">
+  <div class="story-card">
+    <img class="story-img" id="story-img-6" src="images/english-22/webp/page-06.webp" alt="Steve saying goodbye" loading="true">
+    <div class="story-text">
+      <p>What a wonderful day at the farm! Steve learned so much. 🎉</p>
+      <p><span class="highlight-word">Animals live</span> on farms. <span class="highlight-word">Farmers work</span> hard. <span class="highlight-word">Food grows</span> in fields.</p>
+      <p>Steve waves goodbye to Farmer Tom and all the animals. See you next time! 👋</p>
+      <button class="speak-btn" onclick="speakText('What a wonderful day at the farm! Steve learned so much. Animals live on farms. Farmers work hard. Food grows in fields. Steve waves goodbye to Farmer Tom and all the animals. See you next time!')">🔊</button>
+    </div>
+  </div>
+  <div class="story-nav">
+    <button onclick="goToPage('page-story-5')">◀ Back</button>
+    <button onclick="goToPage('page-sh-quiz')">Quiz Time ▶</button>
+  </div>
+  <div class="story-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+</div>
+
+<!-- ============ SH QUIZ ============ -->
+<div class="page quiz-page" id="page-sh-quiz">
+  <div class="quiz-container">
+    <h2>🔊 Sound Block: <span style="color:#66BB6A;">sh</span></h2>
+    <p class="quiz-desc">Tap the picture that has the <strong>sh</strong> sound!</p>
+    <div class="sh-grid" id="shGrid">
+      <!-- populated by JS -->
+    </div>
+    <div style="text-align:center; margin-top:1rem;">
+      <div id="shFeedback" style="font-size:1.3rem; font-weight:700; min-height:2.5rem;"></div>
+      <button id="shNextBtn" class="start-btn" style="margin-top:1rem; padding:0.7rem 2.5rem; font-size:1.1rem; display:none;" onclick="goToPage('page-animals')">Next Activity ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ANIMAL MATCHING ============ -->
+<div class="page quiz-page" id="page-animals">
+  <div class="quiz-container">
+    <h2>🐾 Animal Match</h2>
+    <p class="quiz-desc">Tap a farm animal, then tap what it does!</p>
+    <div class="animal-match-grid" id="animalGrid">
+      <div class="animal-match-col" id="animalColLeft"></div>
+      <div class="animal-match-col" id="animalColRight"></div>
+    </div>
+    <div style="text-align:center; margin-top:1rem;">
+      <div id="animalFeedback" style="font-size:1.1rem; font-weight:700; min-height:2rem; color:#2E7D32;"></div>
+      <button id="animalNextBtn" class="start-btn" style="margin-top:1rem; padding:0.7rem 2.5rem; font-size:1.1rem; display:none;" onclick="goToPage('page-fill')">Next Activity ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FILL IN THE BLANK ============ -->
+<div class="page quiz-page" id="page-fill">
+  <div class="quiz-container">
+    <h2>✏️ Fill in the Blank</h2>
+    <p class="quiz-desc">Choose the right word for each sentence.</p>
+    <div class="fill-grid" id="fillGrid"></div>
+    <div style="text-align:center; margin-top:1.5rem;">
+      <div id="fillFeedback" style="font-size:1.1rem; font-weight:700; min-height:2rem; color:#2E7D32;"></div>
+      <button id="fillNextBtn" class="start-btn" style="margin-top:1rem; padding:0.7rem 2.5rem; font-size:1.1rem; display:none;" onclick="goToPage('page-congrats')">🎉 Finish!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CONGRATS ============ -->
+<div class="page congrats-page" id="page-congrats">
+  <div style="font-size:5rem; margin-bottom:1rem;">🌟</div>
+  <h1>Great Job!</h1>
+  <p>You learned all about the farm, the <strong>sh</strong> sound, and new words. Keep up the amazing work!</p>
+  <button class="finish-btn" onclick="goToPage('page-cover')">🏠 Back to Start</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// ======================== NAVIGATION ========================
+const pageIds = [
+  'page-cover','page-story-0','page-story-1','page-story-2','page-story-3',
+  'page-story-4','page-story-5','page-story-6','page-sh-quiz','page-animals',
+  'page-fill','page-congrats'
+];
+let currentPageIdx = 0;
+
+function goToPage(id) {
+  const target = document.getElementById(id);
+  if (!target) return;
+  const allPages = document.querySelectorAll('.page');
+  const current = allPages[currentPageIdx];
+  if (current) {
+    gsap.to(current, { opacity: 0, duration: 0.25, onComplete: () => {
+      current.classList.remove('active');
+      current.style.opacity = '';
+      target.style.opacity = 0;
+      target.classList.add('active');
+      gsap.to(target, { opacity: 1, duration: 0.35 });
+      // scroll to top
+      target.scrollTop = 0;
+    }});
+  } else {
+    target.classList.add('active');
+  }
+  const topBar = document.getElementById('topBar');
+  if (topBar) {
+    topBar.style.display = (id === 'page-cover' || id === 'page-congrats') ? 'none' : 'flex';
+  }
+  currentPageIdx = Array.from(allPages).indexOf(target);
+}
+
+// ======================== SPEECH SYNTHESIS ========================
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.92;
+  utterance.pitch = 1.05;
+  utterance.volume = 1;
+  // Try to find a good English voice
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang.startsWith('en') && v.name.includes('Female')) ||
+                    voices.find(v => v.lang.startsWith('en-US')) ||
+                    voices.find(v => v.lang.startsWith('en'));
+  if (preferred) utterance.voice = preferred;
+  window.speechSynthesis.speak(utterance);
+}
+
+// ======================== SH QUIZ ========================
+const shItems = [
+  { word: 'Sheep', img: 'images/english-22/webp/page-01.webp', answer: true, emoji: '🐑' },
+  { word: 'Ship', img: '', answer: true, emoji: '🚢' },
+  { word: 'Shop', img: '', answer: true, emoji: '🏪' },
+  { word: 'Fish', img: '', answer: true, emoji: '🐟' },
+  { word: 'Wish', img: '', answer: true, emoji: '⭐' },
+  { word: 'Cow', img: '', answer: false, emoji: '🐄' },
+  { word: 'Pig', img: '', answer: false, emoji: '🐷' },
+  { word: 'Horse', img: '', answer: false, emoji: '🐴' }
+];
+let shCorrectCount = 0;
+let shAttempted = new Set();
+
+function buildShQuiz() {
+  const grid = document.getElementById('shGrid');
+  if (!grid) return;
+  // Shuffle for variety
+  const shuffled = [...shItems].sort(() => Math.random() - 0.5);
+  grid.innerHTML = '';
+  shuffled.forEach((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'sh-card';
+    card.dataset.answer = item.answer ? 'yes' : 'no';
+    card.dataset.index = idx;
+    const imgSrc = item.img || '';
+    card.innerHTML = `
+      <div class="animal-emoji">${item.emoji}</div>
+      ${imgSrc ? `<img src="${imgSrc}" alt="${item.word}" loading="lazy">` : ''}
+      <div class="word-label">${item.word}</div>
+    `;
+    card.addEventListener('click', () => handleShClick(card, item));
+    grid.appendChild(card);
+  });
+}
+
+function handleShClick(card, item) {
+  if (card.classList.contains('correct') || card.classList.contains('wrong')) return;
+  if (shAttempted.has(item.word)) return;
+  shAttempted.add(item.word);
+  const isSh = item.answer;
+  if (isSh) {
+    card.classList.add('correct');
+    shCorrectCount++;
+    document.getElementById('shFeedback').textContent = `✅ Yes! "${item.word}" has the sh sound!`;
+  } else {
+    card.classList.add('wrong');
+    document.getElementById('shFeedback').textContent = `❌ "${item.word}" does NOT have the sh sound. Try another!`;
+  }
+  if (shCorrectCount >= 5) {
+    const btn = document.getElementById('shNextBtn');
+    btn.style.display = 'inline-block';
+    btn.textContent = 'Next Activity ▶';
+    if (shCorrectCount === 5) {
+      document.getElementById('shFeedback').textContent = '🎉 Great! You found all the sh words!';
+    }
+  }
+}
+
+// ======================== ANIMAL MATCHING ========================
+const animals = [
+  { name: 'Sheep', action: 'Lives in the field', emoji: '🐑', match: 'livesInField' },
+  { name: 'Cow', action: 'Eats hay', emoji: '🐄', match: 'eatsHay' },
+  { name: 'Horse', action: 'Works on the farm', emoji: '🐴', match: 'worksFarm' },
+  { name: 'Pig', action: 'Sleeps in the barn', emoji: '🐷', match: 'sleepsBarn' },
+  { name: 'Chicken', action: 'Lays eggs', emoji: '🐔', match: 'laysEggs' }
+];
+
+let selectedAnimal = null;
+let animalMatches = 0;
+
+function buildAnimalMatch() {
+  const leftCol = document.getElementById('animalColLeft');
+  const rightCol = document.getElementById('animalColRight');
+  if (!leftCol || !rightCol) return;
+  leftCol.innerHTML = '';
+  rightCol.innerHTML = '';
+  selectedAnimal = null;
+  animalMatches = 0;
+  const doc = document.getElementById('animalNextBtn');
+  if (doc) doc.style.display = 'none';
+  document.getElementById('animalFeedback').textContent = '';
+
+  // Shuffle actions
+  const actions = [...animals].sort(() => Math.random() - 0.5).map(a => ({
+    text: a.action,
+    matchId: a.match,
+    animalName: a.name
+  }));
+
+  animals.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'animal-match-item';
+    el.dataset.matchId = a.match;
+    el.dataset.type = 'animal';
+    el.innerHTML = `${a.emoji} ${a.name}`;
+    el.addEventListener('click', () => selectAnimal(el, a));
+    leftCol.appendChild(el);
+  });
+
+  actions.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'animal-match-item';
+    el.dataset.matchId = a.matchId;
+    el.dataset.type = 'action';
+    el.textContent = a.text;
+    el.addEventListener('click', () => selectAction(el, a));
+    rightCol.appendChild(el);
+  });
+}
+
+function selectAnimal(el, animal) {
+  // Deselect previous
+  document.querySelectorAll('[data-type="animal"].selected-match').forEach(e => e.classList.remove('selected-match'));
+  if (el.classList.contains('matched')) return;
+  el.classList.add('selected-match');
+  selectedAnimal = animal;
+}
+
+function selectAction(el, action) {
+  if (el.classList.contains('matched')) return;
+  if (!selectedAnimal) {
+    document.getElementById('animalFeedback').textContent = '👆 First tap an animal!';
+    return;
+  }
+  if (action.matchId === selectedAnimal.match) {
+    el.classList.add('matched');
+    document.querySelector(`[data-match-id="${action.matchId}"][data-type="animal"]`).classList.add('matched');
+    document.querySelectorAll('.selected-match').forEach(e => e.classList.remove('selected-match'));
+    animalMatches++;
+    document.getElementById('animalFeedback').textContent = `✅ ${selectedAnimal.emoji} ${selectedAnimal.name} — ${action.text}`;
+    selectedAnimal = null;
+    if (animalMatches >= animals.length) {
+      document.getElementById('animalNextBtn').style.display = 'inline-block';
+      document.getElementById('animalFeedback').textContent = '🎉 All animals matched! Great job!';
+    }
+  } else {
+    document.getElementById('animalFeedback').textContent = `❌ ${selectedAnimal.emoji} ${selectedAnimal.name} doesn't do that. Try again!`;
+    document.querySelectorAll('.selected-match').forEach(e => e.classList.remove('selected-match'));
+    selectedAnimal = null;
+  }
+}
+
+// ======================== FILL IN THE BLANK ========================
+const fillSentences = [
+  { sentence: 'Farm animals ___ on the farm.', correct: 'live', options: ['live', 'work', 'sleep', 'grow'] },
+  { sentence: 'Farmers ___ hard every day.', correct: 'work', options: ['live', 'work', 'eat', 'sleep'] },
+  { sentence: 'Crops ___ in the warm sun.', correct: 'grow', options: ['live', 'grow', 'eat', 'sleep'] },
+  { sentence: 'Cows ___ grass in the field.', correct: 'eat', options: ['work', 'eat', 'grow', 'sleep'] },
+  { sentence: 'Pigs ___ in the barn at night.', correct: 'sleep', options: ['live', 'work', 'eat', 'sleep'] }
+];
+let fillCompleted = 0;
+
+function buildFill() {
+  const grid = document.getElementById('fillGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  fillCompleted = 0;
+  document.getElementById('fillNextBtn').style.display = 'none';
+  document.getElementById('fillFeedback').textContent = '';
+  const fb = document.getElementById('fillFeedback');
+
+  fillSentences.forEach((item, idx) => {
+    const div = document.createElement('div');
+    div.className = 'fill-item';
+    div.dataset.idx = idx;
+    const sentenceHtml = item.sentence.replace('___', '<span class="blank">___</span>');
+    div.innerHTML = `<div class="fill-sentence">${sentenceHtml}</div><div class="fill-options" id="fillOpts-${idx}"></div>`;
+    const optsDiv = div.querySelector('.fill-options');
+    const shuffled = [...item.options].sort(() => Math.random() - 0.5);
+    shuffled.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'fill-btn';
+      btn.textContent = opt;
+      btn.dataset.correct = opt === item.correct ? 'yes' : 'no';
+      btn.addEventListener('click', (e) => handleFillClick(e, idx, opt === item.correct, btn));
+      optsDiv.appendChild(btn);
+    });
+    grid.appendChild(div);
+  });
+}
+
+function handleFillClick(e, idx, isCorrect, btn) {
+  const parent = btn.closest('.fill-item');
+  if (parent.dataset.completed === 'yes') return;
+  // Disable all buttons in this sentence
+  const btns = parent.querySelectorAll('.fill-btn');
+  btns.forEach(b => b.style.pointerEvents = 'none');
+  if (isCorrect) {
+    btn.classList.add('correct-fill');
+    document.getElementById('fillFeedback').textContent = '✅ Right!';
+    parent.dataset.completed = 'yes';
+    fillCompleted++;
+    if (fillCompleted >= fillSentences.length) {
+      document.getElementById('fillNextBtn').style.display = 'inline-block';
+      document.getElementById('fillFeedback').textContent = '🎉 All done! You know the farm words!';
+    }
+  } else {
+    btn.classList.add('wrong-fill');
+    document.getElementById('fillFeedback').textContent = '❌ Try the next sentence!';
+    // Re-enable other buttons in this sentence
+    btns.forEach(b => {
+      if (!b.classList.contains('wrong-fill')) b.style.pointerEvents = 'auto';
+    });
+  }
+}
+
+// ======================== INIT ========================
+document.addEventListener('DOMContentLoaded', function() {
+  buildShQuiz();
+  buildAnimalMatch();
+  buildFill();
+
+  // Preload voices
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+  }
+
+  // GSAP entrance animations
+  gsap.from('.page-cover .cover-icon', { scale: 0, rotation: -30, duration: 0.6, ease: 'back.out(1.7)' });
+  gsap.from('.page-cover h1', { y: -40, opacity: 0, duration: 0.5, delay: 0.2 });
+  gsap.from('.page-cover .subtitle', { y: 30, opacity: 0, duration: 0.4, delay: 0.35 });
+  gsap.from('.page-cover .sound-block', { scale: 0.8, opacity: 0, duration: 0.4, delay: 0.5 });
+  gsap.from('.page-cover .new-words .word-tag', { y: 20, opacity: 0, duration: 0.3, stagger: 0.08, delay: 0.6 });
+  gsap.from('.page-cover .start-btn', { y: 30, opacity: 0, duration: 0.4, delay: 0.8 });
+});
+
+// Handle voice loading on iOS
+if (window.speechSynthesis) {
+  window.speechSynthesis.onvoiceschanged = () => {};
+}
+
+// Touch-action fix for iOS
+document.addEventListener('touchstart', function(){}, {passive: true});
+</script>
+</body>
+</html>
