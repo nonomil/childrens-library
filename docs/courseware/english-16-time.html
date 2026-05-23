@@ -23,7 +23,7 @@ html, body {
 /* ===== APP CONTAINER ===== */
 .app {
   position: relative;
-  width: 100%; max-width: 420px;
+  width: 100%; max-width: 960px;
   height: 100vh; max-height: 780px;
   margin: 0 auto;
   background: linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%);
@@ -521,7 +521,7 @@ html, body {
 }
 
 /* ===== RESPONSIVE ===== */
-@media(max-width:420px){
+@media(max-width:960px){
   .app { max-width: 100%; max-height: 100vh; border-radius: 0; margin-top: 0; }
   .slide-word { font-size: 36px; }
   .slide-img { width: 160px; height: 160px; }
@@ -540,9 +540,9 @@ html, body {
 }
 
 /* ===== TABLET LANDSCAPE OVERRIDE ===== */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .app, .slide, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

@@ -21,7 +21,7 @@ body{
 }
 /* ===== APP CONTAINER ===== */
 .app{
-  width:100%;max-width:420px;height:100vh;max-height:820px;
+  width:100%;max-width:960px;height:100vh;max-height:820px;
   background:#fff5f5;
   position:relative;overflow:hidden;display:flex;flex-direction:column;
   box-shadow:0 0 40px rgba(0,0,0,.4);
@@ -314,9 +314,9 @@ body{
 </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

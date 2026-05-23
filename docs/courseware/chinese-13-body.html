@@ -33,7 +33,7 @@
   --font:'Nunito',sans-serif;
 }
 html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--red-bg);color:var(--gray-900);-webkit-tap-highlight-color:transparent;user-select:none}
-#app{position:relative;width:100%;max-width:420px;height:100dvh;margin:0 auto;overflow:hidden;background:var(--red-bg);display:flex;flex-direction:column}
+#app{position:relative;width:100%;max-width:960px;height:100dvh;margin:0 auto;overflow:hidden;background:var(--red-bg);display:flex;flex-direction:column}
 
 /* HEADER */
 .header{position:absolute;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;pointer-events:none}
@@ -156,9 +156,9 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
 </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

@@ -10,7 +10,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100dvh;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}
-.slider{width:100%;max-width:420px;height:100dvh;max-height:780px;position:relative;overflow:hidden;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#FFEBEE}
+.slider{width:100%;max-width:960px;height:100dvh;max-height:780px;position:relative;overflow:hidden;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#FFEBEE}
 .slides{display:flex;height:100%;transition:none}
 .slide{min-width:100%;height:100%;overflow-y:auto;padding:60px 20px 90px;position:relative;display:flex;flex-direction:column;align-items:center;scrollbar-width:none}
 .slide::-webkit-scrollbar{display:none}
@@ -172,9 +172,9 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

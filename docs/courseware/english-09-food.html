@@ -22,7 +22,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;-webkit-ta
 body{background:#e8f5e9;display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* --- SLIDER --- */
-.slider{position:relative;width:100%;max-width:420px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,.12);margin:auto}
+.slider{position:relative;width:100%;max-width:960px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,.12);margin:auto}
 .slides{display:flex;height:100%;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
 .slide{min-width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:20px 24px 100px;position:relative;background:#fff;-webkit-overflow-scrolling:touch}
 
@@ -97,9 +97,9 @@ h3{font-size:20px;font-weight:700;color:#43a047;text-align:center;margin:6px 0 2
 </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

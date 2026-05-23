@@ -18,7 +18,7 @@
     }
     .app {
       width: 100%;
-      max-width: 420px;
+      max-width: 960px;
       margin: 0 auto;
       min-height: 100vh;
       position: relative;
@@ -31,7 +31,7 @@
       position: fixed;
       top: 0; left: 50%; transform: translateX(-50%);
       width: 100%;
-      max-width: 420px;
+      max-width: 960px;
       height: 56px;
       display: flex;
       align-items: center;
@@ -119,7 +119,7 @@
       position: fixed;
       bottom: 0; left: 50%; transform: translateX(-50%);
       width: 100%;
-      max-width: 420px;
+      max-width: 960px;
       height: 64px;
       display: flex;
       align-items: center;
@@ -423,7 +423,7 @@
     }
 
     /* ===== RESPONSIVE ===== */
-    @media (max-width: 420px) {
+    @media (max-width: 960px) {
       .app { max-width: 100%; box-shadow: none; }
       .top-bar, .bottom-nav { max-width: 100%; }
       .word-en { font-size: 30px; }
@@ -446,9 +446,9 @@
   </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }

@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Nunito',sans-serif;overflow:hidden;background:#1a1a2e;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center}
-.book{position:relative;width:100%;max-width:420px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.book{position:relative;width:100%;max-width:960px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .page{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px 70px;opacity:0;pointer-events:none;transition:opacity .5s ease;overflow-y:auto;background:#fff}
 .page.active{opacity:1;pointer-events:auto;z-index:2}
 .page.prev{opacity:0;pointer-events:none;z-index:1}
@@ -145,9 +145,9 @@ h4{font-size:15px;font-weight:700;color:#e74c3c;margin-bottom:6px;text-align:cen
 </style>
 
 /* === Tablet Landscape Override === */
-@media (min-width: 768px) and (orientation: landscape) {
+@media (min-width: 768px) {
   .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
-    max-width: 960px !important;
+    max-width: 100% !important;
     width: 100% !important;
   }
   body { padding: 12px 24px !important; }
