@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学嘉年华 Math Carnival 🎪</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans SC', 'Baloo 2', sans-serif;
+    background: linear-gradient(135deg, #0a1628 0%, #1a2a5e 100%);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* =========== TOP BAR =========== */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #42A5F5, #1a237e);
+    box-shadow: 0 4px 20px rgba(66,165,245,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .top-bar a { color: #fff; text-decoration: none; font-size: 24px; display: inline-flex; align-items: center; gap: 8px; }
+  .top-bar .nav-right { display: flex; gap: 16px; }
+  .top-bar .nav-right a { font-size: 18px; }
+  .top-bar .lesson-tag {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  /* =========== CONFETTI CANVAS =========== */
+  #confetti-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* =========== HERO =========== */
+  .hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+    position: relative;
+  }
+  .hero h1 {
+    font-family: 'Baloo 2', 'Noto Sans SC', sans-serif;
+    font-size: clamp(2.4rem, 8vw, 4.2rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFD700, #FF6F00, #FF4081);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  }
+  .hero .sub {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: #B3E5FC;
+    margin-top: 8px;
+  }
+  .hero-emoji {
+    font-size: clamp(3rem, 10vw, 5rem);
+    display: block;
+    margin-bottom: 8px;
+    animation: bounceEmoji 2s ease-in-out infinite;
+  }
+  @keyframes bounceEmoji {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .hero .stars {
+    margin-top: 12px;
+    font-size: 28px;
+    letter-spacing: 6px;
+  }
+
+  /* =========== SECTION TITLE =========== */
+  .section-title {
+    font-family: 'Baloo 2', 'Noto Sans SC', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 800;
+    text-align: center;
+    padding: 30px 16px 16px;
+    position: relative;
+  }
+  .section-title .emoji-icon { font-size: 1.4em; display: inline-block; }
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #FFD700, #FF6F00);
+    margin: 8px auto 0;
+    border-radius: 4px;
+  }
+
+  /* =========== GAME GRID =========== */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 16px 24px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .game-card {
+    background: linear-gradient(145deg, rgba(66,165,245,0.12), rgba(26,35,126,0.25));
+    border: 2px solid rgba(66,165,245,0.25);
+    border-radius: 24px;
+    padding: 24px 20px 20px;
+    backdrop-filter: blur(6px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 30% 20%, rgba(255,215,0,0.06), transparent 60%);
+    pointer-events: none;
+  }
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(66,165,245,0.25);
+    border-color: rgba(66,165,245,0.5);
+  }
+  .game-card .game-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .game-card .game-header .game-icon {
+    font-size: 2.4rem;
+    line-height: 1;
+  }
+  .game-card .game-header h3 {
+    font-family: 'Baloo 2', 'Noto Sans SC', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFD740;
+  }
+  .game-card .game-desc {
+    font-size: 0.92rem;
+    color: #B0BEC5;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .game-card .game-board {
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    padding: 16px;
+    margin: 0 -4px 12px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border: none;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #42A5F5, #1a237e);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(66,165,245,0.35);
+  }
+  .btn-primary:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgba(66,165,245,0.5); }
+  .btn-gold {
+    background: linear-gradient(135deg, #FFD700, #FF8F00);
+    color: #1a1a2e;
+    box-shadow: 0 4px 16px rgba(255,215,0,0.3);
+  }
+  .btn-gold:hover { transform: scale(1.04); box-shadow: 0 6px 24px rgba(255,215,0,0.5); }
+  .btn-pink {
+    background: linear-gradient(135deg, #FF4081, #C2185B);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(255,64,129,0.3);
+  }
+  .btn-green {
+    background: linear-gradient(135deg, #66BB6A, #2E7D32);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(102,187,106,0.3);
+  }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  /* =========== SHAPE THROW =========== */
+  .shape-area {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 8px 0;
+  }
+  .shape-btn {
+    width: 68px; height: 68px;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    background: rgba(255,255,255,0.08);
+    transition: all 0.2s;
+  }
+  .shape-btn:hover { background: rgba(66,165,245,0.25); transform: scale(1.1); }
+  .shape-btn.selected { border-color: #FFD740; background: rgba(255,215,64,0.2); box-shadow: 0 0 16px rgba(255,215,64,0.4); }
+  .target-area {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .target-slot {
+    width: 80px; height: 80px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    transition: all 0.3s;
+    background: rgba(255,255,255,0.04);
+  }
+  .target-slot.filled { border-style: solid; border-color: #66BB6A; background: rgba(102,187,106,0.15); }
+
+  /* =========== SORT RACE =========== */
+  .sort-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  .sort-item {
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    cursor: grab;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    user-select: none;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .sort-item:active { cursor: grabbing; }
+  .sort-item.dragging { opacity: 0.4; }
+  .sort-bins {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .sort-bin {
+    flex: 1;
+    min-width: 80px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 10px 8px;
+    text-align: center;
+    border: 2px dashed rgba(255,255,255,0.2);
+    min-height: 70px;
+    transition: all 0.25s;
+  }
+  .sort-bin.drag-over { border-color: #42A5F5; background: rgba(66,165,245,0.12); }
+  .sort-bin h4 { font-size: 0.85rem; margin-bottom: 6px; color: #90CAF9; }
+  .sort-bin .bin-item {
+    display: inline-block;
+    padding: 4px 10px;
+    margin: 3px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    font-size: 0.85rem;
+  }
+
+  /* =========== STATS SPINNER =========== */
+  .spinner-display {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .spinner-wheel {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: conic-gradient(#FF6F00 0deg 72deg, #42A5F5 72deg 144deg, #66BB6A 144deg 216deg, #FF4081 216deg 288deg, #FFD740 288deg 360deg);
+    border: 4px solid #FFD740;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.4rem;
+    transition: transform 1.5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+    position: relative;
+    box-shadow: 0 0 30px rgba(255,215,64,0.25);
+  }
+  .spinner-wheel::after {
+    content: '▲';
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.4rem;
+    color: #FFD740;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  }
+  .spinner-result {
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 14px;
+    background: rgba(0,0,0,0.3);
+    min-width: 140px;
+    text-align: center;
+  }
+
+  /* =========== DIRECTION MAZE =========== */
+  .maze-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    max-width: 260px;
+    margin: 0 auto;
+  }
+  .maze-cell {
+    aspect-ratio: 1;
+    background: rgba(255,255,255,0.06);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .maze-cell.wall { background: rgba(255,255,255,0.15); }
+  .maze-cell.player { background: rgba(66,165,245,0.35); box-shadow: 0 0 12px rgba(66,165,245,0.3); }
+  .maze-cell.goal { background: rgba(255,215,0,0.2); border-color: #FFD740; }
+  .maze-dir-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .maze-dir-buttons button {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    font-size: 1.6rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .maze-dir-buttons button:hover { background: rgba(66,165,245,0.25); transform: scale(1.08); }
+
+  /* =========== FRACTION PIZZA TOSS =========== */
+  .pizza-display {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pizza-vis {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: #FF8F00;
+    overflow: hidden;
+    border: 3px solid #FFD740;
+    flex-shrink: 0;
+  }
+  .pizza-slice {
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 100%; height: 100%;
+    transform-origin: 0% 0%;
+    background: #FFD740;
+    clip-path: polygon(0 0, 100% 0, 100% 100%);
+  }
+  .pizza-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #FFD740;
+  }
+  .pizza-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .pizza-options button {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pizza-options button:hover { background: rgba(66,165,245,0.25); }
+  .pizza-options button.correct { background: rgba(102,187,106,0.35); border-color: #66BB6A; }
+  .pizza-options button.wrong { background: rgba(244,67,54,0.3); border-color: #f44336; }
+
+  /* =========== WORD PROBLEM WHEEL =========== */
+  .wheel-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+  }
+  .wheel-slot {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(0,0,0,0.25);
+    border-radius: 14px;
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wheel-spin-btn {
+    font-size: 2.4rem;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid #FFD740;
+    background: rgba(255,215,64,0.1);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+    animation: pulseWheel 2s ease-in-out infinite;
+  }
+  @keyframes pulseWheel {
+    0%,100% { box-shadow: 0 0 0 0 rgba(255,215,64,0.3); }
+    50% { box-shadow: 0 0 20px 8px rgba(255,215,64,0.1); }
+  }
+  .wheel-spin-btn:hover { transform: scale(1.1); }
+  .wheel-spin-btn.spinning { animation: none; transform: rotate(720deg); transition: transform 0.8s cubic-bezier(0.17,0.67,0.12,0.99); }
+
+  /* =========== FINAL CELEBRATION =========== */
+  .celebration-section {
+    text-align: center;
+    padding: 30px 20px 50px;
+  }
+  .certificate {
+    display: inline-block;
+    background: linear-gradient(145deg, #1a237e, #283593);
+    border: 3px solid #FFD740;
+    border-radius: 28px;
+    padding: 30px 36px 36px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 16px 60px rgba(255,215,64,0.2), inset 0 0 60px rgba(66,165,245,0.08);
+    text-align: center;
+    position: relative;
+  }
+  .certificate::before {
+    content: '🎪';
+    font-size: 2.6rem;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .certificate h2 {
+    font-family: 'Baloo 2', 'Noto Sans SC', sans-serif;
+    font-size: 1.8rem;
+    color: #FFD740;
+    margin: 6px 0;
+  }
+  .certificate .seal {
+    font-size: 3.6rem;
+    margin: 10px 0;
+    display: inline-block;
+    filter: drop-shadow(0 4px 8px rgba(255,215,64,0.4));
+  }
+  .certificate .name-line {
+    font-size: 1.1rem;
+    color: #B3E5FC;
+    margin: 8px 0;
+  }
+  .certificate input {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #FFD740;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 4px 12px;
+    width: 70%;
+    outline: none;
+  }
+  .certificate input:focus { border-bottom-style: solid; }
+  .certificate .date-line {
+    font-size: 0.85rem;
+    color: #78909C;
+    margin-top: 10px;
+  }
+
+  /* =========== SCORE BAR =========== */
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 12px 24px 20px;
+    font-size: 1.1rem;
+  }
+  .score-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.06);
+    padding: 6px 16px;
+    border-radius: 20px;
+  }
+  .score-item .num {
+    font-weight: 700;
+    color: #FFD740;
+    font-size: 1.2rem;
+  }
+
+  /* =========== FOOTER =========== */
+  .footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: #546E7A;
+    font-size: 0.85rem;
+  }
+
+  /* =========== RESPONSIVE =========== */
+  @media (max-width: 600px) {
+    .game-grid { grid-template-columns: 1fr; padding: 12px; }
+    .game-card { padding: 16px; }
+    .certificate { padding: 24px 16px; }
+  }
+
+  /* =========== SPARKLE FX =========== */
+  .sparkle {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.6rem;
+    animation: sparkleFade 0.8s ease-out forwards;
+    z-index: 998;
+  }
+  @keyframes sparkleFade {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-60px) scale(0.3); }
+  }
+
+  /* Floating carnival emoji background */
+  .bg-float {
+    position: fixed;
+    font-size: 2rem;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatBg 20s linear infinite;
+  }
+  @keyframes floatBg {
+    0% { transform: translateY(100vh) rotate(0deg); }
+    100% { transform: translateY(-10vh) rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ====== FLOATING BG EMOJIS ====== -->
+<div class="bg-float" style="left:5%; animation-duration:22s;">🎪</div>
+<div class="bg-float" style="left:15%; animation-duration:28s; font-size:2.6rem;">🎡</div>
+<div class="bg-float" style="left:30%; animation-duration:18s;">🎠</div>
+<div class="bg-float" style="left:45%; animation-duration:32s; font-size:1.8rem;">🎈</div>
+<div class="bg-float" style="left:58%; animation-duration:25s;">🎉</div>
+<div class="bg-float" style="left:72%; animation-duration:20s; font-size:2.4rem;">🎊</div>
+<div class="bg-float" style="left:85%; animation-duration:30s;">🍕</div>
+<div class="bg-float" style="left:92%; animation-duration:26s; font-size:2.2rem;">🎲</div>
+
+<!-- ====== CONFETTI CANVAS ====== -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ====== TOP BAR ====== -->
+<header class="top-bar">
+  <a href="../">🏠 <span style="font-size:16px; font-weight:700;">Courseware</span></a>
+  <span class="lesson-tag">Lesson 24 🎪</span>
+  <div class="nav-right">
+    <a href="#">▶</a>
+  </div>
+</header>
+
+<!-- ====== HERO ====== -->
+<div class="hero">
+  <span class="hero-emoji">🎪</span>
+  <h1>数学嘉年华<br>Math Carnival</h1>
+  <p class="sub">🎡 Final Review · 期末大闯关 🎡</p>
+  <div class="stars">🎯 ⭐ 🏆 ⭐ 🎯</div>
+</div>
+
+<!-- ====== SCORE ====== -->
+<div class="score-bar">
+  <div class="score-item">🏅 Games: <span class="num" id="games-completed">0</span>/6</div>
+  <div class="score-item">⭐ Points: <span class="num" id="total-points">0</span></div>
+  <div class="score-item">🎯 Streak: <span class="num" id="streak-count">0</span></div>
+</div>
+
+<!-- ====== GAMES GRID ====== -->
+<div class="game-grid">
+
+  <!-- GAME 1: Shape Throw -->
+  <div class="game-card" id="game-shape">
+    <div class="game-header">
+      <span class="game-icon">🎯</span>
+      <h3>Shape Throw · 形状投掷</h3>
+    </div>
+    <p class="game-desc">Match shapes to their outlines! 🔵🟧🟥</p>
+    <div class="game-board">
+      <div class="shape-area" id="shape-choices"></div>
+      <div class="target-area" id="shape-targets"></div>
+      <div id="shape-status" style="font-size:0.9rem; min-height:24px; color:#A5D6A7;"></div>
+      <button class="btn btn-primary" id="shape-reset-btn">🔄 New Round</button>
+    </div>
+  </div>
+
+  <!-- GAME 2: Sorting Race -->
+  <div class="game-card" id="game-sort">
+    <div class="game-header">
+      <span class="game-icon">🏁</span>
+      <h3>Sorting Race · 分类竞速</h3>
+    </div>
+    <p class="game-desc">Drag each item into the correct bin! 🏃</p>
+    <div class="game-board">
+      <div class="sort-items" id="sort-items-container"></div>
+      <div class="sort-bins" id="sort-bins-container"></div>
+      <div id="sort-status" style="font-size:0.9rem; min-height:24px; color:#A5D6A7;"></div>
+      <button class="btn btn-primary" id="sort-reset-btn">🔄 New Round</button>
+    </div>
+  </div>
+
+  <!-- GAME 3: Statistics Spinner -->
+  <div class="game-card" id="game-stats">
+    <div class="game-header">
+      <span class="game-icon">📊</span>
+      <h3>Statistics Spinner · 统计转盘</h3>
+    </div>
+    <p class="game-desc">Spin &amp; answer probability questions! 🎲</p>
+    <div class="game-board">
+      <div class="spinner-display">
+        <div class="spinner-wheel" id="stats-wheel">🎯</div>
+        <div class="spinner-result" id="stats-result">Press Spin!</div>
+      </div>
+      <div id="stats-question" style="font-size:0.9rem; text-align:center; color:#B3E5FC;"></div>
+      <button class="btn btn-gold" id="stats-spin-btn">🎰 Spin!</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:4px;">
+        <button class="btn btn-green" data-stats-ans="even" style="font-size:0.85rem; padding:6px 14px;">Even</button>
+        <button class="btn btn-pink" data-stats-ans="odd" style="font-size:0.85rem; padding:6px 14px;">Odd</button>
+        <button class="btn btn-primary" data-stats-ans="prime" style="font-size:0.85rem; padding:6px 14px;">Prime</button>
+        <button class="btn btn-gold" data-stats-ans="composite" style="font-size:0.85rem; padding:6px 14px;">Composite</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME 4: Direction Maze -->
+  <div class="game-card" id="game-maze">
+    <div class="game-header">
+      <span class="game-icon">🧭</span>
+      <h3>Direction Maze · 方向迷宫</h3>
+    </div>
+    <p class="game-desc">Navigate to the goal! ⬆️⬇️⬅️➡️</p>
+    <div class="game-board">
+      <div class="maze-grid" id="maze-grid"></div>
+      <div id="maze-status" style="font-size:0.9rem; min-height:22px; color:#A5D6A7;"></div>
+      <div class="maze-dir-buttons">
+        <button data-dir="up">⬆️</button>
+        <button data-dir="down">⬇️</button>
+        <button data-dir="left">⬅️</button>
+        <button data-dir="right">➡️</button>
+      </div>
+      <button class="btn btn-primary" id="maze-reset-btn">🔄 New Maze</button>
+    </div>
+  </div>
+
+  <!-- GAME 5: Fraction Pizza Toss -->
+  <div class="game-card" id="game-pizza">
+    <div class="game-header">
+      <span class="game-icon">🍕</span>
+      <h3>Fraction Pizza Toss · 分数披萨</h3>
+    </div>
+    <p class="game-desc">What fraction of the pizza is left? 🍕✨</p>
+    <div class="game-board">
+      <div class="pizza-display">
+        <div class="pizza-vis" id="pizza-vis">
+          <div class="pizza-slice" id="pizza-slice-el"></div>
+        </div>
+        <div class="pizza-label" id="pizza-question">?</div>
+      </div>
+      <div class="pizza-options" id="pizza-options"></div>
+      <div id="pizza-status" style="font-size:0.9rem; min-height:22px; color:#A5D6A7;"></div>
+      <button class="btn btn-primary" id="pizza-reset-btn">🍕 New Pizza</button>
+    </div>
+  </div>
+
+  <!-- GAME 6: Word Problem Wheel -->
+  <div class="game-card" id="game-word">
+    <div class="game-header">
+      <span class="game-icon">📝</span>
+      <h3>Word Problem Wheel · 应用转转转</h3>
+    </div>
+    <p class="game-desc">Spin the wheel, solve the problem! 🎡</p>
+    <div class="game-board">
+      <div class="wheel-display">
+        <div class="wheel-slot" id="word-question">🎡 Spin to get a word problem!</div>
+        <input type="text" id="word-answer" placeholder="Your answer..." style="width:100%; padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-family:inherit; font-size:1rem; text-align:center; outline:none;">
+        <button class="btn btn-gold" id="word-submit-btn">✅ Submit</button>
+        <button class="wheel-spin-btn" id="word-spin-btn">🎡</button>
+      </div>
+      <div id="word-status" style="font-size:0.9rem; min-height:22px; color:#A5D6A7;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====== CELEBRATION ====== -->
+<div class="celebration-section">
+  <div class="section-title"><span class="emoji-icon">🎊</span> Grand Finale · 盛大闭幕 <span class="emoji-icon">🎊</span></div>
+  <div class="certificate" id="certificate">
+    <h2>🎪 Carnival Champion 🎪</h2>
+    <div class="seal">🏆</div>
+    <div class="name-line">This certifies that</div>
+    <input type="text" id="student-name" placeholder="Your Name" value="Math Star">
+    <div class="name-line">has completed the Math Carnival!</div>
+    <div class="date-line" id="cert-date"></div>
+    <div style="margin-top:16px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+      <button class="btn btn-gold" id="celebrate-btn">🎉 Celebrate! 🎉</button>
+      <button class="btn btn-primary" id="reset-all-btn">🔄 Reset All Games</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== FOOTER ====== -->
+<div class="footer">
+  Lesson 24 · 数学嘉年华 Math Carnival 🎪 · Final Review
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ====== UTILITIES ======
+  const $ = id => document.getElementById(id);
+  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const shuffle = arr => { for(let i=arr.length-1;i>0;i--){ const j=rand(0,i); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; };
+
+  let totalPoints = 0;
+  let gamesCompleted = 0;
+  let streak = 0;
+  const completedFlags = {};
+
+  function updateScore() {
+    $('total-points').textContent = totalPoints;
+    $('games-completed').textContent = Object.keys(completedFlags).length;
+    $('streak-count').textContent = streak;
+  }
+
+  function addPoints(n) {
+    totalPoints += n;
+    streak++;
+    updateScore();
+  }
+
+  function completeGame(id) {
+    if (!completedFlags[id]) {
+      completedFlags[id] = true;
+      addPoints(10);
+      if (Object.keys(completedFlags).length === 6) {
+        setTimeout(() => {
+          $('celebrate-btn').click();
+        }, 600);
+      }
+    }
+  }
+
+  function sparkle(x, y, emoji) {
+    const el = document.createElement('div');
+    el.className = 'sparkle';
+    el.textContent = emoji || '✨';
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 900);
+  }
+
+  // ====== CONFETTI ======
+  const canvas = $('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let confettiPieces = [];
+  let confettiAnimId = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  class ConfettiPiece {
+    constructor() {
+      this.x = rand(0, canvas.width);
+      this.y = rand(-canvas.height, 0);
+      this.w = rand(6, 14);
+      this.h = rand(4, 10);
+      this.color = ['#FFD740','#FF4081','#42A5F5','#66BB6A','#FF6F00','#E040FB','#00E5FF'][rand(0,6)];
+      this.vx = rand(-2, 2) + 0.5;
+      this.vy = rand(2, 5);
+      this.rot = rand(0, 360);
+      this.rotSpeed = rand(-6, 6);
+      this.gravity = 0.08;
+    }
+    update() {
+      this.vy += this.gravity;
+      this.x += this.vx;
+      this.y += this.vy;
+      this.rot += this.rotSpeed;
+      this.vx *= 0.99;
+    }
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rot * Math.PI / 180);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+      ctx.restore();
+    }
+  }
+
+  function startConfetti(duration) {
+    const count = 120;
+    for (let i = 0; i < count; i++) {
+      confettiPieces.push(new ConfettiPiece());
+    }
+    if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+    function anim() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces = confettiPieces.filter(p => p.y < canvas.height + 20);
+      confettiPieces.forEach(p => { p.update(); p.draw(); });
+      if (confettiPieces.length > 0) {
+        confettiAnimId = requestAnimationFrame(anim);
+      }
+    }
+    anim();
+    if (duration) {
+      setTimeout(() => {
+        confettiPieces = [];
+        if (confettiAnimId) { cancelAnimationFrame(confettiAnimId); confettiAnimId = null; }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }, duration);
+    }
+  }
+
+  // ====== GAME 1: SHAPE THROW ======
+  (function() {
+    const shapes = [
+      { id: 'circle', label: '🔵', name: 'Circle' },
+      { id: 'square', label: '🟧', name: 'Square' },
+      { id: 'triangle', label: '🔺', name: 'Triangle' },
+      { id: 'diamond', label: '🔷', name: 'Diamond' },
+      { id: 'star', label: '⭐', name: 'Star' },
+      { id: 'heart', label: '❤️', name: 'Heart' },
+    ];
+    let currentTargets = [];
+    let selectedShape = null;
+    let matched = 0;
+
+    function render() {
+      const choices = $('shape-choices');
+      const targets = $('shape-targets');
+      choices.innerHTML = '';
+      targets.innerHTML = '';
+
+      // Target outlines
+      currentTargets = shuffle([...shapes]).slice(0, 3);
+      currentTargets.forEach((s, idx) => {
+        const div = document.createElement('div');
+        div.className = 'target-slot';
+        div.dataset.shapeId = s.id;
+        div.dataset.matched = 'false';
+        div.textContent = '⬜';
+        targets.appendChild(div);
+      });
+
+      // Shape buttons (all shuffled)
+      const shuffledShapes = shuffle([...shapes]);
+      shuffledShapes.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'shape-btn';
+        btn.dataset.shapeId = s.id;
+        btn.textContent = s.label;
+        btn.addEventListener('click', () => {
+          if (btn.classList.contains('selected')) {
+            btn.classList.remove('selected');
+            selectedShape = null;
+            return;
+          }
+          document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedShape = s;
+        });
+        choices.appendChild(btn);
+      });
+
+      matched = 0;
+      document.querySelectorAll('.target-slot').forEach(slot => {
+        slot.addEventListener('click', () => {
+          if (!selectedShape) return;
+          if (slot.dataset.matched === 'true') return;
+          if (slot.dataset.shapeId === selectedShape.id) {
+            slot.dataset.matched = 'true';
+            slot.classList.add('filled');
+            slot.textContent = selectedShape.label;
+            matched++;
+            sparkle(rand(200,600), rand(200,400), '✨');
+            $('shape-status').textContent = `✅ Match! (${matched}/3)`;
+            if (matched === 3) {
+              $('shape-status').textContent = '🎉 All matched! +10 points!';
+              completeGame('shape');
+            }
+          } else {
+            $('shape-status').textContent = '❌ Try again!';
+            streak = 0;
+            updateScore();
+          }
+          selectedShape = null;
+          document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('selected'));
+        });
+      });
+    }
+
+    $('shape-reset-btn').addEventListener('click', render);
+    render();
+  })();
+
+  // ====== GAME 2: SORTING RACE ======
+  (function() {
+    const itemPools = {
+      shapes: [
+        { label: '🔵 Circle', bin: 'shapes' },
+        { label: '🔺 Triangle', bin: 'shapes' },
+        { label: '🟧 Square', bin: 'shapes' },
+        { label: '🔷 Diamond', bin: 'shapes' },
+      ],
+      numbers: [
+        { label: '1️⃣ One', bin: 'numbers' },
+        { label: '2️⃣ Two', bin: 'numbers' },
+        { label: '3️⃣ Three', bin: 'numbers' },
+        { label: '4️⃣ Four', bin: 'numbers' },
+      ],
+      colors: [
+        { label: '🔴 Red', bin: 'colors' },
+        { label: '🟡 Yellow', bin: 'colors' },
+        { label: '🟢 Green', bin: 'colors' },
+        { label: '🔵 Blue', bin: 'colors' },
+      ],
+      fruits: [
+        { label: '🍎 Apple', bin: 'fruits' },
+        { label: '🍊 Orange', bin: 'fruits' },
+        { label: '🍇 Grape', bin: 'fruits' },
+        { label: '🍌 Banana', bin: 'fruits' },
+      ],
+    };
+
+    let currentItems = [];
+    let placed = 0;
+
+    function render() {
+      const container = $('sort-items-container');
+      const binsContainer = $('sort-bins-container');
+      container.innerHTML = '';
+      binsContainer.innerHTML = '';
+
+      // Pick 2 random categories
+      const keys = Object.keys(itemPools);
+      const cats = shuffle(keys).slice(0, 2);
+      const binNames = { shapes: 'Shapes', numbers: 'Numbers', colors: 'Colors', fruits: 'Fruits' };
+
+      currentItems = [];
+      cats.forEach(cat => {
+        itemPools[cat].forEach(item => currentItems.push({ ...item }));
+      });
+      shuffle(currentItems);
+
+      // Bins
+      cats.forEach(cat => {
+        const bin = document.createElement('div');
+        bin.className = 'sort-bin';
+        bin.dataset.bin = cat;
+        bin.innerHTML = `<h4>${binNames[cat] || cat}</h4>`;
+        bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
+        bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
+        bin.addEventListener('drop', e => {
+          e.preventDefault();
+          bin.classList.remove('drag-over');
+          const id = e.dataTransfer.getData('text/plain');
+          const el = document.getElementById(id);
+          if (!el) return;
+          const itemBin = el.dataset.bin;
+          if (itemBin === cat) {
+            el.draggable = false;
+            el.style.cursor = 'default';
+            el.classList.remove('dragging');
+            const span = document.createElement('span');
+            span.className = 'bin-item';
+            span.textContent = el.textContent;
+            bin.appendChild(span);
+            el.remove();
+            placed++;
+            $('sort-status').textContent = `✅ Placed ${placed}/${currentItems.length}`;
+            if (placed === currentItems.length) {
+              $('sort-status').textContent = '🎉 All sorted! +10 points!';
+              completeGame('sort');
+            }
+          } else {
+            $('sort-status').textContent = '❌ Wrong bin!';
+            streak = 0;
+            updateScore();
+          }
+        });
+        binsContainer.appendChild(bin);
+      });
+
+      placed = 0;
+      currentItems.forEach((item, idx) => {
+        const el = document.createElement('div');
+        el.className = 'sort-item';
+        el.id = 'sort-item-' + idx;
+        el.draggable = true;
+        el.textContent = item.label;
+        el.dataset.bin = item.bin;
+        el.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', el.id);
+          el.classList.add('dragging');
+        });
+        el.addEventListener('dragend', () => el.classList.remove('dragging'));
+        container.appendChild(el);
+      });
+    }
+
+    $('sort-reset-btn').addEventListener('click', render);
+    render();
+  })();
+
+  // ====== GAME 3: STATISTICS SPINNER ======
+  (function() {
+    const wheel = $('stats-wheel');
+    const resultEl = $('stats-result');
+    const questionEl = $('stats-question');
+    let spinning = false;
+    let currentValue = null;
+    let answered = false;
+
+    const questions = [
+      { text: 'Is the result even or odd?', answer: 'even', values: [2,4,6,8,10,12,14,16,18,20] },
+      { text: 'Is the result even or odd?', answer: 'odd', values: [1,3,5,7,9,11,13,15,17,19] },
+      { text: 'Is it a prime number?', answer: 'prime', values: [2,3,5,7,11,13,17,19] },
+      { text: 'Is it a composite number?', answer: 'composite', values: [4,6,8,9,10,12,14,15,16,18,20] },
+    ];
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      answered = false;
+      document.querySelectorAll('[data-stats-ans]').forEach(b => b.disabled = true);
+      const question = shuffle(questions)[0];
+      currentValue = question.values[rand(0, question.values.length-1)];
+      questionEl.textContent = `🎯 ${question.text} (spun: ${currentValue})`;
+      resultEl.textContent = 'Spinning...';
+      const deg = rand(720, 1440);
+      wheel.style.transform = `rotate(${deg}deg)`;
+      setTimeout(() => {
+        resultEl.textContent = `🎲 ${currentValue}`;
+        spinning = false;
+        document.querySelectorAll('[data-stats-ans]').forEach(b => b.disabled = false);
+      }, 1600);
+    }
+
+    document.querySelectorAll('[data-stats-ans]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (spinning || answered || currentValue === null) return;
+        const chosen = btn.dataset.statsAns;
+        let correct = false;
+        const v = currentValue;
+        if (chosen === 'even') correct = v % 2 === 0;
+        else if (chosen === 'odd') correct = v % 2 !== 0;
+        else if (chosen === 'prime') correct = [2,3,5,7,11,13,17,19].includes(v);
+        else if (chosen === 'composite') correct = v > 1 && ![2,3,5,7,11,13,17,19].includes(v);
+        answered = true;
+        if (correct) {
+          questionEl.textContent = '✅ Correct! +10 points!';
+          completeGame('stats');
+        } else {
+          questionEl.textContent = `❌ The answer was ${chosen}. Try again!`;
+          streak = 0;
+          updateScore();
+        }
+        document.querySelectorAll('[data-stats-ans]').forEach(b => b.disabled = true);
+      });
+    });
+
+    $('stats-spin-btn').addEventListener('click', spin);
+  })();
+
+  // ====== GAME 4: DIRECTION MAZE ======
+  (function() {
+    const GRID = 4;
+    let mazeCells = [];
+    let playerPos = { r: 0, c: 0 };
+    let goalPos = { r: 3, c: 3 };
+    let mazeSolved = false;
+    let walls = new Set();
+
+    function generateMaze() {
+      walls.clear();
+      // Ensure a solvable maze with some walls
+      const possible = [];
+      for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+          if ((r === 0 && c === 0) || (r === 3 && c === 3)) continue;
+          possible.push({ r, c });
+        }
+      }
+      shuffle(possible);
+      const numWalls = rand(3, 5);
+      for (let i = 0; i < numWalls; i++) {
+        walls.add(`${possible[i].r},${possible[i].c}`);
+      }
+      // Make sure goal is not a wall
+      walls.delete('3,3');
+      walls.delete('0,0');
+      // BFS check solvability; if not, remove walls
+      if (!isSolvable()) {
+        walls.clear();
+        // Add a few walls that still allow solution
+        const safe = [{r:1,c:1},{r:2,c:2},{r:0,c:2},{r:2,c:0}];
+        shuffle(safe);
+        const n = rand(2, 3);
+        for (let i = 0; i < n; i++) {
+          walls.add(`${safe[i].r},${safe[i].c}`);
+        }
+        if (!isSolvable()) walls.clear();
+      }
+    }
+
+    function isSolvable() {
+      const visited = new Set();
+      const queue = [{ r: 0, c: 0 }];
+      while (queue.length > 0) {
+        const { r, c } = queue.shift();
+        if (r === 3 && c === 3) return true;
+        const key = `${r},${c}`;
+        if (visited.has(key)) continue;
+        visited.add(key);
+        const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+        for (const [dr, dc] of dirs) {
+          const nr = r + dr, nc = c + dc;
+          if (nr >= 0 && nr < GRID && nc >= 0 && nc < GRID && !walls.has(`${nr},${nc}`)) {
+            queue.push({ r: nr, c: nc });
+          }
+        }
+      }
+      return false;
+    }
+
+    function render() {
+      const grid = $('maze-grid');
+      grid.innerHTML = '';
+      mazeCells = [];
+      for (let r = 0; r < GRID; r++) {
+        for (let c = 0; c < GRID; c++) {
+          const cell = document.createElement('div');
+          cell.className = 'maze-cell';
+          cell.dataset.r = r;
+          cell.dataset.c = c;
+          const key = `${r},${c}`;
+          if (walls.has(key)) cell.classList.add('wall');
+          if (r === playerPos.r && c === playerPos.c) {
+            cell.classList.add('player');
+            cell.textContent = '🧑‍🎓';
+          }
+          if (r === goalPos.r && c === goalPos.c) {
+            cell.classList.add('goal');
+            cell.textContent = '🏆';
+          }
+          grid.appendChild(cell);
+        }
+      }
+      $('maze-status').textContent = mazeSolved ? '🎉 Maze solved!' : `🧭 Find the trophy! Position: (${playerPos.r},${playerPos.c})`;
+    }
+
+    function move(dr, dc) {
+      if (mazeSolved) return;
+      const nr = playerPos.r + dr;
+      const nc = playerPos.c + dc;
+      if (nr < 0 || nr >= GRID || nc < 0 || nc >= GRID) {
+        $('maze-status').textContent = '🚫 Out of bounds!';
+        return;
+      }
+      if (walls.has(`${nr},${nc}`)) {
+        $('maze-status').textContent = '🧱 Wall! Try another direction.';
+        return;
+      }
+      playerPos.r = nr;
+      playerPos.c = nc;
+      if (nr === goalPos.r && nc === goalPos.c) {
+        mazeSolved = true;
+        $('maze-status').textContent = '🎉 Maze solved! +10 points!';
+        completeGame('maze');
+      } else {
+        $('maze-status').textContent = `✅ Moved to (${nr},${nc})`;
+      }
+      render();
+    }
+
+    function reset() {
+      playerPos = { r: 0, c: 0 };
+      goalPos = { r: 3, c: 3 };
+      mazeSolved = false;
+      generateMaze();
+      render();
+    }
+
+    document.querySelectorAll('.maze-dir-buttons button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.dir;
+        if (dir === 'up') move(-1, 0);
+        else if (dir === 'down') move(1, 0);
+        else if (dir === 'left') move(0, -1);
+        else if (dir === 'right') move(0, 1);
+      });
+    });
+
+    $('maze-reset-btn').addEventListener('click', reset);
+    reset();
+  })();
+
+  // ====== GAME 5: FRACTION PIZZA TOSS ======
+  (function() {
+    const sliceEl = $('pizza-slice-el');
+    const questionEl = $('pizza-question');
+    const optionsEl = $('pizza-options');
+    let correctAnswer = null;
+    let answered = false;
+
+    function render() {
+      answered = false;
+      const total = rand(4, 8);
+      const eaten = rand(1, total - 1);
+      const fraction = (total - eaten) / total;
+      const angle = (eaten / total) * 360;
+      // Render pizza
+      sliceEl.style.clipPath = `polygon(0 0, 100% 0, 100% 100%)`;
+      sliceEl.style.background = `conic-gradient(transparent 0deg ${angle}deg, #FFD740 ${angle}deg 360deg)`;
+      // Actually use a simpler visual: overlay
+      sliceEl.style.background = '#FFD740';
+      sliceEl.style.clipPath = `polygon(50% 50%, 50% 0, ${50 + 50 * Math.cos((angle-90)*Math.PI/180)}% ${50 + 50 * Math.sin((angle-90)*Math.PI/180)}%)`;
+      
+      questionEl.textContent = `🍕 Pizza: ${total - eaten}/${total} left?`;
+
+      const numerator = total - eaten;
+      const denominator = total;
+      correctAnswer = `${numerator}/${denominator}`;
+
+      // Generate options
+      const wrongAnswers = new Set();
+      while (wrongAnswers.size < 3) {
+        let n = rand(1, denominator + 2);
+        let d = rand(2, 8);
+        if (n === numerator && d === denominator) continue;
+        const frac = `${n}/${d}`;
+        if (frac !== correctAnswer) wrongAnswers.add(frac);
+      }
+      const opts = shuffle([correctAnswer, ...wrongAnswers]);
+      optionsEl.innerHTML = '';
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.addEventListener('click', () => {
+          if (answered) return;
+          answered = true;
+          if (opt === correctAnswer) {
+            btn.classList.add('correct');
+            $('pizza-status').textContent = '✅ Correct! +10 points!';
+            completeGame('pizza');
+          } else {
+            btn.classList.add('wrong');
+            $('pizza-status').textContent = `❌ The answer was ${correctAnswer}`;
+            streak = 0;
+            updateScore();
+          }
+          document.querySelectorAll('#pizza-options button').forEach(b => b.disabled = true);
+        });
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    $('pizza-reset-btn').addEventListener('click', render);
+    render();
+  })();
+
+  // ====== GAME 6: WORD PROBLEM WHEEL ======
+  (function() {
+    const problems = [
+      { q: '🎡 You have 3 ride tickets. Each ride costs 2 tickets. How many rides can you go on?', a: '1.5', label: '1.5' },
+      { q: '🎠 There are 4 horses on the carousel. Each has a saddle. How many saddles total?', a: '4', label: '4' },
+      { q: '🎈 You buy 2 balloons at $3 each. How much do you spend?', a: '6', label: '6' },
+      { q: '🍭 You share 12 candies equally among 3 friends. How many each?', a: '4', label: '4' },
+      { q: '🎪 The circus has 5 lions and 3 tigers. How many more lions than tigers?', a: '2', label: '2' },
+      { q: '🥇 You score 8 points, then 7 more. What is the total?', a: '15', label: '15' },
+      { q: '🎯 You throw 3 balls and hit 2 targets each. How many hits?', a: '6', label: '6' },
+      { q: '🍕 A pizza has 8 slices. You eat 3. What fraction is left?', a: '5/8', label: '5/8' },
+      { q: '📊 You spin a spinner with 4 colors 12 times. How many times would you expect red?', a: '3', label: '3' },
+      { q: '🧭 You walk 3 steps north, then 4 steps east. How far east total?', a: '4', label: '4' },
+    ];
+
+    let currentProblem = null;
+    let spinning = false;
+
+    function spin() {
+      if (spinning) return;
+      spinning = true;
+      const btn = $('word-spin-btn');
+      btn.classList.add('spinning');
+      $('word-question').textContent = '🎡 Spinning...';
+      $('word-answer').value = '';
+      $('word-status').textContent = '';
+      setTimeout(() => {
+        currentProblem = shuffle(problems)[0];
+        $('word-question').textContent = currentProblem.q;
+        btn.classList.remove('spinning');
+        spinning = false;
+      }, 800);
+    }
+
+    $('word-submit-btn').addEventListener('click', () => {
+      if (spinning || !currentProblem) return;
+      const answer = $('word-answer').value.trim();
+      if (!answer) { $('word-status').textContent = '✏️ Type your answer first!'; return; }
+      // Normalize
+      const norm = a => a.replace(/\s+/g,'').toLowerCase();
+      if (norm(answer) === norm(currentProblem.a) || norm(answer) === norm(currentProblem.label)) {
+        $('word-status').textContent = '✅ Correct! +10 points!';
+        completeGame('word');
+      } else {
+        $('word-status').textContent = `❌ Not quite. Try again or spin a new problem!`;
+        streak = 0;
+        updateScore();
+      }
+    });
+
+    $('word-spin-btn').addEventListener('click', spin);
+    // Initial spin
+    spin();
+  })();
+
+  // ====== CELEBRATION ======
+  $('celebrate-btn').addEventListener('click', () => {
+    $('cert-date').textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    startConfetti(6000);
+    const name = $('student-name').value || 'Math Star';
+    // Sparkle burst
+    for (let i = 0; i < 20; i++) {
+      setTimeout(() => sparkle(rand(100, window.innerWidth-100), rand(100, window.innerHeight-100), ['🎉','🎊','⭐','🏆','✨','🎪'][rand(0,5)]), i * 100);
+    }
+  });
+
+  // ====== RESET ALL ======
+  $('reset-all-btn').addEventListener('click', () => {
+    if (!confirm('Reset all games and scores?')) return;
+    totalPoints = 0;
+    streak = 0;
+    for (const key in completedFlags) delete completedFlags[key];
+    updateScore();
+    // Reset each game
+    document.querySelectorAll('[id$="-reset-btn"]').forEach(btn => btn.click());
+    // Also word spin
+    const wordSpin = $('word-spin-btn');
+    if (wordSpin) wordSpin.click();
+    $('word-answer').value = '';
+    $('word-status').textContent = '';
+    $('pizza-status').textContent = '';
+    $('stats-question').textContent = '';
+    $('stats-result').textContent = 'Press Spin!';
+    $('stats-wheel').style.transform = 'rotate(0deg)';
+    $('shape-status').textContent = '';
+    $('sort-status').textContent = '';
+    $('maze-status').textContent = '';
+    $('cert-date').textContent = '';
+    confettiPieces = [];
+    if (confettiAnimId) { cancelAnimationFrame(confettiAnimId); confettiAnimId = null; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+
+})();
+</script>
+</body>
+</html>
