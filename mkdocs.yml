@@ -73,6 +73,9 @@ nav:
       - 🐘 Elephant & Piggie: courseware/elephant-piggie-surprise.html
       - 👋 Minecraft Hello!: courseware/english-01-hello.html
       - 🔤 Minecraft ABC A-M: courseware/english-02-abc.html
+      - 🔢 Minecraft Numbers 1-5: courseware/english-05-numbers.html
+      - 👨‍👩‍👧 Minecraft Family: courseware/english-06-family.html
+      - 🐾 Minecraft Animals: courseware/english-07-animals.html
       - 🆎 Minecraft ABC N-Z: courseware/english-03-abc-nz.html
       - 🌈 Minecraft Colors: courseware/english-04-colors.html
     - 🌱 科学:
@@ -86,11 +89,17 @@ nav:
       - 🐑 Minecraft数数1~10: courseware/math-01-counting.html
       - 💎 Minecraft数到20: courseware/math-02-counting-11to20.html
       - ⚖️ Minecraft比多少: courseware/math-03-compare.html
+      - 🧮 Minecraft10以内加法: courseware/math-05-addition10.html
+      - ➖ Minecraft认识减法5以内: courseware/math-06-subtraction5.html
+      - ➖ Minecraft10以内减法: courseware/math-07-subtraction10.html
       - ➕ Minecraft认识加法5以内: courseware/math-04-addition.html
     - 🀄 汉字:
       - 🀄 神奇汉字: courseware/chinese-magic-characters.html
       - ☀️ Minecraft象形字: courseware/chinese-01-characters.html
       - ✏️ Minecraft基本笔画: courseware/chinese-02-strokes.html
+      - 👨‍👩‍👧 Minecraft我爱我家: courseware/chinese-05-family.html
+      - 🏫 Minecraft开心学校: courseware/chinese-06-school.html
+      - 🔤 Minecraft拼音是什么: courseware/chinese-07-pinyin.html
       - 🌍 Minecraft天地人: courseware/chinese-03-heaven-earth.html
       - 🌤️ Minecraft大自然: courseware/chinese-04-nature.html
     - 🌈 英语启蒙:

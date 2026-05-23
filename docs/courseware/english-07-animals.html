@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🐾 English Lesson 7: Animals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Nunito', sans-serif;
+      background: #e8f5e9;
+    }
+    .app {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 0 40px rgba(0,0,0,0.08);
+    }
+    /* ===== TOP BAR ===== */
+    .top-bar {
+      position: fixed;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.92) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 2px solid rgba(102,187,106,0.15);
+    }
+    .top-bar .btn-home {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      background: #e8f5e9;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      text-decoration: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .top-bar .btn-home:active { transform: scale(0.88); background: #c8e6c9; }
+    .top-bar .btn-play {
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      background: #66BB6A;
+      color: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+      border: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 2px 8px rgba(102,187,106,0.35);
+    }
+    .top-bar .btn-play:active { transform: scale(0.88); background: #4CAF50; }
+    .top-bar .btn-play.playing { background: #ef5350; box-shadow: 0 2px 8px rgba(239,83,80,0.35); }
+    /* ===== PAGES CONTAINER ===== */
+    .pages-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      padding-top: 56px;
+      padding-bottom: 72px;
+      overflow: hidden;
+    }
+    .page {
+      position: absolute;
+      top: 56px; left: 0;
+      width: 100%;
+      min-height: calc(100vh - 128px);
+      padding: 24px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      opacity: 0;
+      visibility: hidden;
+      transition: none;
+      pointer-events: none;
+      transform: translateX(60px);
+    }
+    .page.active {
+      position: relative;
+      top: auto;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+    .page.exit-left {
+      position: absolute;
+      top: 56px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateX(-60px);
+    }
+
+    /* ===== BOTTOM NAV ===== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%;
+      max-width: 420px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 16px;
+      z-index: 100;
+      background: rgba(255,255,255,0.98);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 2px solid rgba(102,187,106,0.12);
+    }
+    .bottom-nav .btn-prev,
+    .bottom-nav .btn-next {
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      background: #e8f5e9;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s, opacity 0.3s;
+      border: none;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      color: #2e7d32;
+    }
+    .bottom-nav .btn-prev:active,
+    .bottom-nav .btn-next:active { transform: scale(0.88); }
+    .bottom-nav .btn-prev:disabled,
+    .bottom-nav .btn-next:disabled { opacity: 0.25; pointer-events: none; }
+    .bottom-nav .page-dots {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bottom-nav .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #c8e6c9;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s;
+      border: none;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .bottom-nav .dot.active {
+      background: #66BB6A;
+      transform: scale(1.35);
+      box-shadow: 0 1px 6px rgba(102,187,106,0.5);
+    }
+
+    /* ===== PAGE CONTENTS ===== */
+    .page-img {
+      width: 180px; height: 180px;
+      object-fit: contain;
+      border-radius: 24px;
+      margin-bottom: 12px;
+      background: #f1f8e9;
+      padding: 12px;
+      box-shadow: 0 4px 20px rgba(102,187,106,0.15);
+    }
+    .page-img.large { width: 200px; height: 200px; }
+    .page-img.small { width: 130px; height: 130px; }
+
+    .word-en {
+      font-size: 36px;
+      font-weight: 800;
+      color: #2e7d32;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .word-en .phonics {
+      display: inline-block;
+      font-size: 20px;
+      font-weight: 600;
+      color: #66BB6A;
+      background: #e8f5e9;
+      padding: 2px 12px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .word-cn {
+      font-size: 22px;
+      font-weight: 600;
+      color: #78909c;
+      margin-bottom: 8px;
+    }
+    .phonics-badge {
+      display: inline-block;
+      font-size: 28px;
+      font-weight: 900;
+      color: #fff;
+      background: #66BB6A;
+      padding: 4px 20px;
+      border-radius: 30px;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(102,187,106,0.3);
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #2e7d32;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .page-sub {
+      font-size: 18px;
+      font-weight: 600;
+      color: #66BB6A;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .page-sub.cn {
+      font-size: 20px;
+      color: #78909c;
+      margin-bottom: 20px;
+    }
+
+    .sentence {
+      font-size: 18px;
+      font-weight: 600;
+      color: #37474f;
+      background: #f1f8e9;
+      padding: 10px 18px;
+      border-radius: 16px;
+      margin-bottom: 6px;
+      text-align: center;
+      max-width: 100%;
+    }
+    .sentence .highlight { color: #66BB6A; font-weight: 800; }
+    .sentence-cn {
+      font-size: 16px;
+      color: #90a4ae;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    /* ===== COVER PAGE ===== */
+    .cover-icon {
+      font-size: 80px;
+      margin-bottom: 8px;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .cover-title {
+      font-size: 40px;
+      font-weight: 900;
+      color: #2e7d32;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .cover-badge {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: #66BB6A;
+      padding: 6px 24px;
+      border-radius: 30px;
+      margin-top: 4px;
+      letter-spacing: 2px;
+    }
+    .cover-lesson {
+      font-size: 18px;
+      font-weight: 700;
+      color: #81c784;
+      margin-top: 2px;
+    }
+
+    /* ===== MATCHING GAME ===== */
+    .match-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      margin: 8px 0;
+    }
+    .match-card {
+      background: #fff;
+      border: 3px solid #c8e6c9;
+      border-radius: 16px;
+      padding: 12px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.3s, background 0.3s, transform 0.2s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 100px;
+    }
+    .match-card:active { transform: scale(0.95); }
+    .match-card.selected { border-color: #66BB6A; background: #e8f5e9; }
+    .match-card.matched {
+      border-color: #43a047;
+      background: #c8e6c9;
+      cursor: default;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .match-card img {
+      width: 60px; height: 60px;
+      object-fit: contain;
+      margin-bottom: 4px;
+    }
+    .match-card .label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #2e7d32;
+    }
+    .match-card .label.ph { font-size: 24px; font-weight: 900; color: #66BB6A; }
+    .match-card .label.cn { font-size: 14px; font-weight: 600; color: #78909c; }
+
+    /* ===== GAME STATUS ===== */
+    .game-status {
+      font-size: 16px;
+      font-weight: 700;
+      color: #66BB6A;
+      margin: 6px 0;
+      text-align: center;
+      min-height: 24px;
+    }
+    .btn-reset {
+      font-family: 'Nunito', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      background: #66BB6A;
+      border: none;
+      border-radius: 30px;
+      padding: 8px 28px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      margin-top: 4px;
+    }
+    .btn-reset:active { transform: scale(0.93); background: #4CAF50; }
+
+    /* ===== CONFETTI ===== */
+    .confetti-piece {
+      position: fixed;
+      width: 10px; height: 10px;
+      z-index: 999;
+      pointer-events: none;
+      border-radius: 2px;
+    }
+
+    /* ===== LAST PAGE (review) ===== */
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 100%;
+      max-width: 360px;
+      margin: 8px 0;
+    }
+    .review-item {
+      background: #f1f8e9;
+      border-radius: 14px;
+      padding: 10px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .review-item:active { transform: scale(0.93); background: #c8e6c9; }
+    .review-item img {
+      width: 50px; height: 50px;
+      object-fit: contain;
+    }
+    .review-item .en { font-size: 15px; font-weight: 800; color: #2e7d32; }
+    .review-item .cn { font-size: 12px; font-weight: 600; color: #90a4ae; }
+
+    /* ===== PROGRESS BAR ===== */
+    .progress-track {
+      width: 100%;
+      max-width: 360px;
+      height: 6px;
+      background: #e8f5e9;
+      border-radius: 4px;
+      margin: 8px 0;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #66BB6A, #81c784);
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 420px) {
+      .app { max-width: 100%; box-shadow: none; }
+      .top-bar, .bottom-nav { max-width: 100%; }
+      .word-en { font-size: 30px; }
+      .page-img { width: 150px; height: 150px; }
+      .page-img.large { width: 170px; height: 170px; }
+    }
+
+    /* ===== UTILITIES ===== */
+    .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .gap-4 { gap: 4px; }
+    .gap-8 { gap: 8px; }
+    .gap-12 { gap: 12px; }
+    .mt-4 { margin-top: 4px; }
+    .mt-8 { margin-top: 8px; }
+    .mt-12 { margin-top: 12px; }
+    .mb-4 { margin-bottom: 4px; }
+    .mb-8 { margin-bottom: 8px; }
+    .w-full { width: 100%; }
+    .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+<div class="app" id="app">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <a class="btn-home" href="../../index.html" title="Home">🏠</a>
+    <button class="btn-play" id="btnPlay" title="Play pronunciation">▶</button>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-wrap" id="pagesWrap">
+
+    <!-- PAGE 1: COVER -->
+    <div class="page active flex-center" data-page="0">
+      <div class="cover-icon">🐾</div>
+      <div class="cover-title">Animals</div>
+      <div class="cover-badge">Lesson 7</div>
+      <div class="cover-lesson">动 物 🐶🐱🐰</div>
+      <div style="margin-top:12px;font-size:15px;color:#90a4ae;font-weight:600;text-align:center;max-width:280px;">
+        Learn animal names, sounds &amp; phonics<br>
+        <span style="color:#66BB6A;">学动物单词和发音</span>
+      </div>
+      <div class="progress-track" style="margin-top:20px;"><div class="progress-fill" style="width:0%"></div></div>
+      <div style="margin-top:10px;font-size:13px;color:#b0bec5;font-weight:600;">Swipe or tap ▶ to start</div>
+    </div>
+
+    <!-- PAGE 2: Cat -->
+    <div class="page flex-center" data-page="1">
+      <img class="page-img large" src="images/english-07/webp/page-02.webp" alt="Cat" loading="lazy">
+      <div class="phonics-badge">/k/</div>
+      <div class="word-en">Cat <span class="phonics">/kæt/</span></div>
+      <div class="word-cn">猫 · māo</div>
+      <div class="sentence">The <span class="highlight">c</span>at says "<span class="highlight">c</span>ute <span class="highlight">c</span>at!"</div>
+      <div class="sentence-cn">小猫说“可爱的猫！”</div>
+      <div class="progress-track"><div class="progress-fill" style="width:10%"></div></div>
+    </div>
+
+    <!-- PAGE 3: Dog -->
+    <div class="page flex-center" data-page="2">
+      <img class="page-img large" src="images/english-07/webp/page-03.webp" alt="Dog" loading="lazy">
+      <div class="phonics-badge">/d/</div>
+      <div class="word-en">Dog <span class="phonics">/dɒɡ/</span></div>
+      <div class="word-cn">狗 · gǒu</div>
+      <div class="sentence">The <span class="highlight">d</span>og <span class="highlight">d</span>igs a <span class="highlight">d</span>itch!</div>
+      <div class="sentence-cn">小狗挖了一个坑！</div>
+      <div class="progress-track"><div class="progress-fill" style="width:20%"></div></div>
+    </div>
+
+    <!-- PAGE 4: Fish -->
+    <div class="page flex-center" data-page="3">
+      <img class="page-img large" src="images/english-07/webp/page-04.webp" alt="Fish" loading="lazy">
+      <div class="phonics-badge">/f/</div>
+      <div class="word-en">Fish <span class="phonics">/fɪʃ/</span></div>
+      <div class="word-cn">鱼 · yú</div>
+      <div class="sentence">A <span class="highlight">f</span>ish can <span class="highlight">f</span>lip and <span class="highlight">f</span>loat!</div>
+      <div class="sentence-cn">鱼会翻跳和漂浮！</div>
+      <div class="progress-track"><div class="progress-fill" style="width:30%"></div></div>
+    </div>
+
+    <!-- PAGE 5: Bird -->
+    <div class="page flex-center" data-page="4">
+      <img class="page-img large" src="images/english-07/webp/page-05.webp" alt="Bird" loading="lazy">
+      <div class="phonics-badge">/b/</div>
+      <div class="word-en">Bird <span class="phonics">/bɜːd/</span></div>
+      <div class="word-cn">鸟 · niǎo</div>
+      <div class="sentence">The <span class="highlight">b</span>ird can <span class="highlight">b</span>eautifully <span class="highlight">b</span>ounce!</div>
+      <div class="sentence-cn">小鸟会优美地跳跃！</div>
+      <div class="progress-track"><div class="progress-fill" style="width:40%"></div></div>
+    </div>
+
+    <!-- PAGE 6: Rabbit -->
+    <div class="page flex-center" data-page="5">
+      <img class="page-img large" src="images/english-07/webp/page-06.webp" alt="Rabbit" loading="lazy">
+      <div class="phonics-badge">/r/</div>
+      <div class="word-en">Rabbit <span class="phonics">/ˈræb.ɪt/</span></div>
+      <div class="word-cn">兔子 · tù zi</div>
+      <div class="sentence">The <span class="highlight">r</span>abbit <span class="highlight">r</span>uns on a <span class="highlight">r</span>ug!</div>
+      <div class="sentence-cn">兔子在地毯上跑！</div>
+      <div class="progress-track"><div class="progress-fill" style="width:50%"></div></div>
+    </div>
+
+    <!-- PAGE 7: Horse -->
+    <div class="page flex-center" data-page="6">
+      <img class="page-img large" src="images/english-07/webp/page-07.webp" alt="Horse" loading="lazy">
+      <div class="phonics-badge">/h/</div>
+      <div class="word-en">Horse <span class="phonics">/hɔːs/</span></div>
+      <div class="word-cn">马 · mǎ</div>
+      <div class="sentence">The <span class="highlight">h</span>orse <span class="highlight">h</span>as a <span class="highlight">h</span>appy <span class="highlight">h</span>ome!</div>
+      <div class="sentence-cn">马有一个快乐的家！</div>
+      <div class="progress-track"><div class="progress-fill" style="width:60%"></div></div>
+    </div>
+
+    <!-- PAGE 8: Matching Game – words to pictures -->
+    <div class="page flex-center" data-page="7">
+      <div class="page-title" style="font-size:26px;">🔄 Match the Animals</div>
+      <div class="page-sub cn" style="font-size:16px;">配对游戏：单词配图片</div>
+      <div class="game-status" id="game1Status">Match each word to its picture</div>
+      <div class="match-grid" id="game1Grid"></div>
+      <button class="btn-reset" id="game1Reset">🔄 Play Again</button>
+      <div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:70%"></div></div>
+    </div>
+
+    <!-- PAGE 9: Matching Game – phonics -->
+    <div class="page flex-center" data-page="8">
+      <div class="page-title" style="font-size:26px;">🔊 Phonics Match</div>
+      <div class="page-sub cn" style="font-size:16px;">配对游戏：字母音配单词</div>
+      <div class="game-status" id="game2Status">Match the sound to the animal</div>
+      <div class="match-grid" id="game2Grid"></div>
+      <button class="btn-reset" id="game2Reset">🔄 Play Again</button>
+      <div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:80%"></div></div>
+    </div>
+
+    <!-- PAGE 10: Review & Goodbye -->
+    <div class="page flex-center" data-page="9">
+      <div class="page-title" style="font-size:28px;">🎉 Great Job!</div>
+      <div class="page-sub cn" style="font-size:18px;">太棒了！</div>
+      <div class="review-grid" id="reviewGrid"></div>
+      <div class="sentence" style="margin-top:8px;font-size:20px;">You learned <span class="highlight">6 animals</span> today!</div>
+      <div class="sentence-cn">你今天学了6种动物！</div>
+      <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
+        <span style="font-size:32px;">🐱</span>
+        <span style="font-size:32px;">🐶</span>
+        <span style="font-size:32px;">🐟</span>
+        <span style="font-size:32px;">🐦</span>
+        <span style="font-size:32px;">🐰</span>
+        <span style="font-size:32px;">🐴</span>
+      </div>
+      <div style="margin-top:10px;font-size:15px;color:#90a4ae;font-weight:600;text-align:center;">See you next lesson! 👋<br><span style="color:#66BB6A;">下次见！</span></div>
+      <div class="progress-track" style="margin-top:12px;"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottomNav">
+    <button class="btn-prev" id="btnPrev" aria-label="Previous page">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="btn-next" id="btnNext" aria-label="Next page">▶</button>
+  </nav>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== CONFIG =====
+  const TOTAL_PAGES = 10;
+  const ANIMALS = [
+    { en: 'Cat',   cn: '猫',    phonics: '/k/',   emoji: '🐱', img: 'page-02' },
+    { en: 'Dog',   cn: '狗',    phonics: '/d/',   emoji: '🐶', img: 'page-03' },
+    { en: 'Fish',  cn: '鱼',    phonics: '/f/',   emoji: '🐟', img: 'page-04' },
+    { en: 'Bird',  cn: '鸟',    phonics: '/b/',   emoji: '🐦', img: 'page-05' },
+    { en: 'Rabbit',cn: '兔子',  phonics: '/r/',   emoji: '🐰', img: 'page-06' },
+    { en: 'Horse', cn: '马',    phonics: '/h/',   emoji: '🐴', img: 'page-07' }
+  ];
+
+  // ===== STATE =====
+  let currentPage = 0;
+  let isPlaying = false;
+  let speechSynth = window.speechSynthesis;
+  let utterance = null;
+  let isTransitioning = false;
+
+  // ===== DOM REFS =====
+  const pages = document.querySelectorAll('.page');
+  const dots = document.getElementById('pageDots');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnPlay = document.getElementById('btnPlay');
+
+  // ===== BUILD DOTS =====
+  function buildDots() {
+    dots.innerHTML = '';
+    for (let i = 0; i < TOTAL_PAGES; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('data-index', i);
+      dot.setAttribute('aria-label', 'Go to page ' + (i + 1));
+      dot.addEventListener('click', function(){ goToPage(parseInt(this.dataset.index)); });
+      dots.appendChild(dot);
+    }
+  }
+  buildDots();
+
+  // ===== NAVIGATION =====
+  function goToPage(index, direction) {
+    if (isTransitioning) return;
+    if (index < 0 || index >= TOTAL_PAGES) return;
+    if (index === currentPage) return;
+
+    isTransitioning = true;
+    const prev = currentPage;
+    currentPage = index;
+
+    // Stop any speaking
+    stopSpeaking();
+
+    const oldPage = pages[prev];
+    const newPage = pages[currentPage];
+
+    // Determine direction
+    const goingForward = index > prev;
+    const exitClass = goingForward ? 'exit-left' : '';
+    const enterFrom = goingForward ? 'translateX(60px)' : 'translateX(-60px)';
+
+    // Remove active from old
+    oldPage.classList.remove('active');
+
+    // Set up new page off-screen
+    newPage.style.transform = enterFrom;
+    newPage.style.opacity = '0';
+    newPage.style.visibility = 'visible';
+    newPage.style.pointerEvents = 'auto';
+
+    // Animate with GSAP
+    const tl = gsap.timeline({
+      onComplete: function(){
+        // Cleanup old
+        oldPage.style.transform = '';
+        oldPage.style.opacity = '';
+        oldPage.style.visibility = '';
+        oldPage.style.pointerEvents = '';
+        // Finalize new
+        newPage.style.transform = '';
+        newPage.style.opacity = '';
+        newPage.style.visibility = '';
+        newPage.style.pointerEvents = '';
+        newPage.classList.add('active');
+        isTransitioning = false;
+        updateUI();
+      }
+    });
+
+    // Exit old page
+    tl.to(oldPage, {
+      x: goingForward ? -60 : 60,
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power2.in'
+    });
+
+    // Enter new page
+    tl.set(newPage, { clearProps: 'transform' }, '>');
+    tl.fromTo(newPage,
+      { x: goingForward ? 60 : -60, opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.35, ease: 'power2.out' },
+      '>'
+    );
+  }
+
+  function updateUI() {
+    // Dots
+    document.querySelectorAll('.dot').forEach(function(d, i){
+      d.classList.toggle('active', i === currentPage);
+    });
+    // Buttons
+    btnPrev.disabled = currentPage === 0;
+    btnNext.disabled = currentPage === TOTAL_PAGES - 1;
+  }
+
+  // ===== SPEECH =====
+  function speakText(text, lang) {
+    stopSpeaking();
+    if (!text) return;
+    utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang || 'en-US';
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    utterance.onstart = function(){ isPlaying = true; btnPlay.textContent = '⏹'; btnPlay.classList.add('playing'); };
+    utterance.onend = function(){ isPlaying = false; btnPlay.textContent = '▶'; btnPlay.classList.remove('playing'); };
+    utterance.onerror = function(){ isPlaying = false; btnPlay.textContent = '▶'; btnPlay.classList.remove('playing'); };
+    speechSynth.speak(utterance);
+  }
+
+  function stopSpeaking() {
+    if (speechSynth.speaking || speechSynth.pending) {
+      speechSynth.cancel();
+    }
+    isPlaying = false;
+    btnPlay.textContent = '▶';
+    btnPlay.classList.remove('playing');
+  }
+
+  function speakCurrentPage() {
+    const page = pages[currentPage];
+    if (!page) return;
+    let texts = [];
+
+    // Cover page
+    if (currentPage === 0) {
+      texts.push('Lesson 7: Animals. Learn animal names, sounds and phonics.');
+    }
+    // Last page
+    else if (currentPage === TOTAL_PAGES - 1) {
+      texts.push('Great job! You learned six animals today! See you next lesson!');
+    }
+    // Content pages
+    else {
+      const en = page.querySelector('.word-en');
+      const sentence = page.querySelector('.sentence');
+      const cn = page.querySelector('.word-cn');
+      if (en) {
+        const clean = en.textContent.replace(/\/.*?\//g,'').trim();
+        texts.push(clean);
+      }
+      if (sentence) texts.push(sentence.textContent);
+      if (currentPage >= 7 && currentPage <= 8) {
+        texts.push('Match the animals to their names and sounds!');
+      }
+    }
+    speakText(texts.join('. '), 'en-US');
+  }
+
+  // ===== CONFETTI =====
+  function fireConfetti(count) {
+    count = count || 60;
+    const colors = ['#66BB6A','#81c784','#a5d6a7','#c8e6c9','#FFD54F','#FF8A65','#4FC3F7','#CE93D8'];
+    for (let i = 0; i < count; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      const size = 6 + Math.random() * 10;
+      const left = Math.random() * 100;
+      const delay = Math.random() * 0.5;
+      const rotate = Math.random() * 720;
+      piece.style.cssText = 'left:'+left+'%;width:'+size+'px;height:'+size+'px;background:'+color+';border-radius:'+(Math.random()>0.5?'50%':'2px')+';';
+      document.body.appendChild(piece);
+      gsap.fromTo(piece,
+        { y: -20, opacity: 1, rotation: 0 },
+        {
+          y: window.innerHeight + 40,
+          opacity: 0,
+          rotation: rotate,
+          duration: 1.5 + Math.random() * 2,
+          delay: delay,
+          ease: 'power1.out',
+          onComplete: function(){ if (piece.parentNode) piece.parentNode.removeChild(piece); }
+        }
+      );
+    }
+  }
+
+  // ===== MATCHING GAME 1: Word to Picture =====
+  function buildGame1() {
+    const grid = document.getElementById('game1Grid');
+    const status = document.getElementById('game1Status');
+    grid.innerHTML = '';
+    status.textContent = 'Tap a word, then tap its picture!';
+
+    // Create shuffled pairs
+    const left = ANIMALS.map(function(a, i){ return { type: 'word', index: i, en: a.en, cn: a.cn, img: a.img, id: 'w'+i }; });
+    const right = ANIMALS.map(function(a, i){ return { type: 'pic', index: i, en: a.en, img: a.img, id: 'p'+i }; });
+    const shuffled = shuffleArray([].concat(left).concat(right));
+
+    let selected = null;
+    let matched = 0;
+
+    shuffled.forEach(function(item){
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      card.dataset.index = item.index;
+      card.dataset.id = item.id;
+      card.dataset.matched = 'false';
+
+      if (item.type === 'word') {
+        card.innerHTML = '<div class="label">'+item.en+'</div><div class="label cn">'+item.cn+'</div>';
+      } else {
+        const imgSrc = 'images/english-07/webp/'+item.img+'.webp';
+        card.innerHTML = '<img src="'+imgSrc+'" alt="'+item.en+'" loading="lazy"><div class="label" style="font-size:12px;color:#90a4ae;">'+item.en+'</div>';
+      }
+
+      card.addEventListener('click', function(){
+        if (card.dataset.matched === 'true') return;
+        if (selected === null) {
+          // First selection
+          grid.querySelectorAll('.match-card').forEach(function(c){ c.classList.remove('selected'); });
+          card.classList.add('selected');
+          selected = card;
+        } else {
+          if (selected === card) {
+            card.classList.remove('selected');
+            selected = null;
+            return;
+          }
+          // Match check
+          const a = parseInt(selected.dataset.index);
+          const b = parseInt(card.dataset.index);
+          if (selected.dataset.id.charAt(0) !== card.dataset.id.charAt(0) && a === b) {
+            // Correct match
+            selected.classList.remove('selected');
+            selected.classList.add('matched');
+            selected.dataset.matched = 'true';
+            card.classList.add('matched');
+            card.dataset.matched = 'true';
+            matched++;
+            status.textContent = '✅ Matched! ('+matched+'/'+ANIMALS.length+')';
+            if (matched === ANIMALS.length) {
+              status.textContent = '🎉 All matched! Great job! 配对完成！';
+              fireConfetti(80);
+            }
+          } else {
+            // Wrong
+            status.textContent = '❌ Try again! 再试试！';
+            selected.classList.remove('selected');
+            setTimeout(function(){ status.textContent = 'Tap a word, then tap its picture!'; }, 1200);
+          }
+          selected = null;
+        }
+      });
+      grid.appendChild(card);
+    });
+
+    document.getElementById('game1Reset').addEventListener('click', function(){ buildGame1(); });
+  }
+
+  // ===== MATCHING GAME 2: Phonics to Word =====
+  function buildGame2() {
+    const grid = document.getElementById('game2Grid');
+    const status = document.getElementById('game2Status');
+    grid.innerHTML = '';
+    status.textContent = 'Tap a sound, then tap the matching animal!';
+
+    const left = ANIMALS.map(function(a, i){ return { type: 'ph', content: a.phonics, index: i, id: 'ph'+i }; });
+    const right = ANIMALS.map(function(a, i){ return { type: 'en', content: a.en, cn: a.cn, img: a.img, index: i, id: 'en'+i }; });
+    const shuffled = shuffleArray([].concat(left).concat(right));
+
+    let selected = null;
+    let matched = 0;
+
+    shuffled.forEach(function(item){
+      const card = document.createElement('div');
+      card.className = 'match-card';
+      card.dataset.index = item.index;
+      card.dataset.id = item.id;
+      card.dataset.matched = 'false';
+
+      if (item.type === 'ph') {
+        card.innerHTML = '<div class="label ph">'+item.content+'</div>';
+      } else {
+        const imgSrc = 'images/english-07/webp/'+item.img+'.webp';
+        card.innerHTML = '<img src="'+imgSrc+'" alt="'+item.content+'" loading="lazy"><div class="label">'+item.content+'</div><div class="label cn">'+item.cn+'</div>';
+      }
+
+      card.addEventListener('click', function(){
+        if (card.dataset.matched === 'true') return;
+        if (selected === null) {
+          grid.querySelectorAll('.match-card').forEach(function(c){ c.classList.remove('selected'); });
+          card.classList.add('selected');
+          selected = card;
+        } else {
+          if (selected === card) {
+            card.classList.remove('selected');
+            selected = null;
+            return;
+          }
+          const a = parseInt(selected.dataset.index);
+          const b = parseInt(card.dataset.index);
+          if (selected.dataset.id.charAt(0) !== card.dataset.id.charAt(0) && a === b) {
+            selected.classList.remove('selected');
+            selected.classList.add('matched');
+            selected.dataset.matched = 'true';
+            card.classList.add('matched');
+            card.dataset.matched = 'true';
+            matched++;
+            status.textContent = '✅ Matched! ('+matched+'/'+ANIMALS.length+')';
+            if (matched === ANIMALS.length) {
+              status.textContent = '🎉 All phonics matched! 太棒了！';
+              fireConfetti(80);
+            }
+          } else {
+            status.textContent = '❌ Try again! 再试试！';
+            selected.classList.remove('selected');
+            setTimeout(function(){ status.textContent = 'Tap a sound, then tap the matching animal!'; }, 1200);
+          }
+          selected = null;
+        }
+      });
+      grid.appendChild(card);
+    });
+
+    document.getElementById('game2Reset').addEventListener('click', function(){ buildGame2(); });
+  }
+
+  // ===== REVIEW GRID =====
+  function buildReview() {
+    const grid = document.getElementById('reviewGrid');
+    grid.innerHTML = '';
+    ANIMALS.forEach(function(a){
+      const el = document.createElement('div');
+      el.className = 'review-item';
+      const imgSrc = 'images/english-07/webp/'+a.img+'.webp';
+      el.innerHTML = '<img src="'+imgSrc+'" alt="'+a.en+'" loading="lazy"><div class="en">'+a.en+'</div><div class="cn">'+a.cn+'</div>';
+      el.addEventListener('click', function(){
+        speakText(a.en, 'en-US');
+      });
+      grid.appendChild(el);
+    });
+  }
+
+  // ===== SHUFFLE =====
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // ===== EVENT BINDINGS =====
+  btnPrev.addEventListener('click', function(){ goToPage(currentPage - 1); });
+  btnNext.addEventListener('click', function(){ goToPage(currentPage + 1); });
+  btnPlay.addEventListener('click', function(){
+    if (isPlaying) { stopSpeaking(); }
+    else { speakCurrentPage(); }
+  });
+
+  // Keyboard
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'ArrowRight') { e.preventDefault(); goToPage(currentPage + 1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); goToPage(currentPage - 1); }
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (isPlaying) stopSpeaking(); else speakCurrentPage(); }
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', function(e){
+    const t = e.changedTouches[0];
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e){
+    const t = e.changedTouches[0];
+    const dx = t.clientX - touchStartX;
+    const dy = t.clientY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      if (dx < 0) goToPage(currentPage + 1);
+      else goToPage(currentPage - 1);
+    }
+  }, { passive: true });
+
+  // ===== INIT =====
+  updateUI();
+  buildGame1();
+  buildGame2();
+  buildReview();
+
+  // Confetti on reaching last page via goToPage hook
+  const origGoTo = goToPage;
+  goToPage = function(index, direction) {
+    if (index === TOTAL_PAGES - 1 && index !== currentPage) {
+      // Fire confetti later after animation
+      setTimeout(function(){ fireConfetti(50); }, 400);
+    }
+    origGoTo(index, direction);
+  };
+
+  // Page-specific speech on arrival (via GSAP afterTransition)
+  // We'll add a post-update hook
+  const origUpdate = updateUI;
+  updateUI = function() {
+    origUpdate();
+    // Auto-speak for content pages (not game pages to avoid interference)
+    if (currentPage > 0 && currentPage < 7) {
+      setTimeout(function(){
+        if (!isPlaying) speakCurrentPage();
+      }, 600);
+    }
+  };
+
+  // Re-assign to use new updateUI
+  // Re-bind goToPage to call the new updateUI
+  // Simpler: just call the enhanced versions
+  window.goToPage = goToPage;
+
+  console.log('🐾 English Lesson 7: Animals loaded!');
+})();
+</script>
+</body>
+</html>

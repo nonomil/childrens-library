@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>数学课 5 · 10以内的加法</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="preload" href="images/math-05/webp/page-01-intro.webp" as="image">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:none;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#1565C0;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+
+/* ===== SLIDE CONTAINER ===== */
+.slider{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0;box-shadow:none}
+@media(min-width:460px){.slider{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+
+/* ===== TOP BAR ===== */
+.top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
+.top-bar a,.top-bar button{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s,transform .2s,box-shadow .25s}
+.top-bar a:hover,.top-bar button:hover{background:rgba(255,255,255,.32);transform:scale(1.08);box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.top-bar a:active,.top-bar button:active{transform:scale(.92)}
+
+/* ===== SLIDES ===== */
+.slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 18px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;gap:6px;-webkit-overflow-scrolling:touch}
+.slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
+.slide.exit{opacity:0;visibility:hidden;position:absolute;z-index:1}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:25;display:flex;align-items:center;justify-content:center;gap:12px;padding:8px 14px 10px;background:rgba(0,0,0,.07);backdrop-filter:blur(4px)}
+.bottom-nav button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.1);border-radius:30px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
+.bottom-nav button:hover{background:rgba(255,255,255,.35);transform:scale(1.08)}
+.bottom-nav button:active{transform:scale(.92)}
+.bottom-nav button:disabled{opacity:.25;pointer-events:none;transform:none!important}
+.dots{display:flex;gap:5px}
+.dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.08);padding:0;cursor:pointer;transition:all .35s ease}
+.dot.active{background:#fff;transform:scale(1.3);box-shadow:0 0 10px rgba(255,255,255,.55);border-color:#fff}
+
+/* ===== TYPOGRAPHY ===== */
+h1{font-size:27px;font-weight:900;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.22);text-align:center;line-height:1.2}
+h2{font-size:23px;font-weight:800;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.18);text-align:center;letter-spacing:.5px}
+h3{font-size:19px;font-weight:700;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.15);text-align:center}
+p{font-size:16px;font-weight:400;color:rgba(255,255,255,.9);text-align:center;line-height:1.5;max-width:360px}
+p.big{font-size:20px;font-weight:700}
+p.small{font-size:14px;color:rgba(255,255,255,.7)}
+
+/* ===== MINECRAFT CHARACTERS ===== */
+.char-row{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin:2px 0}
+.char{width:62px;height:80px;display:flex;flex-direction:column;align-items:center}
+.char .head{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;position:relative;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.char .head .eye{position:absolute;width:5px;height:5px;background:#333;border-radius:50%}
+.char .head .eye-l{left:7px;top:11px}
+.char .head .eye-r{right:7px;top:11px}
+.char .head .mouth{position:absolute;width:8px;height:3px;background:#5D4037;border-radius:2px;bottom:6px;left:13px}
+.char .body{width:30px;height:34px;border-radius:4px;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;color:rgba(255,255,255,.9);font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+.char .arm-l,.char .arm-r{width:8px;height:20px;border-radius:3px;position:absolute;top:38px}
+.steve .head{background:#C68E4E}
+.steve .body{background:#4A90D9}
+.steve .arm-l,.steve .arm-r{background:#C68E4E}
+.alex .head{background:#E8B86D}
+.alex .body{background:#6BBF59}
+.alex .arm-l,.alex .arm-r{background:#E8B86D}
+
+/* ===== IMAGE BOX ===== */
+.img-box{width:100%;max-width:350px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;margin:3px 0;aspect-ratio:16/11;flex-shrink:0;border:1px solid rgba(255,255,255,.06);box-shadow:0 4px 20px rgba(0,0,0,.08)}
+.img-box img{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px;transition:opacity .4s}
+
+/* ===== SPEECH BUBBLE ===== */
+.bubble{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;padding:10px 16px;max-width:340px;border:1px solid rgba(255,255,255,.15);margin:3px 0;font-size:16px;color:#fff;text-align:center;position:relative;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.bubble::before{content:'';position:absolute;bottom:-7px;left:28px;width:12px;height:12px;background:rgba(255,255,255,.12);border-right:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(255,255,255,.15);transform:rotate(45deg);border-radius:0 0 3px 0}
+.bubble.tip-right::before{left:auto;right:28px}
+.bubble .btn-group{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
+
+/* ===== BUTTONS ===== */
+.btn-opt{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.28);border-radius:30px;padding:7px 18px;font-size:17px;font-weight:700;color:#fff;cursor:pointer;transition:all .2s;font-family:'Nunito',sans-serif;position:relative;overflow:hidden}
+.btn-opt:hover{background:rgba(255,255,255,.3);transform:scale(1.06)}
+.btn-opt:active{transform:scale(.94)}
+.btn-opt.correct{background:#66BB6A!important;border-color:#fff!important;box-shadow:0 0 20px rgba(102,187,106,.5);transform:scale(1.08)}
+.btn-opt.wrong{background:#EF5350!important;border-color:#fff!important;box-shadow:0 0 20px rgba(239,83,80,.5);animation:shake .4s}
+.btn-opt:disabled{cursor:default;opacity:.6}
+.btn-opt.small{padding:5px 12px;font-size:14px}
+.btn-opt.primary{background:#FFD54F;color:#4E342E;border-color:#FFC107;font-size:17px;padding:10px 24px}
+.btn-opt.primary:hover{background:#FFCA28}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+/* ===== EQUATION DISPLAY ===== */
+.eq-display{font-size:36px;font-weight:900;color:#fff;text-shadow:0 3px 12px rgba(0,0,0,.2);text-align:center;margin:4px 0;letter-spacing:3px}
+.eq-display .qmark{color:#FFD54F;animation:pulse-q 1.2s infinite alternate}
+@keyframes pulse-q{0%{opacity:.6}100%{opacity:1}}
+.eq-choices{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:4px 0}
+
+/* ===== NUMBER LINE SVG ===== */
+.numline-wrap{width:100%;max-width:350px;padding:8px 0;margin:3px 0}
+.numline-svg{width:100%;height:64px;overflow:visible}
+.numline-svg .axis{stroke:rgba(255,255,255,.4);stroke-width:3;stroke-linecap:round}
+.numline-svg .tick{stroke:rgba(255,255,255,.35);stroke-width:2;stroke-linecap:round}
+.numline-svg .tick-label{fill:#fff;font-size:13px;font-weight:700;text-anchor:middle;font-family:'Nunito',sans-serif}
+.numline-svg .highlight-circle{fill:#FFD54F;stroke:#FFC107;stroke-width:2.5;filter:drop-shadow(0 2px 6px rgba(255,193,7,.4))}
+.numline-svg .highlight-label{fill:#FFD54F;font-size:14px;font-weight:800;font-family:'Nunito',sans-serif}
+.numline-svg .arrow{fill:none;stroke:#FFD54F;stroke-width:2.5;marker-end:url(#arrowHead)}
+
+/* ===== BRIDGE ===== */
+.bridge-row{display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin:2px 0}
+.plank{width:48px;height:16px;background:linear-gradient(135deg,#A1887F,#8D6E63);border-radius:3px;border:1px solid rgba(255,255,255,.15);transition:transform .4s cubic-bezier(.34,1.56,.64,1),background .4s}
+
+/* ===== BADGE & CELEBRATION ===== */
+.badge{width:88px;height:88px;border-radius:50%;background:linear-gradient(145deg,#FFD54F 0%,#FFB300 100%);display:flex;align-items:center;justify-content:center;font-size:13px;color:#4E342E;font-weight:900;text-align:center;line-height:1.2;box-shadow:0 6px 30px rgba(255,193,7,.45);border:4px solid #FFC107;margin:4px auto;animation:badge-pulse 2.5s infinite}
+@keyframes badge-pulse{0%,100%{transform:scale(1);box-shadow:0 6px 30px rgba(255,193,7,.45)}50%{transform:scale(1.06);box-shadow:0 8px 40px rgba(255,193,7,.65)}}
+
+/* ===== CONFETTI CANVAS ===== */
+.confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;display:none}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar{width:200px;height:5px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden;margin:3px auto;flex-shrink:0}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,#FFD54F,#FFB300);border-radius:10px;transition:width .5s ease;box-shadow:0 0 8px rgba(255,193,7,.3)}
+
+/* ===== MISC ===== */
+.spacer{flex:0 0 2px}
+.star{color:#FFD54F;font-size:26px;animation:twinkle 1.8s infinite alternate}
+@keyframes twinkle{0%{opacity:.3;transform:scale(.8) rotate(-10deg)}100%{opacity:1;transform:scale(1) rotate(5deg)}}
+.mt-2{margin-top:6px}
+.mb-2{margin-bottom:6px}
+.flex-center{display:flex;align-items:center;justify-content:center;gap:6px}
+.mb-1{margin-bottom:3px}
+.mt-1{margin-top:3px}
+.text-highlight{color:#FFD54F;font-weight:800}
+.text-green{color:#66BB6A;font-weight:800}
+.text-red{color:#EF5350;font-weight:800}
+.divider{width:80px;height:2px;background:rgba(255,255,255,.12);border-radius:2px;margin:4px auto}
+
+/* ===== RESPONSIVE FINE-TUNE ===== */
+@media(max-height:640px){
+  h1{font-size:22px}
+  h2{font-size:20px}
+  .char{width:48px;height:64px}
+  .char .head{width:28px;height:28px;font-size:13px}
+  .char .body{width:24px;height:28px;font-size:8px}
+  .eq-display{font-size:30px}
+  .img-box{max-width:280px}
+  .bubble{font-size:14px;padding:8px 12px}
+  .slide{padding:10px 14px;gap:4px}
+  .btn-opt{padding:5px 14px;font-size:15px}
+}
+@media(max-height:560px){
+  .img-box{max-width:200px}
+  .char-row{gap:8px}
+  .char{width:38px;height:50px}
+  .char .head{width:22px;height:22px;font-size:10px}
+  .char .body{width:20px;height:22px;font-size:7px}
+  h1{font-size:18px}
+  h2{font-size:17px}
+  .eq-display{font-size:24px}
+  .badge{width:60px;height:60px;font-size:10px}
+  .bubble{padding:6px 10px;font-size:13px}
+  .numline-wrap{max-width:240px}
+}
+
+/* ===== REDUCED MOTION ===== */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}
+  .confetti-canvas{display:none!important}
+}
+
+/* ===== SAFE AREA PADDING (NOTCH DEVICES) ===== */
+@supports(padding:max(0px)){
+  .slide{padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+  .top-bar{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+  .bottom-nav{padding-bottom:max(10px,env(safe-area-inset-bottom))}
+}
+
+/* ===== PRINT STYLES ===== */
+@media print{
+  .slider{max-width:100%;height:auto;overflow:visible;border-radius:0;box-shadow:none}
+  .slides{height:auto;overflow:visible}
+  .slide{position:relative;opacity:1!important;visibility:visible!important;height:auto;page-break-after:always;padding:20px}
+  .top-bar,.bottom-nav,.confetti-canvas,#speakBtn{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="slider" id="app">
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <a href="../math.html" id="homeBtn" title="回到课程主页">🏠</a>
+    <button id="speakBtn" title="朗读本页内容">🔊</button>
+  </div>
+
+  <!-- ===== SLIDES CONTAINER ===== -->
+  <div class="slides" id="slidesContainer">
+
+    <!-- ===== PAGE 1: COVER ===== -->
+    <div class="slide active" data-page="1">
+      <div class="spacer"></div>
+      <div class="char-row">
+        <div class="char steve">
+          <div class="head"><span class="eye eye-l"></span><span class="eye eye-r"></span><span class="mouth"></span>👨</div>
+          <div class="body">Steve</div>
+        </div>
+        <div class="char alex">
+          <div class="head"><span class="eye eye-l"></span><span class="eye eye-r"></span><span class="mouth"></span>👩</div>
+          <div class="body">Alex</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin:2px 0">
+        <span class="star">★</span>
+        <span class="star" style="animation-delay:.3s">★</span>
+        <span class="star" style="animation-delay:.6s">★</span>
+      </div>
+      <h1>⛏️ 10以内的加法</h1>
+      <p style="font-size:17px;font-weight:600;color:rgba(255,255,255,.85)">Addition within 10</p>
+      <div class="img-box"><img src="images/math-05/webp/page-01-intro.webp" alt="Steve 和 Alex 用木板搭桥" loading="eager"></div>
+      <div class="bubble" style="background:rgba(255,255,255,.14)">
+        Steve 和 Alex 正在搭桥！<br>
+        <strong style="font-size:22px">4块 + 3块 = <span class="qmark">?</span></strong>
+      </div>
+      <div class="progress-bar"><div class="fill" style="width:12.5%"></div></div>
+      <div class="spacer"></div>
+    </div>
+
+    <!-- ===== PAGE 2: NUMBER LINE ===== -->
+    <div class="slide" data-page="2">
+      <div class="spacer"></div>
+      <h2>📏 数轴加法</h2>
+      <p>Alex 用树枝在地上画了一条数轴</p>
+      <div class="img-box"><img src="images/math-05/webp/page-02-numberline.webp" alt="数轴上的加法" loading="lazy"></div>
+      <div class="numline-wrap">
+        <svg class="numline-svg" viewBox="0 0 350 64" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrowHead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <polygon points="0 0, 8 3, 0 6" fill="#FFD54F"/>
+            </marker>
+          </defs>
+          <line class="axis" x1="25" y1="34" x2="330" y2="34"/>
+          <line class="tick" x1="60" y1="24" x2="60" y2="44"/><text class="tick-label" x="60" y="20">0</text>
+          <line class="tick" x1="100" y1="24" x2="100" y2="44"/><text class="tick-label" x="100" y="20">1</text>
+          <line class="tick" x1="140" y1="24" x2="140" y2="44"/><text class="tick-label" x="140" y="20">2</text>
+          <line class="tick" x1="180" y1="24" x2="180" y2="44"/><text class="tick-label" x="180" y="20">3</text>
+          <line class="tick" x1="220" y1="24" x2="220" y2="44"/><text class="tick-label" x="220" y="20">4</text>
+          <line class="tick" x1="260" y1="24" x2="260" y2="44"/><text class="tick-label" x="260" y="20">5</text>
+          <line class="tick" x1="300" y1="24" x2="300" y2="44"/><text class="tick-label" x="300" y="20">6</text>
+          <circle class="highlight-circle" cx="180" cy="34" r="8"/>
+          <circle class="highlight-circle" cx="260" cy="34" r="8"/>
+          <polyline class="arrow" points="188,34 218,34 218,20 248,20 248,34 252,34"/>
+          <text class="highlight-label" x="220" y="58" text-anchor="middle">✋ 3+3=6</text>
+        </svg>
+      </div>
+      <div class="bubble" style="font-size:15px">👆 从 <strong>3</strong> 开始，往后数 <strong>3</strong> 步<br>就到了 <strong style="color:#FFD54F;font-size:20px">6</strong>！</div>
+      <div class="progress-bar"><div class="fill" style="width:25%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 3: BLOCKS / COUNT ON ===== -->
+    <div class="slide" data-page="3">
+      <div class="spacer"></div>
+      <h2>🧱 用积木数一数</h2>
+      <p>把两个数合在一起，从大的开始数</p>
+      <div class="img-box"><img src="images/math-05/webp/page-03-blocks.webp" alt="积木数数" loading="lazy"></div>
+      <div class="bubble" style="background:rgba(255,215,0,.1);border-color:rgba(255,213,79,.35)">
+        <span style="font-size:30px;display:block;margin-bottom:2px">💡</span>
+        <strong style="font-size:19px">"从大的数开始往后数!"</strong>
+        <div class="divider" style="margin:4px auto"></div>
+        <p style="font-size:15px;color:#fff;margin:0">
+          <strong>4 + 2</strong> = ?<br>
+          👉 从 <strong style="color:#FFD54F">4</strong> 开始，往后数 <strong style="color:#FFD54F">2</strong> 个：<br>
+          <span style="font-size:22px;font-weight:800">5, 6</span> → 等于 <strong style="color:#66BB6A;font-size:20px">6</strong>！
+        </p>
+      </div>
+      <p class="small">这样算，又快又准！</p>
+      <div class="progress-bar"><div class="fill" style="width:37.5%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 4: EXAMPLES ===== -->
+    <div class="slide" data-page="4">
+      <div class="spacer"></div>
+      <h2>📝 加法例题</h2>
+      <p>看看这些加法算式，你发现了什么？</p>
+      <div class="img-box" style="max-width:320px"><img src="images/math-05/webp/page-04-examples.webp" alt="加法例题" loading="lazy"></div>
+      <div style="display:flex;flex-direction:column;gap:5px;width:100%;max-width:300px;margin:2px 0">
+        <div class="bubble" style="padding:6px 14px;font-size:21px;font-weight:800;background:rgba(255,255,255,.1)">
+          6 + 2 = <span class="text-highlight">8</span>
+        </div>
+        <div class="bubble" style="padding:6px 14px;font-size:21px;font-weight:800;background:rgba(255,255,255,.1)">
+          5 + 3 = <span class="text-highlight">8</span>
+        </div>
+        <div class="bubble" style="padding:6px 14px;font-size:21px;font-weight:800;background:rgba(255,255,255,.1)">
+          7 + 2 = <span class="text-highlight">9</span>
+        </div>
+      </div>
+      <p class="small">💡 和都不超过 10 哦！</p>
+      <div class="progress-bar"><div class="fill" style="width:50%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 5: PRACTICE 1 ===== -->
+    <div class="slide" data-page="5">
+      <div class="spacer"></div>
+      <h2>✏️ 练一练 ①</h2>
+      <p>点击选择正确答案</p>
+      <div class="img-box" style="max-width:270px"><img src="images/math-05/webp/page-05-practice.webp" alt="练习 1" loading="lazy"></div>
+      <div id="quiz1" class="bubble" style="width:100%;max-width:340px;padding:12px 14px">
+        <div class="eq-display" id="q1Eq">4 + 5 = <span class="qmark">?</span></div>
+        <div class="eq-choices" id="q1Choices">
+          <button class="btn-opt" data-val="7">7</button>
+          <button class="btn-opt" data-val="8">8</button>
+          <button class="btn-opt" data-val="9" data-correct="1">9</button>
+          <button class="btn-opt" data-val="10">10</button>
+        </div>
+        <p id="q1Feedback" class="small" style="margin-top:4px;min-height:20px">选择一个答案吧</p>
+      </div>
+      <div class="progress-bar"><div class="fill" style="width:62.5%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 6: PRACTICE 2 ===== -->
+    <div class="slide" data-page="6">
+      <div class="spacer"></div>
+      <h2>✏️ 练一练 ②</h2>
+      <p>再来一题！</p>
+      <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+        <div class="img-box" style="max-width:200px;flex:1;min-width:130px"><img src="images/math-05/webp/page-06-practice.webp" alt="练习 2" loading="lazy"></div>
+        <div class="img-box" style="max-width:200px;flex:1;min-width:130px"><img src="images/math-05/webp/page-07-puzzles.webp" alt="加法拼图" loading="lazy"></div>
+      </div>
+      <div id="quiz2" class="bubble" style="width:100%;max-width:340px;padding:12px 14px">
+        <div class="eq-display" id="q2Eq">6 + 3 = <span class="qmark">?</span></div>
+        <div class="eq-choices" id="q2Choices">
+          <button class="btn-opt" data-val="8">8</button>
+          <button class="btn-opt" data-val="9" data-correct="1">9</button>
+          <button class="btn-opt" data-val="10">10</button>
+          <button class="btn-opt" data-val="7">7</button>
+        </div>
+        <p id="q2Feedback" class="small" style="margin-top:4px;min-height:20px">选择一个答案吧</p>
+      </div>
+      <div class="progress-bar"><div class="fill" style="width:75%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 7: CHALLENGE – BRIDGE QUIZ ===== -->
+    <div class="slide" data-page="7">
+      <div class="spacer"></div>
+      <h2>🌉 搭桥挑战</h2>
+      <p>答对就能把桥搭好！</p>
+      <div class="img-box" style="max-width:270px"><img src="images/math-05/webp/page-08-bridge.webp" alt="搭桥" loading="lazy"></div>
+      <div id="quiz3" class="bubble" style="width:100%;max-width:340px;padding:12px 14px">
+        <div class="eq-display" style="font-size:26px" id="q3Eq">
+          Steve 有 5 块木板<br>
+          Alex 有 4 块木板<br>
+          一共 <span class="qmark">?</span> 块
+        </div>
+        <div class="eq-choices" id="q3Choices">
+          <button class="btn-opt" data-val="8">8 块</button>
+          <button class="btn-opt" data-val="9" data-correct="1">9 块</button>
+          <button class="btn-opt" data-val="10">10 块</button>
+          <button class="btn-opt" data-val="7">7 块</button>
+        </div>
+        <p id="q3Feedback" class="small" style="margin-top:4px;min-height:20px">选对了就能搭好桥！</p>
+      </div>
+      <div class="bridge-row" id="bridgeRow">
+        <div class="plank"></div><div class="plank"></div><div class="plank"></div>
+        <div class="plank"></div><div class="plank"></div>
+      </div>
+      <p class="small" id="bridgeStatus">🌉 桥还没搭好…</p>
+      <div class="progress-bar"><div class="fill" style="width:87.5%"></div></div>
+    </div>
+
+    <!-- ===== PAGE 8: CELEBRATION ===== -->
+    <div class="slide" data-page="8">
+      <div class="spacer"></div>
+      <div class="star" style="font-size:34px;animation-delay:0s">⭐</div>
+      <div class="badge">加法<br>小能手</div>
+      <h2 style="margin-top:5px">🎉 太棒啦！</h2>
+      <p>你学会了 <strong>10以内的加法</strong>！</p>
+      <div class="char-row" style="margin:4px 0">
+        <div class="char steve"><div class="head">👨</div><div class="body">Steve</div></div>
+        <div class="char alex"><div class="head">👩</div><div class="body">Alex</div></div>
+      </div>
+      <div class="bubble" style="background:rgba(255,255,255,.1);font-size:14px">
+        🏆 <strong>你是加法小能手！</strong> 🏆<br>
+        <span style="font-size:13px;color:rgba(255,255,255,.7)">继续加油，数学真有趣！</span>
+      </div>
+      <p class="small mt-1">👏 你完成了所有练习！</p>
+      <div class="progress-bar"><div class="fill" style="width:100%"></div></div>
+      <button id="playAgainBtn" class="btn-opt primary mt-2">🔄 再来一次</button>
+      <div class="spacer"></div>
+    </div>
+
+  </div><!-- /slides-container -->
+
+  <!-- ===== BOTTOM NAV ===== -->
+  <div class="bottom-nav">
+    <button id="prevBtn" disabled aria-label="上一页">◀</button>
+    <div class="dots" id="dots"></div>
+    <span id="pageCounter" style="color:rgba(255,255,255,.5);font-size:12px;font-weight:600;min-width:36px;text-align:center">1/8</span>
+    <button id="nextBtn" aria-label="下一页">▶</button>
+  </div>
+</div>
+
+<!-- ===== CONFETTI CANVAS ===== -->
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================================================
+   CONFIG
+   ============================================================ */
+const TOTAL_PAGES = 8;
+const PAGE_PROGRESS = [12.5, 25, 37.5, 50, 62.5, 75, 87.5, 100];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentPage = 1;
+let isLocked = false;
+let isConfettiRunning = false;
+let confettiAnimId = null;
+let confettiPieces = [];
+let quizState = { q1: {done:false}, q2: {done:false}, q3: {done:false} };
+
+/* ============================================================
+   DOM REFS
+   ============================================================ */
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const speakBtn = document.getElementById('speakBtn');
+const homeBtn = document.getElementById('homeBtn');
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+const bridgeStatus = document.getElementById('bridgeStatus');
+
+/* ============================================================
+   BUILD PAGE DOTS
+   ============================================================ */
+for(let i = 1; i <= TOTAL_PAGES; i++){
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 1 ? ' active' : '');
+  dot.dataset.page = i;
+  dot.setAttribute('aria-label', '第 ' + i + ' 页');
+  dot.addEventListener('click', function(){ goTo(parseInt(this.dataset.page)); });
+  dotsContainer.appendChild(dot);
+}
+
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+function goTo(target){
+  if(isLocked) return;
+  if(target < 1 || target > TOTAL_PAGES) return;
+  if(target === currentPage) return;
+
+  isLocked = true;
+  const from = currentPage;
+  const fromIdx = from - 1;
+  const toIdx = target - 1;
+  currentPage = target;
+
+  // Mark active/inactive on slides (no transition)
+  slides.forEach((el, i) => {
+    el.classList.toggle('active', i === toIdx);
+    el.classList.toggle('exit', i === fromIdx && i !== toIdx);
+  });
+
+  // GSAP animation
+  const outEl = slides[fromIdx];
+  const inEl = slides[toIdx];
+  const dir = target > from ? 1 : -1;
+
+  gsap.killTweensOf(outEl);
+  gsap.killTweensOf(inEl);
+
+  gsap.set(outEl, { opacity: 1, visibility: 'visible', x: 0, scale: 1 });
+  gsap.set(inEl, { opacity: 0, visibility: 'hidden', x: dir * 60, scale: 0.95 });
+
+  gsap.to(outEl, {
+    opacity: 0, visibility: 'hidden',
+    x: dir * -40, scale: 0.95,
+    duration: 0.3, ease: 'power2.in'
+  });
+  gsap.to(inEl, {
+    opacity: 1, visibility: 'visible',
+    x: 0, scale: 1,
+    duration: 0.35, ease: 'power2.out',
+    delay: 0.08,
+    onComplete: function(){
+      isLocked = false;
+      outEl.classList.remove('exit');
+      // Reset inline styles so next transition works cleanly
+      outEl.style.opacity = '';
+      outEl.style.visibility = '';
+      outEl.style.transform = '';
+      inEl.style.opacity = '';
+      inEl.style.visibility = '';
+      inEl.style.transform = '';
+    }
+  });
+
+  // Update dots
+  document.querySelectorAll('.dot').forEach((d, i) => {
+    d.classList.toggle('active', i === toIdx);
+  });
+
+  // Update nav buttons
+  prevBtn.disabled = (target === 1);
+  nextBtn.disabled = (target === TOTAL_PAGES);
+
+  // Update page counter
+  var counter = document.getElementById('pageCounter');
+  if(counter) counter.textContent = target + '/' + TOTAL_PAGES;
+
+  // Stop confetti on non-last pages
+  if(target !== TOTAL_PAGES && isConfettiRunning) stopConfetti();
+  if(target === TOTAL_PAGES) startConfetti();
+
+  // Auto-speak on cover
+  if(target === 1){
+    setTimeout(function(){ speak('10以内的加法。4块加3块等于多少？'); }, 400);
+  }
+}
+
+function nextPage(){ goTo(currentPage + 1); }
+function prevPage(){ goTo(currentPage - 1); }
+
+prevBtn.addEventListener('click', prevPage);
+nextBtn.addEventListener('click', nextPage);
+
+/* ============================================================
+   KEYBOARD & TOUCH
+   ============================================================ */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'ArrowRight') nextPage();
+  if(e.key === 'ArrowLeft') prevPage();
+});
+
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', function(e){
+  const t = e.changedTouches[0];
+  touchStartX = t.screenX;
+  touchStartY = t.screenY;
+}, {passive: true});
+
+document.addEventListener('touchend', function(e){
+  const t = e.changedTouches[0];
+  const dx = t.screenX - touchStartX;
+  const dy = t.screenY - touchStartY;
+  if(Math.abs(dx) < 30) return;
+  if(Math.abs(dx) > Math.abs(dy) * 1.5){
+    if(dx < -30) nextPage();
+    else if(dx > 30) prevPage();
+  }
+}, {passive: true});
+
+/* ============================================================
+   TEXT-TO-SPEECH
+   ============================================================ */
+function speak(text, lang){
+  lang = lang || 'zh-CN';
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  utterance.rate = 0.85;
+  utterance.pitch = 1.1;
+  // Find a Chinese voice
+  const voices = window.speechSynthesis.getVoices();
+  const zhVoice = voices.find(function(v){ return v.lang.startsWith('zh'); });
+  if(zhVoice) utterance.voice = zhVoice;
+  window.speechSynthesis.speak(utterance);
+}
+
+// Pre-load voices (some browsers load async)
+if(window.speechSynthesis){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = function(){
+    window.speechSynthesis.getVoices();
+  };
+}
+
+speakBtn.addEventListener('click', function(){
+  const slide = slides[currentPage - 1];
+  const texts = [];
+  const headings = slide.querySelectorAll('h1, h2, h3');
+  headings.forEach(function(h){ texts.push(h.textContent.trim()); });
+  const paragraphs = slide.querySelectorAll('p');
+  paragraphs.forEach(function(p){ texts.push(p.textContent.trim()); });
+  const bubbles = slide.querySelectorAll('.bubble');
+  bubbles.forEach(function(b){ texts.push(b.textContent.trim().replace(/[★⭐✅❌💡👆👏🏆🎉⛏️📏🧱📝✏️🌉🔄👨👩]/g,'')); });
+  const eqs = slide.querySelectorAll('.eq-display');
+  eqs.forEach(function(eq){ texts.push(eq.textContent.trim().replace(/[?？]/g,'等于多少？')); });
+  if(texts.length > 0) speak(texts.join('，'));
+});
+
+/* ============================================================
+   QUIZ 1 (Page 5)  –  4 + 5 = 9
+   ============================================================ */
+document.querySelectorAll('#q1Choices .btn-opt').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    if(quizState.q1.done) return;
+    const val = parseInt(this.dataset.val);
+    const fb = document.getElementById('q1Feedback');
+    if(val === 9){
+      this.classList.add('correct');
+      quizState.q1.done = true;
+      fb.innerHTML = '✅ 对啦！<span class="text-green">4 + 5 = 9</span>';
+      speak('4加5等于9，你答对了！');
+      document.querySelectorAll('#q1Choices .btn-opt').forEach(function(b){ b.disabled = true; });
+    } else {
+      this.classList.add('wrong');
+      setTimeout(function(){ this.classList.remove('wrong'); }.bind(this), 450);
+      fb.textContent = '❌ 再想想… 从 4 往后数 5 个试试？';
+    }
+  });
+});
+
+/* ============================================================
+   QUIZ 2 (Page 6)  –  6 + 3 = 9
+   ============================================================ */
+document.querySelectorAll('#q2Choices .btn-opt').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    if(quizState.q2.done) return;
+    const val = parseInt(this.dataset.val);
+    const fb = document.getElementById('q2Feedback');
+    if(val === 9){
+      this.classList.add('correct');
+      quizState.q2.done = true;
+      fb.innerHTML = '✅ 对啦！<span class="text-green">6 + 3 = 9</span>';
+      speak('6加3等于9，真棒！');
+      document.querySelectorAll('#q2Choices .btn-opt').forEach(function(b){ b.disabled = true; });
+    } else {
+      this.classList.add('wrong');
+      setTimeout(function(){ this.classList.remove('wrong'); }.bind(this), 450);
+      fb.textContent = '❌ 再想想… 从 6 往后数 3 个？';
+    }
+  });
+});
+
+/* ============================================================
+   QUIZ 3 (Page 7)  –  Bridge Challenge  5 + 4 = 9
+   ============================================================ */
+document.querySelectorAll('#q3Choices .btn-opt').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    if(quizState.q3.done) return;
+    const val = parseInt(this.dataset.val);
+    const fb = document.getElementById('q3Feedback');
+    if(val === 9){
+      this.classList.add('correct');
+      quizState.q3.done = true;
+      fb.innerHTML = '✅ 桥搭好啦！<span class="text-green">5 + 4 = 9</span>';
+      speak('5加4等于9，桥搭好了！你们真棒！');
+      document.querySelectorAll('#q3Choices .btn-opt').forEach(function(b){ b.disabled = true; });
+      // Animate planks
+      document.querySelectorAll('.plank').forEach(function(p, idx){
+        setTimeout(function(){
+          p.style.transform = 'translateY(-5px) scale(1.05)';
+          p.style.background = 'linear-gradient(135deg,#A5D6A7,#66BB6A)';
+          p.style.borderColor = 'rgba(102,187,106,.4)';
+        }, idx * 100);
+      });
+      if(bridgeStatus) bridgeStatus.textContent = '🌉 桥搭好了！通过！';
+    } else {
+      this.classList.add('wrong');
+      setTimeout(function(){ this.classList.remove('wrong'); }.bind(this), 450);
+      fb.textContent = '❌ 再数一数… 5 块加 4 块是多少？';
+    }
+  });
+});
+
+/* ============================================================
+   PLAY AGAIN
+   ============================================================ */
+document.getElementById('playAgainBtn').addEventListener('click', function(){
+  // Reset quiz state
+  quizState = { q1: {done:false}, q2: {done:false}, q3: {done:false} };
+  // Reset all option buttons
+  document.querySelectorAll('.btn-opt').forEach(function(b){
+    b.classList.remove('correct', 'wrong');
+    b.disabled = false;
+  });
+  // Reset feedback texts
+  document.getElementById('q1Feedback').textContent = '选择一个答案吧';
+  document.getElementById('q2Feedback').textContent = '选择一个答案吧';
+  document.getElementById('q3Feedback').textContent = '选对了就能搭好桥！';
+  // Reset bridge
+  document.querySelectorAll('.plank').forEach(function(p){
+    p.style.transform = '';
+    p.style.background = '';
+    p.style.borderColor = '';
+  });
+  if(bridgeStatus) bridgeStatus.textContent = '🌉 桥还没搭好…';
+  // Stop confetti
+  stopConfetti();
+  // Go to page 1
+  goTo(1);
+});
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+function resizeCanvas(){
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function ConfettiPiece(){
+  this.reset = function(){
+    this.x = Math.random() * canvas.width;
+    this.y = -15 - Math.random() * 30;
+    this.w = 5 + Math.random() * 7;
+    this.h = 3 + Math.random() * 5;
+    this.color = [
+      '#FFD54F','#FF7043','#66BB6A','#42A5F5',
+      '#AB47BC','#EC407A','#26C6DA','#FFEE58',
+      '#FF8A65','#81C784','#4DD0E1'
+    ][Math.floor(Math.random() * 11)];
+    this.vx = (Math.random() - 0.5) * 2.2;
+    this.vy = 1.2 + Math.random() * 2.8;
+    this.rotation = Math.random() * 360;
+    this.rotSpeed = (Math.random() - 0.5) * 8;
+    this.osc = Math.random() * Math.PI * 2;
+    this.oscAmp = 0.5 + Math.random() * 1;
+  };
+  this.reset();
+
+  this.update = function(){
+    this.x += this.vx + Math.sin(this.osc) * this.oscAmp * 0.3;
+    this.osc += 0.03;
+    this.y += this.vy;
+    this.vy += 0.04;
+    this.rotation += this.rotSpeed;
+    if(this.y > canvas.height + 25) this.reset();
+  };
+
+  this.draw = function(ctx){
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation * Math.PI / 180);
+    ctx.fillStyle = this.color;
+    ctx.shadowColor = 'rgba(0,0,0,0.08)';
+    ctx.shadowBlur = 4;
+    ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  };
+}
+
+function startConfetti(){
+  if(isConfettiRunning) return;
+  isConfettiRunning = true;
+  confettiPieces = [];
+  for(var i = 0; i < 90; i++){
+    var p = new ConfettiPiece();
+    p.y = Math.random() * canvas.height * 0.6;
+    confettiPieces.push(p);
+  }
+  canvas.style.display = 'block';
+  function loop(){
+    if(!isConfettiRunning) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for(var j = 0; j < confettiPieces.length; j++){
+      confettiPieces[j].update();
+      confettiPieces[j].draw(ctx);
+    }
+    confettiAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function stopConfetti(){
+  isConfettiRunning = false;
+  if(confettiAnimId) { cancelAnimationFrame(confettiAnimId); confettiAnimId = null; }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  canvas.style.display = 'none';
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+// Force initial slide 1 visible, others hidden
+gsap.set(slides[0], { opacity: 1, visibility: 'visible' });
+for(var i = 1; i < slides.length; i++){
+  gsap.set(slides[i], { opacity: 0, visibility: 'hidden' });
+}
+
+console.log('🎓 Math Lesson 5: 10以内的加法 loaded');
+})();
+</script>
+</body>
+</html>

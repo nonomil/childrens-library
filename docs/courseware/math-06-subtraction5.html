@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>认识减法5以内 - 数学第6课</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #E3F2FD;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  .app {
+    width: 100%;
+    max-width: 420px;
+    height: 100vh;
+    max-height: 800px;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 0 40px rgba(66,165,245,0.2);
+    margin: 0 auto;
+  }
+  /* Top bar */
+  .top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 52px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 14px;
+    z-index: 100;
+    background: linear-gradient(180deg, rgba(255,255,255,0.95) 60%, transparent);
+  }
+  .top-bar button {
+    background: rgba(66,165,245,0.12);
+    border: none;
+    font-size: 22px;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #42A5F5;
+  }
+  .top-bar button:active { transform: scale(0.88); background: rgba(66,165,245,0.25); }
+  /* Slides */
+  .slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px 70px;
+    opacity: 0;
+    visibility: hidden;
+    transition: none;
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; visibility: visible; }
+  .slide-content {
+    width: 100%;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  h1, h2, h3 { font-weight: 800; color: #1a237e; margin: 0; }
+  .slide h1 { font-size: 26px; }
+  .slide h2 { font-size: 22px; color: #42A5F5; }
+  .slide h3 { font-size: 18px; color: #555; font-weight: 600; }
+  p { color: #444; line-height: 1.6; font-size: 16px; }
+  .big-number {
+    font-size: 64px;
+    font-weight: 900;
+    color: #42A5F5;
+    line-height: 1;
+    display: inline-block;
+  }
+  .big-number.orange { color: #FF7043; }
+  .big-number.green { color: #66BB6A; }
+  .big-number.purple { color: #AB47BC; }
+  .big-number.yellow { color: #FFA726; }
+  .big-number.red { color: #EF5350; }
+  .minus-sign {
+    font-size: 52px;
+    font-weight: 900;
+    color: #42A5F5;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+  .equals-sign {
+    font-size: 48px;
+    font-weight: 900;
+    color: #555;
+    margin: 0 8px;
+    vertical-align: middle;
+  }
+  .equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .card {
+    background: #f8fbff;
+    border: 2px solid #e3edf7;
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    margin: 4px 0;
+  }
+  .btn-primary {
+    background: #42A5F5;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 14px 36px;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 14px rgba(66,165,245,0.35);
+  }
+  .btn-primary:active { transform: scale(0.94); box-shadow: 0 2px 6px rgba(66,165,245,0.3); }
+  .btn-primary:disabled { opacity: 0.5; transform: none; box-shadow: none; }
+  .btn-option {
+    background: #fff;
+    color: #1a237e;
+    border: 2px solid #e3edf7;
+    border-radius: 16px;
+    padding: 12px 20px;
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 60px;
+  }
+  .btn-option:active { transform: scale(0.94); }
+  .btn-option.selected { border-color: #42A5F5; background: #E3F2FD; }
+  .btn-option.correct { border-color: #66BB6A; background: #E8F5E9; }
+  .btn-option.wrong { border-color: #EF5350; background: #FFEBEE; }
+  .options-row {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 6px 0;
+  }
+  /* Page dots */
+  .page-dots {
+    position: absolute;
+    bottom: 14px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 100;
+  }
+  .page-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    padding: 0;
+  }
+  .page-dot.active { background: #42A5F5; width: 26px; border-radius: 5px; }
+  /* Bottom nav */
+  .bottom-nav {
+    position: absolute;
+    bottom: 34px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 100;
+    pointer-events: none;
+  }
+  .bottom-nav button {
+    pointer-events: auto;
+    background: rgba(66,165,245,0.12);
+    border: none;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #42A5F5;
+  }
+  .bottom-nav button:active { transform: scale(0.9); background: rgba(66,165,245,0.25); }
+  .bottom-nav button:disabled { opacity: 0.3; pointer-events: none; }
+  /* Confetti canvas */
+  #confetti-canvas {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 200;
+  }
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+    border: 3px solid #FFD54F;
+    border-radius: 20px;
+    padding: 14px 28px;
+    font-size: 20px;
+    font-weight: 800;
+    color: #F57F17;
+    box-shadow: 0 4px 20px rgba(255,213,79,0.4);
+    margin: 10px 0;
+  }
+  .badge span { font-size: 30px; }
+  /* Speech button */
+  .speech-btn {
+    background: rgba(66,165,245,0.1);
+    border: 1px solid rgba(66,165,245,0.3);
+    border-radius: 50%;
+    width: 36px; height: 36px;
+    font-size: 16px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: #42A5F5;
+    vertical-align: middle;
+    margin-left: 6px;
+  }
+  .speech-btn:active { transform: scale(0.9); background: rgba(66,165,245,0.2); }
+  .speech-btn.speaking { background: #42A5F5; color: #fff; }
+  /* Block display */
+  .blocks-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 8px 0;
+  }
+  .block {
+    width: 44px; height: 44px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: #fff;
+    transition: all 0.35s;
+  }
+  .block.blue { background: #42A5F5; }
+  .block.orange { background: #FF7043; }
+  .block.green { background: #66BB6A; }
+  .block.purple { background: #AB47BC; }
+  .block.yellow { background: #FFA726; }
+  .block.gone { opacity: 0; transform: scale(0) rotate(180deg); }
+  .block.fade-in { animation: blockPop 0.4s ease-out forwards; }
+  @keyframes blockPop {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    70% { transform: scale(1.15) rotate(5deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  /* Cover specific */
+  .cover-title { font-size: 28px; font-weight: 900; color: #1a237e; line-height: 1.3; }
+  .cover-sub { font-size: 18px; color: #666; margin-top: 4px; }
+  .cover-question {
+    font-size: 22px;
+    font-weight: 700;
+    color: #42A5F5;
+    background: #E3F2FD;
+    padding: 12px 24px;
+    border-radius: 30px;
+    margin: 8px 0;
+  }
+  .village-scene {
+    position: relative;
+    width: 100%; max-width: 320px;
+    height: 100px;
+    margin: 4px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .villager {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    background: #FFF3E0;
+    border: 2px solid #FFE0B2;
+    transition: all 0.4s;
+  }
+  .villager.give-away { opacity: 0.4; transform: translateX(20px) scale(0.8); }
+  /* Market scene */
+  .market-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 12px;
+    background: #f8fbff;
+    border-radius: 12px;
+    border: 2px solid #e3edf7;
+  }
+  .market-item .emoji { font-size: 30px; }
+  .market-item .label { font-size: 13px; color: #888; font-weight: 600; }
+  /* Responsive */
+  @media (max-height: 680px) {
+    .slide { padding: 52px 16px 60px; }
+    .slide h1 { font-size: 22px; }
+    .slide h2 { font-size: 19px; }
+    .big-number { font-size: 50px; }
+    .cover-title { font-size: 24px; }
+    .block { width: 36px; height: 36px; font-size: 16px; }
+  }
+  @media (min-width: 421px) {
+    .app { border-radius: 24px; margin: 20px auto; height: min(800px, 95vh); }
+    body { padding: 10px; }
+  }
+  /* Scroll fix */
+  .slide::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <button onclick="goHome()" aria-label="Home">🏠</button>
+    <button onclick="speakSlideText()" aria-label="Play" id="playBtn">▶</button>
+  </div>
+
+  <!-- ==================== SLIDE 1: COVER ==================== -->
+  <div class="slide active" data-slide="0">
+    <div class="slide-content">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+        <span style="font-size:24px">🍎</span>
+        <span style="font-weight:800;color:#42A5F5;font-size:16px">第6课</span>
+      </div>
+      <div class="cover-title">认识减法<br>5以内</div>
+      <div class="cover-sub">Subtraction within 5</div>
+      <img src="images/math-06/webp/page-01.webp" style="width:100%;max-width:400px;border-radius:12px;margin:8px 0" alt="Steve sharing apples" onerror="this.style.display='none'">
+      <div class="village-scene">
+        <div class="villager" style="background:#E3F2FD;border-color:#90CAF9;font-size:30px">🧑</div>
+        <div style="font-size:22px;font-weight:700;color:#42A5F5">🙌</div>
+        <div class="villager" style="font-size:30px">👧</div>
+        <div class="villager" style="font-size:30px">👦</div>
+      </div>
+      <div class="cover-question">🍎 给了2个还剩几个?</div>
+      <p style="font-size:14px;color:#999">点击 ▶ 听讲解</p>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 2: 减法的含义 ==================== -->
+  <div class="slide" data-slide="1">
+    <div class="slide-content">
+      <h2>✏️ 减法的含义</h2>
+      <img src="images/math-06/webp/page-02.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="减法含义" onerror="this.style.display='none'">
+      <div class="card">
+        <p style="font-size:18px;font-weight:600;color:#1a237e">"拿走"或"减少"就是<b style="color:#42A5F5">减法</b></p>
+      </div>
+      <div class="equation" style="margin:8px 0">
+        <span class="big-number" style="font-size:56px">5</span>
+        <span class="minus-sign">−</span>
+        <span class="big-number orange" style="font-size:56px">2</span>
+        <span class="equals-sign">=</span>
+        <span class="big-number green" style="font-size:56px">3</span>
+      </div>
+      <p>🍎 5个苹果，吃掉2个，还剩 <b style="color:#66BB6A;font-size:20px">3</b> 个</p>
+      <button class="speech-btn" onclick="speakText('拿走或减少就是减法。5减2等于3。')" aria-label="朗读">🔊</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 3: Hands-on blocks ==================== -->
+  <div class="slide" data-slide="2">
+    <div class="slide-content">
+      <h2>🧱 动手摆一摆</h2>
+      <img src="images/math-06/webp/page-03.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="Blocks" onerror="this.style.display='none'">
+      <p>数一数，拿走几个，还剩几个？</p>
+      <div class="blocks-row" id="blocksRow1">
+        <div class="block blue">1</div>
+        <div class="block blue">2</div>
+        <div class="block blue">3</div>
+        <div class="block blue">4</div>
+        <div class="block blue">5</div>
+      </div>
+      <div style="display:flex;gap:10px;margin:4px 0">
+        <button class="btn-option" onclick="takeBlocks(1)" style="font-size:16px">拿走 1 个</button>
+        <button class="btn-option" onclick="takeBlocks(2)" style="font-size:16px">拿走 2 个</button>
+        <button class="btn-option" onclick="takeBlocks(3)" style="font-size:16px">拿走 3 个</button>
+      </div>
+      <p id="blocksResult" style="min-height:28px;font-weight:700;color:#42A5F5"></p>
+      <button class="btn-primary" onclick="resetBlocks()" style="padding:8px 20px;font-size:14px">🔄 重新来</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 4: Minus sign ==================== -->
+  <div class="slide" data-slide="3">
+    <div class="slide-content">
+      <h2>➖ 减号</h2>
+      <img src="images/math-06/webp/page-04.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="减号" onerror="this.style.display='none'">
+      <div class="card">
+        <p style="font-size:17px">用 <span style="font-size:28px;font-weight:900;color:#42A5F5">−</span> 表示"拿走"或"减少"</p>
+      </div>
+      <div class="equation"><span class="big-number">4</span><span class="minus-sign">−</span><span class="big-number orange">1</span><span class="equals-sign">=</span><span class="big-number green">3</span></div>
+      <p>🐟 4条小鱼，游走1条，还剩3条</p>
+      <div class="equation"><span class="big-number">3</span><span class="minus-sign">−</span><span class="big-number orange">2</span><span class="equals-sign">=</span><span class="big-number green">1</span></div>
+      <p>🐦 3只小鸟，飞走2只，还剩1只</p>
+      <button class="speech-btn" onclick="speakText('减号表示拿走或减少。4减1等于3，3减2等于1。')" aria-label="朗读">🔊</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 5: Practice 1 ==================== -->
+  <div class="slide" data-slide="4">
+    <div class="slide-content">
+      <h2>⭐ 练一练 ①</h2>
+      <img src="images/math-06/webp/page-05.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="Practice 1" onerror="this.style.display='none'">
+      <p id="qText" style="font-size:18px;font-weight:700;color:#1a237e;min-height:30px"></p>
+      <div class="equation" id="qEquation" style="font-size:28px;font-weight:800"></div>
+      <div class="options-row" id="qOptions"></div>
+      <p id="qFeedback" style="min-height:28px;font-weight:700"></p>
+      <button class="btn-primary" id="nextQBtn" onclick="nextPracticeQ()" style="padding:10px 28px;font-size:15px">下一题 →</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 6: Practice 2 ==================== -->
+  <div class="slide" data-slide="5">
+    <div class="slide-content">
+      <h2>⭐ 练一练 ②</h2>
+      <img src="images/math-06/webp/page-06.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="Practice 2" onerror="this.style.display='none'">
+      <p>看图列式计算</p>
+      <div id="picPractice">
+        <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+          <div class="market-item"><span class="emoji">🍎</span><span class="label">苹果</span></div>
+          <div class="market-item"><span class="emoji">🍊</span><span class="label">橙子</span></div>
+          <div class="market-item"><span class="emoji">🍌</span><span class="label">香蕉</span></div>
+        </div>
+      </div>
+      <p id="picQText" style="font-size:17px;font-weight:600;margin:6px 0"></p>
+      <div class="options-row" id="picOptions"></div>
+      <p id="picFeedback" style="min-height:28px;font-weight:700"></p>
+      <button class="btn-primary" id="nextPicBtn" onclick="nextPicQ()" style="padding:10px 28px;font-size:15px">下一题 →</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 7: Challenge ==================== -->
+  <div class="slide" data-slide="6">
+    <div class="slide-content">
+      <h2>🏪 集市挑战</h2>
+      <img src="images/math-06/webp/page-07.webp" style="width:100%;max-width:400px;border-radius:12px;margin:4px 0" alt="Market challenge" onerror="this.style.display='none'">
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:4px 0">
+        <div class="market-item"><span class="emoji">🍎</span><span class="label">5元</span></div>
+        <div class="market-item"><span class="emoji">🍊</span><span class="label">4元</span></div>
+        <div class="market-item"><span class="emoji">🍌</span><span class="label">3元</span></div>
+        <div class="market-item"><span class="emoji">🍋</span><span class="label">2元</span></div>
+      </div>
+      <p id="challengeQ" style="font-size:17px;font-weight:600;color:#1a237e"></p>
+      <div class="options-row" id="challengeOptions"></div>
+      <p id="challengeFeedback" style="min-height:28px;font-weight:700"></p>
+      <button class="btn-primary" id="nextChallengeBtn" onclick="nextChallenge()" style="padding:10px 28px;font-size:15px">下一题 →</button>
+    </div>
+  </div>
+
+  <!-- ==================== SLIDE 8: Celebration ==================== -->
+  <div class="slide" data-slide="7">
+    <div class="slide-content">
+      <div style="font-size:48px;margin:4px 0">🎉🎊🎉</div>
+      <h1 style="color:#42A5F5;margin:4px 0">太棒了!</h1>
+      <div class="badge">
+        <span>🏅</span> 减法小能手
+      </div>
+      <p style="font-size:16px;color:#555;margin:6px 0">你学会了5以内的减法!</p>
+      <p style="font-size:14px;color:#999">You mastered subtraction within 5!</p>
+      <div style="margin:10px 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+        <button class="btn-primary" onclick="replayConfetti()" style="padding:10px 24px;font-size:15px">🎊 再放一次彩花</button>
+        <button class="btn-primary" onclick="goHome()" style="background:#FF7043;box-shadow:0 4px 14px rgba(255,112,67,0.35);padding:10px 24px;font-size:15px">🏠 返回首页</button>
+      </div>
+      <p style="font-size:12px;color:#bbb;margin-top:8px">点击 ▶ 听庆祝语</p>
+    </div>
+  </div>
+
+  <!-- Page dots -->
+  <div class="page-dots" id="pageDots"></div>
+
+  <!-- Bottom nav -->
+  <div class="bottom-nav">
+    <button id="prevBtn" onclick="prevSlide()" aria-label="Previous">◀</button>
+    <button id="nextBtn" onclick="nextSlide()" aria-label="Next">▶</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SLIDE MANAGEMENT
+// ============================================================
+const TOTAL_SLIDES = 8;
+let currentSlide = 0;
+let isTransitioning = false;
+
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('pageDots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+
+// Create dots
+for (let i = 0; i < TOTAL_SLIDES; i++) {
+  const dot = document.createElement('button');
+  dot.className = 'page-dot' + (i === 0 ? ' active' : '');
+  dot.setAttribute('data-index', i);
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+}
+
+function goToSlide(index) {
+  if (isTransitioning || index === currentSlide) return;
+  if (index < 0 || index >= TOTAL_SLIDES) return;
+  isTransitioning = true;
+
+  const from = currentSlide;
+  const to = index;
+  const direction = to > from ? 1 : -1;
+
+  // Animate out
+  gsap.to(slides[from], {
+    duration: 0.3,
+    opacity: 0,
+    x: direction * -60,
+    scale: 0.96,
+    ease: 'power2.in',
+    onComplete: () => {
+      slides[from].classList.remove('active');
+      slides[from].style.opacity = '';
+      slides[from].style.transform = '';
+
+      // Animate in
+      currentSlide = to;
+      slides[to].classList.add('active');
+      gsap.fromTo(slides[to],
+        { opacity: 0, x: direction * 60, scale: 0.96 },
+        { duration: 0.35, opacity: 1, x: 0, scale: 1, ease: 'power2.out', onComplete: () => { isTransitioning = false; } }
+      );
+
+      updateDots();
+      updateNav();
+      triggerSlideEnter(to);
+    }
+  });
+}
+
+function nextSlide() { if (!isTransitioning && currentSlide < TOTAL_SLIDES - 1) goToSlide(currentSlide + 1); }
+function prevSlide() { if (!isTransitioning && currentSlide > 0) goToSlide(currentSlide - 1); }
+
+function goHome() {
+  if (!isTransitioning) goToSlide(0);
+}
+
+function updateDots() {
+  document.querySelectorAll('.page-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function updateNav() {
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide === TOTAL_SLIDES - 1;
+}
+
+function triggerSlideEnter(index) {
+  if (index === 7) {
+    startConfetti();
+    speakText('太棒了！你真是减法小能手！');
+  }
+  if (index === 2) resetBlocks();
+  if (index === 4) initPractice();
+  if (index === 5) initPicPractice();
+  if (index === 6) initChallenge();
+}
+
+// Keyboard nav
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft') prevSlide();
+});
+
+// Swipe support
+let touchStartX = 0;
+let touchEndX = 0;
+document.getElementById('app').addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, {passive:true});
+document.getElementById('app').addEventListener('touchend', (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) nextSlide();
+    else prevSlide();
+  }
+}, {passive:true});
+
+// ============================================================
+// SPEECH SYNTHESIS (zh-CN)
+// ============================================================
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  utterance.rate = 0.9;
+  utterance.pitch = 1.1;
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakSlideText() {
+  const texts = [
+    '小朋友们好！今天我们来学习5以内的减法。Steve有5个苹果，给了小朋友们2个，还剩几个呢？',
+    '拿走或减少就是减法。5减2等于3，5个苹果吃掉2个，还剩3个。',
+    '动手摆一摆积木，拿走几个，数一数还剩几个。',
+    '减号表示拿走或减少。4减1等于3，3减2等于1。',
+    '来做练习吧！选出正确的答案。',
+    '继续练习，看图列式计算。',
+    '集市挑战来啦！算一算花了多少钱。',
+    '太棒了！你学会了5以内的减法，真是减法小能手！'
+  ];
+  const btn = document.getElementById('playBtn');
+  btn.classList.add('speaking');
+  speakText(texts[currentSlide] || texts[0]);
+  setTimeout(() => btn.classList.remove('speaking'), 2500);
+}
+
+// ============================================================
+// SLIDE 3: BLOCKS INTERACTION
+// ============================================================
+let blockCount = 5;
+const blockColors = ['blue','orange','green','purple','yellow'];
+function renderBlocks(count) {
+  const row = document.getElementById('blocksRow1');
+  row.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const div = document.createElement('div');
+    div.className = 'block ' + blockColors[i % blockColors.length] + ' fade-in';
+    div.textContent = i + 1;
+    div.style.animationDelay = (i * 0.08) + 's';
+    row.appendChild(div);
+  }
+}
+function takeBlocks(n) {
+  if (blockCount - n < 0) {
+    document.getElementById('blocksResult').textContent = '😅 积木不够啦！';
+    return;
+  }
+  const taken = n;
+  blockCount -= n;
+  const row = document.getElementById('blocksRow1');
+  const blocks = row.querySelectorAll('.block');
+  const start = blocks.length - taken;
+  for (let i = Math.max(0, start); i < blocks.length; i++) {
+    blocks[i].classList.add('gone');
+  }
+  const result = document.getElementById('blocksResult');
+  result.textContent = `拿走 ${taken} 个，还剩 ${blockCount} 个！ ✅`;
+  // Trigger fireworks
+  gsap.fromTo(result, {scale:1.3},{duration:0.3,scale:1,ease:'back.out(2)'});
+  speakText(`拿走${taken}个，还剩${blockCount}个`);
+}
+function resetBlocks() {
+  blockCount = 5;
+  renderBlocks(5);
+  document.getElementById('blocksResult').textContent = '🧱 点击按钮拿走积木';
+}
+
+// ============================================================
+// SLIDE 5: PRACTICE 1
+// ============================================================
+const practiceQs = [
+  { text: '树上有3只小鸟，飞走1只，还剩几只?', a: 3, b: 1, eq: '3 − 1 = ?', ans: 2 },
+  { text: '盘子里有4个苹果，吃掉2个，还剩几个?', a: 4, b: 2, eq: '4 − 2 = ?', ans: 2 },
+  { text: '有5颗糖果，送给朋友3颗，还剩几颗?', a: 5, b: 3, eq: '5 − 3 = ?', ans: 2 },
+  { text: '水里有3条鱼，游走了2条，还剩几条?', a: 3, b: 2, eq: '3 − 2 = ?', ans: 1 },
+  { text: '买了4个气球，飞走了1个，还剩几个?', a: 4, b: 1, eq: '4 − 1 = ?', ans: 3 },
+  { text: '有5支铅笔，用了2支，还剩几支?', a: 5, b: 2, eq: '5 − 2 = ?', ans: 3 },
+  { text: '草地上有4只小鸡，跑了3只，还剩几只?', a: 4, b: 3, eq: '4 − 3 = ?', ans: 1 },
+  { text: '有3块饼干，吃了1块，还剩几块?', a: 3, b: 1, eq: '3 − 1 = ?', ans: 2 }
+];
+let pIdx = 0;
+let pAnswered = false;
+
+function initPractice() {
+  pIdx = 0;
+  showPracticeQ();
+}
+function showPracticeQ() {
+  pAnswered = false;
+  const q = practiceQs[pIdx];
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qEquation').innerHTML = q.eq;
+  const opts = document.getElementById('qOptions');
+  opts.innerHTML = '';
+  const choices = [q.ans, q.ans + 1, Math.max(0, q.ans - 1)];
+  if (choices[1] === choices[2]) choices[1] = choices[0] + 2;
+  const shuffled = choices.sort(() => Math.random() - 0.5);
+  shuffled.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.textContent = v;
+    btn.onclick = () => handlePracticeAnswer(btn, v, q.ans);
+    opts.appendChild(btn);
+  });
+  document.getElementById('qFeedback').textContent = '';
+  document.getElementById('nextQBtn').style.display = 'none';
+}
+function handlePracticeAnswer(btn, val, correct) {
+  if (pAnswered) return;
+  pAnswered = true;
+  const fb = document.getElementById('qFeedback');
+  if (val === correct) {
+    btn.classList.add('correct');
+    fb.textContent = '✅ 答对了！太棒了！';
+    fb.style.color = '#66BB6A';
+    speakText('答对了');
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ 再想想哦，答案是 ' + correct;
+    fb.style.color = '#EF5350';
+    speakText('再想想哦');
+  }
+  document.querySelectorAll('#qOptions .btn-option').forEach(b => b.style.pointerEvents = 'none');
+  document.getElementById('nextQBtn').style.display = 'inline-block';
+}
+function nextPracticeQ() {
+  pIdx = (pIdx + 1) % practiceQs.length;
+  if (pIdx === 0) {
+    // Finished all — go to next slide
+    nextSlide();
+    return;
+  }
+  showPracticeQ();
+}
+
+// ============================================================
+// SLIDE 6: PRACTICE 2 (Picture-based)
+// ============================================================
+const picQs = [
+  { emoji: '🍎', text: '5个苹果，吃掉2个，还剩几个?', ans: 3 },
+  { emoji: '🍊', text: '4个橙子，吃了1个，还剩几个?', ans: 3 },
+  { emoji: '🍌', text: '3根香蕉，吃掉1根，还剩几根?', ans: 2 },
+  { emoji: '🍋', text: '5个柠檬，用了3个，还剩几个?', ans: 2 },
+  { emoji: '🍓', text: '4颗草莓，吃了2颗，还剩几颗?', ans: 2 },
+  { emoji: '🍇', text: '5颗葡萄，吃了4颗，还剩几颗?', ans: 1 }
+];
+let picIdx = 0;
+let picAnswered = false;
+
+function initPicPractice() {
+  picIdx = 0;
+  showPicQ();
+}
+function showPicQ() {
+  picAnswered = false;
+  const q = picQs[picIdx];
+  document.getElementById('picQText').textContent = q.text;
+  const opts = document.getElementById('picOptions');
+  opts.innerHTML = '';
+  const choices = [q.ans, Math.min(5, q.ans + 1), Math.max(0, q.ans - 1)];
+  const shuffled = choices.sort(() => Math.random() - 0.5);
+  shuffled.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.textContent = v;
+    btn.onclick = () => handlePicAnswer(btn, v, q.ans);
+    opts.appendChild(btn);
+  });
+  document.getElementById('picFeedback').textContent = '';
+  document.getElementById('nextPicBtn').style.display = 'none';
+}
+function handlePicAnswer(btn, val, correct) {
+  if (picAnswered) return;
+  picAnswered = true;
+  const fb = document.getElementById('picFeedback');
+  if (val === correct) {
+    btn.classList.add('correct');
+    fb.textContent = '✅ 正确！太厉害了！';
+    fb.style.color = '#66BB6A';
+    speakText('正确');
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ 答案是 ' + correct + '，再试试下一题吧！';
+    fb.style.color = '#EF5350';
+    speakText('再试试');
+  }
+  document.querySelectorAll('#picOptions .btn-option').forEach(b => b.style.pointerEvents = 'none');
+  document.getElementById('nextPicBtn').style.display = 'inline-block';
+}
+function nextPicQ() {
+  picIdx = (picIdx + 1) % picQs.length;
+  if (picIdx === 0) {
+    nextSlide();
+    return;
+  }
+  showPicQ();
+}
+
+// ============================================================
+// SLIDE 7: CHALLENGE
+// ============================================================
+const challenges = [
+  { q: '🍎 苹果5元，你付了5元，找零多少?', ans: 0 },
+  { q: '🍊 橙子4元，付了5元，找零多少?', ans: 1 },
+  { q: '🍌 香蕉3元，付了5元，找零多少?', ans: 2 },
+  { q: '🍋 柠檬2元，付了5元，找零多少?', ans: 3 },
+  { q: '🍎+🍊 苹果和橙子共多少元? (5+4)', special: true, ans: 9, note: '这是加法哦!' },
+  { q: '🍌+🍋 香蕉和柠檬共多少元? (3+2)', special: true, ans: 5, note: '加法!' },
+  { q: '你有5元，买🍊橙子花4元，还剩多少?', ans: 1 },
+  { q: '你有5元，买🍌香蕉花3元，还剩多少?', ans: 2 }
+];
+let chIdx = 0;
+let chAnswered = false;
+
+function initChallenge() {
+  chIdx = 0;
+  showChallenge();
+}
+function showChallenge() {
+  chAnswered = false;
+  const q = challenges[chIdx];
+  document.getElementById('challengeQ').textContent = q.q;
+  const opts = document.getElementById('challengeOptions');
+  opts.innerHTML = '';
+  let choices;
+  if (q.special) {
+    choices = [q.ans, q.ans + 1, Math.max(0, q.ans - 1)];
+    if (choices[1] === choices[2]) choices[1] = q.ans + 2;
+  } else {
+    choices = [q.ans, q.ans + 1, Math.max(0, q.ans - 1)];
+    if (choices[1] === choices[2]) choices[1] = q.ans + 2;
+  }
+  const shuffled = choices.sort(() => Math.random() - 0.5);
+  shuffled.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'btn-option';
+    btn.textContent = v;
+    btn.onclick = () => handleChallengeAnswer(btn, v, q);
+    opts.appendChild(btn);
+  });
+  document.getElementById('challengeFeedback').textContent = '';
+  document.getElementById('nextChallengeBtn').style.display = 'none';
+}
+function handleChallengeAnswer(btn, val, q) {
+  if (chAnswered) return;
+  chAnswered = true;
+  const fb = document.getElementById('challengeFeedback');
+  if (q.special) {
+    if (val === q.ans) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ ' + (q.note || '正确！');
+      fb.style.color = '#66BB6A';
+      speakText(q.note || '正确');
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ 答案是 ' + q.ans + '。' + (q.note || '');
+      fb.style.color = '#EF5350';
+      speakText('再想想');
+    }
+  } else {
+    if (val === q.ans) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ 找零正确！你真棒！';
+      fb.style.color = '#66BB6A';
+      speakText('找零正确');
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ 找零应该是 ' + q.ans + ' 元';
+      fb.style.color = '#EF5350';
+      speakText('找零应该是');
+    }
+  }
+  document.querySelectorAll('#challengeOptions .btn-option').forEach(b => b.style.pointerEvents = 'none');
+  document.getElementById('nextChallengeBtn').style.display = 'inline-block';
+}
+function nextChallenge() {
+  chIdx = (chIdx + 1) % challenges.length;
+  if (chIdx === 0) {
+    nextSlide();
+    return;
+  }
+  showChallenge();
+}
+
+// ============================================================
+// CONFETTI 🎊
+// ============================================================
+const canvas = document.getElementById('confetti-canvas');
+const ctx = canvas.getContext('2d');
+let confettiPieces = [];
+let confettiRunning = false;
+let confettiRAF = null;
+
+function resizeCanvas() {
+  canvas.width = document.getElementById('app').offsetWidth;
+  canvas.height = document.getElementById('app').offsetHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const confettiColors = ['#42A5F5','#FF7043','#66BB6A','#FFA726','#AB47BC','#EF5350','#26C6DA','#FFEE58'];
+
+function createConfetti(count) {
+  const pieces = [];
+  const w = canvas.width;
+  const h = canvas.height;
+  for (let i = 0; i < count; i++) {
+    pieces.push({
+      x: Math.random() * w,
+      y: Math.random() * h - h,
+      w: 6 + Math.random() * 8,
+      h: 4 + Math.random() * 6,
+      color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: 1.5 + Math.random() * 3,
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 8,
+      opacity: 0.9 + Math.random() * 0.1
+    });
+  }
+  return pieces;
+}
+
+function drawConfetti() {
+  if (!confettiRunning) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  let allDone = true;
+  confettiPieces.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.04;
+    p.rot += p.rotSpeed;
+    if (p.y < canvas.height + 20) allDone = false;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI / 180);
+    ctx.globalAlpha = p.opacity;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    ctx.restore();
+  });
+  if (allDone) {
+    confettiRunning = false;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+  confettiRAF = requestAnimationFrame(drawConfetti);
+}
+
+function startConfetti() {
+  resizeCanvas();
+  if (confettiRAF) cancelAnimationFrame(confettiRAF);
+  confettiPieces = createConfetti(150);
+  confettiRunning = true;
+  drawConfetti();
+  // Second burst
+  setTimeout(() => {
+    if (confettiRunning) {
+      confettiPieces = confettiPieces.concat(createConfetti(80));
+    }
+  }, 600);
+}
+
+function replayConfetti() {
+  startConfetti();
+  speakText('减法小能手！');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+updateNav();
+resetBlocks();
+
+console.log('📘 Math Lesson 6: Subtraction within 5 loaded!');
+console.log('🎯 Total slides: ' + TOTAL_SLIDES);
+</script>
+</body>
+</html>
