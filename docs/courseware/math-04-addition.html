@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第4课: 认识加法5以内 - 史蒂夫和爱丽克斯的数学课</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== CSS Reset & Variables ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#42A5F5; --blue-dark:#1E88E5; --blue-light:#BBDEFB;
+  --blue-bg:#E3F2FD; --blue-pale:#F5F9FF; --white:#FFFFFF;
+  --text:#2C3E50; --text-light:#7F8C8D; --green:#66BB6A;
+  --green-dark:#43A047; --orange:#FFA726; --red:#EF5350;
+  --gold:#FFD54F; --shadow:0 4px 20px rgba(66,165,245,0.2);
+  --radius:16px; --max-w:420px; --font:'Nunito',sans-serif;
+}
+html,body{height:100%;overflow:hidden;touch-action:manipulation}
+body{
+  font-family:var(--font); background:var(--blue-bg);
+  display:flex; justify-content:center; align-items:center;
+  min-height:100vh; color:var(--text); -webkit-tap-highlight-color:transparent;
+  user-select:none; -webkit-user-select:none;
+}
+
+/* ===== App Container ===== */
+.app{
+  width:100%; max-width:var(--max-w); height:100vh; max-height:812px;
+  background:var(--white); border-radius:24px; box-shadow:var(--shadow);
+  position:relative; overflow:hidden; display:flex; flex-direction:column;
+}
+@media(max-width:440px){
+  .app{max-height:100vh;border-radius:0}
+}
+
+/* ===== Top Bar ===== */
+.top-bar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; background:var(--blue); color:var(--white);
+  z-index:20; flex-shrink:0; min-height:52px;
+}
+.top-bar .btn-home{
+  background:rgba(255,255,255,0.2); border:none; color:var(--white);
+  width:36px; height:36px; border-radius:50%; font-size:18px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.top-bar .btn-home:hover{background:rgba(255,255,255,0.35)}
+.top-bar .lesson-title{
+  font-size:16px; font-weight:800; letter-spacing:0.5px;
+}
+.top-bar .btn-sound{
+  background:rgba(255,255,255,0.2); border:none; color:var(--white);
+  width:36px; height:36px; border-radius:50%; font-size:18px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s;
+}
+.top-bar .btn-sound:hover{background:rgba(255,255,255,0.35)}
+.top-bar .btn-sound.speaking{background:rgba(255,255,255,0.5);animation:pulse 0.8s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+
+/* ===== Pages Container ===== */
+.pages-container{
+  flex:1; position:relative; overflow:hidden;
+}
+.page{
+  position:absolute; top:0; left:0; width:100%; height:100%;
+  padding:20px 20px 0; overflow-y:auto; overflow-x:hidden;
+  opacity:0; visibility:hidden; transition:opacity 0.4s,visibility 0.4s;
+  display:flex; flex-direction:column; align-items:center;
+  -webkit-overflow-scrolling:touch;
+}
+.page.active{opacity:1;visibility:visible;z-index:5}
+.page > *{flex-shrink:0}
+
+/* ===== Bottom Bar ===== */
+.bottom-bar{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 16px 14px; background:var(--white);
+  border-top:2px solid var(--blue-light); flex-shrink:0; z-index:20;
+}
+.bottom-bar .btn-nav{
+  background:var(--blue); border:none; color:var(--white);
+  width:44px; height:44px; border-radius:50%; font-size:20px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform 0.2s,background 0.2s; box-shadow:0 2px 8px rgba(66,165,245,0.3);
+}
+.bottom-bar .btn-nav:hover{transform:scale(1.08);background:var(--blue-dark)}
+.bottom-bar .btn-nav:active{transform:scale(0.94)}
+.bottom-bar .btn-nav:disabled{background:var(--blue-light);cursor:default;transform:none;box-shadow:none}
+.page-dots{display:flex;gap:6px}
+.page-dots .dot{
+  width:10px; height:10px; border-radius:50%; background:var(--blue-light);
+  border:none; cursor:pointer; transition:all 0.3s; padding:0;
+}
+.page-dots .dot.active{background:var(--blue);transform:scale(1.3)}
+
+/* ===== Image Styles ===== */
+.lesson-img{
+  width:100%; max-width:360px; border-radius:var(--radius);
+  box-shadow:0 4px 16px rgba(0,0,0,0.08);
+  margin-bottom:16px;
+}
+.lesson-img-sm{max-width:280px}
+
+/* ===== Typography ===== */
+h1,h2,h3{font-weight:900;line-height:1.2}
+h1{font-size:26px;margin-bottom:8px}
+h2{font-size:22px;margin-bottom:6px}
+h3{font-size:18px;margin-bottom:4px}
+.subtitle{font-size:16px;color:var(--text-light);margin-bottom:16px}
+.txt-blue{color:var(--blue)}
+.txt-green{color:var(--green)}
+.txt-orange{color:var(--orange)}
+.txt-center{text-align:center}
+
+/* ===== Speech Bubble ===== */
+.speech-bubble{
+  background:var(--blue-pale); border-radius:18px; padding:14px 18px;
+  margin:8px 0 16px; position:relative; max-width:340px;
+  border:2px solid var(--blue-light); font-size:16px; line-height:1.5;
+  box-shadow:0 2px 8px rgba(66,165,245,0.1);
+}
+.speech-bubble::before{
+  content:''; position:absolute; top:-10px; left:30px;
+  border-left:10px solid transparent; border-right:10px solid transparent;
+  border-bottom:10px solid var(--blue-light);
+}
+.speech-bubble::after{
+  content:''; position:absolute; top:-7px; left:32px;
+  border-left:8px solid transparent; border-right:8px solid transparent;
+  border-bottom:8px solid var(--blue-pale);
+}
+
+/* ===== Character Avatars ===== */
+.char-row{
+  display:flex; align-items:center; gap:12px; margin:8px 0 12px;
+}
+.char-avatar{
+  width:50px; height:50px; border-radius:50%;
+  background:var(--blue-light); display:flex; align-items:center;
+  justify-content:center; font-size:28px; flex-shrink:0;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+.char-avatar.steve{background:#8BC34A}
+.char-avatar.alex{background:#FF8A65}
+
+/* ===== Blocks / Visual Math ===== */
+.block-row{
+  display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+  margin:10px 0;
+}
+.block{
+  width:42px; height:42px; border-radius:8px; display:flex;
+  align-items:center; justify-content:center; font-weight:800;
+  font-size:18px; color:var(--white); box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  transition:transform 0.3s;
+}
+.block.blue{background:var(--blue)}
+.block.green{background:var(--green)}
+.block.orange{background:var(--orange)}
+.block.red{background:var(--red)}
+.block.gold{background:var(--gold);color:#5D4037}
+.block.purple{background:#AB47BC}
+.block:hover{transform:translateY(-3px)}
+
+/* ===== Math Display ===== */
+.math-display{
+  display:flex; align-items:center; gap:10px; justify-content:center;
+  font-size:28px; font-weight:800; margin:12px 0;
+  flex-wrap:wrap;
+}
+.math-display .num{color:var(--blue)}
+.math-display .op{color:var(--orange)}
+.math-display .eq{color:var(--text-light)}
+.math-display .result{color:var(--green);min-width:30px}
+
+/* ===== Interactive Practice ===== */
+.practice-area{margin:12px 0;width:100%;max-width:360px}
+.question-box{
+  background:var(--blue-pale); border:2px solid var(--blue-light);
+  border-radius:var(--radius); padding:20px; text-align:center; margin-bottom:16px;
+}
+.question-box .q-text{
+  font-size:24px; font-weight:800; margin-bottom:12px;
+}
+.answer-options{
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+}
+.answer-btn{
+  width:54px; height:54px; border-radius:50%; border:3px solid var(--blue-light);
+  background:var(--white); font-size:22px; font-weight:800;
+  color:var(--text); cursor:pointer; transition:all 0.2s;
+  display:flex; align-items:center; justify-content:center;
+}
+.answer-btn:hover{border-color:var(--blue);background:var(--blue-bg)}
+.answer-btn:active{transform:scale(0.92)}
+.answer-btn.correct{
+  border-color:var(--green);background:#E8F5E9;color:var(--green-dark);
+  animation:pop 0.4s;
+}
+.answer-btn.wrong{
+  border-color:var(--red);background:#FFEBEE;color:var(--red);
+  animation:shake 0.4s;
+}
+.answer-btn.selected{transform:scale(1.1)}
+.feedback-text{
+  margin-top:12px; font-size:18px; font-weight:700; min-height:28px;
+}
+.feedback-text.correct{color:var(--green)}
+.feedback-text.wrong{color:var(--red)}
+
+/* ===== Progress Bar ===== */
+.progress-bar{
+  width:100%; height:6px; background:var(--blue-light); border-radius:3px;
+  margin:8px 0; overflow:hidden;
+}
+.progress-bar .fill{
+  height:100%; background:var(--blue); border-radius:3px;
+  transition:width 0.5s ease;
+}
+
+/* ===== Challenge Page ===== */
+.challenge-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px;
+  width:100%; max-width:360px; margin:10px 0;
+}
+.challenge-card{
+  background:var(--blue-pale); border:2px solid var(--blue-light);
+  border-radius:var(--radius); padding:16px 12px; text-align:center;
+  cursor:pointer; transition:all 0.2s;
+}
+.challenge-card:active{transform:scale(0.96)}
+.challenge-card .c-question{font-size:20px;font-weight:800;margin-bottom:8px}
+.challenge-card .c-answer{
+  font-size:16px; font-weight:700; color:var(--text-light);
+}
+.challenge-card.solved{
+  border-color:var(--green); background:#E8F5E9;
+}
+.challenge-card.solved .c-answer{color:var(--green-dark)}
+
+/* ===== Celebrations ===== */
+.badge-container{
+  width:140px; height:140px; border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),#FFB300);
+  display:flex; align-items:center; justify-content:center;
+  margin:16px auto; box-shadow:0 6px 24px rgba(255,213,79,0.4);
+  animation:badgeGlow 2s infinite alternate;
+}
+.badge-container .badge-inner{
+  width:120px; height:120px; border-radius:50%;
+  background:var(--white); display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  box-shadow:inset 0 2px 8px rgba(0,0,0,0.08);
+}
+.badge-container .badge-icon{font-size:44px;line-height:1}
+.badge-container .badge-label{font-size:13px;font-weight:800;color:var(--gold);margin-top:4px}
+@keyframes badgeGlow{
+  0%{box-shadow:0 6px 24px rgba(255,213,79,0.4);transform:scale(1)}
+  100%{box-shadow:0 6px 36px rgba(255,213,79,0.7);transform:scale(1.04)}
+}
+
+/* ===== Animations ===== */
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.2)}100%{transform:scale(1)}}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fade-up{animation:fadeUp 0.5s ease forwards}
+.float{animation:float 3s ease-in-out infinite}
+
+/* ===== Scrollbar ===== */
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:var(--blue-light);border-radius:2px}
+
+/* ===== Star particles ===== */
+.star-particle{
+  position:fixed; pointer-events:none; font-size:24px;
+  animation:starFall 1.5s ease-out forwards; z-index:100;
+}
+@keyframes starFall{
+  0%{opacity:1;transform:translateY(0) rotate(0deg) scale(1)}
+  100%{opacity:0;transform:translateY(120px) rotate(360deg) scale(0.3)}
+}
+
+/* ===== Confetti Canvas ===== */
+#confetti-canvas{
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  pointer-events:none; z-index:99;
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===== TOP BAR ===== -->
+  <div class="top-bar">
+    <button class="btn-home" id="btnHome" aria-label="首页">🏠</button>
+    <span class="lesson-title">第4课 · 认识加法</span>
+    <button class="btn-sound" id="btnSound" aria-label="朗读">🔊</button>
+  </div>
+
+  <!-- ===== PAGES ===== -->
+  <div class="pages-container" id="pagesContainer">
+
+    <!-- ============= PAGE 1: COVER ============= -->
+    <div class="page active" data-page="1">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%">
+        <div style="font-size:48px;margin-bottom:8px;animation:float 3s ease-in-out infinite">⛏️</div>
+        <h1 class="txt-center txt-blue" style="font-size:28px">认识加法</h1>
+        <h2 class="txt-center" style="font-size:20px;color:var(--text-light);margin-bottom:4px">5以内</h2>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:12px">Addition within 5</p>
+        <img src="images/math-04-addition/webp/page-01.webp" alt="史蒂夫和爱丽克斯收胡萝卜"
+             class="lesson-img" style="max-width:320px"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="speech-bubble" style="margin-top:8px">
+          <div class="char-row" style="margin:0 0 8px">
+            <div class="char-avatar steve">🧑</div>
+            <div class="char-avatar alex">👩</div>
+          </div>
+          <p style="font-weight:700;font-size:18px">"3根和2根在一起怎么算总数啊?"</p>
+        </div>
+        <p style="font-size:14px;color:var(--text-light);margin-top:8px">👆 点击 ▶️ 开始学习</p>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 2: CONCEPT ============= -->
+    <div class="page" data-page="2">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-blue">合起来！</h2>
+        <p style="font-size:18px;font-weight:700;margin-bottom:12px">加法就是<em style="color:var(--blue);font-style:normal">'合起来'</em></p>
+        <img src="images/math-04-addition/webp/page-04.webp" alt="加法就是合起来"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="math-display">
+          <span class="num">3</span>
+          <span style="font-size:22px;color:var(--text-light)">根</span>
+          <span class="op">+</span>
+          <span class="num">2</span>
+          <span style="font-size:22px;color:var(--text-light)">根</span>
+          <span class="eq">=</span>
+          <span class="result">5</span>
+          <span style="font-size:22px;color:var(--text-light)">根</span>
+        </div>
+        <div class="block-row">
+          <div class="block green">🍃</div>
+          <div class="block green">🍃</div>
+          <div class="block green">🍃</div>
+          <div class="block orange" style="margin-left:4px">🥕</div>
+          <div class="block orange">🥕</div>
+        </div>
+        <p class="subtitle txt-center" style="margin-bottom:0;font-size:15px">
+          把 <strong>3</strong> 根胡萝卜和 <strong>2</strong> 根胡萝卜放在一起<br>
+          合起来一共是 <strong class="txt-green">5</strong> 根！
+        </p>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 3: HANDS-ON ============= -->
+    <div class="page" data-page="3">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-blue">🧱 动手试试</h2>
+        <p style="font-size:16px;font-weight:600;margin-bottom:8px">积木来加，认识符号 <span class="txt-orange">+</span> 和 <span class="txt-green">=</span></p>
+        <img src="images/math-04-addition/webp/page-06.webp" alt="积木加法"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div style="display:flex;gap:10px;margin:10px 0;align-items:center;flex-wrap:wrap;justify-content:center">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div class="block blue">2</div>
+            <span style="font-size:13px;font-weight:600;color:var(--text-light)">2块</span>
+          </div>
+          <span style="font-size:30px;font-weight:800;color:var(--orange)">+</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div class="block green">3</div>
+            <span style="font-size:13px;font-weight:600;color:var(--text-light)">3块</span>
+          </div>
+          <span style="font-size:30px;font-weight:800;color:var(--text-light)">=</span>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div class="block orange">5</div>
+            <span style="font-size:13px;font-weight:600;color:var(--text-light)">5块</span>
+          </div>
+        </div>
+        <div style="background:var(--blue-pale);border-radius:var(--radius);padding:16px;max-width:340px;width:100%;margin-top:6px">
+          <p style="font-size:15px;text-align:center">
+            <span class="txt-blue" style="font-weight:800">➕ 加号</span> 表示"合起来"<br>
+            <span class="txt-green" style="font-weight:800">🟰 等号</span> 表示"等于"、一共是多少
+          </p>
+        </div>
+        <p style="font-size:14px;color:var(--text-light);margin-top:10px;text-align:center">
+          👆 点击积木可以听发音
+        </p>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 4: EXAMPLES ============= -->
+    <div class="page" data-page="4">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-blue">5以内的加法</h2>
+        <p style="font-size:15px;color:var(--text-light);margin-bottom:12px">看看这些例子吧！</p>
+        <img src="images/math-04-addition/webp/page-07.webp" alt="5以内加法例1"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="math-display" style="font-size:26px;gap:8px">
+          <span class="num">1</span><span class="op">+</span><span class="num">3</span><span class="eq">=</span><span class="result">4</span>
+          <span style="font-size:14px;color:var(--text-light);font-weight:400">｜</span>
+          <span class="num">2</span><span class="op">+</span><span class="num">2</span><span class="eq">=</span><span class="result">4</span>
+          <span style="font-size:14px;color:var(--text-light);font-weight:400">｜</span>
+          <span class="num">3</span><span class="op">+</span><span class="num">1</span><span class="eq">=</span><span class="result">4</span>
+        </div>
+        <img src="images/math-04-addition/webp/page-09.webp" alt="5以内加法例2"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 4px;width:100%;max-width:360px">
+          <div style="background:#E3F2FD;border-radius:12px;padding:10px 16px;flex:1;min-width:100px;text-align:center">
+            <div style="font-size:20px;font-weight:800" class="txt-blue">1+4</div>
+            <div style="font-size:16px;font-weight:700" class="txt-orange">= 5</div>
+          </div>
+          <div style="background:#E3F2FD;border-radius:12px;padding:10px 16px;flex:1;min-width:100px;text-align:center">
+            <div style="font-size:20px;font-weight:800" class="txt-blue">2+3</div>
+            <div style="font-size:16px;font-weight:700" class="txt-orange">= 5</div>
+          </div>
+          <div style="background:#E3F2FD;border-radius:12px;padding:10px 16px;flex:1;min-width:100px;text-align:center">
+            <div style="font-size:20px;font-weight:800" class="txt-blue">4+1</div>
+            <div style="font-size:16px;font-weight:700" class="txt-orange">= 5</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 5: PRACTICE 1 ============= -->
+    <div class="page" data-page="5">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-blue">✏️ 练一练</h2>
+        <p style="font-size:15px;color:var(--text-light);margin-bottom:4px">点击正确的答案</p>
+        <div class="progress-bar" style="max-width:360px">
+          <div class="fill" id="p1Progress" style="width:0%"></div>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:6px" id="p1Counter">第 1 / 5 题</p>
+        <img src="images/math-04-addition/webp/page-05.webp" alt="练一练"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="practice-area">
+          <div class="question-box" id="p1QuestionBox">
+            <div class="q-text" id="p1Question">2 + 3 = ?</div>
+            <div class="answer-options" id="p1Options"></div>
+            <div class="feedback-text" id="p1Feedback"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 6: PRACTICE 2 ============= -->
+    <div class="page" data-page="6">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-blue">✏️ 练习</h2>
+        <p style="font-size:15px;color:var(--text-light);margin-bottom:4px">再来一组题目！</p>
+        <div class="progress-bar" style="max-width:360px">
+          <div class="fill" id="p2Progress" style="width:0%"></div>
+        </div>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:6px" id="p2Counter">第 1 / 5 题</p>
+        <img src="images/math-04-addition/webp/page-10.webp" alt="练习"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="practice-area">
+          <div class="question-box" id="p2QuestionBox">
+            <div class="q-text" id="p2Question">1 + 4 = ?</div>
+            <div class="answer-options" id="p2Options"></div>
+            <div class="feedback-text" id="p2Feedback"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 7: CHALLENGE ============= -->
+    <div class="page" data-page="7">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding-top:8px">
+        <h2 class="txt-center txt-orange">🏆 闯关挑战</h2>
+        <p style="font-size:15px;color:var(--text-light);margin-bottom:8px">点击题目说出答案！</p>
+        <img src="images/math-04-addition/webp/page-12.webp" alt="闯关挑战"
+             class="lesson-img lesson-img-sm"
+             onerror="this.onerror=null;this.style.display='none'">
+        <div class="challenge-grid" id="challengeGrid"></div>
+        <div id="challengeResult" style="margin-top:10px;font-size:18px;font-weight:800;min-height:30px"></div>
+      </div>
+    </div>
+
+    <!-- ============= PAGE 8: CELEBRATION ============= -->
+    <div class="page" data-page="8">
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%">
+        <div style="font-size:48px;margin-bottom:8px">🎉</div>
+        <h1 class="txt-center txt-blue" style="font-size:30px">太棒了！🎊</h1>
+        <p class="subtitle txt-center" style="font-size:18px">你学会了5以内的加法！</p>
+        <div class="badge-container" id="badge">
+          <div class="badge-inner">
+            <div class="badge-icon">🏅</div>
+            <div class="badge-label">加法小达人</div>
+          </div>
+        </div>
+        <p style="font-size:16px;font-weight:700;margin-top:12px" class="txt-green">
+          ✅ 加法就是"合起来"<br>
+          ✅ 认识了 <span class="txt-orange">+</span> 和 <span class="txt-green">=</span><br>
+          ✅ 会算 5 以内的加法
+        </p>
+        <p style="font-size:14px;color:var(--text-light);margin-top:10px">
+          🏠 回到首页继续学习
+        </p>
+      </div>
+    </div>
+
+  </div><!-- /pages-container -->
+
+  <!-- ===== BOTTOM BAR ===== -->
+  <div class="bottom-bar">
+    <button class="btn-nav" id="btnPrev" aria-label="上一页">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="btn-nav" id="btnNext" aria-label="下一页">▶</button>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Confetti Canvas -->
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+(function(){
+  'use strict';
+
+  // ===== CONFIG =====
+  const QUESTIONS_P1 = [
+    { q: '2 + 3 = ?', a: 5, opts: [2,3,4,5] },
+    { q: '1 + 1 = ?', a: 2, opts: [1,2,3,4] },
+    { q: '3 + 2 = ?', a: 5, opts: [3,4,5,6] },
+    { q: '4 + 1 = ?', a: 5, opts: [2,4,5,6] },
+    { q: '2 + 2 = ?', a: 4, opts: [2,3,4,5] },
+  ];
+  const QUESTIONS_P2 = [
+    { q: '1 + 3 = ?', a: 4, opts: [2,3,4,5] },
+    { q: '3 + 1 = ?', a: 4, opts: [1,3,4,5] },
+    { q: '1 + 2 = ?', a: 3, opts: [1,2,3,4] },
+    { q: '2 + 1 = ?', a: 3, opts: [1,2,3,5] },
+    { q: '1 + 4 = ?', a: 5, opts: [2,4,5,6] },
+  ];
+  const CHALLENGES = [
+    { q: '1+1', a: '2' },
+    { q: '2+3', a: '5' },
+    { q: '3+2', a: '5' },
+    { q: '4+1', a: '5' },
+    { q: '2+2', a: '4' },
+    { q: '1+4', a: '5' },
+    { q: '3+1', a: '4' },
+    { q: '1+2', a: '3' },
+  ];
+
+  const TOTAL_PAGES = 8;
+  let currentPage = 1;
+  let isAnimating = false;
+
+  // Practice state
+  let p1Index = 0, p1Correct = 0;
+  let p2Index = 0, p2Correct = 0;
+  let p1Answered = false;
+  let p2Answered = false;
+
+  // Challenge state
+  let challengeSolved = 0;
+
+  // ===== DOM REFS =====
+  const pages = document.querySelectorAll('.page');
+  const dots = document.getElementById('pageDots');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const btnHome = document.getElementById('btnHome');
+  const btnSound = document.getElementById('btnSound');
+
+  // ===== INIT DOTS =====
+  for(let i=1; i<=TOTAL_PAGES; i++){
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i===1?' active':'');
+    dot.dataset.page = i;
+    dot.setAttribute('aria-label','第'+i+'页');
+    dot.addEventListener('click',function(){goToPage(parseInt(this.dataset.page));});
+    dots.appendChild(dot);
+  }
+
+  // ===== NAVIGATION =====
+  function goToPage(num, smooth){
+    if(isAnimating) return;
+    if(num<1||num>TOTAL_PAGES) return;
+    isAnimating = true;
+    const old = currentPage;
+    currentPage = num;
+
+    // Update pages
+    pages.forEach(p=>{
+      p.classList.toggle('active', parseInt(p.dataset.page)===num);
+    });
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach(d=>{
+      d.classList.toggle('active', parseInt(d.dataset.page)===num);
+    });
+
+    // Buttons
+    btnPrev.disabled = num===1;
+    btnNext.disabled = num===TOTAL_PAGES;
+
+    // Smooth scroll to top
+    const activePage = document.querySelector('.page.active');
+    if(activePage) activePage.scrollTop = 0;
+
+    // GSAP entrance
+    if(activePage && smooth!==false){
+      gsap.fromTo(activePage.children, {opacity:0,y:20}, {opacity:1,y:0,duration:0.35,stagger:0.06,ease:'power2.out',onComplete:function(){isAnimating=false}});
+    } else {
+      isAnimating = false;
+    }
+
+    // Sound button state
+    btnSound.classList.remove('speaking');
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+
+    // Init page content
+    if(num===5 && old!==5) initPractice1();
+    if(num===6 && old!==6) initPractice2();
+    if(num===7 && old!==7) initChallenge();
+    if(num===8) startCelebration();
+  }
+
+  btnPrev.addEventListener('click',()=>goToPage(currentPage-1));
+  btnNext.addEventListener('click',()=>goToPage(currentPage+1));
+
+  btnHome.addEventListener('click',function(){
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    btnSound.classList.remove('speaking');
+    goToPage(1);
+  });
+
+  // ===== KEYBOARD =====
+  document.addEventListener('keydown',function(e){
+    if(e.key==='ArrowLeft') goToPage(currentPage-1);
+    if(e.key==='ArrowRight') goToPage(currentPage+1);
+  });
+
+  // ===== SPEECH SYNTHESIS =====
+  const SPEECH_TEXTS = {
+    1: '3根和2根在一起怎么算总数啊? 认识加法5以内。',
+    2: '合起来! 加法就是合起来。3根加2根等于5根。',
+    3: '动手试试,积木来加。加号表示合起来,等号表示等于。',
+    4: '5以内的加法。1加3等于4,2加2等于4,3加1等于4。',
+    5: '练一练,点击正确的答案。',
+    6: '练习,再来一组题目。',
+    7: '闯关挑战,点击题目说出答案。',
+    8: '太棒了!你学会了5以内的加法!',
+  };
+
+  let speechPlaying = false;
+  btnSound.addEventListener('click',function(){
+    if(!window.speechSynthesis){return;}
+    if(speechPlaying){
+      window.speechSynthesis.cancel();
+      btnSound.classList.remove('speaking');
+      speechPlaying = false;
+      return;
+    }
+    const text = SPEECH_TEXTS[currentPage] || '';
+    if(!text) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = 0.9;
+    utter.pitch = 1.1;
+    utter.onstart = function(){btnSound.classList.add('speaking');speechPlaying=true;};
+    utter.onend = function(){btnSound.classList.remove('speaking');speechPlaying=false;};
+    utter.onerror = function(){btnSound.classList.remove('speaking');speechPlaying=false;};
+    window.speechSynthesis.speak(utter);
+  });
+
+  // ===== PAGE 5: PRACTICE 1 =====
+  function initPractice1(){
+    p1Index = 0; p1Correct = 0; p1Answered = false;
+    renderP1Question();
+  }
+  function renderP1Question(){
+    if(p1Index >= QUESTIONS_P1.length){
+      document.getElementById('p1Question').textContent = '🎉 全部完成！';
+      document.getElementById('p1Options').innerHTML = '';
+      const fb = document.getElementById('p1Feedback');
+      const pct = Math.round((p1Correct/QUESTIONS_P1.length)*100);
+      fb.textContent = '答对 '+p1Correct+'/'+QUESTIONS_P1.length+' 题！'+(pct>=80?' 🌟 太棒了！':' 💪 继续加油！');
+      fb.className = 'feedback-text '+(pct>=60?'correct':'wrong');
+      document.getElementById('p1Progress').style.width = '100%';
+      document.getElementById('p1Counter').textContent = '完成！共 '+QUESTIONS_P1.length+' 题';
+      return;
+    }
+    p1Answered = false;
+    const q = QUESTIONS_P1[p1Index];
+    document.getElementById('p1Question').textContent = q.q;
+    document.getElementById('p1Feedback').textContent = '';
+    document.getElementById('p1Feedback').className = 'feedback-text';
+    document.getElementById('p1Progress').style.width = ((p1Index)/QUESTIONS_P1.length*100)+'%';
+    document.getElementById('p1Counter').textContent = '第 '+(p1Index+1)+' / '+QUESTIONS_P1.length+' 题';
+
+    const container = document.getElementById('p1Options');
+    container.innerHTML = '';
+    // Shuffle options
+    const opts = [...q.opts].sort(()=>Math.random()-0.5);
+    opts.forEach(val=>{
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.textContent = val;
+      btn.dataset.value = val;
+      btn.addEventListener('click',function(e){
+        if(p1Answered) return;
+        p1Answered = true;
+        const isCorrect = val === q.a;
+        this.classList.add(isCorrect?'correct':'wrong','selected');
+        if(!isCorrect){
+          // highlight correct
+          container.querySelectorAll('.answer-btn').forEach(b=>{
+            if(parseInt(b.dataset.value)===q.a) b.classList.add('correct');
+          });
+        } else {
+          p1Correct++;
+        }
+        const fb = document.getElementById('p1Feedback');
+        fb.textContent = isCorrect ? '✅ 正确！' : '❌ 答案是 '+q.a;
+        fb.className = 'feedback-text '+(isCorrect?'correct':'wrong');
+
+        // Speak
+        if(window.speechSynthesis){
+          const msg = isCorrect ? '答对了!' : '答案是'+q.a;
+          const u = new SpeechSynthesisUtterance(msg);
+          u.lang='zh-CN'; u.rate=0.9;
+          window.speechSynthesis.speak(u);
+        }
+
+        // Disable all
+        container.querySelectorAll('.answer-btn').forEach(b=>b.style.pointerEvents='none');
+
+        // Next after delay
+        setTimeout(()=>{
+          p1Index++;
+          renderP1Question();
+        }, 1200);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  // ===== PAGE 6: PRACTICE 2 =====
+  function initPractice2(){
+    p2Index = 0; p2Correct = 0; p2Answered = false;
+    renderP2Question();
+  }
+  function renderP2Question(){
+    if(p2Index >= QUESTIONS_P2.length){
+      document.getElementById('p2Question').textContent = '🎉 全部完成！';
+      document.getElementById('p2Options').innerHTML = '';
+      const fb = document.getElementById('p2Feedback');
+      const pct = Math.round((p2Correct/QUESTIONS_P2.length)*100);
+      fb.textContent = '答对 '+p2Correct+'/'+QUESTIONS_P2.length+' 题！'+(pct>=80?' 🌟 太棒了！':' 💪 继续加油！');
+      fb.className = 'feedback-text '+(pct>=60?'correct':'wrong');
+      document.getElementById('p2Progress').style.width = '100%';
+      document.getElementById('p2Counter').textContent = '完成！共 '+QUESTIONS_P2.length+' 题';
+      return;
+    }
+    p2Answered = false;
+    const q = QUESTIONS_P2[p2Index];
+    document.getElementById('p2Question').textContent = q.q;
+    document.getElementById('p2Feedback').textContent = '';
+    document.getElementById('p2Feedback').className = 'feedback-text';
+    document.getElementById('p2Progress').style.width = ((p2Index)/QUESTIONS_P2.length*100)+'%';
+    document.getElementById('p2Counter').textContent = '第 '+(p2Index+1)+' / '+QUESTIONS_P2.length+' 题';
+
+    const container = document.getElementById('p2Options');
+    container.innerHTML = '';
+    const opts = [...q.opts].sort(()=>Math.random()-0.5);
+    opts.forEach(val=>{
+      const btn = document.createElement('button');
+      btn.className = 'answer-btn';
+      btn.textContent = val;
+      btn.dataset.value = val;
+      btn.addEventListener('click',function(e){
+        if(p2Answered) return;
+        p2Answered = true;
+        const isCorrect = val === q.a;
+        this.classList.add(isCorrect?'correct':'wrong','selected');
+        if(!isCorrect){
+          container.querySelectorAll('.answer-btn').forEach(b=>{
+            if(parseInt(b.dataset.value)===q.a) b.classList.add('correct');
+          });
+        } else {
+          p2Correct++;
+        }
+        const fb = document.getElementById('p2Feedback');
+        fb.textContent = isCorrect ? '✅ 正确！' : '❌ 答案是 '+q.a;
+        fb.className = 'feedback-text '+(isCorrect?'correct':'wrong');
+
+        if(window.speechSynthesis){
+          const msg = isCorrect ? '答对了!' : '答案是'+q.a;
+          const u = new SpeechSynthesisUtterance(msg);
+          u.lang='zh-CN'; u.rate=0.9;
+          window.speechSynthesis.speak(u);
+        }
+
+        container.querySelectorAll('.answer-btn').forEach(b=>b.style.pointerEvents='none');
+
+        setTimeout(()=>{
+          p2Index++;
+          renderP2Question();
+        }, 1200);
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  // ===== PAGE 7: CHALLENGE =====
+  function initChallenge(){
+    challengeSolved = 0;
+    const grid = document.getElementById('challengeGrid');
+    grid.innerHTML = '';
+    document.getElementById('challengeResult').textContent = '已闯关: 0 / '+CHALLENGES.length;
+
+    // Shuffle
+    const shuffled = [...CHALLENGES].sort(()=>Math.random()-0.5);
+    shuffled.forEach((ch,i)=>{
+      const card = document.createElement('div');
+      card.className = 'challenge-card';
+      card.dataset.index = i;
+      card.innerHTML = '<div class="c-question">'+ch.q+'</div><div class="c-answer" id="chAns'+i+'">?</div>';
+      card.addEventListener('click',function(){
+        if(this.classList.contains('solved')) return;
+        // Show answer
+        const ansEl = document.getElementById('chAns'+i);
+        ansEl.textContent = '= '+ch.a;
+        this.classList.add('solved');
+        challengeSolved++;
+        document.getElementById('challengeResult').textContent = '已闯关: '+challengeSolved+' / '+CHALLENGES.length;
+
+        // Play sound
+        if(window.speechSynthesis){
+          const u = new SpeechSynthesisUtterance(ch.q+'等于'+ch.a);
+          u.lang='zh-CN'; u.rate=0.9;
+          window.speechSynthesis.speak(u);
+        }
+
+        // Effect
+        gsap.fromTo(this,{scale:1},{scale:1.06,duration:0.15,yoyo:true,repeat:1,ease:'power1.inOut'});
+
+        // All done?
+        if(challengeSolved === CHALLENGES.length){
+          document.getElementById('challengeResult').textContent = '🎉 全部通关！太棒了！';
+          // Star particles
+          for(let s=0; s<12; s++){
+            setTimeout(()=>createStarParticle(), s*80);
+          }
+        }
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  // ===== STAR PARTICLES =====
+  function createStarParticle(){
+    const el = document.createElement('div');
+    el.className = 'star-particle';
+    el.textContent = ['⭐','🌟','✨','💫','🎉'][Math.floor(Math.random()*5)];
+    el.style.left = (10+Math.random()*80)+'%';
+    el.style.top = (10+Math.random()*40)+'%';
+    el.style.fontSize = (18+Math.random()*18)+'px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 1600);
+  }
+
+  // ===== CONFETTI =====
+  let confettiAnimId = null;
+  function startConfetti(duration){
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width = window.innerWidth;
+    const H = canvas.height = window.innerHeight;
+
+    const pieces = [];
+    const colors = ['#42A5F5','#66BB6A','#FFA726','#EF5350','#AB47BC','#FFD54F','#26C6DA','#EC407A'];
+    for(let i=0; i<120; i++){
+      pieces.push({
+        x: Math.random()*W, y: Math.random()*H-H,
+        w: 6+Math.random()*6, h: 4+Math.random()*8,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        vx: (Math.random()-0.5)*3,
+        vy: 1+Math.random()*3,
+        rot: Math.random()*360,
+        rotSpeed: (Math.random()-0.5)*6,
+        opacity: 0.8+Math.random()*0.2,
+      });
+    }
+
+    let startTime = Date.now();
+    function draw(){
+      const elapsed = Date.now() - startTime;
+      if(elapsed > duration){ ctx.clearRect(0,0,W,H); confettiAnimId=null; return; }
+
+      ctx.clearRect(0,0,W,H);
+      const fade = Math.min(1, (duration-elapsed)/800);
+
+      pieces.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.rot += p.rotSpeed;
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.globalAlpha = p.opacity * fade;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+
+        // Reset if off screen
+        if(p.y > H+20){
+          p.y = -20;
+          p.x = Math.random()*W;
+          p.vy = 1+Math.random()*3;
+        }
+      });
+
+      confettiAnimId = requestAnimationFrame(draw);
+    }
+    if(confettiAnimId) cancelAnimationFrame(confettiAnimId);
+    draw();
+  }
+
+  // ===== CELEBRATION =====
+  function startCelebration(){
+    // Confetti
+    startConfetti(6000);
+
+    // Badge animation
+    gsap.fromTo('#badge',{scale:0,rotation:-15},{scale:1,rotation:0,duration:0.6,ease:'back.out(1.7)',delay:0.2});
+
+    // Speak
+    setTimeout(()=>{
+      if(window.speechSynthesis){
+        const u = new SpeechSynthesisUtterance('太棒了!你学会了5以内的加法!');
+        u.lang='zh-CN'; u.rate=0.9;
+        window.speechSynthesis.speak(u);
+      }
+    }, 500);
+  }
+
+  // ===== CLICK-TO-SPEAK ON BLOCKS =====
+  document.addEventListener('click',function(e){
+    const block = e.target.closest('.block');
+    if(block && window.speechSynthesis){
+      const num = block.textContent.trim();
+      if(num && !isNaN(num)){
+        const u = new SpeechSynthesisUtterance(num);
+        u.lang='zh-CN'; u.rate=0.8;
+        window.speechSynthesis.speak(u);
+      }
+    }
+  });
+
+  // ===== RESIZE HANDLER =====
+  window.addEventListener('resize',function(){
+    const canvas = document.getElementById('confetti-canvas');
+    if(canvas){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+  });
+
+  // ===== START =====
+  goToPage(1, false);
+
+  // Pre-warm speechSynthesis
+  if(window.speechSynthesis){
+    try{ window.speechSynthesis.getVoices(); }catch(e){}
+  }
+
+})();
+</script>
+</body>
+</html>

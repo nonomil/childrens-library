@@ -74,6 +74,7 @@ nav:
       - 👋 Minecraft Hello!: courseware/english-01-hello.html
       - 🔤 Minecraft ABC A-M: courseware/english-02-abc.html
       - 🆎 Minecraft ABC N-Z: courseware/english-03-abc-nz.html
+      - 🌈 Minecraft Colors: courseware/english-04-colors.html
     - 🌱 科学:
       - 🍎 I Am an Apple: courseware/i-am-an-apple.html
       - ⚙️ 齿轮传动: courseware/gears-transmission.html
@@ -85,11 +86,13 @@ nav:
       - 🐑 Minecraft数数1~10: courseware/math-01-counting.html
       - 💎 Minecraft数到20: courseware/math-02-counting-11to20.html
       - ⚖️ Minecraft比多少: courseware/math-03-compare.html
+      - ➕ Minecraft认识加法5以内: courseware/math-04-addition.html
     - 🀄 汉字:
       - 🀄 神奇汉字: courseware/chinese-magic-characters.html
       - ☀️ Minecraft象形字: courseware/chinese-01-characters.html
       - ✏️ Minecraft基本笔画: courseware/chinese-02-strokes.html
       - 🌍 Minecraft天地人: courseware/chinese-03-heaven-earth.html
+      - 🌤️ Minecraft大自然: courseware/chinese-04-nature.html
     - 🌈 英语启蒙:
       - 🌈 彩虹颜色: courseware/english-colors.html
   - 全部PDF打包下载: download.md
