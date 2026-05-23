@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第18课 动物世界 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #ffebee;
+    color: #333;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  :root {
+    --primary: #EF5350;
+    --secondary: #C62828;
+    --bg: #ffebee;
+    --title: #B71C1C;
+    --card-bg: #fff;
+    --shadow: 0 4px 20px rgba(183,28,28,0.15);
+    --radius: 20px;
+  }
+  .app {
+    width: 100vw; height: 100vh;
+    min-width: 768px; max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  @media(max-width:767px){
+    .app { min-width: 100%; max-width: 100%; }
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 56px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    background: linear-gradient(180deg, rgba(183,28,28,0.10) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+  .topbar a {
+    text-decoration: none;
+    font-size: 16px; font-weight: 700;
+    color: var(--secondary);
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.85);
+    padding: 6px 14px; border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+  }
+  .topbar a:active { transform: scale(0.94); }
+  .topbar .next-link { color: var(--primary); }
+
+  /* PAGES */
+  .pages-container {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .page {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 68px 20px 80px;
+    opacity: 0; visibility: hidden;
+    overflow-y: auto;
+    transition: none;
+    will-change: transform, opacity;
+  }
+  .page.active {
+    opacity: 1; visibility: visible;
+    z-index: 10;
+  }
+  .page-inner {
+    width: 100%; max-width: 860px;
+    margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px;
+  }
+
+  /* NAV BOTTOM */
+  .nav-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 64px; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px;
+    padding: 0 20px;
+    background: linear-gradient(0deg, rgba(255,235,238,0.95) 0%, transparent 100%);
+  }
+  .nav-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: none; background: var(--card-bg);
+    box-shadow: var(--shadow);
+    font-size: 26px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .nav-btn:active { transform: scale(0.88); background: var(--primary); color: #fff; }
+  .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+  .speak-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid var(--primary); background: var(--card-bg);
+    font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .speak-btn:active { background: #ffcdd2; transform: scale(0.9); }
+  .speak-btn.speaking { background: var(--primary); color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .page-dots {
+    display: flex; gap: 8px;
+    align-items: center;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #e0e0e0; border: none; cursor: pointer;
+    transition: all 0.3s; padding: 0;
+    touch-action: manipulation;
+  }
+  .dot.active {
+    background: var(--primary);
+    width: 28px; border-radius: 6px;
+  }
+  .dot:hover { background: #ffcdd2; }
+
+  /* TYPOGRAPHY */
+  h1 {
+    font-size: 44px; font-weight: 900;
+    color: var(--title);
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(183,28,28,0.15);
+  }
+  h2 {
+    font-size: 32px; font-weight: 800;
+    color: var(--secondary);
+    text-align: center;
+  }
+  h3 {
+    font-size: 24px; font-weight: 700;
+    color: var(--primary);
+  }
+  .subtitle {
+    font-size: 20px; font-weight: 600;
+    color: #666;
+    text-align: center;
+  }
+  .pinyin {
+    font-size: 18px; color: #999; font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .story-text {
+    font-size: 20px; line-height: 1.8;
+    color: #444;
+    text-align: center;
+    max-width: 700px;
+  }
+  .story-text .highlight { color: var(--primary); font-weight: 700; }
+
+  /* CARDS */
+  .card-grid {
+    display: grid; gap: 16px;
+    width: 100%;
+  }
+  .card-grid-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .card:active { transform: scale(0.96); }
+  .card .char {
+    font-size: 52px; font-weight: 900;
+    color: var(--title);
+    line-height: 1.2;
+  }
+  .card .char-pinyin {
+    font-size: 16px; color: var(--primary);
+    font-weight: 600;
+  }
+  .card .char-strokes {
+    font-size: 14px; color: #999;
+  }
+  .card .char-meaning {
+    font-size: 15px; color: #555;
+    margin-top: 6px;
+  }
+  .card .char-memory {
+    font-size: 14px; color: #888;
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* IMAGES */
+  .page-img {
+    width: 100%; max-width: 640px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    pointer-events: none;
+    margin: 8px 0;
+  }
+  .page-img-sm { max-width: 420px; }
+
+  /* COVER */
+  .cover-icon {
+    font-size: 80px;
+    line-height: 1;
+    animation: bounceIcon 2s ease-in-out infinite;
+    display: block;
+  }
+  @keyframes bounceIcon { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  .cover-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-size: 18px; font-weight: 700;
+  }
+  .goal-list {
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center;
+  }
+  .goal-list li {
+    background: var(--card-bg);
+    padding: 8px 18px;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-size: 16px; font-weight: 600;
+    border-left: 4px solid var(--primary);
+  }
+
+  /* STROKE DISPLAY */
+  .stroke-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    min-width: 0;
+  }
+  .stroke-card .sc-char {
+    font-size: 48px; font-weight: 900;
+    color: var(--title);
+    line-height: 1.2;
+  }
+  .stroke-card .sc-pinyin {
+    font-size: 15px; color: var(--primary); font-weight: 600;
+  }
+  .stroke-card .sc-strokes {
+    font-size: 13px; color: #999;
+  }
+  .stroke-card .sc-stroke-list {
+    font-size: 14px; color: #666;
+    word-break: break-all;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .stroke-card .sc-examples {
+    font-size: 14px; color: var(--secondary);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .stroke-card .sc-memory {
+    font-size: 13px; color: #888;
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  /* PRACTICE */
+  .practice-section {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin: 8px 0;
+  }
+  .practice-section h3 {
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+  .practice-row {
+    display: flex; flex-wrap: wrap;
+    gap: 12px; align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .practice-btn {
+    padding: 10px 24px;
+    border: 2px solid var(--primary);
+    background: #fff;
+    border-radius: 30px;
+    font-size: 20px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .practice-btn:active { transform: scale(0.92); }
+  .practice-btn.selected { background: var(--primary); color: #fff; }
+  .practice-btn.correct { background: #4CAF50; color: #fff; border-color: #4CAF50; }
+  .practice-btn.wrong { background: #f44336; color: #fff; border-color: #f44336; animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+  .practice-fill {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 3px dashed var(--primary);
+    text-align: center;
+    font-size: 22px; font-weight: 700;
+    color: var(--primary);
+    padding: 0 8px;
+  }
+  .practice-fill.filled { border-bottom-color: #4CAF50; color: #4CAF50; }
+
+  /* MATCH GAME */
+  .match-area {
+    display: flex; gap: 40px; justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .match-col {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .match-card {
+    width: 90px; height: 90px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; font-weight: 900;
+    color: var(--title);
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .match-card:active { transform: scale(0.9); }
+  .match-card.matched {
+    background: #4CAF50; color: #fff;
+    transform: scale(0.95);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .match-card.selected-match {
+    border: 4px solid var(--primary);
+    box-shadow: 0 0 0 4px rgba(239,83,80,0.3);
+  }
+  .match-line {
+    font-size: 28px; font-weight: 800;
+    color: var(--secondary);
+  }
+
+  /* CELEBRATION */
+  .confetti-canvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 200;
+  }
+  .celebration-msg {
+    font-size: 32px; font-weight: 900;
+    color: var(--title);
+    text-align: center;
+    animation: bounce 1s ease-in-out infinite alternate;
+  }
+  @keyframes bounce { 0%{transform:translateY(0)} 100%{transform:translateY(-12px)} }
+
+  /* POEM */
+  .poem-img-row {
+    display: flex; flex-direction: column;
+    gap: 8px; align-items: center;
+    width: 100%;
+  }
+  .poem-img-row img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  /* SCROLLBAR */
+  .page::-webkit-scrollbar { width: 4px; }
+  .page::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+  /* Responsive font scaling */
+  @media(max-width:800px){
+    h1 { font-size: 34px; }
+    h2 { font-size: 26px; }
+    .card .char { font-size: 38px; }
+    .stroke-card .sc-char { font-size: 36px; }
+    .match-card { width: 70px; height: 70px; font-size: 32px; }
+  }
+
+  /* Fill-in blanks area */
+  .fill-blank {
+    display: inline-block; min-width: 60px;
+    border-bottom: 3px dashed var(--primary);
+    text-align: center;
+    font-size: 24px; font-weight: 800;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0 6px;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .fill-blank.filled { border-color: #4CAF50; color: #4CAF50; }
+
+  .hidden { display: none !important; }
+
+  /* Animal parade special */
+  .parade-grid {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center;
+    max-width: 700px;
+  }
+  .parade-grid .parade-item {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 16px 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    text-align: center;
+    width: 72px;
+    transition: transform 0.3s;
+  }
+  .parade-grid .parade-item:hover { transform: scale(1.08); }
+  .parade-grid .parade-char { font-size: 36px; font-weight: 900; color: var(--title); }
+  .parade-grid .parade-pinyin { font-size: 13px; color: var(--primary); font-weight: 600; }
+
+  /* Category sort game */
+  .category-area {
+    display: flex; gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .category-box {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    min-width: 160px;
+    text-align: center;
+  }
+  .category-box h4 { font-size: 18px; color: var(--secondary); margin-bottom: 10px; }
+  .category-box .cat-char {
+    display: inline-block;
+    font-size: 36px; font-weight: 800;
+    color: var(--title);
+    margin: 4px;
+    padding: 6px 12px;
+    background: var(--bg);
+    border-radius: 12px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .category-box .cat-char:active { transform: scale(0.9); }
+  .category-box .cat-char.placed { border-color: #4CAF50; background: #e8f5e9; }
+  .category-box .cat-char.wrong-cat { border-color: #f44336; background: #ffebee; animation: shake 0.3s; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="../">🏠 首页</a>
+    <a href="../chinese-19-compound.html" class="next-link">▶ 下一个</a>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-container" id="pagesContainer">
+    <!-- PAGE 0: COVER - 方块动物园 -->
+    <div class="page active" data-page="0">
+      <div class="page-inner">
+        <span class="cover-icon">🐾</span>
+        <h1>第18课<br>动物世界</h1>
+        <p class="subtitle">🐶 方块动物园 · 10种动物</p>
+        <div style="margin:8px 0">
+          <span class="cover-badge">累计识字：125字</span>
+        </div>
+        <ul class="goal-list">
+          <li>🐮 牛</li>
+          <li>🐑 羊</li>
+          <li>🐴 马</li>
+          <li>🐶 狗</li>
+          <li>🐱 猫</li>
+          <li>🐰 兔</li>
+          <li>🐉 龙</li>
+          <li>🐯 虎</li>
+          <li>🦌 鹿</li>
+          <li>🐻 熊</li>
+        </ul>
+        <p style="color:#999;font-size:15px;margin-top:12px">👆 点击箭头开始探索动物世界</p>
+      </div>
+    </div>
+
+    <!-- PAGE 1: 农场三宝 - 牛羊马 -->
+    <div class="page" data-page="1">
+      <div class="page-inner">
+        <h2>🌾 农场三宝</h2>
+        <p class="story-text">农场里有三种好伙伴——<b class="highlight">牛</b>、<b class="highlight">羊</b>、<b class="highlight">马</b>！</p>
+        <img src="images/chinese-18/webp/page-01.webp" alt="农场三宝" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-3" style="max-width:600px">
+          <div class="stroke-card">
+            <div class="sc-char">牛</div>
+            <div class="sc-pinyin">niú (4画)</div>
+            <div class="sc-stroke-list">ノ 一 一 丨</div>
+            <div class="sc-examples">奶牛 · 水牛 · 牛肉</div>
+            <div class="sc-memory">🐮 牛角顶天！</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">羊</div>
+            <div class="sc-pinyin">yáng (6画)</div>
+            <div class="sc-stroke-list">丶 ノ 一 一 一 丨</div>
+            <div class="sc-examples">山羊 · 羊毛 · 羊肉</div>
+            <div class="sc-memory">🐑 羊角弯弯</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">马</div>
+            <div class="sc-pinyin">mǎ (3画)</div>
+            <div class="sc-stroke-list">㇕ 一 一</div>
+            <div class="sc-examples">小马 · 马上 · 骑马</div>
+            <div class="sc-memory">🐴 马儿跑得快</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: 宠物三小只 - 狗猫兔 -->
+    <div class="page" data-page="2">
+      <div class="page-inner">
+        <h2>🐾 宠物三小只</h2>
+        <p class="story-text">家里最受欢迎的宠物——<b class="highlight">狗</b>、<b class="highlight">猫</b>、<b class="highlight">兔</b>！它们都有<span class="highlight">反犬旁(犭)</span>吗？</p>
+        <img src="images/chinese-18/webp/page-02.webp" alt="宠物三小只" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-3" style="max-width:600px">
+          <div class="stroke-card">
+            <div class="sc-char">狗</div>
+            <div class="sc-pinyin">gǒu (8画)</div>
+            <div class="sc-stroke-list">ノ ㇁ ノ 一 丨 𠃍 一 丨</div>
+            <div class="sc-examples">小狗 · 狗狗 · 狗肉</div>
+            <div class="sc-memory">犭+句 = 狗 🐶</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">猫</div>
+            <div class="sc-pinyin">māo (11画)</div>
+            <div class="sc-stroke-list">ノ ㇁ 一 丨 丨 𠃍 一 丨 𠃍 一 丨</div>
+            <div class="sc-examples">小猫 · 猫咪 · 熊猫</div>
+            <div class="sc-memory">犭+苗 = 猫 🐱</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">兔</div>
+            <div class="sc-pinyin">tù (8画)</div>
+            <div class="sc-stroke-list">ノ ㇕ 丨 一 一 一 ノ ㇏</div>
+            <div class="sc-examples">白兔 · 兔子 · 小兔</div>
+            <div class="sc-memory">🐰 兔子长耳朵</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          <span class="highlight">狗</span>和<span class="highlight">猫</span>有反犬旁 <span class="highlight">犭</span>，<br>
+          但<span class="highlight">兔</span>没有哦！<br>
+          𠆢+口+儿+丶 = 兔
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 3: 传说猛兽 - 龙虎 -->
+    <div class="page" data-page="3">
+      <div class="page-inner">
+        <h2>🐉 传说猛兽</h2>
+        <p class="story-text">中国神话中最威风的两种动物——<b class="highlight">龙</b>和<b class="highlight">虎</b>！</p>
+        <img src="images/chinese-18/webp/page-03.webp" alt="龙虎传说" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-2" style="max-width:560px">
+          <div class="stroke-card">
+            <div class="sc-char">龙</div>
+            <div class="sc-pinyin">lóng (5画)</div>
+            <div class="sc-stroke-list">一 ノ ㇂ 丿 丶</div>
+            <div class="sc-examples">飞龙 · 龙头 · 龙年</div>
+            <div class="sc-memory">🐉 龙飞在天！</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">虎</div>
+            <div class="sc-pinyin">hǔ (8画)</div>
+            <div class="sc-stroke-list">丨 一 ㇂ 丿 一 丨 𠃍 一</div>
+            <div class="sc-examples">老虎 · 虎头 · 虎牙</div>
+            <div class="sc-memory">🐯 虎王威武！</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          <span class="highlight">龙</span>是中华民族的象征 🐉<br>
+          <span class="highlight">虎</span>是百兽之王 🐯
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 4: 森林奇兽 - 鹿熊 -->
+    <div class="page" data-page="4">
+      <div class="page-inner">
+        <h2>🌲 森林奇兽</h2>
+        <p class="story-text">森林深处的神秘动物——<b class="highlight">鹿</b>和<b class="highlight">熊</b>！</p>
+        <img src="images/chinese-18/webp/page-04.webp" alt="森林奇兽" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-2" style="max-width:560px">
+          <div class="stroke-card">
+            <div class="sc-char">鹿</div>
+            <div class="sc-pinyin">lù (11画)</div>
+            <div class="sc-stroke-list">丶 一 ノ 丨 𠃍 一 一 丨 乚 一 一</div>
+            <div class="sc-examples">小鹿 · 鹿角 · 长颈鹿</div>
+            <div class="sc-memory">🦌 鹿角多叉</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">熊</div>
+            <div class="sc-pinyin">xióng (14画)</div>
+            <div class="sc-stroke-list">一 丨 𠃍 一 一 丨 一 一 一 丨 丿 ㇏</div>
+            <div class="sc-examples">熊猫 · 黑熊 · 熊大</div>
+            <div class="sc-memory">🐻 能+火 = 熊！</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          最可爱的<span class="highlight">熊猫</span>就是熊的一种！🐼<br>
+          熊的底部是<span class="highlight">灬</span>(四点底)
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 5: 动物园大游行 -->
+    <div class="page" data-page="5">
+      <div class="page-inner">
+        <h2>🎪 动物园大游行</h2>
+        <p class="story-text">十种动物排好队，快来认识它们！</p>
+        <img src="images/chinese-18/webp/page-05.webp" alt="动物园大游行" class="page-img" loading="lazy">
+        <div class="parade-grid">
+          <div class="parade-item"><div class="parade-char">牛</div><div class="parade-pinyin">niú</div></div>
+          <div class="parade-item"><div class="parade-char">羊</div><div class="parade-pinyin">yáng</div></div>
+          <div class="parade-item"><div class="parade-char">马</div><div class="parade-pinyin">mǎ</div></div>
+          <div class="parade-item"><div class="parade-char">狗</div><div class="parade-pinyin">gǒu</div></div>
+          <div class="parade-item"><div class="parade-char">猫</div><div class="parade-pinyin">māo</div></div>
+          <div class="parade-item"><div class="parade-char">兔</div><div class="parade-pinyin">tù</div></div>
+          <div class="parade-item"><div class="parade-char">龙</div><div class="parade-pinyin">lóng</div></div>
+          <div class="parade-item"><div class="parade-char">虎</div><div class="parade-pinyin">hǔ</div></div>
+          <div class="parade-item"><div class="parade-char">鹿</div><div class="parade-pinyin">lù</div></div>
+          <div class="parade-item"><div class="parade-char">熊</div><div class="parade-pinyin">xióng</div></div>
+        </div>
+        <button class="speak-btn" id="paradeSpeakBtn" style="width:auto;padding:8px 24px;border-radius:30px;font-size:16px;gap:6px" onclick="speakParade()">🔊 朗读全部</button>
+      </div>
+    </div>
+
+    <!-- PAGE 6: 练习 - 分类/反犬旁/填空/连线 -->
+    <div class="page" data-page="6">
+      <div class="page-inner">
+        <h2>📝 练习乐园</h2>
+        <img src="images/chinese-18/webp/page-06.webp" alt="练习乐园" class="page-img page-img-sm" loading="lazy">
+
+        <!-- 1. 偏旁分类 -->
+        <div class="practice-section">
+          <h3>🔤 偏旁分类</h3>
+          <p style="color:#888;margin-bottom:10px">把动物字拖到正确的分类中：</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px" id="unplacedChars">
+            <span class="cat-char" data-char="牛">牛</span>
+            <span class="cat-char" data-char="羊">羊</span>
+            <span class="cat-char" data-char="马">马</span>
+            <span class="cat-char" data-char="狗">狗</span>
+            <span class="cat-char" data-char="猫">猫</span>
+            <span class="cat-char" data-char="兔">兔</span>
+            <span class="cat-char" data-char="龙">龙</span>
+            <span class="cat-char" data-char="虎">虎</span>
+            <span class="cat-char" data-char="鹿">鹿</span>
+            <span class="cat-char" data-char="熊">熊</span>
+          </div>
+          <div class="category-area">
+            <div class="category-box" id="catFanquan">
+              <h4>🦴 反犬旁 (犭)</h4>
+              <div class="cat-dropzone" id="dropFanquan"></div>
+            </div>
+            <div class="category-box" id="catOther">
+              <h4>📦 其他偏旁</h4>
+              <div class="cat-dropzone" id="dropOther"></div>
+            </div>
+          </div>
+          <p id="catFeedback" style="font-size:16px;font-weight:600;color:#888;margin-top:10px">点击动物字放入对应分类</p>
+        </div>
+
+        <!-- 2. 反犬旁填空 -->
+        <div class="practice-section">
+          <h3>🖌️ 反犬旁填空</h3>
+          <p style="font-size:18px;line-height:2.2;text-align:center">
+            小<span class="fill-blank" data-answer="狗" data-index="0">___</span>汪汪 &nbsp;&nbsp;
+            小<span class="fill-blank" data-answer="猫" data-index="1">___</span>喵喵 &nbsp;&nbsp;
+            白<span class="fill-blank" data-answer="兔" data-index="2">___</span>跳跳
+          </p>
+          <div class="practice-row" style="margin-top:10px" id="fillOptions2">
+            <div class="practice-btn" data-opt="狗">狗</div>
+            <div class="practice-btn" data-opt="猫">猫</div>
+            <div class="practice-btn" data-opt="兔">兔</div>
+            <div class="practice-btn" data-opt="牛">牛</div>
+          </div>
+          <p id="fillFeedback2" style="font-size:16px;font-weight:600;color:#888;margin-top:6px">点击选项填入空白</p>
+        </div>
+
+        <!-- 3. 连线配对 -->
+        <div class="practice-section">
+          <h3>🔗 动物连连看</h3>
+          <p style="color:#888;margin-bottom:8px">把动物字和它的分类连起来：</p>
+          <div class="match-area" id="matchArea2">
+            <div class="match-col" id="matchColA2">
+              <div class="match-card" data-pair="niuyang">牛</div>
+              <div class="match-card" data-pair="goumao">狗</div>
+              <div class="match-card" data-pair="longhu">龙</div>
+            </div>
+            <div class="match-line">↔</div>
+            <div class="match-col" id="matchColB2">
+              <div class="match-card" data-pair="farm">农场动物</div>
+              <div class="match-card" data-pair="pet">宠物</div>
+              <div class="match-card" data-pair="legend">传说猛兽</div>
+            </div>
+          </div>
+          <p id="matchFeedback2" style="font-size:16px;font-weight:600;color:#888;margin-top:8px">连线配对三组动物与分类</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: 挑战 - 动物字↔分类 -->
+    <div class="page" data-page="7">
+      <div class="page-inner">
+        <h2>🏆 动物分类挑战</h2>
+        <p class="story-text">把下面十个动物分到四个组里！<br>点击左边的字，再点击它所属的分类。</p>
+
+        <div class="match-area" id="challengeMatchArea" style="gap:30px">
+          <div class="match-col" id="challengeChars">
+            <div class="match-card" data-group="farm">牛</div>
+            <div class="match-card" data-group="farm">羊</div>
+            <div class="match-card" data-group="farm">马</div>
+            <div class="match-card" data-group="pet">狗</div>
+            <div class="match-card" data-group="pet">猫</div>
+            <div class="match-card" data-group="pet">兔</div>
+            <div class="match-card" data-group="legend">龙</div>
+            <div class="match-card" data-group="legend">虎</div>
+            <div class="match-card" data-group="forest">鹿</div>
+            <div class="match-card" data-group="forest">熊</div>
+          </div>
+          <div class="match-col" id="challengeGroups">
+            <div class="match-card" data-group="farm" style="font-size:20px;color:#555">🌾 农场</div>
+            <div class="match-card" data-group="pet" style="font-size:20px;color:#555">🏠 宠物</div>
+            <div class="match-card" data-group="legend" style="font-size:20px;color:#555">🐉 传说</div>
+            <div class="match-card" data-group="forest" style="font-size:20px;color:#555">🌲 森林</div>
+          </div>
+        </div>
+        <p id="challengeFeedback" style="font-size:18px;font-weight:600;color:#888;margin-top:12px">点击左边的动物字，再点分类完成配对</p>
+      </div>
+    </div>
+
+    <!-- PAGE 8: 古诗角 - 画鸡 -->
+    <div class="page" data-page="8">
+      <div class="page-inner">
+        <h2>📜 古诗角</h2>
+        <p class="subtitle" style="font-size:18px;margin-bottom:4px">画鸡 · 明·唐寅</p>
+        <div class="poem-img-row">
+          <img src="images/chinese-18/webp/poem-line-1.webp" alt="画鸡1" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-18/webp/poem-line-2.webp" alt="画鸡2" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-18/webp/poem-line-3.webp" alt="画鸡3" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-18/webp/poem-line-4.webp" alt="画鸡4" loading="lazy" style="max-width:520px">
+        </div>
+        <div class="card" style="max-width:560px;margin-top:8px;padding:14px 20px">
+          <p style="font-size:17px;line-height:1.8;color:#555">
+            <b>头上红冠不用裁，</b>满身雪白走将来。<br>
+            <b>平生不敢轻言语，</b>一叫千门万户开。
+          </p>
+        </div>
+        <p style="color:#888;font-size:15px;margin-top:4px">
+          唐寅笔下的<span class="highlight">公鸡</span> 🐓 — 这也是动物！
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 9: 总结/庆祝 -->
+    <div class="page" data-page="9">
+      <div class="page-inner">
+        <h2>🎉 太棒啦！</h2>
+        <div style="font-size:72px;line-height:1;text-align:center">🐾🏆🐾</div>
+        <p class="celebration-msg">你完成了第18课！</p>
+        <img src="images/chinese-18/webp/page-07.webp" alt="10种动物总结" class="page-img page-img-sm" loading="lazy">
+        <div class="card" style="max-width:600px;padding:16px">
+          <p style="font-size:28px;font-weight:900;color:var(--title);letter-spacing:6px">
+            牛羊马 狗猫兔 龙虎鹿熊
+          </p>
+          <p style="font-size:20px;font-weight:700;color:var(--primary);margin-top:4px">
+            牛 羊 马 狗 猫 兔 龙 虎 鹿 熊
+          </p>
+          <p style="color:#888;font-size:15px;margin-top:6px">10个字 · 累计识字125字 🎊</p>
+        </div>
+        <div class="practice-row" style="margin-top:8px">
+          <div class="practice-btn" style="background:var(--primary);color:#fff;border-color:var(--primary);font-size:16px" onclick="window.location.href='../chinese-19-compound.html'">▶ 学习第19课</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <div class="nav-bottom">
+    <button class="nav-btn" id="prevBtn" aria-label="上一页">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="speak-btn" id="speakBtn" aria-label="朗读">🔊</button>
+    <button class="nav-btn" id="nextBtn" aria-label="下一页">▶</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const TOTAL_PAGES = 10; // 0-9
+  let currentPage = 0;
+  const pages = document.querySelectorAll('.page');
+  const dots = document.getElementById('pageDots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const speakBtn = document.getElementById('speakBtn');
+
+  // Build dots
+  for(let i=0; i<TOTAL_PAGES; i++){
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i===0?' active':'');
+    dot.dataset.page = i;
+    dot.addEventListener('click',function(){ goTo(parseInt(this.dataset.page)); });
+    dots.appendChild(dot);
+  }
+
+  function goTo(idx){
+    if(idx<0 || idx>=TOTAL_PAGES) return;
+    currentPage = idx;
+    pages.forEach((p,i)=>{
+      p.classList.toggle('active',i===idx);
+    });
+    document.querySelectorAll('.dot').forEach((d,i)=>{
+      d.classList.toggle('active',i===idx);
+    });
+    prevBtn.disabled = (idx===0);
+    nextBtn.disabled = (idx===TOTAL_PAGES-1);
+    // Stop speaking on page change
+    if(window.speechSynthesis && window.speechSynthesis.speaking){
+      window.speechSynthesis.cancel();
+      speakBtn.classList.remove('speaking');
+    }
+    // GSAP animation
+    const activePage = pages[idx];
+    gsap.fromTo(activePage, {opacity:0, y:30}, {opacity:1, y:0, duration:0.5, ease:'power2.out'});
+  }
+
+  prevBtn.addEventListener('click',()=>{ goTo(currentPage-1); });
+  nextBtn.addEventListener('click',()=>{ goTo(currentPage+1); });
+
+  // Keyboard
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowLeft') goTo(currentPage-1);
+    if(e.key==='ArrowRight') goTo(currentPage+1);
+  });
+
+  // Touch swipe
+  let touchStartX=0, touchEndX=0;
+  document.addEventListener('touchstart',(e)=>{
+    touchStartX = e.changedTouches[0].screenX;
+  }, {passive:true});
+  document.addEventListener('touchend',(e)=>{
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if(Math.abs(diff)>50){
+      if(diff>0) goTo(currentPage+1);
+      else goTo(currentPage-1);
+    }
+  }, {passive:true});
+
+  // ---- SPEAK ----
+  function speakPageContent(){
+    if(!window.speechSynthesis) return;
+    if(window.speechSynthesis.speaking){
+      window.speechSynthesis.cancel();
+      speakBtn.classList.remove('speaking');
+      return;
+    }
+    const activePage = pages[currentPage];
+    let text = '';
+    const walker = document.createTreeWalker(activePage, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while(node = walker.nextNode()){
+      const t = node.textContent.trim();
+      if(t) text += t + '。';
+    }
+    if(!text) text = '第18课，动物世界';
+    if(text.length>300) text = text.slice(0,300);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = 0.9;
+    utter.pitch = 1.1;
+    utter.onstart = ()=>{ speakBtn.classList.add('speaking'); };
+    utter.onend = ()=>{ speakBtn.classList.remove('speaking'); };
+    utter.onerror = ()=>{ speakBtn.classList.remove('speaking'); };
+    window.speechSynthesis.speak(utter);
+  }
+  speakBtn.addEventListener('click', speakPageContent);
+
+  // ---- Parade speak (Page 5) ----
+  window.speakParade = function(){
+    if(!window.speechSynthesis) return;
+    const text = '牛，羊，马，狗，猫，兔，龙，虎，鹿，熊。';
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = 0.7;
+    window.speechSynthesis.speak(utter);
+  };
+
+  // ---- CATEGORY SORT (Page 6: 偏旁分类) ----
+  const unplacedChars = document.querySelectorAll('#unplacedChars .cat-char');
+  const dropFanquan = document.getElementById('dropFanquan');
+  const dropOther = document.getElementById('dropOther');
+  const catFeedback = document.getElementById('catFeedback');
+
+  unplacedChars.forEach(el => {
+    el.addEventListener('click', function(){
+      const char = this.dataset.char;
+      // If already placed somewhere, return it
+      if(this.parentElement.id === 'unplacedChars') {
+        // Place into correct category
+        if(char === '狗' || char === '猫') {
+          if(dropFanquan.children.length >= 2) {
+            catFeedback.textContent = '❌ 反犬旁组已满！';
+            catFeedback.style.color = '#f44336';
+            return;
+          }
+          dropFanquan.appendChild(this);
+          this.classList.add('placed');
+          catFeedback.textContent = `✅ 正确！${char}有反犬旁！`;
+          catFeedback.style.color = '#4CAF50';
+        } else {
+          if(dropOther.children.length >= 8) {
+            catFeedback.textContent = '❌ 其他组已满！';
+            catFeedback.style.color = '#f44336';
+            return;
+          }
+          dropOther.appendChild(this);
+          this.classList.add('placed');
+          catFeedback.textContent = `✅ ${char}放入其他偏旁组`;
+          catFeedback.style.color = '#4CAF50';
+        }
+      } else {
+        // Return to unplaced
+        document.getElementById('unplacedChars').appendChild(this);
+        this.classList.remove('placed');
+        this.classList.remove('wrong-cat');
+        catFeedback.textContent = '↩️ 移回，重新分类';
+        catFeedback.style.color = '#888';
+      }
+      // Check all placed
+      const totalPlaced = dropFanquan.children.length + dropOther.children.length;
+      if(totalPlaced === 10) {
+        catFeedback.textContent = '🎉 分类完成！狗和猫有反犬旁(犭)！';
+        catFeedback.style.color = '#4CAF50';
+      }
+    });
+  });
+
+  // ---- FILL IN BLANKS (Page 6: 反犬旁填空) ----
+  const page6FillBlanks = document.querySelectorAll('.page[data-page="6"] .fill-blank');
+  page6FillBlanks.forEach((blank) => {
+    blank.dataset.filled = 'false';
+  });
+
+  const fillOptions2 = document.querySelectorAll('#fillOptions2 .practice-btn');
+  fillOptions2.forEach(btn => {
+    btn.addEventListener('click', function(){
+      const opt = this.dataset.opt;
+      // Find first unfilled blank
+      let targetIdx = -1;
+      for(let i=0; i<page6FillBlanks.length; i++){
+        if(page6FillBlanks[i].dataset.filled === 'false'){
+          targetIdx = i;
+          break;
+        }
+      }
+      if(targetIdx === -1){
+        document.getElementById('fillFeedback2').textContent = '✅ 都填完啦！';
+        document.getElementById('fillFeedback2').style.color = '#4CAF50';
+        return;
+      }
+      const blank = page6FillBlanks[targetIdx];
+      const answer = blank.dataset.answer;
+      if(opt === answer){
+        blank.textContent = opt;
+        blank.classList.add('filled');
+        blank.dataset.filled = 'true';
+        document.getElementById('fillFeedback2').textContent = `✅ "${opt}" 填对了！`;
+        document.getElementById('fillFeedback2').style.color = '#4CAF50';
+        // Check all done
+        let allFilled = true;
+        page6FillBlanks.forEach(b => { if(b.dataset.filled === 'false') allFilled = false; });
+        if(allFilled){
+          setTimeout(() => {
+            document.getElementById('fillFeedback2').textContent = '🎉 全部正确！你太棒了！';
+          }, 600);
+        }
+      } else {
+        document.getElementById('fillFeedback2').textContent = `❌ 再想想…`;
+        document.getElementById('fillFeedback2').style.color = '#f44336';
+        this.classList.add('wrong');
+        setTimeout(() => this.classList.remove('wrong'), 500);
+      }
+    });
+  });
+
+  // ---- MATCH GAME (Page 6: 连线配对) ----
+  const matchColA2 = document.getElementById('matchColA2');
+  const matchColB2 = document.getElementById('matchColB2');
+  const matchFeedback2 = document.getElementById('matchFeedback2');
+  let selectedA2 = null;
+  let matchedPairs2 = new Set();
+  const pairMap2 = {
+    'niuyang': 'farm',
+    'goumao': 'pet',
+    'longhu': 'legend'
+  };
+  const reverseMap2 = { 'farm': 'niuyang', 'pet': 'goumao', 'legend': 'longhu' };
+
+  document.querySelectorAll('#matchArea2 .match-card').forEach(card => {
+    card.addEventListener('click', function(){
+      if(this.classList.contains('matched')) return;
+      const col = this.closest('.match-col');
+      if(col.id === 'matchColA2'){
+        // Select A
+        document.querySelectorAll('#matchColA2 .match-card').forEach(c => c.classList.remove('selected-match'));
+        this.classList.add('selected-match');
+        selectedA2 = this;
+      } else {
+        // B clicked - try match
+        if(!selectedA2){
+          matchFeedback2.textContent = '👆 先在左边选一个字！';
+          matchFeedback2.style.color = '#FFA726';
+          return;
+        }
+        const pairA = selectedA2.dataset.pair;
+        const pairB = this.dataset.pair;
+        const expected = pairMap2[pairA];
+        if(pairB === expected){
+          selectedA2.classList.add('matched');
+          this.classList.add('matched');
+          selectedA2.classList.remove('selected-match');
+          matchedPairs2.add(pairA);
+          matchFeedback2.textContent = '✅ 配对成功！';
+          matchFeedback2.style.color = '#4CAF50';
+          selectedA2 = null;
+          if(matchedPairs2.size === 3){
+            matchFeedback2.textContent = '🎉 太棒了！三组都连对了！';
+            setTimeout(() => {
+              matchFeedback2.textContent = '✅ 完美！';
+            }, 2000);
+          }
+        } else {
+          matchFeedback2.textContent = '❌ 不对哦，再想想！';
+          matchFeedback2.style.color = '#f44336';
+          this.classList.add('wrong');
+          setTimeout(() => this.classList.remove('wrong'), 400);
+          selectedA2.classList.remove('selected-match');
+          selectedA2 = null;
+        }
+      }
+    });
+  });
+
+  // ---- CHALLENGE (Page 7: 动物分类挑战) ----
+  const challengeChars = document.querySelectorAll('#challengeChars .match-card');
+  const challengeGroups = document.querySelectorAll('#challengeGroups .match-card');
+  const challengeFeedback = document.getElementById('challengeFeedback');
+  let selectedChallengeChar = null;
+  let matchedChallenge = new Set();
+
+  challengeChars.forEach(card => {
+    card.addEventListener('click', function(){
+      if(this.classList.contains('matched')) return;
+      challengeChars.forEach(c => c.classList.remove('selected-match'));
+      this.classList.add('selected-match');
+      selectedChallengeChar = this;
+      challengeFeedback.textContent = `已选 "${this.textContent}"，点击它所属的分类`;
+      challengeFeedback.style.color = '#666';
+    });
+  });
+
+  challengeGroups.forEach(card => {
+    card.addEventListener('click', function(){
+      if(!selectedChallengeChar) {
+        challengeFeedback.textContent = '👆 先在左边选一个字！';
+        challengeFeedback.style.color = '#FFA726';
+        return;
+      }
+      if(selectedChallengeChar.classList.contains('matched')) {
+        challengeFeedback.textContent = '这个字已经配对过了！';
+        challengeFeedback.style.color = '#888';
+        selectedChallengeChar = null;
+        return;
+      }
+      const charGroup = selectedChallengeChar.dataset.group;
+      const groupGroup = this.dataset.group;
+      if(charGroup === groupGroup) {
+        // Match!
+        selectedChallengeChar.classList.add('matched');
+        this.classList.add('matched');
+        selectedChallengeChar.classList.remove('selected-match');
+        const charText = selectedChallengeChar.textContent;
+        matchedChallenge.add(charText);
+        challengeFeedback.textContent = `✅ 正确！${charText}属于${this.textContent}`;
+        challengeFeedback.style.color = '#4CAF50';
+        selectedChallengeChar = null;
+        if(matchedChallenge.size === 10) {
+          challengeFeedback.textContent = '🎉🎉🎉 全部正确！你是动物分类大师！';
+          challengeFeedback.style.color = '#FFA726';
+          setTimeout(() => {
+            challengeFeedback.textContent = '🏆 挑战成功！';
+          }, 2000);
+        }
+      } else {
+        challengeFeedback.textContent = '❌ 分类不对，再想想！';
+        challengeFeedback.style.color = '#f44336';
+        this.classList.add('wrong');
+        setTimeout(() => this.classList.remove('wrong'), 400);
+        selectedChallengeChar.classList.remove('selected-match');
+        selectedChallengeChar = null;
+      }
+    });
+  });
+
+  // ---- CONFETTI (Page 9) ----
+  function startConfetti(){
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const pieces = [];
+    const colors = ['#EF5350','#FFA726','#66BB6A','#42A5F5','#AB47BC','#FFEE58','#fff'];
+    for(let i=0;i<80;i++){
+      pieces.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height - canvas.height,
+        w: 6+Math.random()*6,
+        h: 4+Math.random()*4,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        vx: -2+Math.random()*4,
+        vy: 2+Math.random()*4,
+        rot: Math.random()*360,
+        rv: -4+Math.random()*8,
+        opacity: 0.8+Math.random()*0.2
+      });
+    }
+    let frame = 0;
+    function animate(){
+      frame++;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.rv;
+        if(frame>30) p.vy += 0.05;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      const active = pieces.filter(p=>p.y<canvas.height+50);
+      if(active.length>0 && frame<300){
+        requestAnimationFrame(animate);
+      } else {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+    animate();
+  }
+
+  // Watch for page 9 (celebration)
+  const pageObserver = new MutationObserver(()=>{
+    if(pages[9].classList.contains('active')){
+      startConfetti();
+    }
+  });
+  pages.forEach(p=>{
+    pageObserver.observe(p, {attributes:true, attributeFilter:['class']});
+  });
+
+  // Also check on goTo
+  const origGoTo = goTo;
+  window.goTo = function(idx){
+    origGoTo(idx);
+    if(idx===9) startConfetti();
+  };
+
+  // Window resize for confetti
+  window.addEventListener('resize',()=>{
+    const canvas = document.getElementById('confettiCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Init
+  goTo(0);
+
+  console.log('🐾 第18课 动物世界 loaded');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>数学课 18 · 比较与排序</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{position:relative;width:100%;max-width:420px;height:100dvh;max-height:800px;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0;box-shadow:none}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
+.top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer;transition:background .25s,transform .2s}
+.top-bar a:hover{background:rgba(255,255,255,.32);transform:scale(1.08)}
+.slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 16px 16px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;gap:8px;-webkit-overflow-scrolling:touch}
+.slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
+.slide.exit{opacity:0;visibility:hidden;position:absolute;z-index:1}
+.page-title{font-size:28px;font-weight:900;color:#fff;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.page-subtitle{font-size:15px;color:rgba(255,255,255,.85);text-align:center}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:14px 18px;width:100%;max-width:360px;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.goal-card h3{font-size:15px;color:#1565C0;margin-bottom:6px}
+.goal-card li{font-size:14px;color:#333;padding:2px 0;list-style:none}
+.goal-card li::before{content:'✅ '}
+.content-card{background:rgba(255,255,255,.92);border-radius:16px;padding:14px 16px;width:100%;max-width:380px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.content-card h4{font-size:15px;color:#1565C0;margin-bottom:4px}
+.content-card p{font-size:14px;color:#333;line-height:1.6}
+.compare-visual{display:flex;align-items:flex-end;gap:10px;padding:12px;justify-content:center}
+.bar-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{background:linear-gradient(180deg,#42A5F5,#1565C0);border-radius:8px 8px 0 0;width:36px;min-height:10px;transition:height .3s}
+.bar-label{font-size:12px;color:#1565C0;font-weight:700}
+.sort-area{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:8px}
+.sort-item{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:16px;font-weight:600;color:#1565C0;touch-action:manipulation;user-select:none;transition:all .15s}
+.sort-item:hover{border-color:#42A5F5;background:#E3F2FD}
+.sort-item.selected{border-color:#1565C0;background:#1565C0;color:#fff}
+.sort-item.done{opacity:.5;cursor:default;background:#E8F5E9;border-color:#4CAF50}
+.sort-slot{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:44px;padding:6px;background:rgba(255,255,255,.5);border-radius:12px;border:2px dashed #90CAF9;width:100%;max-width:360px}
+.sort-slot .sort-item{margin:2px}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:10px 16px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:left;touch-action:manipulation;transition:all .15s}
+.quiz-opt:hover{border-color:#42A5F5;background:#E3F2FD}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;padding:6px 12px;border-radius:8px;display:none;text-align:center}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:8px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:16px;z-index:20;padding:0 12px}
+.nav-btn{background:rgba(255,255,255,.25);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:50%;width:44px;height:44px;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:all .15s}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.nav-btn:hover:not(:disabled){background:rgba(255,255,255,.4);transform:scale(1.1)}
+.page-dots{display:flex;gap:5px}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;overflow:hidden}
+</style>
+</head>
+<body>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-19-statistics.html">▶下一个</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="page-dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
+</div>
+</div>
+<div class="confetti" id="confetti"></div>
+<script>
+const pages=[{
+cover:true,icon:'📏',title:'比较与排序',subtitle:'数学课 第18课',goals:['会比较长短、高矮、轻重','会按顺序排一排','会用间接比较的方法','会说：最长、最短、最高、最矮']
+},{
+title:'🎬 仓库整理',text:'Steve和Alex来到仓库。仓库有点乱！地上有木棍、栅栏、石头。<br><br>Steve说："今天我们来整理仓库吧！"<br><br>Alex问："怎么整理呢？"<br>Steve说："可以按长短、高矮、轻重来排一排！"',visual:'sort'
+},{
+title:'🤔 比长短',text:'Steve拿起两根木棍，把一头对齐。<br><br>"哪一根伸得更远呢？"<br>"伸得更远的更长！"<br>"如果不只两个，怎么排？先找最短，再找更长，最后找最长。"',svg:'<svg viewBox="0 0 300 120" style="width:90%;max-width:300px"><line x1="20" y1="30" x2="180" y2="30" stroke="#1565C0" stroke-width="8" stroke-linecap="round"/><line x1="20" y1="55" x2="260" y2="55" stroke="#42A5F5" stroke-width="8" stroke-linecap="round"/><line x1="20" y1="30" x2="20" y2="55" stroke="#999" stroke-width="2" stroke-dasharray="4"/><text x="20" y="20" font-size="11" fill="#666">对齐</text><text x="190" y="35" font-size="12" fill="#1565C0">短</text><text x="270" y="60" font-size="12" fill="#42A5F5">长</text></svg>'
+},{
+title:'🤔 比高矮',text:'Alex站在两个栅栏旁边。<br><br>"如果都在同一块地上，谁更高？"<br>"顶端更高的就是更高！"<br>"比高矮要站在同一地面。"',svg:'<svg viewBox="0 0 260 160" style="width:90%;max-width:260px"><rect x="40" y="40" width="40" height="100" fill="#90CAF9" rx="3"/><rect x="140" y="10" width="40" height="130" fill="#42A5F5" rx="3"/><line x1="20" y1="140" x2="220" y2="140" stroke="#999" stroke-width="2"/><text x="60" y="155" font-size="11" fill="#666">同一地面</text><text x="50" y="35" font-size="11" fill="#1565C0">矮</text><text x="148" y="7" font-size="11" fill="#1565C0">高</text></svg>'
+},{
+title:'🤔 比轻重',text:'Steve抱起两块石头。<br><br>"这一块抱起来更费劲。"<br>"更费劲的是更重，不费劲的是更轻。"<br>"大不一定重，小不一定轻。要试试才知道！"',svg:'<svg viewBox="0 0 240 140" style="width:90%;max-width:240px"><circle cx="60" cy="70" r="30" fill="#B0BEC5" opacity=".8"/><circle cx="60" cy="70" r="20" fill="#90A4AE"/><circle cx="170" cy="100" r="20" fill="#546E7A"/><text x="45" y="120" font-size="12" fill="#1565C0">大但轻</text><text x="155" y="125" font-size="12" fill="#1565C0">小但重</text></svg>'
+},{
+title:'🎯 比长短',interactive:true,subtitle:'点击木棍，按从短到长排序。点击数字1→2→3→4选择。',type:'sort-sticks',items:['A','B','C','D'],answer:[2,0,3,1]
+},{
+title:'🎯 比高矮',interactive:true,subtitle:'点击栅栏，按从矮到高排序。',type:'sort-fences',items:['甲','乙','丙','丁'],answer:[1,3,0,2]
+},{
+title:'❌ 常见误解',items:[
+{title:'没对齐比长短',wrong:'"这根在左边，所以更长。"',right:'先把一头对齐，再看谁更远。'},
+{title:'不同地面比高矮',wrong:'"这个看起来更高。"',right:'要在同一地面上比较高矮。'},
+{title:'看大小比轻重',wrong:'"大的一定更重。"',right:'要拿一拿或用天平比一比。'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'下面哪句话对？',options:['没对齐也能比长短','同一地面更容易比高矮','只看大小就能比轻重'],correct:1
+},{
+title:'🧠 间接比较',interactive:true,type:'indirect',q:'A比B长，B比C长，谁最长？',options:['A最长','B最长','C最长'],correct:0
+},{
+title:'🧠 谁最重？',interactive:true,type:'indirect2',q:'石头A比石头B轻，石头B比石头C轻。谁最重？',options:['石头A','石头B','石头C'],correct:2
+},{
+title:'🏆 Minecraft闯关',interactive:true,type:'challenge',subtitle:'第1关：选底座——按从短到长排序',items:['木棍1','木棍2','木棍3','木棍4'],answer:[2,0,3,1]
+},{
+title:'🏆 第2关',interactive:true,type:'challenge2',subtitle:'选塔身——按从矮到高排序',items:['栅栏1','栅栏2','栅栏3','栅栏4'],answer:[1,3,0,2]
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了比较与排序任务！🏅<br>获得「比较小达人」徽章！<br><br>记住：比长短要对齐，<br>比高矮要同地面，<br>比轻重不能只看大小。'
+}];
+
+let cur=0,sortState={},quizAnswered={};
+
+function render(n){
+  const el=document.getElementById('slides');
+  const p=pages[n];
+  if(!p)return;
+  let h='';
+  if(p.cover){
+    h+=`<div class="slide active"><div style="font-size:64px;margin-bottom:4px">${p.icon}</div>`;
+    h+=`<div class="page-title">${p.title}</div>`;
+    if(p.subtitle)h+=`<p class="page-subtitle">${p.subtitle}</p>`;
+    if(p.goals){
+      h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;
+      p.goals.forEach(g=>h+=`<li>${g}</li>`);
+      h+=`</ul></div><p style="font-size:13px;color:rgba(255,255,255,.6);margin-top:6px">👆 点下一步开始</p>`;
+    }
+    h+=`</div>`;
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px">`;
+    h+=`<div style="font-size:72px">🎉</div>`;
+    h+=`<h2 style="font-size:28px;color:#fff">${p.title}</h2>`;
+    h+=`<p style="font-size:16px;color:rgba(255,255,255,.9);line-height:1.8">${p.msg}</p>`;
+    h+=`</div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px">`;
+    h+=`<h3 style="font-size:20px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.15)">${p.title}</h3>`;
+    if(p.subtitle)h+=`<p style="font-size:13px;color:rgba(255,255,255,.8);text-align:center">${p.subtitle}</p>`;
+    
+    if(p.type==='sort-sticks'||p.type==='sort-fences'||p.type==='challenge'){
+      h+=`<div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:8px" id="sortItems">`;
+      const labels=p.type==='sort-fences'?['⬜','⬛','🟦','🟩']:['📏','📏','📏','📏'];
+      p.items.forEach((it,i)=>{
+        h+=`<div class="sort-item" data-idx="${i}" onclick="clickSort(${n},${i})">${p.type==='sort-fences'?labels[i]:''} ${it}</div>`;
+      });
+      h+=`</div>`;
+      h+=`<div style="font-size:13px;color:rgba(255,255,255,.7)">已选顺序：</div>`;
+      h+=`<div class="sort-slot" id="sortSlot"></div>`;
+      if(!sortState[n])sortState[n]={selected:[],done:false};
+    }else if(p.type==='quiz'||p.type==='indirect'||p.type==='indirect2'){
+      h+=`<div class="content-card"><p style="font-size:15px;font-weight:600;color:#1565C0;margin-bottom:10px">${p.q}</p>`;
+      p.options.forEach((o,i)=>{
+        h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;
+      });
+      h+=`<div class="feedback" id="fb${n}"></div></div>`;
+    }
+    h+=`</div>`;
+  }else{
+    h=`<div class="slide active" style="gap:8px">`;
+    h+=`<h3 style="font-size:20px;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.15)">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;
+    if(p.text)h+=`<div class="content-card"><p style="font-size:14px;color:#333;line-height:1.7">${p.text}</p></div>`;
+    if(p.visual==='sort'){
+      h+=`<div class="compare-visual">`;
+      ['📏短','📏中','📏长'].forEach((l,i)=>{
+        const hgt=[50,80,110][i];
+        h+=`<div class="bar-item"><div class="bar" style="height:${hgt}px"></div><span class="bar-label">${l}</span></div>`;
+      });
+      h+=`</div>`;
+    }
+    if(p.items){
+      h+=`<div class="content-card" style="display:flex;flex-direction:column;gap:8px">`;
+      p.items.forEach(it=>{
+        h+=`<div style="background:#F5F5F5;border-radius:10px;padding:10px 12px">`;
+        h+=`<h4 style="font-size:14px;color:#1565C0">⚠️ ${it.title}</h4>`;
+        h+=`<p style="font-size:13px;color:#666;margin-top:2px"><span style="color:#F44336">❌</span> ${it.wrong}</p>`;
+        h+=`<p style="font-size:13px;color:#388E3C;margin-top:2px"><span style="color:#4CAF50">✅</span> ${it.right}</p>`;
+        h+=`</div>`;
+      });
+      h+=`</div>`;
+    }
+    h+=`</div>`;
+  }
+  el.innerHTML=h;
+  updateDots(n);
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===pages.length-1;
+  gsap.fromTo('.slide.active>*',{opacity:0,y:20},{opacity:1,y:0,duration:.35,stagger:.06,ease:'power2.out'});
+}
+
+function clickSort(n,i){
+  const p=pages[n];
+  const st=sortState[n];
+  if(!st||st.done)return;
+  if(st.selected.includes(i)){
+    st.selected=st.selected.filter(x=>x!==i);
+  }else{
+    st.selected.push(i);
+  }
+  renderSortDisplay(n);
+}
+
+function renderSortDisplay(n){
+  const p=pages[n];
+  const st=sortState[n];
+  const items=document.querySelectorAll('#sortItems .sort-item');
+  const slot=document.getElementById('sortSlot');
+  items.forEach((el,i)=>{
+    el.className='sort-item'+(st.selected.includes(i)?' selected':'');
+  });
+  slot.innerHTML='';
+  st.selected.forEach((idx,i)=>{
+    const el=document.createElement('div');
+    el.className='sort-item done';
+    el.textContent=p.items[idx];
+    slot.appendChild(el);
+  });
+  if(st.selected.length===p.items.length){
+    const correct=JSON.stringify(st.selected)===JSON.stringify(p.answer);
+    if(correct){
+      st.done=true;
+      const fb=document.createElement('div');
+      fb.style.cssText='font-size:18px;color:#4CAF50;font-weight:700;margin-top:8px;text-shadow:0 1px 4px rgba(0,0,0,.15)';
+      fb.textContent='✅ 排序正确！太棒了！';
+      document.querySelector('.slide.active').appendChild(fb);
+      gsap.fromTo(fb,{scale:0},{scale:1,duration:.4,ease:'back.out(2)'});
+    }else{
+      const fb=document.createElement('div');
+      fb.style.cssText='font-size:16px;color:#FFCDD2;margin-top:8px;text-shadow:0 1px 4px rgba(0,0,0,.15)';
+      fb.textContent='🔄 顺序不对，再想想！点"清除"重新排';
+      const btn=document.createElement('button');
+      btn.textContent='🔄 清除';
+      btn.style.cssText='background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:6px 18px;color:#fff;font-size:14px;cursor:pointer;margin-top:4px';
+      btn.onclick=()=>{st.selected=[];st.done=false;renderSortDisplay(n);fb.remove();btn.remove();};
+      document.querySelector('.slide.active').appendChild(fb);
+      document.querySelector('.slide.active').appendChild(btn);
+    }
+  }
+}
+
+function clickQuiz(n,i){
+  const p=pages[n];
+  if(quizAnswered[n])return;
+  quizAnswered[n]=true;
+  const opts=document.querySelectorAll(`.quiz-opt`);
+  opts.forEach((el,j)=>{
+    el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');
+  });
+  const fb=document.getElementById(`fb${n}`);
+  if(fb){
+    fb.className='feedback show '+(i===p.correct?' good':' bad');
+    fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';
+  }
+}
+
+function go(d){
+  cur=Math.max(0,Math.min(pages.length-1,cur+d));
+  render(cur);
+}
+
+function updateDots(n){
+  const el=document.getElementById('dots');
+  el.innerHTML='';
+  for(let i=0;i<pages.length;i++){
+    const d=document.createElement('button');
+    d.className='dot'+(i===n?' active':'');
+    d.onclick=()=>{cur=i;render(cur);};
+    el.appendChild(d);
+  }
+}
+
+function doConfetti(){
+  const el=document.getElementById('confetti');
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];
+  for(let i=0;i<60;i++){
+    const p=document.createElement('div');
+    const s=6+Math.random()*8,c=colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText=`position:absolute;left:${Math.random()*100}%;top:-10px;width:${s}px;height:${s}px;background:${c};border-radius:${Math.random()>.5?'50%':'2px'};animation:confetti-fall ${2+Math.random()*2}s ease-in ${Math.random()*2}s forwards;`;
+    el.appendChild(p);
+    setTimeout(()=>p.remove(),4500);
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')go(1);
+  if(e.key==='ArrowLeft')go(-1);
+});
+
+render(0);
+</script>
+</body>
+</html>
