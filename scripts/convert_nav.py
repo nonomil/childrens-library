@@ -6,7 +6,7 @@ Only: 1) Remove old top-bar, 2) Add bottom nav-bar + read-btn, 3) Add nav JS
 """
 import os, re
 
-DIR = "/home/deploy/childrens-library/docs/courseware"
+DIR = "/home/deploy/childrens-library/courseware"
 FILES = [
     # app+top-bar (11)
     'chinese-04-nature.html', 'chinese-05-family.html', 'chinese-06-school.html',

@@ -2,9 +2,9 @@
 # 批量生成童谣课件 - 复制Old MacDonald模板改内容
 set -e
 
-TEMPLATE="/home/deploy/childrens-library/docs/courseware/old-macdonald.html"
-OUTDIR="/home/deploy/childrens-library/docs/courseware"
-AUDIO="/home/deploy/childrens-library/docs/courseware/audio"
+TEMPLATE="/home/deploy/childrens-library/courseware/old-macdonald.html"
+OUTDIR="/home/deploy/childrens-library/courseware"
+AUDIO="/home/deploy/childrens-library/courseware/audio"
 
 # Song data: id|title|mp3|subtitle
 SONGS=(

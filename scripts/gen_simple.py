@@ -3,7 +3,7 @@
 import os, json, re, importlib.util
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(BASE, "docs/courseware")
+OUT = os.path.join(BASE, "courseware")
 
 # Read template
 with open(os.path.join(BASE, "template_nursery_v3_fixed.html"), "r") as f:

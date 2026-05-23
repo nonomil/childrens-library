@@ -3,7 +3,7 @@
 import os, re, json, sys
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(BASE, "docs/courseware")
+OUT = os.path.join(BASE, "courseware")
 
 # Read and execute the data definitions
 with open(os.path.join(BASE, "generate_courseware_v3.py"), "r", encoding="utf-8") as f:

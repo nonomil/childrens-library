@@ -3,7 +3,7 @@
 import os, re, json
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-OUT = os.path.join(BASE, "docs/courseware")
+OUT = os.path.join(BASE, "courseware")
 
 def make_scene_svg(element, colors):
     c0, c1 = colors.split(",")

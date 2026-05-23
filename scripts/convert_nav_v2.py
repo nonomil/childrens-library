@@ -10,7 +10,7 @@ Fixes per OpenCode review:
 """
 import os, re
 
-DIR = "/home/deploy/childrens-library/docs/courseware"
+DIR = "/home/deploy/childrens-library/courseware"
 
 FILES = [
     'chinese-04-nature.html','chinese-05-family.html','chinese-06-school.html',
