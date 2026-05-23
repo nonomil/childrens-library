@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Lesson 21: Birthday Party! 🎂</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body {
+      width: 100%; height: 100%;
+      touch-action: pan-y pinch-zoom;
+      font-family: 'Nunito', sans-serif;
+      background: #f0f8f0;
+      color: #1a3a1a;
+      overflow-x: hidden;
+    }
+    body {
+      display: flex; flex-direction: column;
+      min-height: 100vh; min-height: 100dvh;
+    }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      background: #66bb6a;
+      color: #fff;
+      padding: 10px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 22px; font-weight: 700;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: relative; z-index: 10;
+    }
+    .top-bar a {
+      color: #fff; text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+      font-size: 20px;
+      padding: 4px 10px;
+      border-radius: 30px;
+      transition: background 0.2s;
+    }
+    .top-bar a:hover { background: rgba(255,255,255,0.2); }
+    .top-bar .lesson-title {
+      font-size: 18px;
+      letter-spacing: 0.5px;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    }
+
+    /* ── Main Scroll Area ── */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 16px 20px 40px;
+      max-width: 1024px; margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Section Cards ── */
+    .section {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(102,187,106,0.15);
+      border: 2px solid #c8e6c9;
+      position: relative;
+      overflow: hidden;
+    }
+    .section::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #66bb6a, #a5d6a7, #66bb6a);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    @keyframes shimmer { 0%,100%{background-position:0% 0%} 50%{background-position:100% 0%} }
+
+    .section-title {
+      font-size: 26px; font-weight: 900;
+      color: #2e7d32;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section-title .emoji { font-size: 32px; }
+
+    /* ── Sound Block ── */
+    .sound-block {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border-radius: 16px; padding: 18px;
+      display: flex; flex-wrap: wrap; align-items: center; gap: 12px;
+      border: 2px dashed #81c784;
+    }
+    .sound-block .label {
+      font-size: 18px; font-weight: 800; color: #388e3c;
+      background: #fff; padding: 4px 14px; border-radius: 30px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    .sound-block .th-words {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .sound-block .th-word {
+      background: #fff;
+      border: 2px solid #a5d6a7;
+      border-radius: 30px;
+      padding: 6px 16px;
+      font-size: 20px; font-weight: 700; color: #2e7d32;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sound-block .th-word:active { transform: scale(0.93); }
+    .sound-block .th-word .speaker { font-size: 16px; }
+    .sound-block .th-word.voicing { background: #c8e6c9; border-color: #66bb6a; }
+
+    /* ── Sight Words / Story Words ── */
+    .word-grid {
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .word-chip {
+      background: #fff;
+      border: 2px solid #a5d6a7;
+      border-radius: 30px;
+      padding: 8px 18px;
+      font-size: 20px; font-weight: 700;
+      color: #2e7d32;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .word-chip:active { transform: scale(0.93); }
+    .word-chip .speaker { font-size: 16px; }
+    .word-chip.voicing { background: #c8e6c9; border-color: #66bb6a; }
+
+    /* ── Story Pages ── */
+    .story-container {
+      position: relative;
+    }
+    .story-page {
+      display: none;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fafffa;
+      border: 2px solid #c8e6c9;
+    }
+    .story-page.active { display: block; }
+    .story-page img {
+      width: 100%; height: auto;
+      display: block;
+      border-radius: 12px 12px 0 0;
+    }
+    .story-page .page-text {
+      padding: 16px 18px;
+      font-size: 18px; line-height: 1.7;
+      color: #1a3a1a;
+    }
+    .story-page .page-text .highlight {
+      background: #fff9c4; padding: 1px 4px; border-radius: 4px;
+      font-weight: 700; color: #2e7d32;
+    }
+    .story-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 14px;
+    }
+    .story-nav button {
+      background: #66bb6a; color: #fff; border: none;
+      padding: 10px 24px; border-radius: 30px;
+      font-size: 18px; font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .story-nav button:active { transform: scale(0.93); }
+    .story-nav button:disabled { opacity: 0.4; cursor: default; transform: none; }
+    .story-nav .page-indicator {
+      font-size: 16px; font-weight: 700; color: #558b2f;
+      min-width: 80px; text-align: center;
+    }
+
+    /* ── Quiz / Match ── */
+    .quiz-options {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin: 12px 0;
+    }
+    .quiz-option {
+      background: #fff;
+      border: 3px solid #c8e6c9;
+      border-radius: 16px;
+      padding: 14px 22px;
+      font-size: 20px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+      color: #1a3a1a;
+    }
+    .quiz-option:active { transform: scale(0.95); }
+    .quiz-option.correct { background: #c8e6c9; border-color: #43a047; color: #1b5e20; }
+    .quiz-option.wrong { background: #ffcdd2; border-color: #e53935; color: #b71c1c; }
+    .quiz-feedback {
+      font-size: 18px; font-weight: 700;
+      margin-top: 8px; min-height: 30px;
+    }
+    .quiz-feedback.correct { color: #2e7d32; }
+    .quiz-feedback.wrong { color: #c62828; }
+
+    /* ── Match Game ── */
+    .match-rows {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: 12px;
+    }
+    .match-row {
+      display: flex; align-items: center; gap: 12px;
+      flex-wrap: wrap;
+    }
+    .match-row .match-label {
+      font-size: 20px; font-weight: 800; color: #2e7d32;
+      min-width: 90px;
+    }
+    .match-row .match-targets {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .match-target {
+      background: #fff;
+      border: 3px solid #a5d6a7;
+      border-radius: 30px;
+      padding: 8px 18px;
+      font-size: 18px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+      color: #1a3a1a;
+    }
+    .match-target:active { transform: scale(0.93); }
+    .match-target.selected { background: #c8e6c9; border-color: #66bb6a; }
+    .match-target.matched { background: #a5d6a7; border-color: #388e3c; opacity: 0.7; cursor: default; pointer-events: none; }
+    .match-target.wrong-flash { background: #ffcdd2; border-color: #e53935; }
+
+    /* ── Fill-in ── */
+    .fill-row {
+      margin: 12px 0;
+      font-size: 20px; line-height: 2;
+    }
+    .fill-row .fill-blank {
+      display: inline-block; min-width: 90px;
+      border-bottom: 3px solid #66bb6a;
+      padding: 2px 8px; margin: 0 4px;
+      font-weight: 700; color: #2e7d32;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .fill-row .fill-blank.filled { border-bottom-color: #388e3c; }
+    .fill-pool {
+      display: flex; flex-wrap: wrap; gap: 8px;
+      margin-top: 10px;
+    }
+    .fill-word {
+      background: #e8f5e9;
+      border: 2px solid #81c784;
+      border-radius: 30px;
+      padding: 6px 18px;
+      font-size: 18px; font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Nunito', sans-serif;
+      color: #1a3a1a;
+    }
+    .fill-word:active { transform: scale(0.93); }
+    .fill-word.used { opacity: 0.3; pointer-events: none; }
+
+    /* ── Confetti Canvas ── */
+    #confetti-canvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 9999;
+    }
+
+    /* ── Responsive ── */
+    @media (min-width: 768px) {
+      .main { padding: 24px 32px 50px; }
+      .section { padding: 30px 28px; }
+      .section-title { font-size: 30px; }
+      .story-page .page-text { font-size: 20px; padding: 20px 24px; }
+      .sound-block .th-word { font-size: 22px; }
+      .word-chip { font-size: 22px; }
+    }
+    @media (min-width: 1024px) {
+      .main { padding: 30px 40px 60px; }
+    }
+
+    /* ── Landscape tablet fix ── */
+    @media (orientation: landscape) and (max-height: 600px) {
+      .top-bar { padding: 6px 12px; }
+      .top-bar .lesson-title { font-size: 15px; }
+      .section { padding: 14px 16px; margin-bottom: 12px; }
+      .section-title { font-size: 20px; margin-bottom: 10px; }
+      .main { padding: 10px 16px 20px; }
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Confetti ─── -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- ─── Top Bar ─── -->
+  <header class="top-bar">
+    <a href="../" title="Home">🏠</a>
+    <span class="lesson-title">🎂 Lesson 21: Birthday Party!</span>
+    <a href="../english-22-farm.html" title="Next Lesson">▶</a>
+  </header>
+
+  <!-- ─── Main ─── -->
+  <div class="main">
+
+    <!-- ── Sound Block: th ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">🔊</span> Sound Block: <em>th</em></div>
+      <div class="sound-block">
+        <span class="label">th</span>
+        <div class="th-words">
+          <div class="th-word" data-word="weather">🌦️ <span>weather</span> <span class="speaker">🔊</span></div>
+          <div class="th-word" data-word="birthday">🎂 <span>birthday</span> <span class="speaker">🔊</span></div>
+          <div class="th-word" data-word="this">👈 <span>this</span> <span class="speaker">🔊</span></div>
+          <div class="th-word" data-word="that">👉 <span>that</span> <span class="speaker">🔊</span></div>
+          <div class="th-word" data-word="thank">🙏 <span>thank</span> <span class="speaker">🔊</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Sight Words ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">👁️</span> Sight Words</div>
+      <div class="word-grid">
+        <div class="word-chip" data-word="give">🎁 give <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="take">🤲 take <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="make">🛠️ make <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="come">🚶 come <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="some">🫴 some <span class="speaker">🔊</span></div>
+      </div>
+    </div>
+
+    <!-- ── Story Words ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">📖</span> Story Words</div>
+      <div class="word-grid">
+        <div class="word-chip" data-word="birthday">🎂 birthday <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="party">🎉 party <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="cake">🧁 cake <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="gift">🎁 gift <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="candle">🕯️ candle <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="sing">🎤 sing <span class="speaker">🔊</span></div>
+        <div class="word-chip" data-word="happy">😊 happy <span class="speaker">🔊</span></div>
+      </div>
+    </div>
+
+    <!-- ── Story ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">📖</span> Birthday Party! 🎂</div>
+      <div class="story-container">
+        <div class="story-page active" data-page="0">
+          <img src="images/english-21/webp/page-00.webp" alt="Story page 0" loading="lazy">
+          <div class="page-text">🎉 It's Alex's <span class="highlight">birthday</span>! Steve and friends plan a surprise <span class="highlight">party</span>.</div>
+        </div>
+        <div class="story-page" data-page="1">
+          <img src="images/english-21/webp/page-01.webp" alt="Story page 1" loading="lazy">
+          <div class="page-text">📋 "Let's <span class="highlight">make</span> a cake and <span class="highlight">come</span> early!" says Steve. Everyone helps.</div>
+        </div>
+        <div class="story-page" data-page="2">
+          <img src="images/english-21/webp/page-02.webp" alt="Story page 2" loading="lazy">
+          <div class="page-text">🎉 <strong>Surprise!</strong> Alex walks in and everyone shouts, "Happy <span class="highlight">birthday</span>!"</div>
+        </div>
+        <div class="story-page" data-page="3">
+          <img src="images/english-21/webp/page-03.webp" alt="Story page 3" loading="lazy">
+          <div class="page-text">🎁 Time for <span class="highlight">presents</span>! Alex gets a shiny red <span class="highlight">gift</span>. "Thank you!"</div>
+        </div>
+        <div class="story-page" data-page="4">
+          <img src="images/english-21/webp/page-04.webp" alt="Story page 4" loading="lazy">
+          <div class="page-text">🧁 The <span class="highlight">cake</span> has five <span class="highlight">candles</span>. Everyone <span class="highlight">sings</span>, "Happy Birthday!"</div>
+        </div>
+        <div class="story-page" data-page="5">
+          <img src="images/english-21/webp/page-05.webp" alt="Story page 5" loading="lazy">
+          <div class="page-text">🎈 They play fun <span class="highlight">party games</span> — pinata, musical chairs, and more!</div>
+        </div>
+        <div class="story-page" data-page="6">
+          <img src="images/english-21/webp/page-06.webp" alt="Story page 6" loading="lazy">
+          <div class="page-text">🥳 "This is the <span class="highlight">best birthday</span> ever!" says Alex. 🎂✨</div>
+        </div>
+      </div>
+      <div class="story-nav">
+        <button id="story-prev" disabled>⬅ Back</button>
+        <span class="page-indicator" id="story-page-num">1 / 7</span>
+        <button id="story-next">Next ➡</button>
+      </div>
+    </div>
+
+    <!-- ── th Quiz ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">🧪</span> th Sound Quiz</div>
+      <p style="font-size:18px;margin-bottom:12px;color:#37474f;">Which word has the <strong>th</strong> sound?</p>
+      <div class="quiz-options" id="th-quiz">
+        <div class="quiz-option" data-answer="wrong">cake</div>
+        <div class="quiz-option" data-answer="correct">birthday</div>
+        <div class="quiz-option" data-answer="wrong">gift</div>
+        <div class="quiz-option" data-answer="wrong">party</div>
+      </div>
+      <div class="quiz-feedback" id="th-quiz-feedback"></div>
+    </div>
+
+    <!-- ── Party Vocab Match ── -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">🧩</span> Party Vocabulary Match</div>
+      <p style="font-size:18px;margin-bottom:12px;color:#37474f;">Tap the correct word for each picture:</p>
+      <div class="match-rows" id="vocab-match">
+        <div class="match-row">
+          <span class="match-label">🎂</span>
+          <div class="match-targets">
+            <div class="match-target" data-pair="cake" data-label="🎂">cake</div>
+            <div class="match-target" data-pair="gift" data-label="🎂">gift</div>
+            <div class="match-target" data-pair="candle" data-label="🎂">candle</div>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="match-label">🎁</span>
+          <div class="match-targets">
+            <div class="match-target" data-pair="gift" data-label="🎁">gift</div>
+            <div class="match-target" data-pair="cake" data-label="🎁">cake</div>
+            <div class="match-target" data-pair="sing" data-label="🎁">sing</div>
+          </div>
+        </div>
+        <div class="match-row">
+          <span class="match-label">🕯️</span>
+          <div class="match-targets">
+            <div class="match-target" data-pair="candle" data-label="🕯️">candle</div>
+            <div class="match-target" data-pair="cake" data-label="🕯️">cake</div>
+            <div class="match-target" data-pair="party" data-label="🕯️">party</div>
+          </div>
+        </div>
+      </div>
+      <div class="quiz-feedback" id="match-feedback"></div>
+    </div>
+
+    <!-- ── Fill in: give / take / make ⋍ -->
+    <div class="section">
+      <div class="section-title"><span class="emoji">✏️</span> Fill in the Blank</div>
+      <p style="font-size:18px;margin-bottom:8px;color:#37474f;">Tap a word, then tap the blank to fill it.</p>
+      <div>
+        <div class="fill-row">I will <span class="fill-blank" data-answer="make" data-filled="false">______</span> a cake for you.</div>
+        <div class="fill-row">Please <span class="fill-blank" data-answer="give" data-filled="false">______</span> me the gift.</div>
+        <div class="fill-row">Can you <span class="fill-blank" data-answer="take" data-filled="false">______</span> a photo?</div>
+        <div class="fill-row"><span class="fill-blank" data-answer="come" data-filled="false">______</span> to my party!</div>
+        <div class="fill-row">I want <span class="fill-blank" data-answer="some" data-filled="false">______</span> cake please.</div>
+      </div>
+      <div class="fill-pool" id="fill-pool">
+        <div class="fill-word" data-word="give">give</div>
+        <div class="fill-word" data-word="take">take</div>
+        <div class="fill-word" data-word="make">make</div>
+        <div class="fill-word" data-word="come">come</div>
+        <div class="fill-word" data-word="some">some</div>
+      </div>
+      <div class="quiz-feedback" id="fill-feedback"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ─── Speech Synthesis ───
+    const synth = window.speechSynthesis;
+    function speak(text) {
+      if (!synth) return;
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'en-US';
+      u.rate = 0.9;
+      u.pitch = 1.0;
+      synth.speak(u);
+    }
+
+    // ─── Word chip / th word click to speak ───
+    document.querySelectorAll('.th-word, .word-chip').forEach(el => {
+      el.addEventListener('click', function(e) {
+        const word = this.dataset.word;
+        if (word) {
+          this.classList.add('voicing');
+          speak(word);
+          setTimeout(() => this.classList.remove('voicing'), 600);
+        }
+      });
+    });
+
+    // ─── Story Navigation ───
+    const pages = document.querySelectorAll('.story-page');
+    const prevBtn = document.getElementById('story-prev');
+    const nextBtn = document.getElementById('story-next');
+    const pageNum = document.getElementById('story-page-num');
+    let currentPage = 0;
+
+    function showPage(idx) {
+      pages.forEach((p, i) => p.classList.toggle('active', i === idx));
+      currentPage = idx;
+      pageNum.textContent = (idx + 1) + ' / ' + pages.length;
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === pages.length - 1;
+      // GSAP fade
+      gsap.fromTo(pages[idx], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' });
+    }
+
+    prevBtn.addEventListener('click', () => { if (currentPage > 0) showPage(currentPage - 1); });
+    nextBtn.addEventListener('click', () => { if (currentPage < pages.length - 1) showPage(currentPage + 1); });
+
+    // Animate first page on load
+    gsap.fromTo(pages[0], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.3 });
+
+    // ─── th Quiz ───
+    const quizOptions = document.querySelectorAll('#th-quiz .quiz-option');
+    const quizFeedback = document.getElementById('th-quiz-feedback');
+    quizOptions.forEach(opt => {
+      opt.addEventListener('click', function() {
+        if (this.classList.contains('correct') || this.classList.contains('wrong')) return;
+        const isCorrect = this.dataset.answer === 'correct';
+        this.classList.add(isCorrect ? 'correct' : 'wrong');
+        if (isCorrect) {
+          quizFeedback.textContent = '✅ Great! "birthday" has the th sound!';
+          quizFeedback.className = 'quiz-feedback correct';
+          launchConfetti();
+        } else {
+          quizFeedback.textContent = '❌ Not quite. Try again!';
+          quizFeedback.className = 'quiz-feedback wrong';
+        }
+      });
+    });
+
+    // ─── Vocabulary Match ───
+    const matchTargets = document.querySelectorAll('.match-target');
+    const matchFeedback = document.getElementById('match-feedback');
+    let matchedPairs = new Set();
+    let selectedTarget = null;
+
+    matchTargets.forEach(t => {
+      t.addEventListener('click', function() {
+        if (this.classList.contains('matched')) return;
+
+        const pair = this.dataset.pair;
+        const label = this.dataset.label;
+
+        if (!selectedTarget) {
+          // Select this one
+          if (this.classList.contains('selected')) {
+            this.classList.remove('selected');
+            selectedTarget = null;
+          } else {
+            matchTargets.forEach(m => m.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedTarget = this;
+          }
+          return;
+        }
+
+        // Already have a selected target
+        const first = selectedTarget;
+        if (first === this) {
+          this.classList.remove('selected');
+          selectedTarget = null;
+          return;
+        }
+
+        // Check if they share the same pair and label matches
+        if (first.dataset.pair === this.dataset.pair && first.dataset.label === this.dataset.label) {
+          // Correct match
+          first.classList.remove('selected');
+          first.classList.add('matched');
+          this.classList.add('matched');
+          matchedPairs.add(first.dataset.pair);
+          matchFeedback.textContent = '✅ Match!';
+          matchFeedback.className = 'quiz-feedback correct';
+          if (matchedPairs.size >= 3) {
+            matchFeedback.textContent = '🎉 All matched! Happy Birthday! 🎂';
+            launchConfetti();
+          }
+        } else {
+          // Wrong
+          this.classList.add('wrong-flash');
+          matchFeedback.textContent = '❌ Not a match. Try again!';
+          matchFeedback.className = 'quiz-feedback wrong';
+          setTimeout(() => {
+            this.classList.remove('wrong-flash');
+            first.classList.remove('selected');
+          }, 500);
+        }
+        selectedTarget = null;
+      });
+    });
+
+    // ─── Fill in the Blank ───
+    const fillBlanks = document.querySelectorAll('.fill-blank');
+    const fillWords = document.querySelectorAll('.fill-word');
+    const fillFeedback = document.getElementById('fill-feedback');
+    let selectedFillWord = null;
+
+    fillWords.forEach(w => {
+      w.addEventListener('click', function() {
+        if (this.classList.contains('used')) return;
+        fillWords.forEach(f => f.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedFillWord = this.dataset.word;
+      });
+    });
+
+    fillBlanks.forEach(b => {
+      b.addEventListener('click', function() {
+        if (!selectedFillWord) {
+          fillFeedback.textContent = '👆 Tap a word first!';
+          fillFeedback.className = 'quiz-feedback wrong';
+          return;
+        }
+        if (this.dataset.filled === 'true') return;
+
+        const answer = this.dataset.answer;
+        if (selectedFillWord === answer) {
+          this.textContent = answer;
+          this.dataset.filled = 'true';
+          this.classList.add('filled');
+          // Mark word as used
+          fillWords.forEach(f => {
+            if (f.dataset.word === answer) f.classList.add('used');
+          });
+          fillFeedback.textContent = '✅ Correct!';
+          fillFeedback.className = 'quiz-feedback correct';
+          // Check if all filled
+          const allFilled = Array.from(fillBlanks).every(b => b.dataset.filled === 'true');
+          if (allFilled) {
+            fillFeedback.textContent = '🎉 All done! You know your sight words! 🎂';
+            launchConfetti();
+          }
+        } else {
+          fillFeedback.textContent = '❌ Try again!';
+          fillFeedback.className = 'quiz-feedback wrong';
+        }
+        selectedFillWord = null;
+        fillWords.forEach(f => f.classList.remove('selected'));
+      });
+    });
+
+    // ─── Confetti ───
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = [];
+    let confettiRunning = false;
+    let confettiFrame;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ConfettiPiece {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20;
+        this.size = Math.random() * 10 + 5;
+        this.speedY = Math.random() * 3 + 2;
+        this.speedX = (Math.random() - 0.5) * 4;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = (Math.random() - 0.5) * 8;
+        this.color = ['#66bb6a','#ff7043','#42a5f5','#ffca28','#ab47bc','#ef5350','#26c6da','#ffa726'][Math.floor(Math.random() * 8)];
+        this.opacity = 1;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.rotation += this.rotationSpeed;
+        this.opacity -= 0.003;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+        ctx.restore();
+      }
+    }
+
+    function launchConfetti() {
+      for (let i = 0; i < 60; i++) {
+        confettiPieces.push(new ConfettiPiece());
+      }
+      if (!confettiRunning) {
+        confettiRunning = true;
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces = confettiPieces.filter(p => p.opacity > 0);
+      confettiPieces.forEach(p => { p.update(); p.draw(); });
+      if (confettiPieces.length > 0) {
+        confettiFrame = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiRunning = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // ─── GSAP entrance animations ───
+    gsap.utils.toArray('.section').forEach((el, i) => {
+      gsap.fromTo(el, { opacity: 0, y: 40 }, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power3.out',
+        delay: i * 0.15 + 0.2,
+        scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' }
+      });
+    });
+
+    // Auto-play story page narration on page visit
+    function speakCurrentPageText() {
+      const active = document.querySelector('.story-page.active');
+      if (!active) return;
+      const text = active.querySelector('.page-text')?.textContent || '';
+      if (text) speak(text);
+    }
+
+    // Speak page text when navigating
+    document.querySelectorAll('#story-prev, #story-next').forEach(btn => {
+      btn.addEventListener('click', () => setTimeout(speakCurrentPageText, 600));
+    });
+    // Speak first page after load
+    setTimeout(speakCurrentPageText, 1000);
+
+    console.log('🎂 Happy Birthday! Lesson 21 loaded!');
+  </script>
+
+  <!-- GSAP ScrollTrigger if available -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+</body>
+</html>

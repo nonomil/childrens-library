@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>数学第22课 — 分数的故事</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;font-family:'Nunito',sans-serif}
+body{background:#1a1a2e;display:flex;align-items:center;justify-content:center}
+#app{width:1024px;height:600px;background:linear-gradient(145deg,#e8f0fe 0,#f5f9ff 100%);border-radius:32px;box-shadow:0 20px 60px rgba(0,0,0,.35);position:relative;overflow:hidden;touch-action:pan-y;display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#42A5F5;color:#fff;min-height:54px;flex-shrink:0;z-index:20}
+.topbar a{color:#fff;text-decoration:none;font-size:22px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.topbar a:hover{opacity:.7}
+.topbar .title{font-weight:800;font-size:18px;letter-spacing:1px}
+.maint{width:100%;flex:1;position:relative;overflow:hidden;touch-action:pan-y}
+.page{position:absolute;top:0;left:0;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px 32px;overflow-y:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}
+.page.active{display:flex}
+/* cover */
+.cover{background:linear-gradient(135deg,#42A5F5 0,#1e88e5 100%);color:#fff;text-align:center;justify-content:center}
+.cover .emoji-big{font-size:100px;line-height:1;margin-bottom:10px}
+.cover h1{font-size:44px;font-weight:900;text-shadow:0 4px 8px rgba(0,0,0,.2)}
+.cover .sub{font-size:20px;opacity:.9;margin-top:8px;font-weight:600}
+.cover .start-btn{background:#fff;color:#1e88e5;border:none;border-radius:50px;padding:14px 48px;font-size:22px;font-weight:800;cursor:pointer;margin-top:24px;transition:.3s;box-shadow:0 6px 20px rgba(0,0,0,.2)}
+.cover .start-btn:active{transform:scale(.95)}
+/* story */
+.story{background:#fff7e6;text-align:center;justify-content:center;gap:6px}
+.story .scene{font-size:56px;margin-bottom:4px}
+.story h2{color:#5d4037;font-size:26px;font-weight:800}
+.story p{color:#4e342e;font-size:16px;max-width:600px;line-height:1.6}
+.story .speaker{background:#42A5F5;color:#fff;border:none;border-radius:40px;padding:10px 28px;font-size:16px;font-weight:700;cursor:pointer;margin-top:4px;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.story .speaker:active{transform:scale(.95)}
+.story .nav-btns{display:flex;gap:12px;margin-top:6px}
+.story .nav-btns button{background:#42A5F5;color:#fff;border:none;border-radius:30px;padding:8px 22px;font-size:16px;font-weight:700;cursor:pointer;transition:.2s}
+/* concepts */
+.concepts{background:#f3e5f5;gap:10px;justify-content:center}
+.concepts h2{color:#4a148c;font-size:24px;font-weight:800;margin-bottom:6px}
+.concepts-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.concept-card{background:#fff;border-radius:20px;padding:12px 14px 10px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,.08);width:150px}
+.concept-card svg{width:100px;height:100px;display:block;margin:0 auto}
+.concept-card .label{font-weight:800;color:#333;font-size:16px;margin-top:4px}
+.concept-card .frac{color:#42A5F5;font-weight:700;font-size:14px}
+/* hands-on */
+.hands{background:#e8f5e9;gap:8px}
+.hands h2{color:#1b5e20;font-size:22px;font-weight:800}
+.shape-area{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap}
+.shape-box{background:#fff;border-radius:20px;padding:12px;box-shadow:0 4px 15px rgba(0,0,0,.08);text-align:center;width:200px}
+.shape-box svg{width:140px;height:140px;display:block;margin:0 auto;touch-action:none}
+.shape-box .instr{font-weight:700;color:#333;margin-top:6px;font-size:14px}
+.drag-hint{background:#42A5F5;color:#fff;border-radius:40px;padding:8px 24px;font-weight:700;font-size:14px;display:inline-block;margin-top:4px}
+/* misconceptions */
+.miscon{background:#fff3e0;gap:8px}
+.miscon h2{color:#e65100;font-size:22px;font-weight:800}
+.miscon-grid{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;max-width:680px}
+.miscon-card{background:#fff;border-radius:16px;padding:12px 16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.06);flex:1;min-width:180px;max-width:220px}
+.miscon-card .icon{font-size:32px}
+.miscon-card .wrong{color:#d32f2f;font-weight:700;font-size:13px}
+.miscon-card .right{color:#2e7d32;font-weight:700;font-size:13px}
+/* quiz */
+.quiz{background:#ede7f6;gap:8px}
+.quiz h2{color:#311b92;font-size:22px;font-weight:800}
+.quiz-q{font-size:20px;font-weight:700;color:#333;text-align:center}
+.quiz-options{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.quiz-opt{background:#fff;border:3px solid #ddd;border-radius:20px;padding:10px 18px;font-size:18px;font-weight:700;cursor:pointer;transition:.2s;min-width:120px;text-align:center;color:#333}
+.quiz-opt:active{transform:scale(.95)}
+.quiz-opt.correct{border-color:#2e7d32;background:#e8f5e9;color:#2e7d32}
+.quiz-opt.wrong{border-color:#d32f2f;background:#ffebee;color:#d32f2f}
+.quiz-feedback{font-size:16px;font-weight:700;margin-top:4px;min-height:28px}
+.quiz-progress{font-size:14px;color:#666;margin-top:4px}
+/* levels */
+.levels{background:#e0f2f1;gap:8px}
+.levels h2{color:#004d40;font-size:22px;font-weight:800}
+.pizza-game{display:flex;gap:20px;align-items:center;justify-content:center;flex-wrap:wrap}
+.pizza-game svg{width:140px;height:140px;display:block;touch-action:none;cursor:pointer}
+.pizza-game .share-msg{font-weight:700;color:#333;font-size:18px;text-align:center}
+.people-slider{display:flex;align-items:center;gap:12px;background:#fff;border-radius:40px;padding:6px 16px;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.people-slider button{background:#42A5F5;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:20px;font-weight:800;cursor:pointer}
+.people-slider .count{font-size:22px;font-weight:800;color:#333;min-width:30px;text-align:center}
+.pizza-game .result{font-size:16px;font-weight:700;color:#2e7d32;min-height:28px}
+/* celebration */
+.celebrate{background:linear-gradient(135deg,#ffd54f,#ffb300);color:#333;text-align:center;justify-content:center}
+.celebrate .trophy{font-size:80px;line-height:1}
+.celebrate h2{font-size:36px;font-weight:900;color:#4e342e}
+.celebrate p{font-size:18px;margin-top:4px;font-weight:600}
+.celebrate .restart-btn{background:#fff;color:#e65100;border:none;border-radius:50px;padding:12px 40px;font-size:20px;font-weight:800;cursor:pointer;margin-top:12px;transition:.3s;box-shadow:0 4px 15px rgba(0,0,0,.15)}
+.celebrate .restart-btn:active{transform:scale(.95)}
+/* bottom nav */
+.bottom-nav{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 16px;background:#fff;border-top:2px solid #e8e8e8;flex-shrink:0;z-index:20}
+.bottom-nav .dot{width:10px;height:10px;border-radius:50%;background:#ccc;cursor:pointer;transition:.3s;border:none}
+.bottom-nav .dot.active{background:#42A5F5;transform:scale(1.3)}
+.bottom-nav .dot.done{background:#66bb6a}
+/* scrollbar hide */
+.page::-webkit-scrollbar{width:0;height:0}
+/* responsive landscape */
+@media(max-width:1024px){#app{width:100vw;height:100vh;border-radius:0}}
+@media(max-height:600px){.cover h1{font-size:32px}.cover .emoji-big{font-size:64px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Top Bar -->
+  <div class="topbar">
+    <a href="../" title="回到首页"><i class="fas fa-home"></i></a>
+    <span class="title">🍕 第22课 · 分数的故事</span>
+    <a href="../math-23-word-problems.html" title="下一课"><i class="fas fa-arrow-right"></i></a>
+  </div>
+
+  <!-- Main Container -->
+  <div class="maint" id="maint">
+
+    <!-- PAGE 0: Cover -->
+    <div class="page cover active" data-page="0">
+      <div class="emoji-big">🍕</div>
+      <h1>分数的故事</h1>
+      <div class="sub">和Minecraft小伙伴一起分享美食！</div>
+      <button class="start-btn" onclick="goPage(1)">开始冒险 ▶</button>
+    </div>
+
+    <!-- PAGE 1: Minecraft Story -->
+    <div class="page story" data-page="1">
+      <div class="scene">⛏️🧑‍🤝‍🧑</div>
+      <h2>Steve 的生日派对！</h2>
+      <p id="storyText">Steve 做了一个大披萨，Alex、Zombie 和 Creeper 都来了。他们要把披萨分得一样多！<br><b>4个人，每人能分到多少？</b></p>
+      <button class="speaker" onclick="speakText('Steve 做了一个大披萨，Alex、Zombie 和 Creeper 都来了。他们要把披萨分得一样多！4个人，每人能分到多少？')"><i class="fas fa-volume-up"></i> 听故事</button>
+      <div class="nav-btns">
+        <button onclick="goPage(0)">⬅ 返回</button>
+        <button onclick="goPage(2)">学习概念 ➡</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2: Core Concepts -->
+    <div class="page concepts" data-page="2">
+      <h2>📐 核心概念</h2>
+      <div class="concepts-grid">
+        <!-- Whole -->
+        <div class="concept-card">
+          <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#fff3e0" stroke="#ff9800" stroke-width="3"/><text x="50" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="#e65100">1</text></svg>
+          <div class="label">整体 Whole</div>
+          <div class="frac">1/1</div>
+        </div>
+        <!-- Halves -->
+        <div class="concept-card">
+          <svg viewBox="0 0 100 100">
+            <path d="M50,6 A44,44 0 0,1 94,50 L50,50 Z" fill="#ffccbc" stroke="#ff5722" stroke-width="2"/>
+            <path d="M50,6 A44,44 0 0,0 6,50 L50,50 Z" fill="#ffab91" stroke="#ff5722" stroke-width="2"/>
+            <line x1="50" y1="6" x2="50" y2="94" stroke="#fff" stroke-width="2" stroke-dasharray="4,4"/>
+            <text x="50" y="56" text-anchor="middle" font-size="16" font-weight="800" fill="#bf360c">½</text>
+          </svg>
+          <div class="label">二分之一</div>
+          <div class="frac">1/2</div>
+        </div>
+        <!-- Quarters -->
+        <div class="concept-card">
+          <svg viewBox="0 0 100 100">
+            <path d="M50,6 A44,44 0 0,1 94,50 L50,50 Z" fill="#c8e6c9" stroke="#43a047" stroke-width="2"/>
+            <path d="M50,6 A44,44 0 0,0 6,50 L50,50 Z" fill="#a5d6a7" stroke="#43a047" stroke-width="2"/>
+            <path d="M50,94 A44,44 0 0,1 6,50 L50,50 Z" fill="#81c784" stroke="#43a047" stroke-width="2"/>
+            <path d="M50,94 A44,44 0 0,0 94,50 L50,50 Z" fill="#66bb6a" stroke="#43a047" stroke-width="2"/>
+            <line x1="6" y1="50" x2="94" y2="50" stroke="#fff" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="50" y1="6" x2="50" y2="94" stroke="#fff" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <text x="50" y="56" text-anchor="middle" font-size="16" font-weight="800" fill="#1b5e20">¼</text>
+          </svg>
+          <div class="label">四分之一</div>
+          <div class="frac">1/4</div>
+        </div>
+        <!-- Thirds -->
+        <div class="concept-card">
+          <svg viewBox="0 0 100 100">
+            <path d="M50,6 A44,44 0 0,1 88.1,72 L50,50 Z" fill="#bbdefb" stroke="#1e88e5" stroke-width="2"/>
+            <path d="M50,6 A44,44 0 0,0 11.9,72 L50,50 Z" fill="#90caf9" stroke="#1e88e5" stroke-width="2"/>
+            <path d="M11.9,72 A44,44 0 0,0 88.1,72 L50,50 Z" fill="#64b5f6" stroke="#1e88e5" stroke-width="2"/>
+            <text x="50" y="56" text-anchor="middle" font-size="15" font-weight="800" fill="#0d47a1">⅓</text>
+          </svg>
+          <div class="label">三分之一</div>
+          <div class="frac">1/3</div>
+        </div>
+      </div>
+      <button class="speaker" style="margin-top:6px;background:#42A5F5;color:#fff;border:none;border-radius:40px;padding:8px 26px;font-size:15px;font-weight:700;cursor:pointer" onclick="speakText('整体、二分之一、四分之一、三分之一。分数就是把一个整体平均分成几份，取其中的一份。')"><i class="fas fa-volume-up"></i> 听讲解</button>
+      <div class="nav-btns">
+        <button onclick="goPage(1)">⬅ 故事</button>
+        <button onclick="goPage(3)">动手试试 ➡</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: Hands-On Drag to Divide -->
+    <div class="page hands" data-page="3">
+      <h2>✋ 动手练习 — 拖动分割图形</h2>
+      <div class="shape-area">
+        <div class="shape-box">
+          <svg viewBox="0 0 120 120" id="dragCircle" width="140" height="140">
+            <circle cx="60" cy="60" r="52" fill="#fff3e0" stroke="#ff9800" stroke-width="3"/>
+            <line class="dline" x1="60" y1="8" x2="60" y2="112" stroke="#ff5722" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="8" y1="60" x2="112" y2="60" stroke="#ff5722" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="14" y1="14" x2="106" y2="106" stroke="#ff5722" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <text x="60" y="66" text-anchor="middle" font-size="20" font-weight="800" fill="#e65100" id="dragCircleLabel">1</text>
+          </svg>
+          <div class="instr">👆 点击切分圆形</div>
+        </div>
+        <div class="shape-box">
+          <svg viewBox="0 0 120 120" id="dragSquare" width="140" height="140">
+            <rect x="10" y="10" width="100" height="100" rx="6" fill="#e8f5e9" stroke="#43a047" stroke-width="3"/>
+            <line class="dline" x1="60" y1="10" x2="60" y2="110" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="10" y1="60" x2="110" y2="60" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="35" y1="10" x2="35" y2="110" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="85" y1="10" x2="85" y2="110" stroke="#2e7d32" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <text x="60" y="66" text-anchor="middle" font-size="20" font-weight="800" fill="#1b5e20" id="dragSquareLabel">1</text>
+          </svg>
+          <div class="instr">👆 点击切分正方形</div>
+        </div>
+        <div class="shape-box">
+          <svg viewBox="0 0 120 120" id="dragRect" width="140" height="140">
+            <rect x="10" y="30" width="100" height="60" rx="6" fill="#e3f2fd" stroke="#1e88e5" stroke-width="3"/>
+            <line class="dline" x1="46" y1="30" x2="46" y2="90" stroke="#1565c0" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="73" y1="30" x2="73" y2="90" stroke="#1565c0" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <line class="dline" x1="96" y1="30" x2="96" y2="90" stroke="#1565c0" stroke-width="2" stroke-dasharray="4,4" opacity="0"/>
+            <text x="60" y="72" text-anchor="middle" font-size="20" font-weight="800" fill="#0d47a1" id="dragRectLabel">1</text>
+          </svg>
+          <div class="instr">👆 点击切分长方形</div>
+        </div>
+      </div>
+      <div class="drag-hint" id="dragHint">点击图形，将它分成相等的部分！</div>
+      <div class="nav-btns">
+        <button onclick="goPage(2)">⬅ 概念</button>
+        <button onclick="goPage(4)">常见误解 ➡</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: Common Misconceptions -->
+    <div class="page miscon" data-page="4">
+      <h2>⚠️ 常见误解</h2>
+      <div class="miscon-grid">
+        <div class="miscon-card">
+          <div class="icon">🚫</div>
+          <div class="wrong">"1/2 比 1/3 小"</div>
+          <div class="right">✅ 1/2 比 1/3 大！<br>分母越大，每份越小</div>
+        </div>
+        <div class="miscon-card">
+          <div class="icon">🚫</div>
+          <div class="wrong">"分的块数越多，每块越大"</div>
+          <div class="right">✅ 分的块数越多，每块越小！</div>
+        </div>
+        <div class="miscon-card">
+          <div class="icon">🚫</div>
+          <div class="wrong">"只要切了就是分数"</div>
+          <div class="right">✅ 必须<b>平均分</b>才是分数！</div>
+        </div>
+      </div>
+      <button class="speaker" style="margin-top:6px;background:#42A5F5;color:#fff;border:none;border-radius:40px;padding:8px 26px;font-size:15px;font-weight:700;cursor:pointer" onclick="speakText('常见误解：二分之一比三分之一小？不对，二分之一更大！分母越大，每份越小。还有，只有平均分才是分数哦！')"><i class="fas fa-volume-up"></i> 听讲解</button>
+      <div class="nav-btns">
+        <button onclick="goPage(3)">⬅ 动手</button>
+        <button onclick="goPage(5)">练习测验 ➡</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: Quiz -->
+    <div class="page quiz" data-page="5">
+      <h2>📝 练习测验</h2>
+      <div class="quiz-q" id="quizQuestion">下面哪个图表示 1/2？</div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <div class="quiz-progress" id="quizProgress">第 1 / 5 题</div>
+      <div class="nav-btns" style="margin-top:6px">
+        <button onclick="goPage(4)">⬅ 误解</button>
+        <button id="quizNextBtn" onclick="nextQuiz()">下一题 ➡</button>
+      </div>
+    </div>
+
+    <!-- PAGE 6: Pizza Sharing Game (Level) -->
+    <div class="page levels" data-page="6">
+      <h2>🍕 闯关 — 分享披萨</h2>
+      <div class="pizza-game">
+        <div>
+          <svg viewBox="0 0 100 100" id="pizzaSvg" width="140" height="140">
+            <circle cx="50" cy="50" r="44" fill="#fff3e0" stroke="#ff9800" stroke-width="3"/>
+            <text x="50" y="56" text-anchor="middle" font-size="30" font-weight="800" fill="#e65100" id="pizzaLabel">1</text>
+          </svg>
+        </div>
+        <div>
+          <div class="share-msg">👨‍👩‍👧‍👦 分给几个人？</div>
+          <div class="people-slider">
+            <button onclick="changePeople(-1)">−</button>
+            <span class="count" id="peopleCount">2</span>
+            <button onclick="changePeople(1)">+</button>
+          </div>
+          <button class="speaker" style="margin-top:8px;background:#42A5F5;color:#fff;border:none;border-radius:40px;padding:8px 24px;font-size:15px;font-weight:700;cursor:pointer" onclick="sharePizza()">🍕 分享！</button>
+          <div class="result" id="shareResult">每人得到 1/2</div>
+        </div>
+      </div>
+      <div class="nav-btns">
+        <button onclick="goPage(5)">⬅ 测验</button>
+        <button onclick="goPage(7)">🎉 完成！</button>
+      </div>
+    </div>
+
+    <!-- PAGE 7: Celebration -->
+    <div class="page celebrate" data-page="7">
+      <div class="trophy">🏆</div>
+      <h2>太棒了！🎉</h2>
+      <p>你学会了分数的故事！<br>整体、一半、三分之一、四分之一……<br>你会用分数来分享了！</p>
+      <button class="restart-btn" onclick="goPage(0)">🔄 重新开始</button>
+    </div>
+
+  </div>
+
+  <!-- Bottom Nav Dots -->
+  <div class="bottom-nav" id="bottomNav">
+    <button class="dot active" data-target="0" onclick="goPage(0)"></button>
+    <button class="dot" data-target="1" onclick="goPage(1)"></button>
+    <button class="dot" data-target="2" onclick="goPage(2)"></button>
+    <button class="dot" data-target="3" onclick="goPage(3)"></button>
+    <button class="dot" data-target="4" onclick="goPage(4)"></button>
+    <button class="dot" data-target="5" onclick="goPage(5)"></button>
+    <button class="dot" data-target="6" onclick="goPage(6)"></button>
+    <button class="dot" data-target="7" onclick="goPage(7)"></button>
+  </div>
+</div>
+
+<script>
+// ===== NAVIGATION =====
+const totalPages = 8;
+let currentPage = 0;
+
+function goPage(idx) {
+  if (idx < 0 || idx >= totalPages) return;
+  document.querySelectorAll('.page').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.bottom-nav .dot').forEach((d, i) => {
+    d.classList.toggle('active', i === idx);
+  });
+  currentPage = idx;
+  // Reset quiz if leaving
+  if (idx !== 5) { resetQuizIfNeeded(); }
+  // Animate in
+  gsap.fromTo('.page.active > *', {opacity:0, y:20}, {opacity:1, y:0, duration:0.4, stagger:0.05, ease:'back.out(1.4)'});
+  // Reset drag shapes
+  if (idx === 3) resetDragShapes();
+  if (idx === 6) resetPizzaGame();
+}
+
+// ===== SPEECH SYNTH =====
+function speakText(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.9;
+  u.pitch = 1.1;
+  window.speechSynthesis.speak(u);
+}
+
+// ===== PAGE 3: DRAG TO DIVIDE =====
+const dragState = {circle:0, square:0, rect:0};
+
+function resetDragShapes() {
+  dragState.circle = 0;
+  dragState.square = 0;
+  dragState.rect = 0;
+  document.querySelectorAll('#dragCircle .dline').forEach(l => l.style.opacity = '0');
+  document.querySelectorAll('#dragSquare .dline').forEach(l => l.style.opacity = '0');
+  document.querySelectorAll('#dragRect .dline').forEach(l => l.style.opacity = '0');
+  document.getElementById('dragCircleLabel').textContent = '1';
+  document.getElementById('dragSquareLabel').textContent = '1';
+  document.getElementById('dragRectLabel').textContent = '1';
+  document.getElementById('dragHint').textContent = '👆 点击图形，将它分成相等的部分！';
+}
+
+document.addEventListener('click', function(e) {
+  const target = e.target.closest('svg');
+  if (!target) return;
+  const id = target.id;
+  if (id === 'dragCircle') cycleCircle();
+  else if (id === 'dragSquare') cycleSquare();
+  else if (id === 'dragRect') cycleRect();
+});
+
+function cycleCircle() {
+  dragState.circle = (dragState.circle + 1) % 4;
+  const lines = document.querySelectorAll('#dragCircle .dline');
+  const label = document.getElementById('dragCircleLabel');
+  lines.forEach(l => l.style.opacity = '0');
+  if (dragState.circle === 1) {
+    // halves
+    lines[0].style.opacity = '1';
+    label.textContent = '½';
+    document.getElementById('dragHint').textContent = '✅ 圆形分成了 2 份！1/2';
+    speakText('圆形分成了两份，每份是二分之一');
+  } else if (dragState.circle === 2) {
+    // quarters
+    lines[0].style.opacity = '1';
+    lines[1].style.opacity = '1';
+    label.textContent = '¼';
+    document.getElementById('dragHint').textContent = '✅ 圆形分成了 4 份！1/4';
+    speakText('圆形分成了四份，每份是四分之一');
+  } else if (dragState.circle === 3) {
+    // thirds — show diagonal too as visual aid
+    lines[0].style.opacity = '1';
+    lines[2].style.opacity = '1';
+    label.textContent = '⅓';
+    document.getElementById('dragHint').textContent = '✅ 圆形分成了 3 份！1/3';
+    speakText('圆形分成了三份，每份是三分之一');
+  } else {
+    label.textContent = '1';
+    document.getElementById('dragHint').textContent = '👆 点击图形，将它分成相等的部分！';
+  }
+}
+
+function cycleSquare() {
+  dragState.square = (dragState.square + 1) % 4;
+  const lines = document.querySelectorAll('#dragSquare .dline');
+  const label = document.getElementById('dragSquareLabel');
+  lines.forEach(l => l.style.opacity = '0');
+  if (dragState.square === 1) {
+    lines[0].style.opacity = '1'; // vertical half
+    label.textContent = '½';
+    document.getElementById('dragHint').textContent = '✅ 正方形分成了 2 份！1/2';
+    speakText('正方形分成了两份，每份是二分之一');
+  } else if (dragState.square === 2) {
+    lines[0].style.opacity = '1';
+    lines[1].style.opacity = '1';
+    label.textContent = '¼';
+    document.getElementById('dragHint').textContent = '✅ 正方形分成了 4 份！1/4';
+    speakText('正方形分成了四份，每份是四分之一');
+  } else if (dragState.square === 3) {
+    lines[0].style.opacity = '0';
+    lines[1].style.opacity = '1';
+    lines[2].style.opacity = '1';
+    lines[3].style.opacity = '1';
+    label.textContent = '¼';
+    document.getElementById('dragHint').textContent = '✅ 正方形分成了 4 份！也可以三等分吗？试试圆形';
+    speakText('正方形还可以分成四份');
+  } else {
+    label.textContent = '1';
+    document.getElementById('dragHint').textContent = '👆 点击图形，将它分成相等的部分！';
+  }
+}
+
+function cycleRect() {
+  dragState.rect = (dragState.rect + 1) % 4;
+  const lines = document.querySelectorAll('#dragRect .dline');
+  const label = document.getElementById('dragRectLabel');
+  lines.forEach(l => l.style.opacity = '0');
+  if (dragState.rect === 1) {
+    lines[0].style.opacity = '1';
+    label.textContent = '½';
+    document.getElementById('dragHint').textContent = '✅ 长方形分成了 2 份！1/2';
+    speakText('长方形分成了两份，每份是二分之一');
+  } else if (dragState.rect === 2) {
+    lines[0].style.opacity = '1';
+    lines[1].style.opacity = '1';
+    label.textContent = '⅓';
+    document.getElementById('dragHint').textContent = '✅ 长方形分成了 3 份！1/3';
+    speakText('长方形分成了三份，每份是三分之一');
+  } else if (dragState.rect === 3) {
+    lines[0].style.opacity = '1';
+    lines[1].style.opacity = '1';
+    lines[2].style.opacity = '1';
+    label.textContent = '¼';
+    document.getElementById('dragHint').textContent = '✅ 长方形分成了 4 份！1/4';
+    speakText('长方形分成了四份，每份是四分之一');
+  } else {
+    label.textContent = '1';
+    document.getElementById('dragHint').textContent = '👆 点击图形，将它分成相等的部分！';
+  }
+}
+
+// ===== PAGE 5: QUIZ =====
+const quizData = [
+  {
+    q: '🍕 下图哪个表示 1/2？',
+    options: [
+      '<svg viewBox="0 0 60 60" width="50" height="50"><circle cx="30" cy="30" r="26" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="56" stroke="#ff5722" stroke-width="2"/><text x="30" y="36" text-anchor="middle" font-size="14" font-weight="800" fill="#e65100">½</text></svg>',
+      '<svg viewBox="0 0 60 60" width="50" height="50"><circle cx="30" cy="30" r="26" fill="#fff3e0" stroke="#ff9800" stroke-width="2"/><text x="30" y="36" text-anchor="middle" font-size="14" font-weight="800" fill="#e65100">1</text></svg>',
+      '<svg viewBox="0 0 60 60" width="50" height="50"><rect x="4" y="4" width="52" height="52" rx="4" fill="#e8f5e9" stroke="#43a047" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="56" stroke="#2e7d32" stroke-width="2"/><line x1="4" y1="30" x2="56" y2="30" stroke="#2e7d32" stroke-width="2"/><text x="30" y="36" text-anchor="middle" font-size="14" font-weight="800" fill="#1b5e20">¼</text></svg>'
+    ],
+    correct: 0
+  },
+  {
+    q: '🧑‍🤝‍🧑 4个朋友平分一个披萨，每人得到多少？',
+    options: ['1/2', '1/3', '1/4'],
+    correct: 2
+  },
+  {
+    q: '📐 哪个分数最大？',
+    options: ['1/2', '1/3', '1/4'],
+    correct: 0
+  },
+  {
+    q: '🎂 蛋糕切成3块同样大的，每块是？',
+    options: ['1/2', '1/3', '1/4'],
+    correct: 1
+  },
+  {
+    q: '⚠️ 下面哪个不是平均分？',
+    options: [
+      '<svg viewBox="0 0 60 60" width="50" height="50"><rect x="4" y="4" width="52" height="52" rx="4" fill="#e3f2fd" stroke="#1e88e5" stroke-width="2"/><line x1="30" y1="4" x2="30" y2="56" stroke="#1565c0" stroke-width="2"/><text x="18" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#0d47a1">A</text><text x="44" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#0d47a1">B</text></svg>',
+      '<svg viewBox="0 0 60 60" width="50" height="50"><rect x="4" y="4" width="52" height="52" rx="4" fill="#e3f2fd" stroke="#ef5350" stroke-width="2"/><line x1="10" y1="4" x2="40" y2="56" stroke="#d32f2f" stroke-width="2"/><text x="18" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#b71c1c">A</text><text x="44" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#b71c1c">B</text></svg>',
+      '<svg viewBox="0 0 60 60" width="50" height="50"><rect x="4" y="4" width="52" height="52" rx="4" fill="#e3f2fd" stroke="#1e88e5" stroke-width="2"/><line x1="4" y1="30" x2="56" y2="30" stroke="#1565c0" stroke-width="2"/><text x="18" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#0d47a1">A</text><text x="44" y="36" text-anchor="middle" font-size="11" font-weight="800" fill="#0d47a1">B</text></svg>'
+    ],
+    correct: 1
+  }
+];
+
+let quizIdx = 0;
+let quizAnswered = false;
+
+function loadQuiz() {
+  const q = quizData[quizIdx];
+  document.getElementById('quizQuestion').textContent = q.q;
+  const opts = document.getElementById('quizOptions');
+  opts.innerHTML = '';
+  quizAnswered = false;
+  document.getElementById('quizFeedback').textContent = '';
+  document.getElementById('quizNextBtn').style.display = 'none';
+  document.getElementById('quizProgress').textContent = `第 ${quizIdx+1} / ${quizData.length} 题`;
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('div');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = opt;
+    btn.dataset.idx = i;
+    btn.addEventListener('click', function() {
+      if (quizAnswered) return;
+      quizAnswered = true;
+      const fb = document.getElementById('quizFeedback');
+      if (i === q.correct) {
+        this.classList.add('correct');
+        fb.innerHTML = '✅ 答对了！太棒了！';
+        fb.style.color = '#2e7d32';
+        speakText('答对了！真棒！');
+      } else {
+        this.classList.add('wrong');
+        fb.innerHTML = '❌ 再想想哦…正确答案是 ' + (q.correct+1);
+        fb.style.color = '#d32f2f';
+        // highlight correct
+        opts.children[q.correct].classList.add('correct');
+      }
+      document.getElementById('quizNextBtn').style.display = 'inline-block';
+      // disable all
+      Array.from(opts.children).forEach(b => b.style.pointerEvents = 'none');
+    });
+    opts.appendChild(btn);
+  });
+}
+
+function nextQuiz() {
+  quizIdx++;
+  if (quizIdx >= quizData.length) {
+    goPage(6);
+    quizIdx = 0;
+    return;
+  }
+  loadQuiz();
+  gsap.fromTo('.quiz-opt', {opacity:0, scale:0.8}, {opacity:1, scale:1, duration:0.3, stagger:0.08, ease:'back.out(1.4)'});
+}
+
+function resetQuizIfNeeded() {
+  // only reset if we're not on quiz page
+}
+
+// ===== PAGE 6: PIZZA SHARING =====
+let people = 2;
+let pizzaClickCount = 0;
+
+function changePeople(delta) {
+  people = Math.max(2, Math.min(6, people + delta));
+  document.getElementById('peopleCount').textContent = people;
+  updatePizzaPreview();
+  document.getElementById('shareResult').textContent = `每人得到 1/${people}`;
+}
+
+function updatePizzaPreview() {
+  const svg = document.getElementById('pizzaSvg');
+  const label = document.getElementById('pizzaLabel');
+  const r = 44;
+  const cx = 50, cy = 50;
+  // Clear all slices
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  // Draw circle outline
+  const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle.setAttribute('cx', cx);
+  circle.setAttribute('cy', cy);
+  circle.setAttribute('r', r);
+  circle.setAttribute('fill', '#fff3e0');
+  circle.setAttribute('stroke', '#ff9800');
+  circle.setAttribute('stroke-width', '3');
+  svg.appendChild(circle);
+
+  // Draw slices if people > 1
+  const colors = ['#ffccbc','#ffab91','#c8e6c9','#a5d6a7','#bbdefb','#90caf9'];
+  if (people >= 2) {
+    for (let i = 0; i < people; i++) {
+      const startAngle = (i / people) * 2 * Math.PI - Math.PI/2;
+      const endAngle = ((i+1) / people) * 2 * Math.PI - Math.PI/2;
+      const x1 = cx + r * Math.cos(startAngle);
+      const y1 = cy + r * Math.sin(startAngle);
+      const x2 = cx + r * Math.cos(endAngle);
+      const y2 = cy + r * Math.sin(endAngle);
+      const largeArc = (1/people) > 0.5 ? 1 : 0;
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', `M${cx},${cy} L${x1},${y1} A${r},${r} 0 ${largeArc} 1 ${x2},${y2} Z`);
+      path.setAttribute('fill', colors[i % colors.length]);
+      path.setAttribute('stroke', '#fff');
+      path.setAttribute('stroke-width', '1.5');
+      path.setAttribute('opacity', '0.7');
+      svg.appendChild(path);
+    }
+  }
+  // Redraw outline on top
+  const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  circle2.setAttribute('cx', cx);
+  circle2.setAttribute('cy', cy);
+  circle2.setAttribute('r', r);
+  circle2.setAttribute('fill', 'none');
+  circle2.setAttribute('stroke', '#ff9800');
+  circle2.setAttribute('stroke-width', '3');
+  svg.appendChild(circle2);
+
+  label.textContent = `1/${people}`;
+}
+
+function sharePizza() {
+  const result = document.getElementById('shareResult');
+  result.textContent = `🍕 ${people} 个人平分！每人得到 1/${people}`;
+  speakText(`${people} 个人平分披萨，每人得到 ${people} 分之一`);
+  gsap.fromTo('#pizzaSvg', {scale:1}, {scale:1.1, duration:0.3, yoyo:true, repeat:1, ease:'power2.inOut'});
+}
+
+function resetPizzaGame() {
+  people = 2;
+  document.getElementById('peopleCount').textContent = '2';
+  document.getElementById('shareResult').textContent = '每人得到 1/2';
+  updatePizzaPreview();
+}
+
+// ===== PAGE TRANSITIONS ON LOAD =====
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  // GSAP cover entrance
+  gsap.from('.cover .emoji-big', {opacity:0, scale:0.3, duration:0.6, ease:'back.out(2)'});
+  gsap.from('.cover h1', {opacity:0, y:30, duration:0.5, delay:0.2, ease:'power3.out'});
+  gsap.from('.cover .sub', {opacity:0, y:20, duration:0.4, delay:0.4, ease:'power3.out'});
+  gsap.from('.cover .start-btn', {opacity:0, y:20, duration:0.4, delay:0.6, ease:'power3.out'});
+
+  // Load quiz
+  loadQuiz();
+
+  // Pizza game init
+  updatePizzaPreview();
+
+  // Bottom dot clicks
+  document.querySelectorAll('.bottom-nav .dot').forEach(d => {
+    d.addEventListener('click', function() {
+      goPage(parseInt(this.dataset.target));
+    });
+  });
+});
+</script>
+</body>
+</html>
