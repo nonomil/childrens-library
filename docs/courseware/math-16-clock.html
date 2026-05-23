@@ -39,11 +39,27 @@ body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items
 .goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none;line-height:1.5}
 .goal-card li::before{content:'✅ '}
 @keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+
+  /* ── speak button ── */
+  .speak-btn {
+    background: rgba(255,255,255,.2); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.15); border-radius: 50%;
+    width: 40px; height: 40px; color: #fff; font-size: 20px;
+    cursor: pointer; display: inline-flex; align-items: center;
+    justify-content: center; transition: all .2s;
+    touch-action: manipulation; user-select: none;
+    line-height: 1;
+  }
+  .speak-btn:hover { background: rgba(255,255,255,.35); }
+  .speak-btn:active { transform: scale(.88); }
+  .speak-btn.speaking { background: rgba(255,255,255,.4); animation: speakPulse 1s ease-in-out infinite; }
+  @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); } 50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
+
 </style>
 </head>
 <body>
 <div class="book">
-<div class="top-bar"><a href="../">🏠</a><a href="../math-17-shapes.html">▶</a></div>
+<div class="top-bar"><a href="../">🏠</a><button class="speak-btn" id="speakBtn" title="朗读本页" style="background:none;border:none;font-size:24px;cursor:pointer;line-height:1;padding:0;width:auto;height:auto;color:inherit">🔊</button><a href="../math-17-shapes.html">▶</a></div>
 <div class="slides" id="slides"></div>
 <div class="controls">
 <button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
@@ -116,5 +132,43 @@ function doConfetti(){const el=document.getElementById('confetti');const c=['#FF
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
 render(0);
 </script>
+
+
+<script>
+/* ── Speech Synthesis ── */
+(function() {
+  var isSpeaking = false;
+  var speakBtn = document.getElementById('speakBtn');
+  if (!speakBtn) return;
+
+  function getPageText() {
+    var active = document.querySelector('.slide.active, .page.active, [class*="active"]');
+    if (!active) return '';
+    return active.textContent.replace(/\s+/g, ' ').trim();
+  }
+
+  function speakText(text) {
+    if (!text || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; u.rate = 0.85; u.pitch = 1.1; u.volume = 1;
+    u.onstart = function() { isSpeaking = true; speakBtn.classList.add('speaking'); speakBtn.textContent = '⏹'; };
+    u.onend = function() { isSpeaking = false; speakBtn.classList.remove('speaking'); speakBtn.textContent = '🔊'; };
+    u.onerror = function() { isSpeaking = false; speakBtn.classList.remove('speaking'); speakBtn.textContent = '🔊'; };
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopSpeaking() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    isSpeaking = false; speakBtn.classList.remove('speaking'); speakBtn.textContent = '🔊';
+  }
+
+  speakBtn.addEventListener('click', function() {
+    if (isSpeaking) { stopSpeaking(); return; }
+    speakText(getPageText());
+  });
+})();
+</script>
+
 </body>
 </html>
