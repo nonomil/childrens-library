@@ -146,6 +146,29 @@ body{background:#f0f4e8;font-family:'Nunito',sans-serif;overflow-x:hidden}
 /* Badge */
 .badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fff8e1,#fff3cd);border:3px solid #fdd835;border-radius:50px;padding:12px 24px;font-size:22px;font-weight:900;color:#e65100;margin:8px 0;box-shadow:0 4px 20px rgba(253,216,53,.3)}
 </style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) and (orientation: landscape) {
+  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
+    max-width: 960px !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .page, .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
 </head>
 <body>
 

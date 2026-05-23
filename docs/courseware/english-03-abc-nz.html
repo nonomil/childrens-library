@@ -124,6 +124,29 @@ h3{font-size:15px;font-weight:700;color:#2e7d32;margin-bottom:4px}
 .practice-progress{font-size:11px;color:#999;font-weight:600;text-align:center}
 @media(max-width:420px){.page{padding:12px 14px 20px;min-height:500px;border-radius:16px}h1{font-size:21px}h2{font-size:16px}.big-letter{font-size:40px}.letter-card .l{font-size:24px}.tracing-box .tl{font-size:30px}.alphabet-chart .ach{font-size:14px}.chest{font-size:56px}.match-item{font-size:18px;padding:8px 12px;min-width:44px}}
 </style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) and (orientation: landscape) {
+  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
+    max-width: 960px !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .page, .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
 </head>
 <body>
 <div class="container" id="app">

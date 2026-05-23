@@ -95,6 +95,29 @@ img.lesson-img{width:100%;max-width:480px;border-radius:20px;box-shadow:0 4px 15
   .top-nav-btn { font-size:12px; padding:3px 10px; }
 }
 </style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) and (orientation: landscape) {
+  .book-container, .slider, .slides, .slide, .page, [class*="container"], [class*="book"] {
+    max-width: 960px !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .page, .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
 </head>
 <body>
 <div class="book" id="app">
