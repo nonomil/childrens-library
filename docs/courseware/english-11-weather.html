@@ -411,6 +411,18 @@ html, body {
   .speak-btn.speaking { animation: speakPulse 1s ease-in-out infinite; }
   @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); }
     50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
+
+  /* Unified nav-bar (added by conversion) */
+  .nav-bar{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 0 4px;position:relative;bottom:0;background:inherit;z-index:50}
+  .nav-btn{width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;color:#42A5F5;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;user-select:none}
+  .nav-btn:active{transform:scale(.88);background:#42A5F5;color:#fff}
+  .nav-btn:disabled{opacity:.25;pointer-events:none}
+  .page-dots{display:flex;gap:6px}
+  .page-dots .dot{width:10px;height:10px;border-radius:50%;background:#ddd;cursor:pointer;border:none;transition:all .25s;padding:0}
+  .page-dots .dot.active{background:#42A5F5;transform:scale(1.35)}
+  .read-btn{background:#fff;border:2px solid #66BB6A;border-radius:20px;padding:8px 20px;font-size:16px;font-weight:700;color:#2e7d32;cursor:pointer;font-family:inherit;transition:all .2s;display:inline-flex;align-items:center;gap:4px}
+  .read-btn:active{transform:scale(.94);background:#66BB6A;color:#fff}
+
 </style>
 
 
@@ -1025,6 +1037,65 @@ console.log('🌤️ English Lesson 11 — Weather ready!');
 
   btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
   if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
+})();
+</script>
+
+
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="navPrev()">&#9664;</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="navNext()">&#9654;</button>
+  </div>
+  <div style="text-align:center;margin:4px 0 12px">
+    <button class="read-btn" onclick="navSpeakCurrentPage()">&#128264; 读给我听</button>
+  </div>
+
+
+<script>
+/* Unified nav (added by conversion) - uses unique names to avoid conflicts */
+(function(){
+  var pages = document.querySelectorAll('.page,.slide');
+  var total = pages.length;
+  if(total < 2) return;
+  var cur = 0;
+  pages.forEach(function(p,i){ if(p.classList.contains('active')) cur = i; });
+  
+  window.navGoTo = function(n){
+    n = Math.max(0, Math.min(total - 1, n));
+    pages.forEach(function(p,i){ p.classList.toggle('active', i === n); });
+    var p = document.getElementById('prevBtn'), nx = document.getElementById('nextBtn');
+    if(p) p.disabled = n === 0;
+    if(nx) nx.disabled = n === total - 1;
+    var c = document.getElementById('pageDots');
+    if(c){ c.querySelectorAll('.dot').forEach(function(d,i){ d.classList.toggle('active', i === n); }); }
+    cur = n;
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    // Trigger page change callback if exists
+    if(typeof window.onPageChange === 'function') window.onPageChange(n);
+  };
+  window.navPrev = function(){ window.navGoTo(cur - 1); };
+  window.navNext = function(){ window.navGoTo(cur + 1); };
+  window.navSpeakCurrentPage = function(){
+    var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+    if(btn) btn.click();
+  };
+  
+  // Build dots
+  var c = document.getElementById('pageDots');
+  if(c){
+    c.innerHTML = '';
+    for(var i = 0; i < total; i++){
+      var d = document.createElement('button');
+      d.className = 'dot' + (i === cur ? ' active' : '');
+      d.setAttribute('data-idx', i);
+      d.onclick = function(){ window.navGoTo(parseInt(this.getAttribute('data-idx'))); };
+      c.appendChild(d);
+    }
+  }
+  var p = document.getElementById('prevBtn');
+  if(p) p.disabled = cur === 0;
 })();
 </script>
 

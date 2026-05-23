@@ -485,7 +485,7 @@
 <div class="app" id="app">
   <!-- header -->
   <header class="header">
-    <button class="home-btn" id="homeBtn" aria-label="Home" title="Home">🏠</button>
+    
     <span class="title">Lesson 6 · Family 👨‍👩‍👧‍👦</span>
     <button class="sound-btn" id="soundBtn" aria-label="Read Aloud" title="Read Aloud">▶</button>
   </header>
@@ -1186,6 +1186,65 @@ function playPageMp3(pageNum) {
 
   btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
   if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
+})();
+</script>
+
+
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="navPrev()">&#9664;</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="navNext()">&#9654;</button>
+  </div>
+  <div style="text-align:center;margin:4px 0 12px">
+    <button class="read-btn" onclick="navSpeakCurrentPage()">&#128264; 读给我听</button>
+  </div>
+
+
+<script>
+/* Unified nav (added by conversion) - uses unique names to avoid conflicts */
+(function(){
+  var pages = document.querySelectorAll('.page,.slide');
+  var total = pages.length;
+  if(total < 2) return;
+  var cur = 0;
+  pages.forEach(function(p,i){ if(p.classList.contains('active')) cur = i; });
+  
+  window.navGoTo = function(n){
+    n = Math.max(0, Math.min(total - 1, n));
+    pages.forEach(function(p,i){ p.classList.toggle('active', i === n); });
+    var p = document.getElementById('prevBtn'), nx = document.getElementById('nextBtn');
+    if(p) p.disabled = n === 0;
+    if(nx) nx.disabled = n === total - 1;
+    var c = document.getElementById('pageDots');
+    if(c){ c.querySelectorAll('.dot').forEach(function(d,i){ d.classList.toggle('active', i === n); }); }
+    cur = n;
+    if(window.speechSynthesis) window.speechSynthesis.cancel();
+    // Trigger page change callback if exists
+    if(typeof window.onPageChange === 'function') window.onPageChange(n);
+  };
+  window.navPrev = function(){ window.navGoTo(cur - 1); };
+  window.navNext = function(){ window.navGoTo(cur + 1); };
+  window.navSpeakCurrentPage = function(){
+    var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+    if(btn) btn.click();
+  };
+  
+  // Build dots
+  var c = document.getElementById('pageDots');
+  if(c){
+    c.innerHTML = '';
+    for(var i = 0; i < total; i++){
+      var d = document.createElement('button');
+      d.className = 'dot' + (i === cur ? ' active' : '');
+      d.setAttribute('data-idx', i);
+      d.onclick = function(){ window.navGoTo(parseInt(this.getAttribute('data-idx'))); };
+      c.appendChild(d);
+    }
+  }
+  var p = document.getElementById('prevBtn');
+  if(p) p.disabled = cur === 0;
 })();
 </script>
 
