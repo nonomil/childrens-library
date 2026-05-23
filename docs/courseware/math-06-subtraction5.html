@@ -1070,10 +1070,16 @@ console.log('🎯 Total slides: ' + TOTAL_SLIDES);
 <script>
 (function() {
   var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-  if (!btn) return;
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
+    btn.textContent = '🔊';
+    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(btn);
+  }
   var sp = false;
-  var lang = document.documentElement.lang || (document.querySelector('html').getAttribute('lang') || (window.location.href.indexOf('chinese') >= 0 ? 'zh-CN' : 'en-US'));
-  
+  var uiv = document.documentElement.lang || 'en-US';
+  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
   function speakPage() {
     var active = document.querySelector('.page.active, .slide.active, [class*="active"]');
     if (!active) return;
@@ -1082,19 +1088,14 @@ console.log('🎯 Total slides: ' + TOTAL_SLIDES);
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     var u = new SpeechSynthesisUtterance(txt);
-    u.lang = (lang || 'en-US').indexOf('zh') >=0 ? 'zh-CN' : 'en-US';
-    u.rate = 0.85;
-    u.onstart = function() { sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
-    u.onend = u.onerror = function() { sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊'; };
+    u.lang = lang; u.rate = 0.85;
+    u.onstart = function() { sp = true; btn.classList.add('speaking'); btn.textContent = '\u23F9'; };
+    u.onend = u.onerror = function() { sp = false; btn.classList.remove('speaking'); btn.textContent = '\uD83D\uDD0A'; };
     window.speechSynthesis.speak(u);
   }
-  
-  function stopPage() { if (window.speechSynthesis) window.speechSynthesis.cancel(); sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊'; }
-  
+  function stopPage() { if (window.speechSynthesis) window.speechSynthesis.cancel(); sp = false; btn.classList.remove('speaking'); btn.textContent = '\uD83D\uDD0A'; }
   btn.addEventListener('click', function(e) { e.stopPropagation(); if (sp) { stopPage(); } else { speakPage(); } });
-  
-  // Fix button icon
-  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
+  if (btn.textContent.trim() === '' || btn.textContent.trim() === '\u25B6') btn.textContent = '\uD83D\uDD0A';
 })();
 </script>
 
