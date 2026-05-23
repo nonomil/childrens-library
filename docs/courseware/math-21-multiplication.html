@@ -1055,5 +1055,6 @@ document.head.appendChild(confettiStyle);
 })();
 </script>
 
+<script>document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goToPage(Math.min(currentPage+1,totalPages-1));if(e.key==='ArrowLeft')goToPage(Math.max(0,currentPage-1));});</script>
 </body>
 </html>

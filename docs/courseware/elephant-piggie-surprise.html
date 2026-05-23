@@ -769,5 +769,6 @@ function updateUI(idx) {
 // ===== Init =====
 renderPage(0);
 </script>
+<script>document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')nextPage();if(e.key==='ArrowLeft')prevPage();if(e.key==='Home')goToPage(0);if(e.key==='End')goToPage(document.querySelectorAll('.page,.slide').length-1);});</script>
 </body>
 </html>
