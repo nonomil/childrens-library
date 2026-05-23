@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Lesson 19: The Lost Cat 🐱</title>
+<!-- Google Fonts: Nunito -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #e8f5e9;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Landscape tablet container (1024×768 feel) */
+  .app {
+    width: 100%;
+    max-width: 1024px;
+    height: 100vh;
+    max-height: 768px;
+    background: #fff;
+    border-radius: 32px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (max-aspect-ratio: 4/3) {
+    .app { max-height: 95vh; border-radius: 24px; }
+  }
+
+  /* TOP BAR */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+    background: #fff;
+    border-bottom: 2px solid #e0e0e0;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .top-bar a {
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: 800;
+    color: #43a047;
+    transition: transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .top-bar a:active { transform: scale(0.9); }
+  .top-bar .nav-right a { font-size: 22px; color: #66BB6A; }
+  .top-bar .lesson-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #666;
+    letter-spacing: 0.5px;
+  }
+
+  /* SLIDES CONTAINER */
+  .slides-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    overflow-y: auto;
+    background: #fff;
+  }
+  .slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 2;
+  }
+
+  /* Image area */
+  .img-box {
+    width: 100%;
+    max-width: 500px;
+    flex-shrink: 0;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin: 8px 0;
+    background: #f1f8e9;
+  }
+  .img-box img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Text content */
+  .slide-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: #2e7d32;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .slide-sub {
+    font-size: 17px;
+    font-weight: 600;
+    color: #555;
+    text-align: center;
+    margin-top: 4px;
+  }
+  .slide-text {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin: 6px 0;
+    line-height: 1.4;
+  }
+  .slide-text em { color: #43a047; font-style: normal; }
+
+  /* NAV BUTTONS */
+  .nav-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 8px 0 4px;
+    flex-shrink: 0;
+  }
+  .nav-btn {
+    background: #66BB6A;
+    border: none;
+    border-radius: 40px;
+    padding: 10px 28px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    box-shadow: 0 4px 12px rgba(102,187,106,0.3);
+    touch-action: manipulation;
+  }
+  .nav-btn:active { transform: scale(0.94); box-shadow: 0 2px 6px rgba(102,187,106,0.3); }
+  .nav-btn.secondary {
+    background: #a5d6a7;
+    color: #2e7d32;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .nav-btn.small { padding: 6px 18px; font-size: 15px; }
+
+  /* COVER */
+  .cover-icon { font-size: 70px; margin-bottom: 6px; }
+  .cover-title { font-size: 36px; font-weight: 900; color: #2e7d32; }
+  .cover-sub { font-size: 18px; color: #666; font-weight: 600; }
+  .cover-tag {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #388e3c;
+    padding: 4px 16px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 4px;
+  }
+  .sound-block {
+    background: #e8f5e9;
+    border: 2px dashed #81c784;
+    border-radius: 20px;
+    padding: 10px 24px;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .sound-block .sound-letters {
+    font-size: 28px;
+    font-weight: 900;
+    color: #2e7d32;
+  }
+  .sound-block .sound-examples {
+    font-size: 17px;
+    color: #555;
+    font-weight: 600;
+  }
+
+  /* QUIZ */
+  .quiz-option {
+    display: block;
+    width: 100%;
+    max-width: 380px;
+    margin: 6px auto;
+    padding: 12px 20px;
+    border: 2px solid #c8e6c9;
+    border-radius: 16px;
+    background: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.15s;
+    touch-action: manipulation;
+  }
+  .quiz-option:active { transform: scale(0.97); }
+  .quiz-option.correct {
+    background: #a5d6a7;
+    border-color: #43a047;
+    color: #1b5e20;
+  }
+  .quiz-option.wrong {
+    background: #ffcdd2;
+    border-color: #e57373;
+    color: #b71c1c;
+  }
+  .quiz-option.disabled { pointer-events: none; opacity: 0.7; }
+
+  /* MATCH GAME */
+  .match-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 8px 0;
+  }
+  .match-card {
+    background: #e8f5e9;
+    border: 3px solid #a5d6a7;
+    border-radius: 18px;
+    padding: 12px 24px;
+    font-size: 22px;
+    font-weight: 800;
+    color: #2e7d32;
+    cursor: pointer;
+    transition: all 0.15s;
+    touch-action: manipulation;
+    min-width: 80px;
+    text-align: center;
+  }
+  .match-card:active { transform: scale(0.93); }
+  .match-card.selected {
+    border-color: #43a047;
+    background: #c8e6c9;
+    box-shadow: 0 0 0 3px #66BB6A;
+  }
+  .match-card.matched {
+    background: #a5d6a7;
+    border-color: #2e7d32;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .match-card.wrong-flash {
+    background: #ffcdd2;
+    border-color: #e57373;
+  }
+
+  /* FILL-IN */
+  .fill-q {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin: 8px 0;
+    text-align: center;
+  }
+  .fill-q select {
+    font-family: 'Nunito', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border: 2px solid #a5d6a7;
+    border-radius: 12px;
+    background: #fff;
+    color: #2e7d32;
+    outline: none;
+    touch-action: manipulation;
+  }
+  .fill-q select:focus { border-color: #43a047; }
+  .fill-result {
+    font-size: 16px;
+    font-weight: 700;
+    margin-left: 6px;
+  }
+  .fill-result.ok { color: #2e7d32; }
+  .fill-result.bad { color: #e53935; }
+
+  /* Celebration overlay */
+  .celebration {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 20;
+    overflow: hidden;
+  }
+  .confetti-piece {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    top: -20px;
+  }
+
+  /* Typing / highlight */
+  .highlight-green { color: #2e7d32; font-weight: 800; }
+
+  /* Scrollable slides */
+  .slide.scrollable { justify-content: flex-start; padding-top: 20px; }
+
+  /* Section labels */
+  .section-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #81c784;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  /* Practice area */
+  .practice-area {
+    width: 100%;
+    max-width: 500px;
+    margin: 4px auto;
+  }
+
+  /* Responsive font scaling */
+  @media (max-height: 650px) {
+    .slide-title { font-size: 22px; }
+    .slide-text { font-size: 16px; }
+    .cover-title { font-size: 28px; }
+    .cover-icon { font-size: 50px; }
+    .quiz-option { font-size: 16px; padding: 8px 16px; }
+    .match-card { font-size: 18px; padding: 8px 16px; }
+  }
+
+  /* Confetti burst */
+  .burst {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 25;
+  }
+
+  /* extra */
+  .mt-2 { margin-top: 8px; }
+  .mb-2 { margin-bottom: 8px; }
+  .flex-col { display: flex; flex-direction: column; align-items: center; }
+  .gap-1 { gap: 4px; }
+  .w-full { width: 100%; }
+
+  .star {
+    display: inline-block;
+    font-size: 40px;
+    opacity: 0;
+    transform: scale(0);
+  }
+  .star.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <a href="../" title="Home">🏠</a>
+    <span class="lesson-label">Lesson 19 · The Lost Cat</span>
+    <div class="nav-right">
+      <a href="../english-20-storm.html" title="Next Lesson">▶</a>
+    </div>
+  </div>
+
+  <!-- SLIDES CONTAINER -->
+  <div class="slides-container" id="slidesContainer">
+
+    <!-- ============ SLIDE 0: COVER ============ -->
+    <div class="slide active" data-slide="0">
+      <div class="cover-icon">🐱</div>
+      <div class="cover-title">The Lost Cat</div>
+      <div class="cover-sub">Lesson 19 · Story Lesson</div>
+
+      <div class="sound-block">
+        <div class="sound-letters">wh → /w/</div>
+        <div class="sound-examples">what · when · where · white · why</div>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:6px 0;">
+        <span class="cover-tag">📖 was</span>
+        <span class="cover-tag">📖 went</span>
+        <span class="cover-tag">📖 what</span>
+        <span class="cover-tag">📖 when</span>
+        <span class="cover-tag">📖 where</span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:2px 0 8px;">
+        <span class="cover-tag">🐱 lost</span>
+        <span class="cover-tag">🔍 find</span>
+        <span class="cover-tag">👀 look</span>
+        <span class="cover-tag">🤝 help</span>
+        <span class="cover-tag">🧑 friend</span>
+        <span class="cover-tag">🏠 home</span>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn" onclick="goSlide(1)">Start →</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 1: Ginger Is Gone ============ -->
+    <div class="slide" data-slide="1">
+      <div class="section-label">🐱 Page 1</div>
+      <div class="slide-title">Ginger Is Gone</div>
+      <div class="slide-sub" style="margin-bottom:4px;">Steve's cat Ginger is lost!</div>
+      <div class="img-box">
+        <img src="images/english-19/webp/page-01.webp" alt="Ginger is lost" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;font-size:40px;\'>🐱❓</div>'">
+      </div>
+      <div class="slide-text">"Where <em>is</em> Ginger?"</div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="speakText('Steve looked everywhere. His cat Ginger was lost!')">🔊 Read</button>
+        <button class="nav-btn secondary small" onclick="goSlide(0)">◀ Back</button>
+        <button class="nav-btn small" onclick="goSlide(2)">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 2: Search the Garden ============ -->
+    <div class="slide" data-slide="2">
+      <div class="section-label">🌻 Page 2</div>
+      <div class="slide-title">Search the Garden</div>
+      <div class="slide-sub">look / where</div>
+      <div class="img-box">
+        <img src="images/english-19/webp/page-02.webp" alt="Search the garden" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;font-size:40px;\'>🌻🔍</div>'">
+      </div>
+      <div class="slide-text">"Let's <em>look</em> in the garden.<br>Where could she be?"</div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="speakText('Let us look in the garden. Where could she be?')">🔊 Read</button>
+        <button class="nav-btn secondary small" onclick="goSlide(1)">◀ Back</button>
+        <button class="nav-btn small" onclick="goSlide(3)">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 3: Ask the Neighbors ============ -->
+    <div class="slide" data-slide="3">
+      <div class="section-label">🏘️ Page 3</div>
+      <div class="slide-title">Ask the Neighbors</div>
+      <div class="slide-sub">help / when</div>
+      <div class="img-box">
+        <img src="images/english-19/webp/page-03.webp" alt="Ask the neighbors" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;font-size:40px;\'>🏘️🤝</div>'">
+      </div>
+      <div class="slide-text">"Can you <em>help</em> us?<br>When did you see her?"</div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="speakText('Can you help us? When did you see her?')">🔊 Read</button>
+        <button class="nav-btn secondary small" onclick="goSlide(2)">◀ Back</button>
+        <button class="nav-btn small" onclick="goSlide(4)">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 4: A Friend Finds Her ============ -->
+    <div class="slide" data-slide="4">
+      <div class="section-label">🧑 Page 4</div>
+      <div class="slide-title">A Friend Finds Her</div>
+      <div class="slide-sub">find / friend</div>
+      <div class="img-box">
+        <img src="images/english-19/webp/page-04.webp" alt="A friend finds Ginger" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;font-size:40px;\'>🧑🐱</div>'">
+      </div>
+      <div class="slide-text">"I <em>found</em> her!" said Mia.<br>"Your <em>friend</em> helped me <em>find</em> her."</div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="speakText('I found her! said Mia. Your friend helped me find her.')">🔊 Read</button>
+        <button class="nav-btn secondary small" onclick="goSlide(3)">◀ Back</button>
+        <button class="nav-btn small" onclick="goSlide(5)">Next ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 5: Found! ============ -->
+    <div class="slide" data-slide="5">
+      <div class="section-label">🏠 Page 5</div>
+      <div class="slide-title">Found!</div>
+      <div class="slide-sub">home / happy</div>
+      <div class="img-box">
+        <img src="images/english-19/webp/page-05.webp" alt="Ginger is home" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:40px;text-align:center;font-size:40px;\'>🏠😊</div>'">
+      </div>
+      <div class="slide-text">Ginger is <em>home</em>!<br>Everyone is <em>happy</em>. 🎉</div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="speakText('Ginger is home! Everyone is happy.')">🔊 Read</button>
+        <button class="nav-btn secondary small" onclick="goSlide(4)">◀ Back</button>
+        <button class="nav-btn small" onclick="goSlide(6)">Practice ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 6: wh Word Quiz ============ -->
+    <div class="slide scrollable" data-slide="6">
+      <div class="section-label">❓ wh Word Quiz</div>
+      <div class="slide-title" style="font-size:24px;">what · when · where · white · why</div>
+      <div class="slide-sub">Tap the correct wh word!</div>
+
+      <div class="practice-area" id="whQuizArea" style="margin-top:6px;">
+        <div style="font-size:20px;font-weight:800;color:#2e7d32;text-align:center;margin:6px 0;" id="whQuestion">Q: ___ is your name?</div>
+        <div id="whOptions"></div>
+        <div style="text-align:center;margin-top:6px;font-size:16px;font-weight:700;color:#888;" id="whScore">Score: 0 / 5</div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="goSlide(5)">◀ Story</button>
+        <button class="nav-btn small" onclick="goSlide(7)">Sight Words ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 7: Sight Word Practice (was/went) ============ -->
+    <div class="slide scrollable" data-slide="7">
+      <div class="section-label">📝 Sight Words: was · went</div>
+      <div class="slide-title" style="font-size:24px;">Fill in: was or went</div>
+
+      <div class="practice-area" id="fillArea" style="margin-top:6px;">
+        <div id="fillQuestions"></div>
+      </div>
+
+      <div style="text-align:center;margin:6px 0;">
+        <button class="nav-btn small" onclick="checkFill()">✅ Check</button>
+      </div>
+      <div id="fillTotal" style="text-align:center;font-size:18px;font-weight:800;color:#2e7d32;"></div>
+
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="goSlide(6)">◀ wh Quiz</button>
+        <button class="nav-btn small" onclick="goSlide(8)">Match Game ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 8: Match Game (lost / find / look) ============ -->
+    <div class="slide scrollable" data-slide="8">
+      <div class="section-label">🔗 Match: lost · find · look · help · friend · home</div>
+      <div class="slide-title" style="font-size:22px;">Match the word to its pair</div>
+
+      <div class="practice-area" id="matchArea" style="margin-top:4px;">
+        <div class="match-grid" id="matchGrid"></div>
+      </div>
+      <div id="matchStatus" style="text-align:center;font-size:17px;font-weight:700;color:#888;">Match words that go together</div>
+
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="goSlide(7)">◀ Fill-in</button>
+        <button class="nav-btn small" onclick="celebrate(); goSlide(9)">Finish ▶</button>
+      </div>
+    </div>
+
+    <!-- ============ SLIDE 9: Celebration ============ -->
+    <div class="slide" data-slide="9">
+      <div class="cover-icon">🎉</div>
+      <div class="cover-title">Great Job!</div>
+      <div class="cover-sub">You finished Lesson 19: The Lost Cat</div>
+      <div class="img-box" style="max-width:300px;">
+        <img src="images/english-19/webp/page-08.webp" alt="Celebration" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:30px;text-align:center;font-size:60px;\'>🎉🐱</div>'">
+      </div>
+      <div style="margin:6px 0;">
+        <span style="font-size:30px;" id="star1" class="star">⭐</span>
+        <span style="font-size:30px;" id="star2" class="star">⭐</span>
+        <span style="font-size:30px;" id="star3" class="star">⭐</span>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn secondary small" onclick="goSlide(0)">🔁 Restart</button>
+        <button class="nav-btn small" onclick="celebrate()">🎊 Celebrate!</button>
+      </div>
+      <div class="celebration" id="celebrationContainer"></div>
+    </div>
+
+  </div><!-- end slides-container -->
+</div>
+
+<script>
+  // ============= NAVIGATION =============
+  let currentSlide = 0;
+  const totalSlides = 10;
+
+  function goSlide(idx) {
+    if (idx < 0 || idx >= totalSlides) return;
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    const el = document.querySelector(`.slide[data-slide="${idx}"]`);
+    if (el) el.classList.add('active');
+    currentSlide = idx;
+    // Init practices when slide is entered
+    if (idx === 6) initWhQuiz();
+    if (idx === 7) initFill();
+    if (idx === 8) initMatch();
+    if (idx === 9) showStars();
+  }
+
+  // ============= SPEECH SYNTHESIS =============
+  function speakText(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.85;
+    u.pitch = 1.05;
+    u.lang = 'en-US';
+    window.speechSynthesis.speak(u);
+  }
+
+  // ============= WH QUIZ (Slide 6) =============
+  const whQuestions = [
+    { q: '___ is your name?', a: 'what' },
+    { q: '___ do you live?', a: 'where' },
+    { q: '___ is your birthday?', a: 'when' },
+    { q: '___ is the sky blue?', a: 'why' },
+    { q: 'Snow is ___.', a: 'white' }
+  ];
+  let whIdx = 0;
+  let whScore = 0;
+  let whDone = false;
+
+  function initWhQuiz() {
+    whIdx = 0;
+    whScore = 0;
+    whDone = false;
+    document.getElementById('whScore').textContent = 'Score: 0 / 5';
+    showWhQuestion();
+  }
+
+  function showWhQuestion() {
+    if (whIdx >= whQuestions.length) {
+      document.getElementById('whQuestion').textContent = '🎉 All done! Great job!';
+      document.getElementById('whOptions').innerHTML = '';
+      document.getElementById('whScore').textContent = `Final Score: ${whScore} / 5`;
+      whDone = true;
+      // auto-fire confetti
+      if (whScore >= 3) celebrate();
+      return;
+    }
+    const q = whQuestions[whIdx];
+    document.getElementById('whQuestion').textContent = `Q${whIdx+1}: ${q.q}`;
+    const opts = ['what','when','where','white','why'];
+    const html = opts.map(w => `<button class="quiz-option" data-word="${w}" onclick="answerWh('${w}')">${w}</button>`).join('');
+    document.getElementById('whOptions').innerHTML = html;
+    document.getElementById('whScore').textContent = `Score: ${whScore} / 5`;
+  }
+
+  function answerWh(word) {
+    if (whDone) return;
+    const btns = document.querySelectorAll('#whOptions .quiz-option');
+    btns.forEach(b => b.classList.add('disabled'));
+    const correct = whQuestions[whIdx].a;
+    btns.forEach(b => {
+      if (b.dataset.word === correct) b.classList.add('correct');
+      else if (b.dataset.word === word && word !== correct) b.classList.add('wrong');
+    });
+    if (word === correct) whScore++;
+    document.getElementById('whScore').textContent = `Score: ${whScore} / 5`;
+    setTimeout(() => {
+      whIdx++;
+      showWhQuestion();
+    }, 800);
+  }
+
+  // ============= FILL-IN: was / went (Slide 7) =============
+  const fillData = [
+    { s: 'She ___ happy yesterday.', a: 'was' },
+    { s: 'He ___ to the park.', a: 'went' },
+    { s: 'The cat ___ lost.', a: 'was' },
+    { s: 'They ___ home.', a: 'went' },
+    { s: 'It ___ a sunny day.', a: 'was' }
+  ];
+
+  function initFill() {
+    const container = document.getElementById('fillQuestions');
+    container.innerHTML = fillData.map((item, i) => {
+      return `<div class="fill-q">${i+1}. ${item.s.replace('___', `<select id="fillSel${i}"><option value="">__</option><option value="was">was</option><option value="went">went</option></select>`)} <span class="fill-result" id="fillRes${i}"></span></div>`;
+    }).join('');
+    document.getElementById('fillTotal').textContent = '';
+  }
+
+  function checkFill() {
+    let correct = 0;
+    fillData.forEach((item, i) => {
+      const sel = document.getElementById(`fillSel${i}`);
+      const res = document.getElementById(`fillRes${i}`);
+      if (!sel || !res) return;
+      if (sel.value === item.a) {
+        res.textContent = '✓';
+        res.className = 'fill-result ok';
+        correct++;
+      } else {
+        res.textContent = '✗';
+        res.className = 'fill-result bad';
+      }
+    });
+    document.getElementById('fillTotal').textContent = `✅ ${correct} / ${fillData.length} correct`;
+    if (correct === fillData.length) celebrate();
+  }
+
+  // ============= MATCH GAME (Slide 8) =============
+  const matchPairs = [
+    { a: 'lost', b: 'find' },
+    { a: 'look', b: 'help' },
+    { a: 'friend', b: 'home' }
+  ];
+  let matchCards = [];
+  let selected = null;
+  let matchedCount = 0;
+  let matchLocked = false;
+
+  function initMatch() {
+    matchedCount = 0;
+    selected = null;
+    matchLocked = false;
+    // Build shuffled cards
+    const items = [];
+    matchPairs.forEach((p, idx) => {
+      items.push({ text: p.a, pairId: idx });
+      items.push({ text: p.b, pairId: idx });
+    });
+    // Shuffle
+    for (let i = items.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+    matchCards = items;
+    const grid = document.getElementById('matchGrid');
+    grid.innerHTML = items.map((item, i) =>
+      `<div class="match-card" data-index="${i}" data-pair="${item.pairId}" onclick="clickMatch(${i})">${item.text}</div>`
+    ).join('');
+    document.getElementById('matchStatus').textContent = 'Match words that go together';
+  }
+
+  function clickMatch(idx) {
+    if (matchLocked) return;
+    const cards = document.querySelectorAll('#matchGrid .match-card');
+    const card = cards[idx];
+    if (!card || card.classList.contains('matched')) return;
+
+    if (selected === null) {
+      // First selection
+      selected = idx;
+      card.classList.add('selected');
+    } else if (selected === idx) {
+      // Deselect
+      card.classList.remove('selected');
+      selected = null;
+    } else {
+      // Second selection
+      const first = cards[selected];
+      const second = card;
+      if (!first || !second) return;
+      const p1 = first.dataset.pair;
+      const p2 = second.dataset.pair;
+
+      if (p1 === p2) {
+        // Match!
+        first.classList.remove('selected');
+        first.classList.add('matched');
+        second.classList.add('matched');
+        matchedCount++;
+        selected = null;
+        document.getElementById('matchStatus').textContent = `✅ Matched! (${matchedCount}/3)`;
+        if (matchedCount === 3) {
+          document.getElementById('matchStatus').textContent = '🎉 All matched! Great!';
+          celebrate();
+        }
+      } else {
+        // Wrong
+        matchLocked = true;
+        first.classList.remove('selected');
+        first.classList.add('wrong-flash');
+        second.classList.add('wrong-flash');
+        document.getElementById('matchStatus').textContent = '❌ Try again!';
+        setTimeout(() => {
+          first.classList.remove('wrong-flash');
+          second.classList.remove('wrong-flash');
+          selected = null;
+          matchLocked = false;
+          document.getElementById('matchStatus').textContent = 'Match words that go together';
+        }, 600);
+      }
+    }
+  }
+
+  // ============= CELEBRATION / CONFETTI =============
+  function celebrate() {
+    const container = document.getElementById('celebrationContainer') || document.querySelector('.celebration') || document.body;
+    const rect = container.getBoundingClientRect ? container.getBoundingClientRect() : { width: window.innerWidth, height: window.innerHeight };
+    const w = rect.width || 400;
+    const h = rect.height || 400;
+
+    const colors = ['#FF6B6B','#4ECDC4','#FFE66D','#A8E6CF','#FF8A80','#B388FF','#FFD54F','#69F0AE'];
+
+    for (let i = 0; i < 60; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      const size = 6 + Math.random() * 10;
+      piece.style.width = size + 'px';
+      piece.style.height = size + 'px';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+      container.appendChild(piece);
+
+      gsap.fromTo(piece,
+        { y: -20, opacity: 1 },
+        {
+          y: h + 20,
+          opacity: 0,
+          duration: 1.5 + Math.random() * 2,
+          delay: Math.random() * 0.8,
+          ease: 'power2.out',
+          rotation: 360 + Math.random() * 720,
+          onComplete: () => { if (piece.parentNode) piece.parentNode.removeChild(piece); }
+        }
+      );
+    }
+  }
+
+  // ============= STARS (slide 9) =============
+  function showStars() {
+    const stars = [1,2,3];
+    stars.forEach((_, i) => {
+      const el = document.getElementById(`star${i+1}`);
+      if (el) {
+        el.classList.remove('show');
+        gsap.to(el, { scale: 0, opacity: 0, duration: 0 });
+        gsap.to(el, {
+          scale: 1.2,
+          opacity: 1,
+          duration: 0.5,
+          delay: 0.3 + i * 0.25,
+          ease: 'back.out(2)',
+          onStart: () => el.classList.add('show'),
+          onComplete: () => {
+            gsap.to(el, { scale: 1, duration: 0.2 });
+            // mini confetti burst per star
+            if (i === 2) setTimeout(celebrate, 200);
+          }
+        });
+      }
+    });
+  }
+
+  // ============= INIT =============
+  // Ensure first slide cover is active
+  document.addEventListener('DOMContentLoaded', () => {
+    goSlide(0);
+  });
+
+  // Keyboard navigation: left/right arrows
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') goSlide(currentSlide + 1);
+    if (e.key === 'ArrowLeft') goSlide(currentSlide - 1);
+  });
+</script>
+
+</body>
+</html>
