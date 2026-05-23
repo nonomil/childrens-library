@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第19课 · 复合词的秘密 | 儿童中文图书馆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ── RESET & BASE ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(14px,2vw,22px);-webkit-text-size-adjust:100%;touch-action:manipulation}
+body{font-family:'Nunito','PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;background:#ffebee;color:#2d3436;overflow-x:hidden;min-height:100vh;min-height:100dvh;line-height:1.5}
+img{display:block;max-width:100%;height:auto;-webkit-user-drag:none;user-select:none;pointer-events:none}
+button,input{font-family:inherit;font-size:inherit;border:none;outline:none;background:none;cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid #EF5350;outline-offset:2px;border-radius:4px}
+
+/* ── UTILITY ── */
+.container{max-width:1200px;margin:0 auto;padding:0 1rem}
+.flex{display:flex;align-items:center;justify-content:center}
+.grid{display:grid}
+.text-center{text-align:center}
+.hidden{display:none!important}
+.fade-in{animation:fadeIn .5s ease both}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── TOP BAR ── */
+.top-bar{position:sticky;top:0;z-index:100;background:linear-gradient(135deg,#C62828,#EF5350);color:#fff;padding:.6rem 1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(198,40,40,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.top-bar a{color:#fff;text-decoration:none;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.4rem;padding:.3rem .6rem;border-radius:8px;transition:background .2s}
+.top-bar a:hover{background:rgba(255,255,255,.2)}
+.top-bar .left{gap:.2rem}
+.top-bar .right{gap:.2rem}
+.top-bar .nav-icon{font-size:1.3rem;line-height:1}
+.top-bar .title{font-weight:800;font-size:1.1rem;letter-spacing:.5px;position:absolute;left:50%;transform:translateX(-50%)}
+
+/* ── SECTION PAGES ── */
+.page{display:none;min-height:calc(100vh - 56px);padding:1.5rem 1rem 3rem;animation:fadeIn .4s ease both}
+.page.active{display:block}
+
+/* ── CARD ── */
+.card{background:#fff;border-radius:24px;padding:1.8rem 1.5rem;box-shadow:0 4px 24px rgba(0,0,0,.06);margin-bottom:1.5rem;transition:transform .2s,box-shadow .2s;border:2px solid transparent}
+.card:active{transform:scale(.99)}
+.card.highlight{border-color:#EF5350;box-shadow:0 4px 20px rgba(239,83,80,.15)}
+.card-title{font-size:1.4rem;font-weight:800;color:#C62828;margin-bottom:1rem;display:flex;align-items:center;gap:.6rem}
+.card-icon{font-size:1.6rem}
+
+/* ── HEADINGS ── */
+h1{font-size:2rem;font-weight:900;color:#C62828;text-align:center;margin-bottom:.5rem;line-height:1.3}
+h2{font-size:1.5rem;font-weight:800;color:#C62828;margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+h3{font-size:1.2rem;font-weight:700;color:#EF5350;margin-bottom:.5rem}
+
+/* ── COVER ── */
+.cover-section{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 60px);text-align:center;padding:2rem 1rem}
+.cover-icon{font-size:5rem;margin-bottom:1rem;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.cover-title{font-size:2.6rem;font-weight:900;color:#C62828;line-height:1.2;margin-bottom:.5rem}
+.cover-sub{font-size:1.2rem;color:#7f8c8d;margin-bottom:1.5rem}
+.cover-goals{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1rem}
+.cover-goal{background:#fff;border:2px solid #EF5350;border-radius:40px;padding:.5rem 1.2rem;font-weight:700;color:#C62828;font-size:.95rem;display:flex;align-items:center;gap:.4rem}
+.cover-goal .g-icon{font-size:1.1rem}
+.cover-start{background:linear-gradient(135deg,#C62828,#EF5350);color:#fff;border:none;padding:.9rem 2.8rem;border-radius:60px;font-size:1.2rem;font-weight:800;margin-top:2rem;box-shadow:0 6px 24px rgba(198,40,40,.4);transition:transform .2s,box-shadow .2s}
+.cover-start:active{transform:scale(.95);box-shadow:0 2px 12px rgba(198,40,40,.3)}
+
+/* ── COMPOUND DISPLAY ── */
+.compound-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin:1rem 0}
+.compound-card{background:linear-gradient(145deg,#fff,#fce4ec);border-radius:20px;padding:1.2rem;text-align:center;border:2px solid #f8bbd0;transition:transform .2s,box-shadow .2s;cursor:default}
+.compound-card:active{transform:scale(.96)}
+.compound-word{font-size:2rem;font-weight:900;color:#C62828;margin-bottom:.3rem;letter-spacing:4px}
+.compound-parts{display:flex;justify-content:center;align-items:center;gap:.2rem;font-size:1.5rem;font-weight:700;color:#EF5350;margin:.2rem 0}
+.compound-parts .split{color:#b0bec5;font-weight:400;font-size:1.2rem}
+.compound-stroke{font-size:.8rem;color:#78909c;margin-top:.3rem;display:flex;justify-content:center;gap:.4rem;flex-wrap:wrap}
+.compound-stroke span{background:#ffebee;padding:.15rem .5rem;border-radius:12px;color:#C62828}
+.compound-meaning{font-size:.95rem;color:#5d4037;margin-top:.4rem;font-weight:600}
+
+/* ── STORY ── */
+.story-box{background:linear-gradient(135deg,#fff3e0,#ffebee);border-radius:20px;padding:1.5rem;border-left:5px solid #EF5350;margin:1rem 0;position:relative}
+.story-box .story-label{position:absolute;top:-12px;left:20px;background:#EF5350;color:#fff;padding:.2rem 1rem;border-radius:20px;font-size:.8rem;font-weight:700}
+.story-box p{font-size:1.05rem;line-height:1.8;margin-bottom:.8rem;color:#4e342e}
+.story-box .story-question{background:#fff;border-radius:16px;padding:1rem;margin:.8rem 0;border:2px dashed #EF5350;cursor:pointer;transition:background .2s}
+.story-box .story-question:active{background:#fce4ec}
+.story-box .story-question .q-label{font-weight:800;color:#C62828;display:block;margin-bottom:.3rem}
+
+/* ── PRACTICE ── */
+.practice-area{background:#fff;border-radius:24px;padding:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.05);margin:1rem 0}
+.practice-area .p-title{font-weight:800;color:#C62828;font-size:1.2rem;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+
+/* decompose drag */
+.decompose-zone{display:flex;flex-direction:column;align-items:center;gap:.8rem;padding:1rem;background:#fce4ec;border-radius:20px;margin:.5rem 0}
+.decompose-word{font-size:2.4rem;font-weight:900;color:#C62828;letter-spacing:8px;cursor:grab;user-select:none;padding:.5rem 1.2rem;background:#fff;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .2s}
+.decompose-word:active{cursor:grabbing;transform:scale(.95)}
+.decompose-result{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;min-height:3rem;width:100%}
+.decompose-slot{display:inline-flex;align-items:center;justify-content:center;min-width:60px;padding:.5rem 1rem;background:#fff;border:3px dashed #e0e0e0;border-radius:16px;font-size:1.8rem;font-weight:700;color:#b0bec5;transition:all .3s}
+.decompose-slot.filled{border-style:solid;border-color:#EF5350;background:#fff;color:#C62828}
+.decompose-btn{background:linear-gradient(135deg,#EF5350,#C62828);color:#fff;padding:.6rem 2rem;border-radius:40px;font-weight:700;font-size:1rem;box-shadow:0 4px 16px rgba(198,40,40,.3);transition:transform .2s}
+.decompose-btn:active{transform:scale(.92)}
+
+/* match game */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+@media(min-width:600px){.match-grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+.match-card{padding:1rem;background:#fff;border:2px solid #f8bbd0;border-radius:16px;text-align:center;font-size:1.6rem;font-weight:700;color:#C62828;transition:all .2s;cursor:pointer;touch-action:manipulation;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.match-card:active{transform:scale(.92)}
+.match-card.selected{border-color:#EF5350;background:#fce4ec;box-shadow:0 0 0 3px #EF5350}
+.match-card.matched{background:#c8e6c9;border-color:#4caf50;color:#2e7d32;opacity:.7;cursor:default}
+
+/* fill quiz */
+.quiz-options{display:flex;flex-wrap:wrap;gap:.6rem;margin:.5rem 0}
+.quiz-opt{background:#fff;padding:.5rem 1.2rem;border-radius:40px;border:2px solid #e0e0e0;font-size:1.1rem;font-weight:700;color:#555;transition:all .2s;touch-action:manipulation}
+.quiz-opt:active{transform:scale(.92)}
+.quiz-opt.correct{border-color:#4caf50;background:#e8f5e9;color:#2e7d32}
+.quiz-opt.wrong{border-color:#f44336;background:#ffebee;color:#c62828;animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* ── CHALLENGE ── */
+.challenge-box{background:linear-gradient(145deg,#ffebee,#fce4ec);border-radius:20px;padding:1.5rem;border:3px solid #EF5350;margin:1rem 0}
+.challenge-q{font-size:1.2rem;font-weight:700;color:#C62828;margin-bottom:.8rem}
+.challenge-hint{background:#fff3e0;border-radius:12px;padding:.6rem 1rem;font-size:.95rem;color:#e65100;margin:.5rem 0;display:flex;align-items:center;gap:.5rem}
+.challenge-answer{background:#fff;border-radius:16px;padding:.8rem 1.2rem;font-size:1.4rem;font-weight:800;color:#C62828;text-align:center;margin:.5rem 0;border:2px dashed #EF5350;min-height:3rem}
+.challenge-reveal{background:linear-gradient(135deg,#ff8a65,#EF5350);color:#fff;padding:.5rem 1.8rem;border-radius:40px;font-weight:700;font-size:1rem;box-shadow:0 4px 12px rgba(239,83,80,.3);transition:transform .2s;margin-top:.5rem}
+.challenge-reveal:active{transform:scale(.92)}
+
+/* ── POEM ── */
+.poem-section{background:linear-gradient(145deg,#fff8e1,#ffebee);border-radius:24px;padding:1.5rem;margin:1rem 0;border:2px solid #EF5350}
+.poem-title{font-size:1.4rem;font-weight:800;color:#C62828;text-align:center;margin-bottom:.5rem}
+.poem-subtitle{font-size:.95rem;color:#7f8c8d;text-align:center;margin-bottom:1rem}
+.poem-images{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:.8rem 0}
+@media(min-width:600px){.poem-images{grid-template-columns:repeat(4,1fr)}}
+.poem-image-card{border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 3px 12px rgba(0,0,0,.08);transition:transform .2s;cursor:pointer}
+.poem-image-card:active{transform:scale(.95)}
+.poem-image-card img{width:100%;aspect-ratio:1;object-fit:cover}
+.poem-image-card .poem-line-text{text-align:center;padding:.4rem;font-weight:700;color:#C62828;font-size:.9rem}
+.poem-full{background:#fff;border-radius:16px;padding:1.2rem;text-align:center;margin-top:.8rem;font-size:1.3rem;font-weight:700;color:#C62828;line-height:2.2;letter-spacing:1px;border:2px solid #f8bbd0}
+
+/* ── SUMMARY ── */
+.summary-box{background:linear-gradient(135deg,#C62828,#EF5350);border-radius:24px;padding:1.8rem;color:#fff;margin:1rem 0}
+.summary-box h2{color:#fff;margin-bottom:.6rem}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin:.8rem 0}
+.summary-item{background:rgba(255,255,255,.15);border-radius:16px;padding:.8rem;text-align:center;backdrop-filter:blur(4px)}
+.summary-item .s-word{font-size:1.6rem;font-weight:900;letter-spacing:3px}
+.summary-item .s-meaning{font-size:.8rem;opacity:.9;margin-top:.2rem}
+.summary-stat{background:rgba(255,255,255,.12);border-radius:40px;padding:.4rem 1.2rem;display:inline-flex;align-items:center;gap:.4rem;font-weight:700;font-size:.9rem;margin-top:.5rem}
+
+/* ── NAV BUTTONS ── */
+.nav-buttons{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0 .5rem}
+.nav-btn{background:#fff;border:2px solid #EF5350;color:#C62828;padding:.6rem 1.6rem;border-radius:40px;font-weight:700;font-size:1rem;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.nav-btn:active{transform:scale(.92);background:#fce4ec}
+.nav-btn.primary{background:linear-gradient(135deg,#C62828,#EF5350);color:#fff;border-color:transparent;box-shadow:0 4px 16px rgba(198,40,40,.3)}
+
+/* ── PROGRESS BAR ── */
+.progress-bar{display:flex;justify-content:center;gap:.4rem;padding:.6rem 0;flex-wrap:wrap}
+.progress-dot{width:12px;height:12px;border-radius:50%;background:#e0e0e0;transition:all .3s;cursor:pointer}
+.progress-dot.active{background:#EF5350;transform:scale(1.3);box-shadow:0 0 0 3px rgba(239,83,80,.3)}
+.progress-dot.done{background:#c8e6c9}
+
+/* ── RESPONSIVE ── */
+@media(min-width:768px){
+  .compound-grid{grid-template-columns:repeat(3,1fr)}
+  .summary-grid{grid-template-columns:repeat(6,1fr)}
+  .cover-title{font-size:3.2rem}
+}
+@media(max-width:420px){
+  h1{font-size:1.6rem}
+  .cover-title{font-size:2rem}
+  .compound-word{font-size:1.6rem}
+  .card{padding:1.2rem 1rem}
+  .top-bar .title{font-size:.9rem}
+}
+
+/* ── LANDSCAPE TABLET TWEAKS ── */
+@media(orientation:landscape) and (max-height:500px){
+  .cover-section{min-height:auto;padding:1rem}
+  .cover-icon{font-size:3rem}
+  .cover-title{font-size:2rem}
+  .page{padding:1rem .8rem 2rem}
+  .compound-grid{grid-template-columns:repeat(3,1fr);gap:.8rem}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#ffebee}
+::-webkit-scrollbar-thumb{background:#EF5350;border-radius:10px}
+</style>
+</head>
+<body>
+
+<!-- ═══ TOP BAR ═══ -->
+<header class="top-bar">
+  <a href="../" class="left"><span class="nav-icon">🏠</span><span class="hide-mobile">首页</span></a>
+  <span class="title">第19课 · 复合词的秘密</span>
+  <a href="../chinese-20-reading.html" class="right"><span class="hide-mobile">下一个</span><span class="nav-icon">▶</span></a>
+</header>
+
+<!-- ═══ PAGE 1: COVER ═══ -->
+<section class="page active" id="page-1">
+  <div class="cover-section">
+    <div class="cover-icon">🧩</div>
+    <div class="cover-title">词语合成台</div>
+    <div class="cover-sub">第19课 · 复合词的秘密</div>
+    <div class="cover-goals">
+      <span class="cover-goal"><span class="g-icon">🔍</span> 认识复合词</span>
+      <span class="cover-goal"><span class="g-icon">🧩</span> 两个字拼一起产生新意思</span>
+      <span class="cover-goal"><span class="g-icon">✍️</span> 学会分解合成</span>
+    </div>
+    <div style="margin-top:2rem;background:#fff;border-radius:24px;padding:2rem 2.5rem;box-shadow:0 6px 30px rgba(0,0,0,.06);max-width:500px;width:100%">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;text-align:center">
+        <div><span style="font-size:2.2rem;font-weight:900;color:#C62828">太</span><br><span style="font-size:.7rem;color:#78909c">4画</span></div>
+        <div><span style="font-size:2.2rem;font-weight:900;color:#EF5350;opacity:.5">＋</span></div>
+        <div><span style="font-size:2.2rem;font-weight:900;color:#C62828">阳</span><br><span style="font-size:.7rem;color:#78909c">6画</span></div>
+        <div style="grid-column:1/-1;font-size:2.8rem;font-weight:900;color:#C62828;letter-spacing:6px;border-top:3px dashed #f8bbd0;padding-top:.8rem">太阳</div>
+        <div style="grid-column:1/-1;font-size:1rem;color:#5d4037;font-weight:600">☀️ 太 + 阳 = 太阳 (天空中最亮的星)</div>
+      </div>
+    </div>
+    <button class="cover-start" onclick="goToPage(2)">开始学习 🚀</button>
+    <div class="progress-bar" style="margin-top:2rem">
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 2: 天空组 ═══ -->
+<section class="page" id="page-2">
+  <div class="container">
+    <h1>🌤️ 天空组</h1>
+    <p style="text-align:center;color:#7f8c8d;margin-bottom:1.2rem">看！天上的词语都是由两个好朋友拼成的～</p>
+
+    <div class="compound-grid">
+      <!-- 太阳 -->
+      <div class="compound-card" data-word="太阳">
+        <div class="compound-word">太阳</div>
+        <div class="compound-parts"><span>太</span><span class="split">+</span><span>阳</span></div>
+        <div class="compound-stroke"><span>太 4画</span><span>阳 6画</span></div>
+        <div class="compound-meaning">☀️ 天空中最亮的恒星</div>
+      </div>
+      <!-- 月亮 -->
+      <div class="compound-card" data-word="月亮">
+        <div class="compound-word">月亮</div>
+        <div class="compound-parts"><span>月</span><span class="split">+</span><span>亮</span></div>
+        <div class="compound-stroke"><span>月 4画</span><span>亮 9画</span></div>
+        <div class="compound-meaning">🌙 夜晚发光的卫星</div>
+      </div>
+      <!-- 星星 -->
+      <div class="compound-card" data-word="星星">
+        <div class="compound-word">星星</div>
+        <div class="compound-parts"><span>星</span><span class="split">+</span><span>星</span></div>
+        <div class="compound-stroke"><span>星 9画</span><span>星 9画</span></div>
+        <div class="compound-meaning">⭐ 夜空中闪烁的光点</div>
+      </div>
+    </div>
+
+    <div class="card highlight" style="text-align:center">
+      <div style="font-size:1.2rem;font-weight:700;color:#C62828">✨ 发现了吗？</div>
+      <p style="color:#5d4037;margin-top:.4rem">两个字各自有各自的意思，<br>拼在一起就变成了一个新词语，意思更丰富了！</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goToPage(1)">⬅ 上一页</button>
+      <button class="nav-btn primary" onclick="goToPage(3)">下一页 ➡</button>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 3: 人物组 ═══ -->
+<section class="page" id="page-3">
+  <div class="container">
+    <h1>👥 人物组</h1>
+    <p style="text-align:center;color:#7f8c8d;margin-bottom:1.2rem">我们身边的人，他们的名字也是复合词哦！</p>
+
+    <div class="compound-grid">
+      <!-- 朋友 -->
+      <div class="compound-card" data-word="朋友">
+        <div class="compound-word">朋友</div>
+        <div class="compound-parts"><span>朋</span><span class="split">+</span><span>友</span></div>
+        <div class="compound-stroke"><span>朋 8画</span><span>友 4画</span></div>
+        <div class="compound-meaning">🤝 彼此友好的人</div>
+      </div>
+      <!-- 老师 -->
+      <div class="compound-card" data-word="老师">
+        <div class="compound-word">老师</div>
+        <div class="compound-parts"><span>老</span><span class="split">+</span><span>师</span></div>
+        <div class="compound-stroke"><span>老 6画</span><span>师 6画</span></div>
+        <div class="compound-meaning">👩‍🏫 传授知识的人</div>
+      </div>
+      <!-- 学生 -->
+      <div class="compound-card" data-word="学生">
+        <div class="compound-word">学生</div>
+        <div class="compound-parts"><span>学</span><span class="split">+</span><span>生</span></div>
+        <div class="compound-stroke"><span>学 8画</span><span>生 5画</span></div>
+        <div class="compound-meaning">🎒 学习知识的人</div>
+      </div>
+    </div>
+
+    <div class="card highlight" style="text-align:center">
+      <div style="font-size:1.2rem;font-weight:700;color:#C62828">💡 你发现规律了吗？</div>
+      <p style="color:#5d4037;margin-top:.4rem">复合词 = 第一个字 + 第二个字<br>两个字合起来表达一个完整的意思！</p>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goToPage(2)">⬅ 上一页</button>
+      <button class="nav-btn primary" onclick="goToPage(4)">下一页 ➡</button>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot done" onclick="goToPage(2)"></span>
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 4: 词语合成大赛 (Story + Practice) ═══ -->
+<section class="page" id="page-4">
+  <div class="container">
+    <h1>📖 词语合成大赛</h1>
+
+    <div class="story-box">
+      <span class="story-label">📚 故事时间</span>
+      <p>森林里举办了一场"词语合成大赛"。小兔子、小猴子和小熊都来参加啦！</p>
+      <p>🏆 第一轮：<strong>天空组</strong><br>
+      小兔子说："<strong>太</strong>和<strong>阳</strong>手拉手，变成了<strong>太阳</strong>！"<br>
+      小猴子说："<strong>月</strong>和<strong>亮</strong>做朋友，变成了<strong>月亮</strong>！"<br>
+      小熊说："<strong>星</strong>和<strong>星</strong>抱一起，变成了<strong>星星</strong>！"</p>
+      <p>🏆 第二轮：<strong>人物组</strong><br>
+      小兔子说："<strong>朋</strong>和<strong>友</strong>肩并肩，变成了<strong>朋友</strong>！"<br>
+      小猴子说："<strong>老</strong>和<strong>师</strong>一起走，变成了<strong>老师</strong>！"<br>
+      小熊说："<strong>学</strong>和<strong>生</strong>同学习，变成了<strong>学生</strong>！"</p>
+      <p>🎉 最后，大象裁判宣布："所有的复合词都是好词语！你们都是合成大赛的冠军！"</p>
+
+      <div class="story-question" onclick="speakText('太阳月亮星星朋友老师学生都是复合词')">
+        <span class="q-label">🎤 跟我读</span>
+        <span style="font-size:1.2rem;font-weight:700;color:#C62828">太阳 · 月亮 · 星星 · 朋友 · 老师 · 学生</span>
+        <span style="display:block;font-size:.8rem;color:#b0bec5;margin-top:.2rem">👆 点击听发音</span>
+      </div>
+    </div>
+
+    <!-- Practice 1: Decompose -->
+    <div class="practice-area">
+      <div class="p-title">🧩 练习一 · 分解合成词</div>
+      <p style="color:#7f8c8d;margin-bottom:.5rem">点击下面的词语，把它拆成两个好朋友！</p>
+      <div class="decompose-zone">
+        <div class="decompose-word" id="decompose-word" onclick="decomposeWord()">太阳</div>
+        <div class="decompose-result" id="decompose-result">
+          <span class="decompose-slot" id="slot-1">?</span>
+          <span style="font-size:1.8rem;color:#b0bec5;font-weight:700">+</span>
+          <span class="decompose-slot" id="slot-2">?</span>
+        </div>
+        <button class="decompose-btn" onclick="resetDecompose()">🔄 换一个词</button>
+      </div>
+    </div>
+
+    <!-- Practice 2: Match -->
+    <div class="practice-area">
+      <div class="p-title">🔗 练习二 · 配对合成</div>
+      <p style="color:#7f8c8d;margin-bottom:.5rem">点击左边一个字，再点击右边一个字，合成复合词！</p>
+      <div class="match-grid" id="match-grid">
+        <div class="match-card" data-side="left" data-char="太" data-match="阳">太</div>
+        <div class="match-card" data-side="left" data-char="月" data-match="亮">月</div>
+        <div class="match-card" data-side="left" data-char="朋" data-match="友">朋</div>
+        <div class="match-card" data-side="left" data-char="老" data-match="师">老</div>
+        <div class="match-card" data-side="right" data-char="阳" data-match="太">阳</div>
+        <div class="match-card" data-side="right" data-char="亮" data-match="月">亮</div>
+        <div class="match-card" data-side="right" data-char="友" data-match="朋">友</div>
+        <div class="match-card" data-side="right" data-char="师" data-match="老">师</div>
+      </div>
+      <div id="match-status" style="text-align:center;font-weight:700;color:#7f8c8d;margin-top:.5rem">已配对：0 / 4</div>
+    </div>
+
+    <!-- Practice 3: Fill Quiz -->
+    <div class="practice-area">
+      <div class="p-title">✍️ 练习三 · 选字填空</div>
+      <p style="color:#7f8c8d;margin-bottom:.5rem">选出正确的字，完成复合词！</p>
+      <div id="quiz-container"></div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goToPage(3)">⬅ 上一页</button>
+      <button class="nav-btn primary" onclick="goToPage(5)">下一页 ➡</button>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot done" onclick="goToPage(2)"></span>
+      <span class="progress-dot done" onclick="goToPage(3)"></span>
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 5: 挑战 ═══ -->
+<section class="page" id="page-5">
+  <div class="container">
+    <h1>🏆 挑战关卡</h1>
+
+    <!-- Challenge 1 -->
+    <div class="challenge-box">
+      <div class="challenge-q">🥇 挑战一 · 破解复合词</div>
+      <p style="color:#5d4037">"<strong>好</strong>" + "<strong>人</strong>" 合在一起，变成了什么词？</p>
+      <div class="challenge-hint">💡 提示：好人就是品德好的人</div>
+      <div class="challenge-answer" id="challenge-1-answer">????</div>
+      <button class="challenge-reveal" onclick="revealChallenge(1,'好人')">🔍 揭晓答案</button>
+    </div>
+
+    <!-- Challenge 2 -->
+    <div class="challenge-box">
+      <div class="challenge-q">🥇 挑战二 · 字的组合</div>
+      <p style="color:#5d4037">"<strong>大</strong>" + "<strong>家</strong>" 合在一起，变成了什么词？</p>
+      <div class="challenge-hint">💡 提示：指所有人，或者一个家庭</div>
+      <div class="challenge-answer" id="challenge-2-answer">????</div>
+      <button class="challenge-reveal" onclick="revealChallenge(2,'大家')">🔍 揭晓答案</button>
+    </div>
+
+    <!-- Challenge 3 -->
+    <div class="challenge-box">
+      <div class="challenge-q">🥇 挑战三 · 自己创造</div>
+      <p style="color:#5d4037">用"<strong>开</strong>"和"<strong>心</strong>"合成一个复合词！</p>
+      <div class="challenge-hint">💡 提示：心情很好的意思</div>
+      <div class="challenge-answer" id="challenge-3-answer">????</div>
+      <button class="challenge-reveal" onclick="revealChallenge(3,'开心')">🔍 揭晓答案</button>
+    </div>
+
+    <!-- Poem Section -->
+    <div class="poem-section">
+      <div class="poem-title">📜 古诗角</div>
+      <div class="poem-subtitle">《绝句》 唐·杜甫</div>
+      <div class="poem-images">
+        <div class="poem-image-card" onclick="speakText('两个黄鹂鸣翠柳')">
+          <img src="images/chinese-19/webp/poem-line-1.webp" alt="两个黄鹂鸣翠柳" loading="lazy">
+          <div class="poem-line-text">两个黄鹂鸣翠柳</div>
+        </div>
+        <div class="poem-image-card" onclick="speakText('一行白鹭上青天')">
+          <img src="images/chinese-19/webp/poem-line-2.webp" alt="一行白鹭上青天" loading="lazy">
+          <div class="poem-line-text">一行白鹭上青天</div>
+        </div>
+        <div class="poem-image-card" onclick="speakText('窗含西岭千秋雪')">
+          <img src="images/chinese-19/webp/poem-line-3.webp" alt="窗含西岭千秋雪" loading="lazy">
+          <div class="poem-line-text">窗含西岭千秋雪</div>
+        </div>
+        <div class="poem-image-card" onclick="speakText('门泊东吴万里船')">
+          <img src="images/chinese-19/webp/poem-line-4.webp" alt="门泊东吴万里船" loading="lazy">
+          <div class="poem-line-text">门泊东吴万里船</div>
+        </div>
+      </div>
+      <div class="poem-full">
+        <div>两个黄鹂鸣翠柳，一行白鹭上青天。</div>
+        <div>窗含西岭千秋雪，门泊东吴万里船。</div>
+        <div style="font-size:.95rem;font-weight:400;color:#7f8c8d;margin-top:.5rem">👆 点击诗句图片可听发音</div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goToPage(4)">⬅ 上一页</button>
+      <button class="nav-btn primary" onclick="goToPage(6)">下一页 ➡</button>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot done" onclick="goToPage(2)"></span>
+      <span class="progress-dot done" onclick="goToPage(3)"></span>
+      <span class="progress-dot done" onclick="goToPage(4)"></span>
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 6: 本课小结 ═══ -->
+<section class="page" id="page-6">
+  <div class="container">
+    <h1>🎯 本课小结</h1>
+
+    <div class="summary-box">
+      <h2>📝 我们学了 6 个复合词</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="s-word">太阳</div>
+          <div class="s-meaning">☀️ 太 + 阳</div>
+        </div>
+        <div class="summary-item">
+          <div class="s-word">月亮</div>
+          <div class="s-meaning">🌙 月 + 亮</div>
+        </div>
+        <div class="summary-item">
+          <div class="s-word">星星</div>
+          <div class="s-meaning">⭐ 星 + 星</div>
+        </div>
+        <div class="summary-item">
+          <div class="s-word">朋友</div>
+          <div class="s-meaning">🤝 朋 + 友</div>
+        </div>
+        <div class="summary-item">
+          <div class="s-word">老师</div>
+          <div class="s-meaning">👩‍🏫 老 + 师</div>
+        </div>
+        <div class="summary-item">
+          <div class="s-word">学生</div>
+          <div class="s-meaning">🎒 学 + 生</div>
+        </div>
+      </div>
+      <div class="summary-stat">
+        <span>📊</span>
+        <span>共 11 个新字 · 6 个复合词</span>
+      </div>
+      <div class="summary-stat" style="margin-left:.5rem">
+        <span>🔤</span>
+        <span>笔画：4 + 6 + 4 + 9 + 9 + 8 + 4 + 6 + 6 + 8 + 5 = 69 画</span>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <div style="font-size:1.3rem;font-weight:800;color:#C62828">🌟 核心概念</div>
+      <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.8rem">
+        <div style="background:#fce4ec;border-radius:16px;padding:.6rem 1rem;font-weight:700;color:#C62828">复合词 = 第一个字 + 第二个字</div>
+        <div style="background:#ffebee;border-radius:16px;padding:.6rem 1rem;font-weight:600;color:#5d4037">两个字各自有意思，合起来产生新意思</div>
+        <div style="background:#fff3e0;border-radius:16px;padding:.6rem 1rem;font-weight:600;color:#e65100">就像拼积木一样 🧱 → 🏠</div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <div style="font-size:1.1rem;font-weight:700;color:#C62828">🎤 跟我读一遍</div>
+      <div style="font-size:1.4rem;font-weight:800;color:#EF5350;margin:.6rem 0;letter-spacing:4px" onclick="speakText('太阳月亮星星朋友老师学生')">
+        太阳 月亮 星星 朋友 老师 学生
+      </div>
+      <div style="font-size:.8rem;color:#b0bec5">👆 点击上方文字听发音</div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="goToPage(5)">⬅ 上一页</button>
+      <button class="nav-btn primary" onclick="goToPage(1)">🔄 重新学习</button>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot done" onclick="goToPage(2)"></span>
+      <span class="progress-dot done" onclick="goToPage(3)"></span>
+      <span class="progress-dot done" onclick="goToPage(4)"></span>
+      <span class="progress-dot done" onclick="goToPage(5)"></span>
+      <span class="progress-dot active"></span>
+      <span class="progress-dot"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE 7: 完 (Bonus) ═══ -->
+<section class="page" id="page-7">
+  <div class="container">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center">
+      <div style="font-size:5rem;margin-bottom:1rem">🎉</div>
+      <h1 style="margin-bottom:.3rem">太棒啦！</h1>
+      <p style="color:#7f8c8d;font-size:1.1rem;margin-bottom:.5rem">你完成了第19课的学习！</p>
+      <p style="color:#5d4037;margin-bottom:1.5rem">你已经掌握了复合词的秘密 🧩</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center">
+        <button class="nav-btn primary" onclick="goToPage(1)">🔄 再学一遍</button>
+        <a href="../chinese-20-reading.html" class="nav-btn primary" style="text-decoration:none">下一个课程 ▶</a>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <span class="progress-dot done" onclick="goToPage(1)"></span>
+      <span class="progress-dot done" onclick="goToPage(2)"></span>
+      <span class="progress-dot done" onclick="goToPage(3)"></span>
+      <span class="progress-dot done" onclick="goToPage(4)"></span>
+      <span class="progress-dot done" onclick="goToPage(5)"></span>
+      <span class="progress-dot done" onclick="goToPage(6)"></span>
+      <span class="progress-dot active"></span>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   NAVIGATION
+   ═══════════════════════════════════════════ */
+const totalPages = 7;
+let currentPage = 1;
+
+function goToPage(n) {
+  if(n<1||n>totalPages)return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+n);
+  if(el){el.classList.add('active');currentPage=n;window.scrollTo({top:0,behavior:'smooth'})}
+  // animate in
+  gsap.fromTo(el?.querySelectorAll('.card, .compound-card, .challenge-box, .practice-area, .poem-section, .summary-box'),
+    {opacity:0,y:24},{opacity:1,y:0,duration:.5,stagger:.08,ease:'power2.out'});
+}
+
+/* ═══════════════════════════════════════════
+   SPEECH SYNTHESIS
+   ═══════════════════════════════════════════ */
+function speakText(text) {
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN';
+  u.rate=.85;
+  u.pitch=1.1;
+  u.volume=1;
+  window.speechSynthesis.speak(u);
+}
+
+/* ═══════════════════════════════════════════
+   DECOMPOSE GAME
+   ═══════════════════════════════════════════ */
+const decomposeWords=[
+  {word:'太阳',a:'太',b:'阳'},
+  {word:'月亮',a:'月',b:'亮'},
+  {word:'星星',a:'星',b:'星'},
+  {word:'朋友',a:'朋',b:'友'},
+  {word:'老师',a:'老',b:'师'},
+  {word:'学生',a:'学',b:'生'},
+];
+let decomposeIdx=0;
+
+function decomposeWord(){
+  const item=decomposeWords[decomposeIdx];
+  const slot1=document.getElementById('slot-1');
+  const slot2=document.getElementById('slot-2');
+  slot1.textContent=item.a;
+  slot1.classList.add('filled');
+  slot2.textContent=item.b;
+  slot2.classList.add('filled');
+  document.getElementById('decompose-word').textContent=item.word+' ✅';
+  gsap.fromTo('.decompose-slot.filled',{scale:0.5,opacity:0},{scale:1,opacity:1,duration:.4,ease:'back.out(2)',stagger:.1});
+  speakText(item.a+'加'+item.b+'等于'+item.word);
+}
+
+function resetDecompose(){
+  decomposeIdx=(decomposeIdx+1)%decomposeWords.length;
+  const item=decomposeWords[decomposeIdx];
+  document.getElementById('decompose-word').textContent=item.word;
+  const slot1=document.getElementById('slot-1');
+  const slot2=document.getElementById('slot-2');
+  slot1.textContent='?';
+  slot1.classList.remove('filled');
+  slot2.textContent='?';
+  slot2.classList.remove('filled');
+}
+
+/* ═══════════════════════════════════════════
+   MATCH GAME
+   ═══════════════════════════════════════════ */
+let selectedLeft=null;
+let matchedPairs=0;
+
+document.addEventListener('DOMContentLoaded',()=>{
+  const grid=document.getElementById('match-grid');
+  if(!grid)return;
+  grid.querySelectorAll('.match-card').forEach(card=>{
+    card.addEventListener('click',function(){
+      if(this.classList.contains('matched'))return;
+      const side=this.dataset.side;
+      if(side==='left'){
+        grid.querySelectorAll('.match-card.left-selected').forEach(c=>c.classList.remove('left-selected'));
+        this.classList.add('left-selected');
+        selectedLeft=this;
+      }else if(side==='right'&&selectedLeft){
+        const leftChar=selectedLeft.dataset.char;
+        const rightMatch=selectedLeft.dataset.match;
+        const rightChar=this.dataset.char;
+        if(rightChar===rightMatch){
+          // match!
+          selectedLeft.classList.add('matched');
+          this.classList.add('matched');
+          selectedLeft.classList.remove('left-selected');
+          matchedPairs++;
+          document.getElementById('match-status').textContent='已配对：'+matchedPairs+' / 4';
+          gsap.fromTo([selectedLeft,this],{scale:1.2},{scale:1,duration:.3,ease:'back.out(2)'});
+          speakText(selectedLeft.dataset.char+this.dataset.char);
+          selectedLeft=null;
+          if(matchedPairs===4){
+            setTimeout(()=>{
+              document.getElementById('match-status').textContent='🎉 太棒啦！全部配对成功！';
+            },300);
+          }
+        }else{
+          this.classList.add('wrong');
+          setTimeout(()=>this.classList.remove('wrong'),400);
+        }
+      }
+    });
+  });
+
+  /* ═══════════════════════════════════════════
+     QUIZ
+     ═══════════════════════════════════════════ */
+  initQuiz();
+});
+
+/* ═══════════════════════════════════════════
+   FILL QUIZ
+   ═══════════════════════════════════════════ */
+const quizData=[
+  {question:'太 + ? = 太阳',answer:'阳',options:'阳,亮,师,友'},
+  {question:'月 + ? = 月亮',answer:'亮',options:'亮,阳,星,生'},
+  {question:'朋 + ? = 朋友',answer:'友',options:'友,师,生,亮'},
+  {question:'老 + ? = 老师',answer:'师',options:'师,生,友,阳'},
+  {question:'学 + ? = 学生',answer:'生',options:'生,师,亮,星'},
+  {question:'? + 阳 = 太阳',answer:'太',options:'太,大,月,老'},
+  {question:'? + 亮 = 月亮',answer:'月',options:'月,日,太,朋'},
+];
+
+function initQuiz(){
+  const container=document.getElementById('quiz-container');
+  if(!container)return;
+  container.innerHTML='';
+  quizData.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.style.cssText='margin-bottom:.8rem;padding:.8rem;background:#fce4ec;border-radius:16px;';
+    div.innerHTML=`
+      <div style="font-weight:700;color:#C62828;margin-bottom:.4rem">${q.question}</div>
+      <div class="quiz-options" id="quiz-${i}">
+        ${q.options.split(',').map(o=>`<button class="quiz-opt" data-idx="${i}" data-answer="${q.answer}" data-char="${o}">${o}</button>`).join('')}
+      </div>
+      <div id="quiz-feedback-${i}" style="font-size:.85rem;font-weight:600;min-height:1.2rem"></div>
+    `;
+    container.appendChild(div);
+  });
+
+  document.querySelectorAll('.quiz-opt').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      if(this.classList.contains('correct')||this.classList.contains('wrong'))return;
+      const idx=this.dataset.idx;
+      const answer=this.dataset.answer;
+      const chosen=this.dataset.char;
+      const fb=document.getElementById('quiz-feedback-'+idx);
+      if(chosen===answer){
+        this.classList.add('correct');
+        fb.textContent='✅ 正确！';
+        fb.style.color='#2e7d32';
+        gsap.fromTo(this,{scale:1.3},{scale:1,duration:.3,ease:'back.out(2)'});
+        speakText('正确');
+      }else{
+        this.classList.add('wrong');
+        fb.textContent='❌ 再想想哦～';
+        fb.style.color='#c62828';
+        setTimeout(()=>this.classList.remove('wrong'),500);
+      }
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════
+   CHALLENGE REVEAL
+   ═══════════════════════════════════════════ */
+function revealChallenge(id,answer){
+  const el=document.getElementById('challenge-'+id+'-answer');
+  if(el.textContent===answer)return;
+  el.textContent=answer;
+  gsap.fromTo(el,{scale:.5,color:'#fff'},{scale:1,color:'#C62828',duration:.5,ease:'elastic.out(1,.5)'});
+  speakText(answer);
+}
+
+/* ═══════════════════════════════════════════
+   INIT ANIMATION ON LOAD
+   ═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded',()=>{
+  gsap.from('.cover-section>*',{opacity:0,y:30,duration:.6,stagger:.12,ease:'power2.out',delay:.2});
+});
+</script>
+</body>
+</html>
