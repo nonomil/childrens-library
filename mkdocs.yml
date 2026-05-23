@@ -25,6 +25,7 @@ extra:
 
 nav:
   - 首页: index.md
+  - 📚 互动课件: courseware/index.md
   - 绘本列表:
     - The Gruffalo:
       - 介绍: books/gruffalo.md

@@ -2,7 +2,7 @@ name: Deploy MkDocs to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, test_token_0]
   workflow_dispatch:
 
 permissions:
@@ -19,19 +19,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      
+
       - name: Install dependencies
         run: |
           pip install mkdocs mkdocs-material
-      
-      - name: Build site
+
+      - name: Build MkDocs site
         run: mkdocs build
-      
+
+      - name: Include courseware raw HTML files
+        run: |
+          # MkDocs 生成了 site/courseware/index.html（这是菜单页面）
+          # 把实际课件 HTML 复制到 site/courseware/，但不覆盖 MkDocs 生成的 index.html
+          if [ -d "courseware" ]; then
+            for item in $(ls courseware/); do
+              if [ "$item" != "index.md" ]; then
+                cp -r "courseware/$item" "site/courseware/$item"
+              fi
+            done
+          fi
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
