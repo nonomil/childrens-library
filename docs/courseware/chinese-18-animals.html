@@ -476,6 +476,11 @@
   .category-box .cat-char:active { transform: scale(0.9); }
   .category-box .cat-char.placed { border-color: #4CAF50; background: #e8f5e9; }
   .category-box .cat-char.wrong-cat { border-color: #f44336; background: #ffebee; animation: shake 0.3s; }
+
+  /* ── Speak page button ── */
+  .speak-btn.speaking { animation: speakPulse 1s ease-in-out infinite; }
+  @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); }
+    50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
 </style>
 </head>
 <body>

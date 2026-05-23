@@ -97,6 +97,11 @@ body{background:#1a1a2e;display:flex;align-items:center;justify-content:center}
 /* responsive landscape */
 @media(max-width:1024px){#app{width:100vw;height:100vh;border-radius:0}}
 @media(max-height:600px){.cover h1{font-size:32px}.cover .emoji-big{font-size:64px}}
+
+  /* ── Speak page button ── */
+  .speak-btn.speaking { animation: speakPulse 1s ease-in-out infinite; }
+  @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); }
+    50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
 </style>
 </head>
 <body>
@@ -659,5 +664,39 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+
+<!-- ═══ Speak Page - Read entire current page aloud ═══ -->
+<script>
+(function() {
+  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+  if (!btn) return;
+  var sp = false;
+  var lang = document.documentElement.lang || (document.querySelector('html').getAttribute('lang') || (window.location.href.indexOf('chinese') >= 0 ? 'zh-CN' : 'en-US'));
+  
+  function speakPage() {
+    var active = document.querySelector('.page.active, .slide.active, [class*="active"]');
+    if (!active) return;
+    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
+    if (!txt || txt.length < 2) return;
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(txt);
+    u.lang = (lang || 'en-US').indexOf('zh') >=0 ? 'zh-CN' : 'en-US';
+    u.rate = 0.85;
+    u.onstart = function() { sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
+    u.onend = u.onerror = function() { sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊'; };
+    window.speechSynthesis.speak(u);
+  }
+  
+  function stopPage() { if (window.speechSynthesis) window.speechSynthesis.cancel(); sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊'; }
+  
+  btn.addEventListener('click', function(e) { e.stopPropagation(); if (sp) { stopPage(); } else { speakPage(); } });
+  
+  // Fix button icon
+  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
+})();
+</script>
+
 </body>
 </html>
