@@ -55,12 +55,11 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>60</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>73</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
-    <span class="stat-item">🔤 <strong>8</strong> 个英语课</span>
-    <span class="stat-item">🌿 <strong>2</strong> 个科学课</span>
-    <span class="stat-item">🀄 <strong>8</strong> 个语文课</span>
-    <span class="stat-item">🔢 <strong>9</strong> 个数学课</span>
+    <span class="stat-item">🔤 <strong>24</strong> 个英语课</span>
+    <span class="stat-item">🀄 <strong>24</strong> 个语文课</span>
+    <span class="stat-item">🧮 <strong>24</strong> 个数学课</span>
   </div>
 </div>
 
@@ -122,6 +121,22 @@
 <a href="courseware/math-06-subtraction5.html" class="scroll-card card-blue"><span class="sc-icon">➖</span><span class="sc-name">认识减法5以内</span></a>
 <a href="courseware/math-07-subtraction10.html" class="scroll-card card-blue"><span class="sc-icon">➖</span><span class="sc-name">10以内减法</span></a>
 <a href="courseware/math-08-addition20.html" class="scroll-card card-blue"><span class="sc-icon">➕</span><span class="sc-name">进位加法20</span></a>
+<a href="courseware/math-09-subtraction20.html" class="scroll-card card-blue"><span class="sc-icon">➖</span><span class="sc-name">退位减法20</span></a>
+<a href="courseware/math-10-shapes.html" class="scroll-card card-blue"><span class="sc-icon">🔷</span><span class="sc-name">认识图形</span></a>
+<a href="courseware/math-11-measurement.html" class="scroll-card card-blue"><span class="sc-icon">📏</span><span class="sc-name">测量与长度</span></a>
+<a href="courseware/math-12-review.html" class="scroll-card card-blue"><span class="sc-icon">🔄</span><span class="sc-name">总复习</span></a>
+<a href="courseware/math-13-numbers100.html" class="scroll-card card-blue"><span class="sc-icon">💯</span><span class="sc-name">100以内数</span></a>
+<a href="courseware/math-14-addsub2digit.html" class="scroll-card card-blue"><span class="sc-icon">📊</span><span class="sc-name">两位数加减</span></a>
+<a href="courseware/math-15-money.html" class="scroll-card card-blue"><span class="sc-icon">💰</span><span class="sc-name">认识钱币</span></a>
+<a href="courseware/math-16-clock.html" class="scroll-card card-blue"><span class="sc-icon">⏰</span><span class="sc-name">认识钟表</span></a>
+<a href="courseware/math-17-shapes.html" class="scroll-card card-blue"><span class="sc-icon">🏗️</span><span class="sc-name">图形拼搭</span></a>
+<a href="courseware/math-18-sorting.html" class="scroll-card card-blue"><span class="sc-icon">📊</span><span class="sc-name">比较与排序</span></a>
+<a href="courseware/math-19-statistics.html" class="scroll-card card-blue"><span class="sc-icon">📈</span><span class="sc-name">简单统计</span></a>
+<a href="courseware/math-20-direction.html" class="scroll-card card-blue"><span class="sc-icon">🧭</span><span class="sc-name">位置与方向</span></a>
+<a href="courseware/math-21-multiplication.html" class="scroll-card card-blue"><span class="sc-icon">✖️</span><span class="sc-name">乘法启蒙</span></a>
+<a href="courseware/math-22-fractions.html" class="scroll-card card-blue"><span class="sc-icon">🍕</span><span class="sc-name">分数的故事</span></a>
+<a href="courseware/math-23-word-problems.html" class="scroll-card card-blue"><span class="sc-icon">🧩</span><span class="sc-name">应用题挑战</span></a>
+<a href="courseware/math-24-carnival.html" class="scroll-card card-blue"><span class="sc-icon">🎪</span><span class="sc-name">数学嘉年华</span></a>
 
 </div>
 </div>
@@ -143,6 +158,23 @@
 <a href="courseware/chinese-05-family.html" class="scroll-card card-red"><span class="sc-icon">👨‍👩‍👧</span><span class="sc-name">我爱我家</span></a>
 <a href="courseware/chinese-06-school.html" class="scroll-card card-red"><span class="sc-icon">🏫</span><span class="sc-name">开心学校</span></a>
 <a href="courseware/chinese-07-pinyin.html" class="scroll-card card-red"><span class="sc-icon">🔤</span><span class="sc-name">拼音是什么</span></a>
+<a href="courseware/chinese-08-pinyin2.html" class="scroll-card card-red"><span class="sc-icon">🎯</span><span class="sc-name">拼音魔法进阶</span></a>
+<a href="courseware/chinese-09-shengmu1.html" class="scroll-card card-red"><span class="sc-icon">🅰️</span><span class="sc-name">声母王国上</span></a>
+<a href="courseware/chinese-10-shengmu2.html" class="scroll-card card-red"><span class="sc-icon">🅱️</span><span class="sc-name">声母王国中</span></a>
+<a href="courseware/chinese-11-shengmu3.html" class="scroll-card card-red"><span class="sc-icon">🆎</span><span class="sc-name">声母王国下</span></a>
+<a href="courseware/chinese-12-yunmu.html" class="scroll-card card-red"><span class="sc-icon">🔊</span><span class="sc-name">韵母大冒险</span></a>
+<a href="courseware/chinese-13-body.html" class="scroll-card card-red"><span class="sc-icon">🧍</span><span class="sc-name">我的身体</span></a>
+<a href="courseware/chinese-14-colors.html" class="scroll-card card-red"><span class="sc-icon">🎨</span><span class="sc-name">数字与颜色</span></a>
+<a href="courseware/chinese-15-food.html" class="scroll-card card-red"><span class="sc-icon">🍜</span><span class="sc-name">美味食物</span></a>
+<a href="courseware/chinese-16-actions.html" class="scroll-card card-red"><span class="sc-icon">🏃</span><span class="sc-name">动作乐园</span></a>
+<a href="courseware/chinese-17-direction-time.html" class="scroll-card card-red"><span class="sc-icon">🧭</span><span class="sc-name">方向与时间</span></a>
+<a href="courseware/chinese-18-animals.html" class="scroll-card card-red"><span class="sc-icon">🐾</span><span class="sc-name">动物世界</span></a>
+<a href="courseware/chinese-19-compound.html" class="scroll-card card-red"><span class="sc-icon">🧩</span><span class="sc-name">复合词的秘密</span></a>
+<a href="courseware/chinese-20-reading.html" class="scroll-card card-red"><span class="sc-icon">📖</span><span class="sc-name">短句阅读</span></a>
+<a href="courseware/chinese-21-antonyms.html" class="scroll-card card-red"><span class="sc-icon">↔️</span><span class="sc-name">反义词</span></a>
+<a href="courseware/chinese-22-qa.html" class="scroll-card card-red"><span class="sc-icon">❓</span><span class="sc-name">我会问答</span></a>
+<a href="courseware/chinese-23-poems.html" class="scroll-card card-red"><span class="sc-icon">📜</span><span class="sc-name">古诗三首</span></a>
+<a href="courseware/chinese-24-adventure.html" class="scroll-card card-red"><span class="sc-icon">🎪</span><span class="sc-name">大冒险</span></a>
 
 </div>
 </div>
@@ -164,6 +196,23 @@
 <a href="courseware/english-05-numbers.html" class="scroll-card card-green"><span class="sc-icon">🔢</span><span class="sc-name">Numbers 1-5</span></a>
 <a href="courseware/english-06-family.html" class="scroll-card card-green"><span class="sc-icon">👨‍👩‍👧</span><span class="sc-name">Family</span></a>
 <a href="courseware/english-07-animals.html" class="scroll-card card-green"><span class="sc-icon">🐾</span><span class="sc-name">Animals</span></a>
+<a href="courseware/english-08-body.html" class="scroll-card card-green"><span class="sc-icon">🧍</span><span class="sc-name">Body</span></a>
+<a href="courseware/english-09-food.html" class="scroll-card card-green"><span class="sc-icon">🍎</span><span class="sc-name">Food</span></a>
+<a href="courseware/english-10-toys.html" class="scroll-card card-green"><span class="sc-icon">🧸</span><span class="sc-name">Toys</span></a>
+<a href="courseware/english-11-weather.html" class="scroll-card card-green"><span class="sc-icon">🌤️</span><span class="sc-name">Weather</span></a>
+<a href="courseware/english-12-clothes.html" class="scroll-card card-green"><span class="sc-icon">👕</span><span class="sc-name">Clothes</span></a>
+<a href="courseware/english-13-actions.html" class="scroll-card card-green"><span class="sc-icon">🏃</span><span class="sc-name">Actions</span></a>
+<a href="courseware/english-14-places.html" class="scroll-card card-green"><span class="sc-icon">🏘️</span><span class="sc-name">Places</span></a>
+<a href="courseware/english-15-feelings.html" class="scroll-card card-green"><span class="sc-icon">😊</span><span class="sc-name">Feelings</span></a>
+<a href="courseware/english-16-time.html" class="scroll-card card-green"><span class="sc-icon">⏰</span><span class="sc-name">Time</span></a>
+<a href="courseware/english-17-transport.html" class="scroll-card card-green"><span class="sc-icon">🚗</span><span class="sc-name">Transport</span></a>
+<a href="courseware/english-18-review.html" class="scroll-card card-green"><span class="sc-icon">📚</span><span class="sc-name">Review Week</span></a>
+<a href="courseware/english-19-lost-cat.html" class="scroll-card card-green"><span class="sc-icon">🐱</span><span class="sc-name">Lost Cat</span></a>
+<a href="courseware/english-20-storm.html" class="scroll-card card-green"><span class="sc-icon">🌩️</span><span class="sc-name">The Storm</span></a>
+<a href="courseware/english-21-birthday.html" class="scroll-card card-green"><span class="sc-icon">🎂</span><span class="sc-name">Birthday Party</span></a>
+<a href="courseware/english-22-farm.html" class="scroll-card card-green"><span class="sc-icon">🐄</span><span class="sc-name">At the Farm</span></a>
+<a href="courseware/english-23-treasure.html" class="scroll-card card-green"><span class="sc-icon">🏴‍☠️</span><span class="sc-name">Treasure Hunt</span></a>
+<a href="courseware/english-24-review.html" class="scroll-card card-green"><span class="sc-icon">🏆</span><span class="sc-name">Phase 4 Review</span></a>
 
 </div>
 </div>

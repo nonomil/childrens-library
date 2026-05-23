@@ -105,6 +105,72 @@ nav:
       - 🌍 Minecraft天地人: courseware/chinese-03-heaven-earth.html
       - 🌤️ Minecraft大自然: courseware/chinese-04-nature.html
       - 🔤 Minecraft拼音进阶: courseware/chinese-08-pinyin2.html
+      - 🅰️ Minecraft声母上: courseware/chinese-09-shengmu1.html
+      - 🅱️ Minecraft声母中: courseware/chinese-10-shengmu2.html
+      - 🆎 Minecraft声母下: courseware/chinese-11-shengmu3.html
+      - 🔊 Minecraft韵母: courseware/chinese-12-yunmu.html
+      - 🧍 Minecraft我的身体: courseware/chinese-13-body.html
+      - 🎨 Minecraft数字颜色: courseware/chinese-14-colors.html
+      - 🍜 Minecraft美味食物: courseware/chinese-15-food.html
+      - 🏃 Minecraft动作乐园: courseware/chinese-16-actions.html
+      - 🧭 Minecraft方向时间: courseware/chinese-17-direction-time.html
+      - 🐾 Minecraft动物世界: courseware/chinese-18-animals.html
+      - 🧩 Minecraft复合词: courseware/chinese-19-compound.html
+      - 📖 Minecraft短句阅读: courseware/chinese-20-reading.html
+      - ↔️ Minecraft反义词: courseware/chinese-21-antonyms.html
+      - ❓ Minecraft我会问答: courseware/chinese-22-qa.html
+      - 📜 Minecraft古诗三首: courseware/chinese-23-poems.html
+      - 🎪 Minecraft大冒险: courseware/chinese-24-adventure.html
+    - 🧮 数学启蒙-Minecraft:
+      - 🐑 数数1~10: courseware/math-01-counting.html
+      - 💎 数到20: courseware/math-02-counting-11to20.html
+      - ⚖️ 比多少比大小: courseware/math-03-compare.html
+      - ➕ 认识加法: courseware/math-04-addition.html
+      - 🧮 10以内加法: courseware/math-05-addition10.html
+      - ➖ 认识减法: courseware/math-06-subtraction5.html
+      - ➖ 10以内减法: courseware/math-07-subtraction10.html
+      - ➕ 进位加法20: courseware/math-08-addition20.html
+      - ➖ 退位减法20: courseware/math-09-subtraction20.html
+      - 🔷 认识图形: courseware/math-10-shapes.html
+      - 📏 测量与长度: courseware/math-11-measurement.html
+      - 🔄 总复习: courseware/math-12-review.html
+      - 💯 100以内数: courseware/math-13-numbers100.html
+      - 📊 两位数加减: courseware/math-14-addsub2digit.html
+      - 💰 认识钱币: courseware/math-15-money.html
+      - ⏰ 认识钟表: courseware/math-16-clock.html
+      - 🏗️ 图形拼搭: courseware/math-17-shapes.html
+      - 📊 比较与排序: courseware/math-18-sorting.html
+      - 📈 简单统计: courseware/math-19-statistics.html
+      - 🧭 位置与方向: courseware/math-20-direction.html
+      - ✖️ 乘法启蒙: courseware/math-21-multiplication.html
+      - 🍕 分数的故事: courseware/math-22-fractions.html
+      - 🧩 应用题挑战: courseware/math-23-word-problems.html
+      - 🎪 数学嘉年华: courseware/math-24-carnival.html
+    - 🇬🇧 英语启蒙-Minecraft:
+      - 👋 Hello!: courseware/english-01-hello.html
+      - 🔤 ABC A-M: courseware/english-02-abc.html
+      - 🆎 ABC N-Z: courseware/english-03-abc-nz.html
+      - 🌈 Colors: courseware/english-04-colors.html
+      - 🔢 Numbers: courseware/english-05-numbers.html
+      - 👨‍👩‍👧 Family: courseware/english-06-family.html
+      - 🐾 Animals: courseware/english-07-animals.html
+      - 🧍 Body: courseware/english-08-body.html
+      - 🍎 Food: courseware/english-09-food.html
+      - 🧸 Toys: courseware/english-10-toys.html
+      - 🌤️ Weather: courseware/english-11-weather.html
+      - 👕 Clothes: courseware/english-12-clothes.html
+      - 🏃 Actions: courseware/english-13-actions.html
+      - 🏘️ Places: courseware/english-14-places.html
+      - 😊 Feelings: courseware/english-15-feelings.html
+      - ⏰ Time: courseware/english-16-time.html
+      - 🚗 Transport: courseware/english-17-transport.html
+      - 📚 Review Week: courseware/english-18-review.html
+      - 🐱 Lost Cat: courseware/english-19-lost-cat.html
+      - 🌩️ The Storm: courseware/english-20-storm.html
+      - 🎂 Birthday Party: courseware/english-21-birthday.html
+      - 🐄 At the Farm: courseware/english-22-farm.html
+      - 🏴‍☠️ Treasure Hunt: courseware/english-23-treasure.html
+      - 🏆 Phase 4 Review: courseware/english-24-review.html
     - 🌈 英语启蒙:
       - 🌈 彩虹颜色: courseware/english-colors.html
   - 全部PDF打包下载: download.md

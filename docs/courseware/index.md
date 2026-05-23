@@ -81,12 +81,11 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>50</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>73</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
-    <span class="stat-item">🔤 <strong>10</strong> 个英语课</span>
-    <span class="stat-item">🌱 <strong>3</strong> 个科学课</span>
-    <span class="stat-item">🀄 <strong>5</strong> 个语文课</span>
-    <span class="stat-item">🔢 <strong>5</strong> 个数学课</span>
+    <span class="stat-item">🔤 <strong>24</strong> 个英语课</span>
+    <span class="stat-item">🧮 <strong>24</strong> 个数学课</span>
+    <span class="stat-item">🀄 <strong>24</strong> 个语文课</span>
   </div>
 </div>
 
@@ -283,33 +282,133 @@
 
 </div>
 
-## 🔢 数学启蒙
+## 🧮 数学启蒙
 <div class="cat-divider"></div>
 <div class="waterfall-grid">
 
 <a href="math-numbers-1-10.html" class="wf-item"><div class="wf-card card-blue">
   <div class="icon">🔢</div><div class="name">认识数字 1~10</div>
-  <span class="tag-sm tag-blue">🔢 数学</span>
+  <span class="tag-sm tag-blue">🧮 数学</span>
 </div></a>
 
-<a href="math-01-counting.html" class="wf-item"><div class="wf-card card-blue card-new">
-  <div class="icon">🔢</div><div class="name">🐑 数数1~10</div>
-  <span class="tag-sm tag-blue">🔢 Minecraft</span>
+<a href="math-01-counting.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🐑</div><div class="name">数数1~10</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
 </div></a>
 
-<a href="math-02-counting-11to20.html" class="wf-item"><div class="wf-card card-blue card-new">
-  <div class="icon">💎</div><div class="name">💎 数到20</div>
-  <span class="tag-sm tag-blue">🔢 Minecraft</span>
+<a href="math-02-counting-11to20.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">💎</div><div class="name">数到20</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
 </div></a>
 
-<a href="math-03-compare.html" class="wf-item"><div class="wf-card card-blue card-new">
-  <div class="icon">⚖️</div><div class="name">⚖️ 比多少比大小</div>
-  <span class="tag-sm tag-blue">🔢 Minecraft</span>
+<a href="math-03-compare.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">⚖️</div><div class="name">比多少比大小</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
 </div></a>
 
-<a href="math-04-addition.html" class="wf-item"><div class="wf-card card-blue card-new">
-  <div class="icon">➕</div><div class="name">➕ 认识加法5以内</div>
-  <span class="tag-sm tag-blue">🔢 Minecraft</span>
+<a href="math-04-addition.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">➕</div><div class="name">认识加法5以内</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-05-addition10.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🧮</div><div class="name">10以内加法</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-06-subtraction5.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">➖</div><div class="name">认识减法5以内</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-07-subtraction10.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">➖</div><div class="name">10以内减法</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-08-addition20.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">➕</div><div class="name">进位加法20</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-09-subtraction20.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">➖</div><div class="name">退位减法20</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-10-shapes.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🔷</div><div class="name">认识图形</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-11-measurement.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">📏</div><div class="name">测量与长度</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-12-review.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🔄</div><div class="name">总复习</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-13-numbers100.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">💯</div><div class="name">100以内数</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-14-addsub2digit.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">📊</div><div class="name">两位数加减</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-15-money.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">💰</div><div class="name">认识钱币</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-16-clock.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">⏰</div><div class="name">认识钟表</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-17-shapes.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🏗️</div><div class="name">图形拼搭</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-18-sorting.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">📊</div><div class="name">比较与排序</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-19-statistics.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">📈</div><div class="name">简单统计</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-20-direction.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🧭</div><div class="name">位置与方向</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-21-multiplication.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">✖️</div><div class="name">乘法启蒙</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-22-fractions.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🍕</div><div class="name">分数的故事</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-23-word-problems.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🧩</div><div class="name">应用题挑战</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
+</div></a>
+
+<a href="math-24-carnival.html" class="wf-item"><div class="wf-card card-blue">
+  <div class="icon">🎪</div><div class="name">数学嘉年华</div>
+  <span class="tag-sm tag-blue">🧮 数学</span>
 </div></a>
 
 </div>
@@ -323,55 +422,255 @@
   <span class="tag-sm tag-red">🀄 汉字</span>
 </div></a>
 
-<a href="chinese-01-characters.html" class="wf-item"><div class="wf-card card-red card-new">
+<a href="chinese-01-characters.html" class="wf-item"><div class="wf-card card-red">
   <div class="icon">☀️</div><div class="name">日月山水火</div>
-  <span class="tag-sm tag-red">🀄 Minecraft</span>
+  <span class="tag-sm tag-red">🀄 汉字</span>
 </div></a>
 
-<a href="chinese-02-strokes.html" class="wf-item"><div class="wf-card card-red card-new">
+<a href="chinese-02-strokes.html" class="wf-item"><div class="wf-card card-red">
   <div class="icon">✏️</div><div class="name">基本笔画</div>
-  <span class="tag-sm tag-red">🀄 Minecraft</span>
+  <span class="tag-sm tag-red">🀄 汉字</span>
 </div></a>
 
-<a href="chinese-03-heaven-earth.html" class="wf-item"><div class="wf-card card-red card-new">
+<a href="chinese-03-heaven-earth.html" class="wf-item"><div class="wf-card card-red">
   <div class="icon">🌍</div><div class="name">天地人</div>
-  <span class="tag-sm tag-red">🀄 Minecraft</span>
+  <span class="tag-sm tag-red">🀄 汉字</span>
 </div></a>
 
-<a href="chinese-04-nature.html" class="wf-item"><div class="wf-card card-red card-new">
+<a href="chinese-04-nature.html" class="wf-item"><div class="wf-card card-red">
   <div class="icon">🌤️</div><div class="name">大自然</div>
-  <span class="tag-sm tag-red">🀄 Minecraft</span>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-05-family.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">👨‍👩‍👧</div><div class="name">我爱我家</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-06-school.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🏫</div><div class="name">开心学校</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-07-pinyin.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🔤</div><div class="name">拼音是什么</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-08-pinyin2.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🎯</div><div class="name">拼音魔法进阶</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-09-shengmu1.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🅰️</div><div class="name">声母王国上</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-10-shengmu2.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🅱️</div><div class="name">声母王国中</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-11-shengmu3.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🆎</div><div class="name">声母王国下</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-12-yunmu.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🔊</div><div class="name">韵母大冒险</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-13-body.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🧍</div><div class="name">我的身体</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-14-colors.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🎨</div><div class="name">数字与颜色</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-15-food.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🍜</div><div class="name">美味食物</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-16-actions.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🏃</div><div class="name">动作乐园</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-17-direction-time.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🧭</div><div class="name">方向与时间</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-18-animals.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🐾</div><div class="name">动物世界</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-19-compound.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🧩</div><div class="name">复合词的秘密</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-20-reading.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">📖</div><div class="name">短句阅读</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-21-antonyms.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">↔️</div><div class="name">反义词</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-22-qa.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">❓</div><div class="name">我会问答</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-23-poems.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">📜</div><div class="name">古诗三首</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
+</div></a>
+
+<a href="chinese-24-adventure.html" class="wf-item"><div class="wf-card card-red">
+  <div class="icon">🎪</div><div class="name">大冒险</div>
+  <span class="tag-sm tag-red">🀄 汉字</span>
 </div></a>
 
 </div>
 
-## 🌈 英语启蒙
+## 🇬🇧 英语启蒙
 <div class="cat-divider"></div>
 <div class="waterfall-grid">
 
 <a href="english-colors.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">🌈</div><div class="name">彩虹颜色</div>
-  <span class="tag-sm tag-green">🌈 英语</span>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
 </div></a>
 
-<a href="english-01-hello.html" class="wf-item"><div class="wf-card card-green card-new">
+<a href="english-01-hello.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">👋</div><div class="name">Hello!</div>
-  <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
 </div></a>
 
-<a href="english-02-abc.html" class="wf-item"><div class="wf-card card-green card-new">
+<a href="english-02-abc.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">🔤</div><div class="name">ABC A-M</div>
-  <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
 </div></a>
 
-<a href="english-03-abc-nz.html" class="wf-item"><div class="wf-card card-green card-new">
+<a href="english-03-abc-nz.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">🆎</div><div class="name">ABC N-Z</div>
-  <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
 </div></a>
 
-<a href="english-04-colors.html" class="wf-item"><div class="wf-card card-green card-new">
+<a href="english-04-colors.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">🌈</div><div class="name">Colors 颜色</div>
-  <span class="tag-sm tag-green">🇬🇧 Minecraft</span>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-05-numbers.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🔢</div><div class="name">Numbers 1-5</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-06-family.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">👨‍👩‍👧</div><div class="name">Family</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-07-animals.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🐾</div><div class="name">Animals</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-08-body.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🧍</div><div class="name">Body</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-09-food.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🍎</div><div class="name">Food</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-10-toys.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🧸</div><div class="name">Toys</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-11-weather.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🌤️</div><div class="name">Weather</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-12-clothes.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">👕</div><div class="name">Clothes</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-13-actions.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🏃</div><div class="name">Actions</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-14-places.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🏘️</div><div class="name">Places</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-15-feelings.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">😊</div><div class="name">Feelings</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-16-time.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">⏰</div><div class="name">Time</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-17-transport.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🚗</div><div class="name">Transport</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-18-review.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">📚</div><div class="name">Review Week</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-19-lost-cat.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🐱</div><div class="name">Lost Cat</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-20-storm.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🌩️</div><div class="name">The Storm</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-21-birthday.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🎂</div><div class="name">Birthday Party</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-22-farm.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🐄</div><div class="name">At the Farm</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-23-treasure.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🏴‍☠️</div><div class="name">Treasure Hunt</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
+</div></a>
+
+<a href="english-24-review.html" class="wf-item"><div class="wf-card card-green">
+  <div class="icon">🏆</div><div class="name">Phase 4 Review</div>
+  <span class="tag-sm tag-green">🇬🇧 英语</span>
 </div></a>
 
 </div>
