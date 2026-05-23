@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>数学课 14 · 两位数加减</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{flex-shrink:0;position:relative;width:100%;max-width:960px;height:100dvh;max-height:90vh;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
+.top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer}
+.top-bar a:hover{background:rgba(255,255,255,.32)}
+.slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px}
+.slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
+.page-title{font-size:26px;font-weight:900;color:#fff;text-align:center;text-shadow:0 2px 8px rgba(0,0,0,.15)}
+.page-sub{font-size:14px;color:rgba(255,255,255,.8);text-align:center}
+.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 12px;width:100%;max-width:380px}
+.card p{font-size:13px;color:#333;line-height:1.6}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
+.quiz-opt:hover{border-color:#42A5F5;background:#E3F2FD}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;border-radius:8px;display:none;text-align:center;padding:4px}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
+.nav-btn{background:rgba(255,255,255,.25);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.15);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.dots{display:flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
+.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
+.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none}
+.goal-card li::before{content:'✅ '}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-15-money.html">▶</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
+</div>
+</div>
+<div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
+<script>
+const pages=[{
+cover:true,icon:'🧮',title:'两位数加减',subtitle:'数学课 第14课',goals:['会算两位数加法（进位）','会算两位数减法（退位）','理解十位和个位分别算','用竖式计算方法']
+},{
+title:'🎬 积木大作战',text:'Steve有27块积木，Alex有15块。他们一共有多少块？<br><br>"先算个位：7+5=12，写2进1！"<br>"再算十位：2+1+1=4！"<br>"所以27+15=42！"',
+svg:'<svg viewBox="0 0 260 100" style="width:90%;max-width:260px"><text x="20" y="20" font-size="14" fill="#FFD54F" font-weight="700">个位: 7+5=12</text><text x="20" y="50" font-size="14" fill="#fff" font-weight="700">十位: 2+1(进位)=4</text><text x="20" y="80" font-size="16" fill="#fff" font-weight="800">27+15=42</text></svg>'
+},{
+title:'➕ 加法进位',text:'38 + 25 = ?<br><br>个位：8+5=13，写3进1<br>十位：3+2+1=6<br>= 63！<br><br>进位加法：个位满十，向十位进1！',
+svg:'<svg viewBox="0 0 240 100" style="width:90%;max-width:240px"><rect x="10" y="5" width="100" height="80" rx="8" fill="rgba(255,255,255,.1)"/><text x="50" y="30" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">3 8</text><text x="10" y="50" font-size="13" fill="#FFD54F">+ 2 5</text><line x1="15" y1="55" x2="105" y2="55" stroke="rgba(255,255,255,.3)" stroke-width="1"/><text x="50" y="75" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">6 3</text><text x="115" y="20" font-size="11" fill="#FFD54F">①进位</text></svg>'
+},{
+title:'➖ 减法退位',text:'52 - 18 = ?<br><br>个位：2不够减8，向十位借1<br>12-8=4<br>十位：5-1-1（借走的）=3<br>= 34！<br><br>退位减法：个位不够减，向十位借1！',
+svg:'<svg viewBox="0 0 240 100" style="width:90%;max-width:240px"><rect x="10" y="5" width="100" height="80" rx="8" fill="rgba(255,255,255,.1)"/><text x="50" y="30" font-size="15" fill="#fff" font-weight="800" text-anchor="middle">5 2</text><text x="10" y="50" font-size="13" fill="#FFD54F">- 1 8</text><line x1="15" y1="55" x2="105" y2="55" stroke="rgba(255,255,255,.3)" stroke-width="1"/><text x="50" y="75" font-size="16" fill="#fff" font-weight="800" text-anchor="middle">3 4</text><text x="115" y="20" font-size="11" fill="#FFD54F">①借位</text></svg>'
+},{
+title:'❌ 常见误解',items:[
+{title:'忘记进位',w:'27+15=32',r:'忘记进1了！7+5=12，要进1，所以是42'},
+{title:'个位不够不减',w:'52-18=46',r:'个位2不够减8，要向十位借1变成12-8=4'},
+{title:'十位忘减借位',w:'52-18=44',r:'借了1给个位，十位变成4-1=3，所以是34'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'36+28=？',options:['54','64','56'],correct:1
+},{
+title:'✏️ 再选一选',interactive:true,type:'quiz2',q:'73-27=？',options:['46','56','44'],correct:0
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了两位数加减！🏅<br>获得「计算小能手」徽章！<br><br>进位加法：个位满十进1<br>退位减法：个位不够借1'
+}];
+
+let cur=0,quizA={};
+function render(n){
+  const el=document.getElementById('slides');
+  const p=pages[n];
+  if(!p)return;
+  let h='';
+  if(p.cover){
+    h=`<div class="slide active"><div style="font-size:64px;margin:4px">${p.icon}</div><div class="page-title">${p.title}</div>`;
+    if(p.subtitle)h+=`<p class="page-sub">${p.subtitle}</p>`;
+    if(p.goals){
+      h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;
+      p.goals.forEach(g=>h+=`<li>${g}</li>`);
+      h+=`</ul></div><p style="font-size:12px;color:rgba(255,255,255,.5);margin-top:4px">👆 点下一步</p>`;
+    }
+    h+=`</div>`;
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:24px;color:#fff">${p.title}</h2><p style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    h+=`<div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+    p.options.forEach((o,i)=>{
+      h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;
+    });
+    h+=`<div class="feedback" id="fb${n}"></div></div></div>`;
+  }else{
+    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;
+    if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
+    if(p.items){
+      p.items.forEach(it=>{
+        h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="font-size:13px;color:#1565C0;margin-bottom:2px">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;
+      });
+    }
+    h+=`</div>`;
+  }
+  el.innerHTML=h;
+  document.getElementById('prevBtn').disabled=n===0;
+  document.getElementById('nextBtn').disabled=n===pages.length-1;
+  updateDots(n);
+  gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
+}
+function clickQuiz(n,i){
+  const p=pages[n];
+  if(quizA[n])return;
+  quizA[n]=true;
+  document.querySelectorAll('.quiz-opt').forEach((el,j)=>{
+    el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');
+  });
+  const fb=document.getElementById('fb'+n);
+  if(fb){fb.className='feedback show '+(i===p.correct?' good':' bad');fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';}
+}
+function go(d){cur=Math.max(0,Math.min(pages.length-1,cur+d));render(cur);}
+function updateDots(n){
+  const el=document.getElementById('dots');el.innerHTML='';
+  for(let i=0;i<pages.length;i++){
+    const d=document.createElement('button');
+    d.className='dot'+(i===n?' active':'');d.onclick=()=>{cur=i;render(cur);};el.appendChild(d);
+  }
+}
+function doConfetti(){
+  const el=document.getElementById('confetti');
+  const colors=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];
+  for(let i=0;i=50;i++){
+    const p=document.createElement('div');
+    const s=5+Math.random()*8;
+    p.style.cssText='position:absolute;left:'+(Math.random()*100)+'%;top:-10px;width:'+s+'px;height:'+s+'px;background:'+colors[Math.floor(Math.random()*6)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confetti-fall '+(2+Math.random()*2)+'s ease-in '+(Math.random()*2)+'s forwards;';
+    el.appendChild(p);
+    setTimeout(()=>p.remove(),4500);
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render(0);
+</script>
+</body>
+</html>

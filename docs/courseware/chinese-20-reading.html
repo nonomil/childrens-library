@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第20课 · 短句阅读</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100vw;height:100vh;overflow:hidden;font-family:'PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;background:#FFF8F8;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.wrap{width:100vw;height:100vh;overflow:hidden;position:relative}
+
+/* TOP BAR */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;background:#EF5350;display:flex;align-items:center;padding:0 12px;color:#fff;box-shadow:0 2px 8px rgba(239,83,80,.3)}
+.topbar a{color:#fff;text-decoration:none;font-size:22px;display:flex;align-items:center;gap:4px;padding:4px 8px;border-radius:8px;transition:background .2s}
+.topbar a:active{background:rgba(255,255,255,.2)}
+.topbar .title{flex:1;text-align:center;font-size:18px;font-weight:600;letter-spacing:2px}
+.topbar .nav-right{display:flex;gap:4px}
+.topbar .nav-right a{font-size:14px;font-weight:500;padding:4px 12px}
+
+/* PAGES */
+.pages{width:100vw;height:100vh;position:relative;overflow:hidden}
+.page{position:absolute;top:56px;left:0;right:0;bottom:0;width:100vw;height:calc(100vh - 56px);overflow-y:auto;overflow-x:hidden;padding:20px 24px 40px;display:none;background:#FFF8F8;-webkit-overflow-scrolling:touch;transition:opacity .4s,transform .4s}
+.page.active{display:block;animation:fadeIn .4s ease-out}
+.page.slide-in{display:block;animation:slideIn .4s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(60px)}to{opacity:1;transform:translateX(0)}}
+
+/* PAGE INDICATOR */
+.page-indicator{display:flex;justify-content:center;gap:8px;padding:8px 0;position:fixed;bottom:8px;left:0;right:0;z-index:50}
+.page-indicator .dot{width:10px;height:10px;border-radius:50%;background:#ddd;border:2px solid #ccc;transition:all .3s;cursor:pointer}
+.page-indicator .dot.active{background:#EF5350;border-color:#EF5350;transform:scale(1.2)}
+.page-indicator .dot:active{transform:scale(.9)}
+
+/* SECTION TITLES */
+.section-title{font-size:20px;font-weight:700;color:#EF5350;text-align:center;margin:14px 0 16px;letter-spacing:3px;position:relative}
+.section-title::after{content:'';display:block;width:48px;height:3px;background:#EF5350;border-radius:2px;margin:6px auto 0}
+
+/* CARD */
+.card{background:#fff;border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f0e0e0}
+
+/* HERO IMAGE */
+.hero-img{width:100%;border-radius:14px;margin-bottom:12px;display:block;object-fit:cover;max-height:260px}
+.hero-img-sm{width:100%;border-radius:12px;margin-bottom:10px;display:block;max-height:200px;object-fit:contain}
+
+/* CHARACTER GRID */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+.char-card{background:#fff;border-radius:14px;padding:14px 12px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid #f5e6e6;transition:transform .2s}
+.char-card:active{transform:scale(.96)}
+.char-card .char{font-size:52px;line-height:1.2;color:#333;margin-bottom:2px}
+.char-card .pinyin{font-size:15px;color:#EF5350;font-weight:500;margin-bottom:2px}
+.char-card .info{font-size:12px;color:#888;margin-bottom:4px;line-height:1.5}
+.char-card .stroke-list{font-size:13px;color:#666;margin:4px 0;line-height:1.6;word-break:break-all}
+.char-card .example{font-size:13px;color:#555;background:#FFF5F5;padding:5px 8px;border-radius:8px;margin-top:4px;border:1px solid #fde8e8}
+.char-card .speak-btn{display:inline-block;margin-top:6px;padding:3px 12px;font-size:12px;background:#EF5350;color:#fff;border:none;border-radius:20px;cursor:pointer;touch-action:manipulation}
+
+/* SENTENCE BUILDING */
+.drag-zone{min-height:56px;background:#FFF5F5;border:2px dashed #EF5350;border-radius:12px;padding:10px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:12px;transition:background .3s}
+.drag-zone.drag-over{background:#FFEBEE;border-color:#C62828}
+.drag-word{display:inline-block;padding:8px 18px;background:#fff;border:2px solid #EF5350;border-radius:22px;font-size:18px;color:#333;font-weight:500;cursor:grab;touch-action:none;transition:box-shadow .2s,transform .1s;user-select:none;-webkit-user-select:none;position:relative;z-index:10}
+.drag-word:active,.drag-word.dragging{transform:scale(1.08);box-shadow:0 4px 16px rgba(239,83,80,.3);z-index:20;cursor:grabbing}
+.drag-word.placed{border-color:#4CAF50;background:#E8F5E9;cursor:default}
+.drag-word.in-zone{background:#FFEBEE;border-color:#C62828}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;padding:8px;min-height:44px}
+
+/* FILL IN BLANK */
+.fill-card{background:#fff;border-radius:14px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.05);border:1px solid #f0e0e0}
+.fill-sentence{font-size:20px;color:#333;line-height:1.8;text-align:center;margin-bottom:10px}
+.fill-blank{display:inline-block;min-width:40px;border-bottom:3px solid #EF5350;margin:0 2px;padding:0 6px;height:32px;vertical-align:bottom;text-align:center;font-size:20px;color:#EF5350;font-weight:600;transition:all .3s}
+.fill-blank.filled{border-color:#4CAF50;color:#4CAF50}
+.fill-options{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fill-option{padding:6px 20px;background:#fff;border:2px solid #EF5350;border-radius:20px;font-size:18px;color:#333;cursor:pointer;touch-action:manipulation;transition:all .2s}
+.fill-option:active{transform:scale(.92)}
+.fill-option.used{opacity:.35;pointer-events:none}
+.fill-option.correct{border-color:#4CAF50;background:#E8F5E9}
+.fill-option.wrong{border-color:#F44336;background:#FFEBEE;animation:shake .3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fill-result{text-align:center;font-size:14px;color:#888;margin-top:6px;min-height:20px}
+
+/* POEM */
+.poem-container{text-align:center;padding:16px 0}
+.poem-title{font-size:24px;font-weight:700;color:#333;margin-bottom:2px}
+.poem-author{font-size:14px;color:#888;margin-bottom:16px}
+.poem-line{font-size:28px;color:#333;line-height:2.2;letter-spacing:4px;cursor:pointer;transition:color .3s;touch-action:manipulation}
+.poem-line:active{color:#EF5350}
+.poem-line .highlight{color:#EF5350;font-weight:600}
+.poem-img{width:100%;max-width:960px;border-radius:12px;margin:6px auto;display:block;object-fit:contain}
+
+/* SUMMARY */
+.summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+.summary-char{text-align:center;background:#fff;border-radius:12px;padding:10px 4px;border:1px solid #f0e0e0;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.summary-char .big{font-size:34px;color:#333;display:block}
+.summary-char .sub{font-size:12px;color:#888;margin-top:2px}
+
+/* BUTTONS */
+.btn-primary{display:inline-flex;align-items:center;gap:6px;padding:10px 28px;background:#EF5350;color:#fff;border:none;border-radius:24px;font-size:16px;font-weight:600;cursor:pointer;touch-action:manipulation;transition:transform .2s,box-shadow .2s;margin:4px}
+.btn-primary:active{transform:scale(.94);box-shadow:0 2px 8px rgba(239,83,80,.3)}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:10px 24px;background:#fff;color:#EF5350;border:2px solid #EF5350;border-radius:24px;font-size:15px;font-weight:500;cursor:pointer;touch-action:manipulation;transition:transform .2s;margin:4px}
+.btn-secondary:active{transform:scale(.94)}
+
+/* SCROLLBAR */
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-thumb{background:#EF5350;border-radius:4px}
+.page::-webkit-scrollbar-track{background:transparent}
+
+/* RESPONSIVE */
+@media(min-width:768px){
+  .char-grid{grid-template-columns:repeat(4,1fr)}
+  .page{padding:24px 40px 40px}
+  .poem-line{font-size:32px}
+}
+@media(max-width:480px){
+  .page{padding:14px 14px 36px}
+  .char-card .char{font-size:42px}
+  .drag-word{font-size:16px;padding:6px 14px}
+  .fill-sentence{font-size:17px}
+  .poem-line{font-size:24px}
+}
+
+/* UTILITY */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mb-8{margin-bottom:8px}
+.mt-16{margin-top:16px}
+.mb-16{margin-bottom:16px}
+.flex-center{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
+.hidden{display:none!important}
+.gap-8{gap:8px}
+.red{color:#EF5350}
+.green{color:#4CAF50}
+.bold{font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="../" title="首页">🏠</a>
+  <div class="title">📖 第20课 · 短句阅读</div>
+  <div class="nav-right">
+    <a href="../chinese-21-antonyms.html" title="下一课">▶</a>
+  </div>
+</div>
+
+<!-- PAGES -->
+<div class="pages" id="pages">
+
+<!-- ===== PAGE 1: 句子之桥 ===== -->
+<div class="page active" data-page="0" id="page0">
+  <img class="hero-img" src="images/chinese-20/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="句子之桥" loading="lazy">
+  <div class="section-title">🌉 句子之桥</div>
+  <div class="card text-center">
+    <p style="font-size:18px;color:#555;line-height:1.8;margin-bottom:12px">
+      用 <strong style="color:#EF5350">9 个关键字</strong> 搭建句子的桥梁 🏗️
+    </p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:36px;font-weight:700;margin:12px 0">
+      <span style="color:#EF5350">我</span>
+      <span style="color:#E57373">在</span>
+      <span style="color:#FF8A80">有</span>
+      <span style="color:#EF9A9A">是</span>
+      <span style="color:#E53935">的</span>
+      <span style="color:#D32F2F">很</span>
+      <span style="color:#C62828">和</span>
+      <span style="color:#B71C1C">也</span>
+    </div>
+    <p style="font-size:15px;color:#888">点击下方按钮开始学习 👇</p>
+    <div class="flex-center mt-16">
+      <button class="btn-primary" onclick="goPage(1)">开始学习 &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: 我在有是 ===== -->
+<div class="page" data-page="1" id="page1">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="我在有是" loading="lazy">
+  <div class="section-title">✏️ 我在有是</div>
+  <div class="char-grid" id="charGrid1"></div>
+  <div class="text-center mt-16">
+    <button class="btn-secondary" onclick="goPage(2)">下一组 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: 的很和也 ===== -->
+<div class="page" data-page="2" id="page2">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="的很和也" loading="lazy">
+  <div class="section-title">✏️ 的很和也</div>
+  <div class="char-grid" id="charGrid2"></div>
+  <div class="text-center mt-16">
+    <button class="btn-secondary" onclick="goPage(3)">造句练习 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: 造句练习 ===== -->
+<div class="page" data-page="3" id="page3">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="造句练习" loading="lazy">
+  <div class="section-title">🧩 造句练习</div>
+  <p style="text-align:center;color:#888;font-size:14px;margin-bottom:10px">拖动词语卡片拼成正确的句子</p>
+
+  <!-- Sentence 1 -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:600;color:#333">句子 ①</span>
+      <span style="font-size:13px;color:#888">我是学生</span>
+    </div>
+    <div class="drag-zone" id="zone1" data-answer="我是学生"></div>
+    <div class="word-bank" id="bank1"></div>
+    <div class="flex-center mt-8">
+      <button class="btn-secondary" style="padding:5px 16px;font-size:13px" onclick="resetSentence(1)">🔄 重置</button>
+      <button class="btn-primary" style="padding:5px 16px;font-size:13px" onclick="checkSentence(1)">✅ 检查</button>
+    </div>
+    <div class="fill-result" id="result1"></div>
+  </div>
+
+  <!-- Sentence 2 -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:600;color:#333">句子 ②</span>
+      <span style="font-size:13px;color:#888">我在学校</span>
+    </div>
+    <div class="drag-zone" id="zone2" data-answer="我在学校"></div>
+    <div class="word-bank" id="bank2"></div>
+    <div class="flex-center mt-8">
+      <button class="btn-secondary" style="padding:5px 16px;font-size:13px" onclick="resetSentence(2)">🔄 重置</button>
+      <button class="btn-primary" style="padding:5px 16px;font-size:13px" onclick="checkSentence(2)">✅ 检查</button>
+    </div>
+    <div class="fill-result" id="result2"></div>
+  </div>
+
+  <!-- Sentence 3 -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="font-weight:600;color:#333">句子 ③</span>
+      <span style="font-size:13px;color:#888">我有一只猫</span>
+    </div>
+    <div class="drag-zone" id="zone3" data-answer="我有一只猫"></div>
+    <div class="word-bank" id="bank3"></div>
+    <div class="flex-center mt-8">
+      <button class="btn-secondary" style="padding:5px 16px;font-size:13px" onclick="resetSentence(3)">🔄 重置</button>
+      <button class="btn-primary" style="padding:5px 16px;font-size:13px" onclick="checkSentence(3)">✅ 检查</button>
+    </div>
+    <div class="fill-result" id="result3"></div>
+  </div>
+
+  <div class="text-center mt-8">
+    <button class="btn-secondary" onclick="goPage(4)">阅读短句 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: 阅读短句 ===== -->
+<div class="page" data-page="4" id="page4">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="阅读短句" loading="lazy">
+  <div class="section-title">📖 阅读短句</div>
+  <div id="sentences-container"></div>
+  <div class="text-center mt-16">
+    <button class="btn-secondary" onclick="goPage(5)">练一练 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: 练习 ===== -->
+<div class="page" data-page="5" id="page5">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="练习" loading="lazy">
+  <div class="section-title">📝 选词填空</div>
+  <p style="text-align:center;color:#888;font-size:14px;margin-bottom:12px">选择正确的字填入空白</p>
+  <div id="fill-container"></div>
+  <div class="text-center mt-16">
+    <button class="btn-secondary" onclick="goPage(6)">古诗角 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: 古诗角 ===== -->
+<div class="page" data-page="6" id="page6">
+  <img class="hero-img-sm" src="images/chinese-20/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="古诗角" loading="lazy">
+  <div class="section-title">🌙 古诗角</div>
+  <div class="card">
+    <div class="poem-container">
+      <div class="poem-title">静夜思</div>
+      <div class="poem-author">唐 · 李白</div>
+      <div style="margin:12px 0">
+        <img class="poem-img" src="images/chinese-20/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="床前明月光" loading="lazy">
+        <div class="poem-line" data-line="床前明月光">床前明月光</div>
+        <img class="poem-img" src="images/chinese-20/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="疑是地上霜" loading="lazy">
+        <div class="poem-line" data-line="疑是地上霜">疑是地上霜</div>
+        <img class="poem-img" src="images/chinese-20/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="举头望明月" loading="lazy">
+        <div class="poem-line" data-line="举头望明月">举头望明月</div>
+        <img class="poem-img" src="images/chinese-20/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="低头思故乡" loading="lazy">
+        <div class="poem-line" data-line="低头思故乡">低头思故乡</div>
+      </div>
+      <div class="flex-center">
+        <button class="btn-primary" onclick="speakPoem()">🔊 朗读全诗</button>
+      </div>
+    </div>
+  </div>
+  <div class="text-center mt-8">
+    <button class="btn-secondary" onclick="goPage(7)">总结 &rarr;</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 8: 总结 ===== -->
+<div class="page" data-page="7" id="page7">
+  <div class="section-title">📋 本课总结</div>
+  <div class="card text-center">
+    <p style="font-size:16px;color:#555;margin-bottom:12px">今天我们学习了 <strong style="color:#EF5350">9 个关键字</strong></p>
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div style="margin-top:14px;padding:10px;background:#FFF5F5;border-radius:12px">
+      <p style="font-size:15px;color:#555;line-height:1.8">
+        💡 用这些字就能组成很多句子！<br>
+        <span style="color:#EF5350;font-weight:500">我 + 在 + 学校 = 我在学校</span><br>
+        <span style="color:#EF5350;font-weight:500">我 + 有 + 一只猫 = 我有一只猫</span>
+      </p>
+    </div>
+    <div class="flex-center mt-16">
+      <button class="btn-primary" onclick="goPage(0)">🔄 重新开始</button>
+      <button class="btn-secondary" onclick="speakSummary()">🔊 复习发音</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+
+<!-- PAGE DOTS -->
+<div class="page-indicator" id="dots"></div>
+
+</div><!-- /wrap -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const CHAR_DATA = [
+  // Group 1: 我在有是
+  { char:'我', pinyin:'wǒ', strokes:7, meaning:'我 — I, me', strokeOrder:'丿,一,丨,𠃋,一,丿,丶', example:'我是一名学生。', group:1 },
+  { char:'在', pinyin:'zài', strokes:6, meaning:'在 — at, in, on', strokeOrder:'一,丿,丨,一,丨,一', example:'我在学校上课。', group:1 },
+  { char:'有', pinyin:'yǒu', strokes:6, meaning:'有 — have, there is', strokeOrder:'一,丿,丨,𠃌,一,一', example:'我有一只小猫。', group:1 },
+  { char:'是', pinyin:'shì', strokes:9, meaning:'是 — is, am, are', strokeOrder:'丨,𠃍,一,一,一,丨,一,丿,丶', example:'她是我的妈妈。', group:1 },
+  // Group 2: 的很和也
+  { char:'的', pinyin:'de', strokes:8, meaning:'的 — (possessive)', strokeOrder:'丿,丨,𠃍,一,一,丿,𠃌,丶', example:'这是我的书。', group:2 },
+  { char:'很', pinyin:'hěn', strokes:9, meaning:'很 — very', strokeOrder:'丿,丿,丨,𠃍,一,一,丿,𠃌,丶', example:'我很快乐。', group:2 },
+  { char:'和', pinyin:'hé', strokes:8, meaning:'和 — and, with', strokeOrder:'丿,一,丨,丿,丶,丨,𠃍,一', example:'我和朋友一起玩。', group:2 },
+  { char:'也', pinyin:'yě', strokes:3, meaning:'也 — also, too', strokeOrder:'𠃋,丨,乚', example:'他也是学生。', group:2 }
+];
+
+const READ_SENTENCES = [
+  { zh:'我是学生。', py:'Wǒ shì xuéshēng.' },
+  { zh:'我在学校。', py:'Wǒ zài xuéxiào.' },
+  { zh:'我有一只猫。', py:'Wǒ yǒu yī zhǐ māo.' },
+  { zh:'我的书很大。', py:'Wǒ de shū hěn dà.' },
+  { zh:'他和我也在。', py:'Tā hé wǒ yě zài.' },
+  { zh:'我很开心。', py:'Wǒ hěn kāixīn.' },
+  { zh:'妈妈和爸爸。', py:'Māmā hé bàba.' },
+  { zh:'这是我的狗。', py:'Zhè shì wǒ de gǒu.' }
+];
+
+const FILL_EXERCISES = [
+  { sentence:'我___学生。', answer:'是', options:['是','在','很','的'] },
+  { sentence:'我___学校。', answer:'在', options:['在','是','也','和'] },
+  { sentence:'我___一只猫。', answer:'有', options:['有','在','很','的'] },
+  { sentence:'我___书很大。', answer:'的', options:['的','很','和','也'] },
+  { sentence:'他___是学生。', answer:'也', options:['也','的','很','在'] },
+  { sentence:'我___高兴。', answer:'很', options:['很','和','的','也'] },
+  { sentence:'我___朋友。', answer:'和', options:['和','很','的','也'] }
+];
+
+const SUMMARY_CHARS = ['我','在','有','是','的','很','和','也'];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let currentPage = 0;
+const totalPages = 8;
+
+// Drag state
+const dragState = {};
+
+// Fill state
+const fillState = {};
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.addEventListener('DOMContentLoaded',()=>{
+  renderCharGrid('charGrid1',1);
+  renderCharGrid('charGrid2',2);
+  renderSentences();
+  renderFillExercises();
+  renderSummary();
+  renderDots();
+  updateDots();
+  initSentences();
+  initFill();
+  // GSAP entrance
+  gsap.from('.page.active .card',{y:30,opacity:0,duration:.5,stagger:.1,ease:'power2.out'});
+  document.querySelectorAll('.page.active .char-card').forEach((el,i)=>{
+    gsap.from(el,{y:20,opacity:0,duration:.4,delay:.15+i*.08,ease:'back.out(1.4)'});
+  });
+});
+
+/* ============================================================
+   PAGE NAV
+   ============================================================ */
+function goPage(n){
+  if(n<0||n>=totalPages) return;
+  const old = document.querySelector('.page.active');
+  if(old){old.classList.remove('active','slide-in');old.style.display='none';}
+  const next = document.getElementById('page'+n);
+  if(!next) return;
+  next.style.display='block';
+  next.classList.add('active','slide-in');
+  currentPage=n;
+  updateDots();
+  // Animate cards
+  gsap.fromTo(next.querySelectorAll('.card,.char-card,.fill-card,.drag-zone,.poem-line'),
+    {y:20,opacity:0},
+    {y:0,opacity:1,duration:.4,stagger:.06,ease:'power2.out'}
+  );
+  // Scroll to top
+  next.scrollTop=0;
+}
+
+/* ============================================================
+   DOTS
+   ============================================================ */
+function renderDots(){
+  const c=document.getElementById('dots');
+  c.innerHTML='';
+  for(let i=0;i<totalPages;i++){
+    const d=document.createElement('div');
+    d.className='dot';
+    d.onclick=()=>goPage(i);
+    c.appendChild(d);
+  }
+}
+function updateDots(){
+  document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.toggle('active',i===currentPage);});
+}
+
+/* ============================================================
+   RENDER: CHAR GRID
+   ============================================================ */
+function renderCharGrid(id,group){
+  const c=document.getElementById(id);
+  if(!c) return;
+  c.innerHTML='';
+  CHAR_DATA.filter(d=>d.group===group).forEach(d=>{
+    const card=document.createElement('div');
+    card.className='char-card';
+    card.innerHTML=`
+      <div class="char">${d.char}</div>
+      <div class="pinyin">${d.pinyin}</div>
+      <div class="info">笔画: ${d.strokes} · ${d.meaning}</div>
+      <div class="stroke-list">笔顺: ${d.strokeOrder}</div>
+      <div class="example">📖 ${d.example}</div>
+      <button class="speak-btn" onclick="speakChar('${d.char}','${d.pinyin}')">🔊 读一读</button>
+    `;
+    c.appendChild(card);
+  });
+}
+
+/* ============================================================
+   RENDER: SENTENCES
+   ============================================================ */
+function renderSentences(){
+  const c=document.getElementById('sentences-container');
+  if(!c) return;
+  c.innerHTML='';
+  READ_SENTENCES.forEach(s=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.cursor='pointer';
+    card.onclick=()=>speakText(s.zh);
+    card.innerHTML=`
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:24px;color:#333;line-height:1.6">${s.zh}</div>
+          <div style="font-size:14px;color:#999;margin-top:2px">${s.py}</div>
+        </div>
+        <div style="font-size:20px;color:#EF5350;padding:8px">🔊</div>
+      </div>
+    `;
+    c.appendChild(card);
+  });
+}
+
+/* ============================================================
+   RENDER: FILL EXERCISES
+   ============================================================ */
+function renderFillExercises(){
+  const c=document.getElementById('fill-container');
+  if(!c) return;
+  c.innerHTML='';
+  FILL_EXERCISES.forEach((ex,i)=>{
+    const card=document.createElement('div');
+    card.className='fill-card';
+    card.id='fillCard'+i;
+    // Build display sentence with blank
+    const parts=ex.sentence.split('___');
+    const displayZh=parts[0]+'<span class="fill-blank" id="fillBlank'+i+'">___</span>'+parts[1];
+    card.innerHTML=`
+      <div class="fill-sentence">${displayZh}</div>
+      <div class="fill-options" id="fillOpts${i}">
+        ${ex.options.map((o,j)=>`<span class="fill-option" data-idx="${i}" data-val="${o}" data-optidx="${j}" onclick="pickFill(this)">${o}</span>`).join('')}
+      </div>
+      <div class="fill-result" id="fillResult${i}"></div>
+    `;
+    c.appendChild(card);
+    fillState[i]=false;
+  });
+}
+
+/* ============================================================
+   FILL: PICK
+   ============================================================ */
+function pickFill(el){
+  const idx=parseInt(el.dataset.idx);
+  const val=el.dataset.val;
+  if(fillState[idx]) return;
+  if(el.classList.contains('used')) return;
+  // Mark all options as used for this exercise
+  const opts=document.querySelectorAll('#fillOpts'+idx+' .fill-option');
+  const ex=FILL_EXERCISES[idx];
+  const blank=document.getElementById('fillBlank'+idx);
+  opts.forEach(o=>o.classList.add('used'));
+  blank.textContent=val;
+  blank.classList.add('filled');
+  // Check
+  const result=document.getElementById('fillResult'+idx);
+  if(val===ex.answer){
+    result.innerHTML='✅ 正确！';
+    result.style.color='#4CAF50';
+    fillState[idx]=true;
+    el.classList.add('correct');
+    // speak
+    speakText(ex.sentence.replace('___',ex.answer));
+    // GSAP celebrate
+    gsap.fromTo(blank,{scale:1.2},{scale:1,duration:.3,ease:'back.out(2)'});
+  } else {
+    result.innerHTML='❌ 再想想… 正确答案是：'+ex.answer;
+    result.style.color='#F44336';
+    el.classList.add('wrong');
+    // Reset after 1.2s
+    setTimeout(()=>{
+      blank.textContent='___';
+      blank.classList.remove('filled');
+      opts.forEach(o=>o.classList.remove('used','correct','wrong'));
+      result.innerHTML='';
+      fillState[idx]=false;
+    },1400);
+  }
+}
+
+/* ============================================================
+   DRAG & DROP SENTENCE BUILDER
+   ============================================================ */
+function initSentences(){
+  const sentences=[['我','是','学生'],['我','在','学校'],['我','有','一只','猫']];
+  [1,2,3].forEach(i=>{
+    const words=sentences[i-1];
+    shuffleArray(words);
+    const bank=document.getElementById('bank'+i);
+    bank.innerHTML='';
+    words.forEach((w,j)=>{
+      const span=document.createElement('span');
+      span.className='drag-word';
+      span.textContent=w;
+      span.dataset.word=w;
+      span.dataset.sentence=i;
+      span.dataset.bankIdx=j;
+      span.draggable=false;
+      // Pointer events for drag
+      span.addEventListener('pointerdown',onWordPointerDown);
+      bank.appendChild(span);
+    });
+    dragState[i]={placed:0};
+  });
+}
+
+let dragData=null;
+
+function onWordPointerDown(e){
+  e.preventDefault();
+  const el=e.currentTarget;
+  if(el.classList.contains('placed')) return;
+  el.setPointerCapture(e.pointerId);
+  el.classList.add('dragging');
+  dragData={el,offsetX:e.offsetX,offsetY:e.offsetY,startX:e.clientX,startY:e.clientY,sentence:parseInt(el.dataset.sentence)};
+
+  const moveHandler=(ev)=>{
+    ev.preventDefault();
+    if(!dragData) return;
+    dragData.el.style.position='fixed';
+    dragData.el.style.left=(ev.clientX-dragData.offsetX)+'px';
+    dragData.el.style.top=(ev.clientY-dragData.offsetY)+'px';
+    dragData.el.style.zIndex=999;
+    // Check if over zone
+    const zone=document.getElementById('zone'+dragData.sentence);
+    if(zone){
+      const r=zone.getBoundingClientRect();
+      if(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom){
+        zone.classList.add('drag-over');
+      } else {
+        zone.classList.remove('drag-over');
+      }
+    }
+  };
+
+  const upHandler=(ev)=>{
+    ev.preventDefault();
+    if(!dragData) return;
+    dragData.el.classList.remove('dragging');
+    dragData.el.style.position='';
+    dragData.el.style.left='';
+    dragData.el.style.top='';
+    dragData.el.style.zIndex='';
+    const zone=document.getElementById('zone'+dragData.sentence);
+    zone.classList.remove('drag-over');
+    // Check drop
+    if(zone){
+      const r=zone.getBoundingClientRect();
+      if(ev.clientX>=r.left&&ev.clientX<=r.right&&ev.clientY>=r.top&&ev.clientY<=r.bottom){
+        // Place word in zone
+        const word=dragData.el;
+        if(!word.classList.contains('placed')){
+          word.classList.add('placed','in-zone');
+          word.style.position='';
+          word.style.left='';
+          word.style.top='';
+          zone.appendChild(word);
+          dragState[dragData.sentence].placed++;
+          checkSentenceAuto(dragData.sentence);
+        }
+      }
+    }
+    dragData=null;
+    document.removeEventListener('pointermove',moveHandler);
+    document.removeEventListener('pointerup',upHandler);
+  };
+
+  document.addEventListener('pointermove',moveHandler);
+  document.addEventListener('pointerup',upHandler);
+}
+
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+}
+
+function resetSentence(n){
+  const zone=document.getElementById('zone'+n);
+  const bank=document.getElementById('bank'+n);
+  // Return all placed words to bank
+  const placed=zone.querySelectorAll('.drag-word');
+  placed.forEach(w=>{
+    w.classList.remove('placed','in-zone');
+    bank.appendChild(w);
+  });
+  // Reset shuffle
+  const words=Array.from(bank.children).map(w=>w.textContent);
+  shuffleArray(words);
+  bank.innerHTML='';
+  words.forEach(w=>{
+    const span=document.createElement('span');
+    span.className='drag-word';
+    span.textContent=w;
+    span.dataset.word=w;
+    span.dataset.sentence=n;
+    span.addEventListener('pointerdown',onWordPointerDown);
+    bank.appendChild(span);
+  });
+  dragState[n].placed=0;
+  document.getElementById('result'+n).textContent='';
+}
+
+function checkSentence(n){
+  const zone=document.getElementById('zone'+n);
+  const answer=zone.dataset.answer;
+  const placedWords=Array.from(zone.querySelectorAll('.drag-word')).map(w=>w.textContent).join('');
+  const result=document.getElementById('result'+n);
+  if(placedWords===answer){
+    result.innerHTML='✅ 完全正确！🎉';
+    result.style.color='#4CAF50';
+    speakText(answer);
+    gsap.fromTo(zone,{borderColor:'#4CAF50',backgroundColor:'#E8F5E9'},{duration:.3});
+  } else {
+    result.innerHTML='❌ 再试试！提示: '+answer;
+    result.style.color='#F44336';
+    gsap.fromTo(zone,{x:-4},{x:4,duration:.08,repeat:5,yoyo:true,ease:'power1.inOut'});
+  }
+}
+
+function checkSentenceAuto(n){
+  const zone=document.getElementById('zone'+n);
+  const answer=zone.dataset.answer;
+  const totalChars=answer.length;
+  // Only auto-check if all words placed
+  if(dragState[n].placed>=zone.querySelectorAll('.drag-word').length){
+    checkSentence(n);
+  }
+}
+
+/* ============================================================
+   SPEECH
+   ============================================================ */
+function speakText(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN';
+  u.rate=0.85;
+  u.pitch=1.1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakChar(ch,pinyin){
+  speakText(ch);
+}
+
+function speakPoem(){
+  const lines=['床前明月光','疑是地上霜','举头望明月','低头思故乡'];
+  let i=0;
+  function speakNext(){
+    if(i>=lines.length) return;
+    speakText(lines[i]);
+    i++;
+    if(i<lines.length) setTimeout(speakNext,1600);
+  }
+  speakNext();
+}
+
+function speakSummary(){
+  speakText('我 在 有 是 的 很 和 也');
+}
+
+/* ============================================================
+   RENDER SUMMARY
+   ============================================================ */
+function renderSummary(){
+  const c=document.getElementById('summaryGrid');
+  if(!c) return;
+  c.innerHTML='';
+  SUMMARY_CHARS.forEach(ch=>{
+    const d=document.createElement('div');
+    d.className='summary-char';
+    d.innerHTML=`<span class="big">${ch}</span><span class="sub">${CHAR_DATA.find(x=>x.char===ch)?.pinyin||''}</span>`;
+    c.appendChild(d);
+  });
+}
+
+/* ============================================================
+   GSAP ADDITIONAL EFFECTS
+   ============================================================ */
+// Listen for page changes to add effects
+document.addEventListener('click',function(e){
+  // Poem line click speaks
+  if(e.target.classList.contains('poem-line')){
+    speakText(e.target.dataset.line||e.target.textContent);
+    gsap.fromTo(e.target,{scale:1.02,color:'#EF5350'},{scale:1,color:'#333',duration:.3,ease:'power1.out'});
+  }
+});
+
+/* ============================================================
+   RESIZE HANDLER
+   ============================================================ */
+window.addEventListener('resize',()=>{
+  // Reposition any dragged element if needed
+});
+
+console.log('📖 第20课 · 短句阅读 loaded');
+</script>
+
+</body>
+</html>

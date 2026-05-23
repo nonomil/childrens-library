@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第12课 · 韵母大冒险 | 拼音乐园</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',sans-serif;overflow:hidden;background:#1a1a2e;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center}
+.book{flex-shrink:0;position:relative;width:100%;max-width:960px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.page{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px 70px;opacity:0;pointer-events:none;transition:opacity .5s ease;overflow-y:auto;background:#fff}
+.page.active{opacity:1;pointer-events:auto;z-index:2}
+.page.prev{opacity:0;pointer-events:none;z-index:1}
+/* top bar */
+.top-bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;z-index:10}
+.top-bar .home-btn,.top-bar .sound-btn{width:40px;height:40px;border-radius:50%;border:none;background:rgba(239,83,80,.12);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:#EF5350}
+.top-bar .home-btn:hover,.top-bar .sound-btn:hover{background:rgba(239,83,80,.25);transform:scale(1.1)}
+/* nav dots */
+.nav-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:#ddd;border:2px solid transparent;transition:all .3s;cursor:pointer}
+.nav-dot.active{background:#EF5350;border-color:#EF5350;transform:scale(1.3)}
+.nav-dot.seen{background:#f8a5a5}
+/* prev next */
+.nav-arrows{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;z-index:10;pointer-events:none}
+.nav-arrows button{width:44px;height:44px;border-radius:50%;border:2px solid #EF5350;background:#fff;font-size:20px;color:#EF5350;cursor:pointer;pointer-events:auto;transition:all .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(239,83,80,.2)}
+.nav-arrows button:active{transform:scale(.9);background:#EF5350;color:#fff}
+.nav-arrows button:disabled{opacity:.3;pointer-events:none}
+/* headings */
+h1{font-size:32px;font-weight:900;color:#EF5350;margin-bottom:6px;text-align:center}
+h2{font-size:24px;font-weight:800;color:#EF5350;margin-bottom:8px;text-align:center}
+h3{font-size:18px;font-weight:700;color:#c0392b;margin-bottom:10px;text-align:center}
+h4{font-size:15px;font-weight:700;color:#e74c3c;margin-bottom:6px;text-align:center}
+/* cover */
+.cover-icon{font-size:72px;margin-bottom:10px;display:block}
+.cover-sub{font-size:14px;color:#999;margin-bottom:20px;text-align:center}
+.cover-badge{background:#EF5350;color:#fff;padding:10px 32px;border-radius:30px;font-size:18px;font-weight:800;margin-bottom:16px;display:inline-block;box-shadow:0 6px 20px rgba(239,83,80,.35)}
+.cover-img{width:200px;height:auto;margin:10px 0;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+/* cards grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:360px;margin:8px auto}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:360px;margin:8px auto}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;width:100%;max-width:360px;margin:8px auto}
+.grid-5{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:6px;width:100%;max-width:360px;margin:8px auto}
+.init-card{background:#fff;border-radius:16px;padding:14px 8px;text-align:center;border:2px solid #ffe0e0;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.init-card:active{transform:scale(.95)}
+.init-card .pinyin{font-size:28px;font-weight:900;color:#EF5350;display:block;line-height:1.2}
+.init-card .example{font-size:14px;color:#888;margin-top:4px;display:block}
+.init-card .hanzi{font-size:20px;color:#333;margin-top:2px;display:block}
+.init-card.playing{border-color:#EF5350;background:#fff5f5;box-shadow:0 0 0 3px rgba(239,83,80,.15)}
+/* yunmu cards */
+.yunmu-card{background:#fff;border-radius:14px;padding:10px 6px;text-align:center;border:2px solid #ffe0e0;cursor:pointer;transition:all .3s}
+.yunmu-card:active{transform:scale(.93)}
+.yunmu-card .pinyin{font-size:26px;font-weight:900;color:#EF5350;display:block;line-height:1.2}
+.yunmu-card .example{font-size:13px;color:#888;margin-top:2px;display:block}
+.yunmu-card .hanzi{font-size:18px;color:#333;margin-top:1px;display:block}
+.yunmu-card .tone-mark{font-size:14px;color:#999;display:block;margin-top:1px}
+.yunmu-card.playing{border-color:#EF5350;background:#fff5f5;box-shadow:0 0 0 3px rgba(239,83,80,.15)}
+/* big yunmu display */
+.yunmu-big{font-size:52px;font-weight:900;color:#EF5350;text-align:center;line-height:1.2;margin:4px 0}
+/* blending cards */
+.blend-card{background:#fef6f6;border-radius:14px;padding:14px 12px;text-align:center;border:2px solid #ffd6d6;cursor:pointer;transition:all .3s;margin-bottom:12px}
+.blend-card:active{transform:scale(.97)}
+.blend-card .big{font-size:36px;font-weight:900;color:#EF5350;display:block;line-height:1.2}
+.blend-card .parts{font-size:14px;color:#999;margin-top:4px}
+.blend-card .meaning{font-size:16px;font-weight:600;color:#333;margin-top:4px}
+/* poem box */
+.poem-box{background:#fef2f2;border:2px dashed #ffc0c0;border-radius:16px;padding:16px;width:100%;max-width:360px;margin:10px 0;text-align:center}
+.poem-box .line{font-size:22px;font-weight:700;color:#EF5350;margin:4px 0;cursor:pointer;transition:all .2s}
+.poem-box .line:active{color:#c0392b;transform:scale(.98)}
+.poem-box .yunmu-highlight{color:#e74c3c;font-weight:900;text-decoration:underline;text-decoration-color:#ff8888}
+.poem-box .note{font-size:13px;color:#999;margin-top:6px}
+/* quiz */
+.quiz-card{background:#fff;border-radius:16px;padding:20px;text-align:center;border:2px solid #ffe0e0;width:100%;max-width:360px;margin:6px auto}
+.quiz-q{font-size:28px;font-weight:900;color:#EF5350;margin-bottom:10px}
+.quiz-q .hint{font-size:15px;color:#999;font-weight:400}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quiz-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:14px 8px;font-size:20px;font-weight:700;color:#333;cursor:pointer;transition:all .3s;text-align:center;font-family:'Nunito',sans-serif}
+.quiz-btn:active{transform:scale(.95)}
+.quiz-btn.correct{background:#27ae60;border-color:#27ae60;color:#fff;animation:pop .4s}
+.quiz-btn.wrong{background:#e74c3c;border-color:#e74c3c;color:#fff;animation:shake .4s}
+.quiz-feedback{font-size:14px;margin-top:8px;min-height:22px;font-weight:600}
+/* celebration */
+.celebration{text-align:center}
+.celebration .trophy{font-size:80px;margin-bottom:8px;display:block}
+.celebration .congrats{font-size:28px;font-weight:900;color:#EF5350;margin-bottom:4px}
+.celebration .sub{font-size:16px;color:#888;margin-bottom:20px}
+.celebration .restart-btn{background:#EF5350;color:#fff;border:none;padding:14px 40px;border-radius:30px;font-size:18px;font-weight:800;cursor:pointer;transition:all .3s;margin-top:8px;font-family:'Nunito',sans-serif}
+.celebration .restart-btn:active{transform:scale(.95)}
+/* progress bar */
+.progress-bar{position:absolute;top:0;left:0;right:0;height:4px;background:#f0f0f0;z-index:11}
+.progress-fill{height:100%;background:#EF5350;transition:width .5s ease;border-radius:0 4px 4px 0}
+/* animations */
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(600px) rotate(720deg);opacity:0}}
+.fade-up{animation:fadeUp .5s ease forwards}
+.float-anim{animation:float 3s ease-in-out infinite}
+/* confetti */
+.confetti-piece{position:absolute;width:10px;height:10px;top:-20px;border-radius:2px;animation:confetti-fall linear forwards;z-index:20;pointer-events:none}
+/* scroll */
+.page-content{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center}
+.page-scroll{overflow-y:auto;flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 0}
+/* yunmu table */
+.yunmu-table{width:100%;max-width:360px;border-collapse:separate;border-spacing:4px;margin:8px 0;font-size:14px}
+.yunmu-table td{padding:8px 6px;text-align:center;border-radius:10px;font-weight:700;cursor:pointer;transition:all .2s}
+.yunmu-table td:active{transform:scale(.95)}
+.yunmu-table .head{background:#EF5350;color:#fff;font-size:13px;cursor:default}
+.yunmu-table .cell-single{background:#fff0f0;color:#c0392b;border:1px solid #ffd6d6}
+.yunmu-table .cell-compound{background:#fef6f6;color:#888;border:1px solid #f0e0e0}
+.yunmu-table .cell-nasal{background:#fff5f5;color:#e74c3c;border:1px solid #ffd6d6}
+/* info box */
+.info-box{background:#fff5f5;border-left:4px solid #EF5350;border-radius:8px;padding:10px 14px;width:100%;max-width:360px;margin:8px 0}
+.info-box p{font-size:14px;color:#555;line-height:1.6}
+.info-box .label{font-weight:800;color:#EF5350}
+/* tone colors */
+.tone1{color:#EF5350;font-weight:900}
+.tone2{color:#e67e22;font-weight:900}
+.tone3{color:#27ae60;font-weight:900}
+.tone4{color:#8e44ad;font-weight:900}
+/* mini grid for syllables */
+.syl-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:6px 0}
+.syl-chip{background:#fff5f5;border:1px solid #ffd6d6;border-radius:20px;padding:4px 14px;font-size:15px;font-weight:700;color:#EF5350;cursor:pointer;transition:all .2s}
+.syl-chip:active{transform:scale(.92);background:#EF5350;color:#fff}
+/* misc */
+.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
+.text-muted{color:#aaa;font-size:13px}
+.tap-hint{font-size:12px;color:#bbb;margin-top:6px}
+.highlight{color:#EF5350;font-weight:800}
+.pinyin-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.pinyin-chip{background:#fff5f5;border:1px solid #ffd6d6;border-radius:20px;padding:4px 14px;font-size:15px;font-weight:700;color:#EF5350}
+.section-label{background:#EF5350;color:#fff;font-size:12px;font-weight:700;padding:3px 14px;border-radius:12px;margin-bottom:8px;display:inline-block}
+.divider{width:60px;height:3px;background:#ffe0e0;border-radius:3px;margin:6px 0}
+.star-row{display:flex;gap:4px;justify-content:center;margin:4px 0}
+.star-row span{font-size:16px}
+/* scrollbar */
+.page-scroll::-webkit-scrollbar{width:3px}
+.page-scroll::-webkit-scrollbar-thumb{background:#EF5350;border-radius:3px}
+/* poem image row */
+.poem-img-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.poem-img-row img{width:80px;height:auto;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.1);cursor:pointer;transition:all .2s}
+.poem-img-row img:active{transform:scale(.95)}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="book" id="book">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="top-bar">
+    <button class="home-btn" onclick="goHome()" aria-label="首页">🏠</button>
+    <button class="sound-btn" id="soundBtn" onclick="toggleSound()" aria-label="朗读">🔊</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 1 – COVER                                               -->
+  <!-- ============================================================ -->
+  <div class="page active" data-page="1" id="page1">
+    <div class="page-content" style="justify-content:center">
+      <span class="cover-icon float-anim">🔤</span>
+      <div class="cover-badge">第12课</div>
+      <h1>韵母大冒险</h1>
+      <p style="color:#666;font-size:16px;font-weight:600;margin-bottom:4px">✨ Finals Adventure ✨</p>
+      <p class="cover-sub">a o e i u ü  ·  ai ei ui  ·  ao ou iu  ·  ie üe  ·  an en in un ün  ·  ang eng ing ong</p>
+      <div class="divider"></div>
+      <p style="color:#c0392b;font-size:14px;font-weight:600;margin:4px 0">探索韵母的奇妙世界！</p>
+      <img class="cover-img" src="images/chinese-12/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="韵母大冒险" loading="lazy" onerror="this.style.display='none'">
+      <p class="tap-hint" style="margin-top:16px">👆 点击 ▶ 开始冒险</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 2 – 单韵母 a o e i u ü                                   -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="2" id="page2">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">单韵母 · 1/5</span>
+        <h2>🔤 六个单韵母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Simple finals · 最基本的韵母</p>
+        <div class="info-box">
+          <p><span class="label">💡 小知识：</span>单韵母是韵母的基础！普通话共有 <span class="highlight">6 个单韵母</span>：a, o, e, i, u, ü。发 a 时嘴巴张得最大，发 i 时嘴角向两边展开，发 ü 时嘴唇收圆像吹口哨。</p>
+        </div>
+        <div class="grid-3">
+          <div class="yunmu-card" onclick="speak('ā á ǎ à','ā á ǎ à',this)">
+            <span class="pinyin" style="font-size:36px">a</span>
+            <span class="example">ā á ǎ à · 四声</span>
+            <span class="hanzi">啊 啊 啊 啊</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ō ó ǒ ò','ō ó ǒ ò',this)">
+            <span class="pinyin" style="font-size:36px">o</span>
+            <span class="example">ō ó ǒ ò · 四声</span>
+            <span class="hanzi">喔 哦 噢 哦</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ē é ě è','ē é ě è',this)">
+            <span class="pinyin" style="font-size:36px">e</span>
+            <span class="example">ē é ě è · 四声</span>
+            <span class="hanzi">阿 鹅 恶 饿</span>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="yunmu-card" onclick="speak('ī í ǐ ì','ī í ǐ ì',this)">
+            <span class="pinyin" style="font-size:36px">i</span>
+            <span class="example">ī í ǐ ì · 四声</span>
+            <span class="hanzi">一 移 椅 意</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ū ú ǔ ù','ū ú ǔ ù',this)">
+            <span class="pinyin" style="font-size:36px">u</span>
+            <span class="example">ū ú ǔ ù · 四声</span>
+            <span class="hanzi">乌 无 五 物</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ǖ ǘ ǚ ǜ','ǖ ǘ ǚ ǜ',this)">
+            <span class="pinyin" style="font-size:36px">ü</span>
+            <span class="example">ǖ ǘ ǚ ǜ · 四声</span>
+            <span class="hanzi">迂 鱼 雨 玉</span>
+          </div>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip">a 啊</span>
+          <span class="pinyin-chip">o 哦</span>
+          <span class="pinyin-chip">e 鹅</span>
+          <span class="pinyin-chip">i 衣</span>
+          <span class="pinyin-chip">u 屋</span>
+          <span class="pinyin-chip">ü 鱼</span>
+        </div>
+        <img src="images/chinese-12/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="单韵母 a o e i u ü" style="width:190px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听四声发音</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 3 – 复韵母 ai ei ui ao ou iu ie üe                       -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="3" id="page3">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">复韵母 · 2/5</span>
+        <h2>🔗 八个复韵母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Compound finals · 两个元音连在一起</p>
+        <div class="info-box">
+          <p><span class="label">💡 发音秘诀：</span>复韵母是"滑音"——从第一个元音快速滑到第二个元音！比如 <span class="highlight">ai</span> 就像在说"爱" (ài)，嘴巴从大张慢慢合拢。</p>
+        </div>
+        <div class="grid-4">
+          <div class="yunmu-card" onclick="speak('āi','āi',this)">
+            <span class="pinyin">ai</span>
+            <span class="example">爱 ài</span>
+            <span class="hanzi">爱 ❤️</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ēi','ēi',this)">
+            <span class="pinyin">ei</span>
+            <span class="example">飞 fēi</span>
+            <span class="hanzi">飞 🕊️</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('uī','uī',this)">
+            <span class="pinyin">ui</span>
+            <span class="example">水 shuǐ</span>
+            <span class="hanzi">水 💧</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('āo','āo',this)">
+            <span class="pinyin">ao</span>
+            <span class="example">猫 māo</span>
+            <span class="hanzi">猫 🐱</span>
+          </div>
+        </div>
+        <div class="grid-4">
+          <div class="yunmu-card" onclick="speak('ōu','ōu',this)">
+            <span class="pinyin">ou</span>
+            <span class="example">狗 gǒu</span>
+            <span class="hanzi">狗 🐶</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('iū','iū',this)">
+            <span class="pinyin">iu</span>
+            <span class="example">球 qiú</span>
+            <span class="hanzi">球 ⚽</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('iē','iē',this)">
+            <span class="pinyin">ie</span>
+            <span class="example">叶 yè</span>
+            <span class="hanzi">叶 🍃</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('üē','üē',this)">
+            <span class="pinyin">üe</span>
+            <span class="example">月 yuè</span>
+            <span class="hanzi">月 🌙</span>
+          </div>
+        </div>
+        <div style="width:100%;max-width:360px;display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:8px 0">
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ai 爱</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ei 飞</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ui 水</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ao 猫</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ou 狗</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">iu 球</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">ie 叶</span>
+          <span style="background:#fff5f5;border:1px solid #ffd6d6;border-radius:16px;padding:3px 10px;font-size:13px;color:#888">üe 月</span>
+        </div>
+        <img src="images/chinese-12/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="复韵母 ai ei ui ao ou iu ie üe" style="width:190px;border-radius:12px;margin:6px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听发音</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 4 – 前鼻韵母 an en in un ün                               -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="4" id="page4">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">前鼻韵母 · 3/5</span>
+        <h2>👃 前鼻韵母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Front nasal finals · an en in un ün</p>
+        <div class="info-box">
+          <p><span class="label">👅 发音秘诀：</span>舌尖抵住上齿龈，让气流从鼻腔出来！<span class="highlight">an</span> 像"安" (ān)，<span class="highlight">en</span> 像"恩" (ēn)。声音从嘴巴转到鼻子，是前鼻音的特点。</p>
+        </div>
+        <div class="grid-3">
+          <div class="yunmu-card" onclick="speak('ān án ǎn àn','ān án ǎn àn',this)">
+            <span class="pinyin">an</span>
+            <span class="example">天安 tiān ān</span>
+            <span class="hanzi">安 🏛️</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ēn én ěn èn','ēn én ěn èn',this)">
+            <span class="pinyin">en</span>
+            <span class="example">恩情 ēn qíng</span>
+            <span class="hanzi">恩 🤗</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('īn ín ǐn ìn','īn ín ǐn ìn',this)">
+            <span class="pinyin">in</span>
+            <span class="example">星星 xīng</span>
+            <span class="hanzi">音 🎵</span>
+          </div>
+        </div>
+        <div class="grid-3">
+          <div class="yunmu-card" onclick="speak('ūn ún ǔn ùn','ūn ún ǔn ùn',this)">
+            <span class="pinyin">un</span>
+            <span class="example">春天 chūn tiān</span>
+            <span class="hanzi">春 🌸</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ǖn ǘn ǚn ǜn','ǖn ǘn ǚn ǜn',this)">
+            <span class="pinyin">ün</span>
+            <span class="example">白云 bái yún</span>
+            <span class="hanzi">云 ☁️</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('yuān yuán yuǎn yuàn','yuān yuán yuǎn yuàn',this)" style="background:#fff5f5;border:2px dashed #ffaaaa">
+            <span class="pinyin" style="font-size:22px">ü + an = üan</span>
+            <span class="example">yuan 圆</span>
+            <span class="hanzi">圆 ⭕</span>
+          </div>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip">an 安</span>
+          <span class="pinyin-chip">en 恩</span>
+          <span class="pinyin-chip">in 音</span>
+          <span class="pinyin-chip">un 春</span>
+          <span class="pinyin-chip">ün 云</span>
+        </div>
+        <img src="images/chinese-12/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="前鼻韵母 an en in un ün" style="width:190px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听发音</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 5 – 后鼻韵母 ang eng ing ong                              -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="5" id="page5">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">后鼻韵母 · 4/5</span>
+        <h2>👃 后鼻韵母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Back nasal finals · ang eng ing ong</p>
+        <div class="info-box">
+          <p><span class="label">👅 发音秘诀：</span>舌根抬起顶住软腭，让气流从鼻腔出来！<span class="highlight">ang</span> 像"昂" (áng)，<span class="highlight">eng</span> 像"灯" (dēng)。前鼻音和后鼻音的区别是舌头位置不同哦！</p>
+        </div>
+        <div class="grid-2">
+          <div class="yunmu-card" onclick="speak('āng áng ǎng àng','āng áng ǎng àng',this)">
+            <span class="pinyin" style="font-size:32px">ang</span>
+            <span class="example">昂 áng</span>
+            <span class="hanzi">昂 🏔️</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ēng éng ěng èng','ēng éng ěng èng',this)">
+            <span class="pinyin" style="font-size:32px">eng</span>
+            <span class="example">灯 dēng</span>
+            <span class="hanzi">灯 💡</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('īng íng ǐng ìng','īng íng ǐng ìng',this)">
+            <span class="pinyin" style="font-size:32px">ing</span>
+            <span class="example">星 xīng</span>
+            <span class="hanzi">星 ⭐</span>
+          </div>
+          <div class="yunmu-card" onclick="speak('ōng óng ǒng òng','ōng óng ǒng òng',this)">
+            <span class="pinyin" style="font-size:32px">ong</span>
+            <span class="example">龙 lóng</span>
+            <span class="hanzi">龙 🐉</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <h4>⚡ 前鼻音 vs 后鼻音 对比</h4>
+        <table class="yunmu-table">
+          <tr><td class="head">前鼻音 (-n)</td><td class="head">后鼻音 (-ng)</td><td class="head">区别</td></tr>
+          <tr><td class="cell-single" onclick="speak('ān','ān')">an 安</td><td class="cell-nasal" onclick="speak('āng','āng')">ang 昂</td><td class="cell-single">舌尖 vs 舌根</td></tr>
+          <tr><td class="cell-single" onclick="speak('ēn','ēn')">en 恩</td><td class="cell-nasal" onclick="speak('ēng','ēng')">eng 灯</td><td class="cell-single">前鼻 vs 后鼻</td></tr>
+          <tr><td class="cell-single" onclick="speak('īn','īn')">in 音</td><td class="cell-nasal" onclick="speak('īng','īng')">ing 星</td><td class="cell-single">前鼻 vs 后鼻</td></tr>
+        </table>
+        <img src="images/chinese-12/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="后鼻韵母 ang eng ing ong" style="width:190px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听发音对比</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 6 – 韵母总表 + 特殊韵母 er + 拼读                          -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="6" id="page6">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">韵母总表 · 5/5</span>
+        <h2>📋 所有韵母一览</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:4px">一共 24 个韵母，今天都学啦！</p>
+        <div style="width:100%;max-width:360px;background:#fff5f5;border-radius:12px;padding:10px 14px;margin:6px 0;border:1px solid #ffd6d6">
+          <p style="font-size:13px;color:#e74c3c;font-weight:700;margin-bottom:4px">🔴 单韵母 (6)</p>
+          <div class="pinyin-row" style="margin:2px 0">
+            <span class="pinyin-chip">a</span><span class="pinyin-chip">o</span><span class="pinyin-chip">e</span><span class="pinyin-chip">i</span><span class="pinyin-chip">u</span><span class="pinyin-chip">ü</span>
+          </div>
+          <p style="font-size:13px;color:#e67e22;font-weight:700;margin-bottom:4px">🟠 复韵母 (8)</p>
+          <div class="pinyin-row" style="margin:2px 0">
+            <span class="pinyin-chip">ai</span><span class="pinyin-chip">ei</span><span class="pinyin-chip">ui</span><span class="pinyin-chip">ao</span><span class="pinyin-chip">ou</span><span class="pinyin-chip">iu</span><span class="pinyin-chip">ie</span><span class="pinyin-chip">üe</span>
+          </div>
+          <p style="font-size:13px;color:#27ae60;font-weight:700;margin-bottom:4px">🟢 前鼻韵母 (5)</p>
+          <div class="pinyin-row" style="margin:2px 0">
+            <span class="pinyin-chip">an</span><span class="pinyin-chip">en</span><span class="pinyin-chip">in</span><span class="pinyin-chip">un</span><span class="pinyin-chip">ün</span>
+          </div>
+          <p style="font-size:13px;color:#8e44ad;font-weight:700;margin-bottom:4px">🟣 后鼻韵母 (4)</p>
+          <div class="pinyin-row" style="margin:2px 0">
+            <span class="pinyin-chip">ang</span><span class="pinyin-chip">eng</span><span class="pinyin-chip">ing</span><span class="pinyin-chip">ong</span>
+          </div>
+          <p style="font-size:13px;color:#EF5350;font-weight:700;margin-bottom:4px">💠 特殊韵母 (1)</p>
+          <div class="pinyin-row" style="margin:2px 0">
+            <span class="pinyin-chip" style="background:#fff0f0;border:2px solid #ff8888">er</span>
+          </div>
+        </div>
+        <div class="info-box">
+          <p><span class="label">✨ er 特殊韵母：</span>又称"卷舌韵母"，发音时舌尖卷起。常见汉字：<span class="highlight">ér</span> 儿 (儿子)、<span class="highlight">ěr</span> 耳 (耳朵)、<span class="highlight">èr</span> 二 (二)。</p>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip" onclick="speak('ér','ér')">ér 儿 👶</span>
+          <span class="pinyin-chip" onclick="speak('ěr','ěr')">ěr 耳 👂</span>
+          <span class="pinyin-chip" onclick="speak('èr','èr')">èr 二 2️⃣</span>
+        </div>
+        <img src="images/chinese-12/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="韵母总表" style="width:170px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 7 – 拼读练习                                              -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="7" id="page7">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">拼读练习</span>
+        <h2>🔊 声母 + 韵母拼读</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:8px">把声母和韵母连起来读！点击卡片听读音</p>
+        <div class="blend-card" onclick="speak('mā','mā',this)">
+          <span class="big">m + a = mā</span>
+          <span class="parts">声母 m (摸) + 韵母 a (一声) → mā</span>
+          <span class="meaning">👩 妈妈 mā ma</span>
+        </div>
+        <div class="blend-card" onclick="speak('bǐ','bǐ',this)">
+          <span class="big">b + i = bǐ</span>
+          <span class="parts">声母 b (波) + 韵母 i (三声) → bǐ</span>
+          <span class="meaning">✏️ 铅笔 qiān bǐ</span>
+        </div>
+        <div class="blend-card" onclick="speak('dà','dà',this)">
+          <span class="big">d + a = dà</span>
+          <span class="parts">声母 d (得) + 韵母 a (四声) → dà</span>
+          <span class="meaning">🐘 大象 dà xiàng</span>
+        </div>
+        <div class="blend-card" onclick="speak('lǜ','lǜ',this)">
+          <span class="big">l + ü = lǜ</span>
+          <span class="parts">声母 l (勒) + 韵母 ü (四声) → lǜ</span>
+          <span class="meaning">🍃 绿色 lǜ sè</span>
+        </div>
+        <div class="grid-2" style="margin-top:4px">
+          <div class="blend-card" onclick="speak('hǎi','hǎi',this)" style="margin:0">
+            <span class="big" style="font-size:28px">h + ai</span>
+            <span class="parts" style="font-size:12px">hǎi 海</span>
+            <span class="meaning">🌊 大海</span>
+          </div>
+          <div class="blend-card" onclick="speak('niú','niú',this)" style="margin:0">
+            <span class="big" style="font-size:28px">n + iu</span>
+            <span class="parts" style="font-size:12px">niú 牛</span>
+            <span class="meaning">🐮 黄牛</span>
+          </div>
+          <div class="blend-card" onclick="speak('tiān','tiān',this)" style="margin:0">
+            <span class="big" style="font-size:28px">t + ian</span>
+            <span class="parts" style="font-size:12px">tiān 天</span>
+            <span class="meaning">☀️ 天空</span>
+          </div>
+          <div class="blend-card" onclick="speak('lóng','lóng',this)" style="margin:0">
+            <span class="big" style="font-size:28px">l + ong</span>
+            <span class="parts" style="font-size:12px">lóng 龙</span>
+            <span class="meaning">🐉 飞龙</span>
+          </div>
+        </div>
+        <div class="syl-grid">
+          <span class="syl-chip" onclick="speak('bā','bā')">bā 八</span>
+          <span class="syl-chip" onclick="speak('pá','pá')">pá 爬</span>
+          <span class="syl-chip" onclick="speak('gē','gē')">gē 歌</span>
+          <span class="syl-chip" onclick="speak('kū','kū')">kū 哭</span>
+          <span class="syl-chip" onclick="speak('fēi','fēi')">fēi 飞</span>
+          <span class="syl-chip" onclick="speak('pǎo','pǎo')">pǎo 跑</span>
+          <span class="syl-chip" onclick="speak('tiào','tiào')">tiào 跳</span>
+          <span class="syl-chip" onclick="speak('chàng','chàng')">chàng 唱</span>
+        </div>
+        <img src="images/chinese-12/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="拼读练习" style="width:150px;border-radius:12px;margin:6px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 8 – 韵母诗 / 儿歌                                         -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="8" id="page8">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">韵母小诗</span>
+        <h2>🎵 韵母歌</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">点击每句诗听朗读，找找里面的韵母！</p>
+        <div class="poem-box">
+          <p style="font-size:13px;color:#c0392b;font-weight:700;margin-bottom:6px">📖 声母韵母手拉手</p>
+          <div class="line" onclick="speak('shēng mǔ yùn mǔ shǒu lā shǒu','shēng mǔ yùn mǔ shǒu lā shǒu',this)">
+            声<b class="yunmu-highlight">母</b>韵<b class="yunmu-highlight">母</b>手拉<b class="yunmu-highlight">手</b> <span style="font-size:12px;color:#999">-u -u -ou</span>
+          </div>
+          <div class="line" onclick="speak('pīn chū yīn jiē lái zǒu zǒu','pīn chū yīn jiē lái zǒu zǒu',this)">
+            拼出音<b class="yunmu-highlight">节</b>来走<b class="yunmu-highlight">走</b> <span style="font-size:12px;color:#999">-ie -ou</span>
+          </div>
+          <div class="line" onclick="speak('mā ma ài wǒ wǒ ài tā','mā ma ài wǒ wǒ ài tā',this)">
+            妈<b class="yunmu-highlight">妈</b>爱<b class="yunmu-highlight">我</b>我<b class="yunmu-highlight">爱</b>她 <span style="font-size:12px;color:#999">-a -ai -a -ai</span>
+          </div>
+          <div class="line" onclick="speak('tiān tiān kuài lè xiào hā hā','tiān tiān kuài lè xiào hā hā',this)">
+            天<b class="yunmu-highlight">天</b>快<b class="yunmu-highlight">乐</b>笑哈<b class="yunmu-highlight">哈</b> <span style="font-size:12px;color:#999">-ian -e -a</span>
+          </div>
+          <div class="note">👆 点击句子听朗读 · 找找红色的韵母</div>
+        </div>
+        <div class="poem-img-row">
+          <img src="images/chinese-12/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="诗行1" loading="lazy" onerror="this.style.display='none'">
+          <img src="images/chinese-12/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="诗行2" loading="lazy" onerror="this.style.display='none'">
+          <img src="images/chinese-12/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="诗行3" loading="lazy" onerror="this.style.display='none'">
+          <img src="images/chinese-12/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="诗行4" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="info-box">
+          <p><span class="label">🎯 找一找：</span>你能在每句诗里找到几个韵母？试试看把每个字的韵母都读出来！比如"妈"(mā)的韵母是 <span class="highlight">a</span>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 9 – QUIZ (5 questions)                                   -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="9" id="page9">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">小测验</span>
+        <h2>📝 选择正确的韵母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">看图片或拼音，选出正确的韵母 🎯</p>
+        <!-- Q1 -->
+        <div class="quiz-card" id="quiz1">
+          <div class="quiz-q">m___ mɑ <span class="hint">妈妈</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="1" data-answer="a" onclick="checkQuiz(this,'a')">a</button>
+            <button class="quiz-btn" data-q="1" data-answer="o" onclick="checkQuiz(this,'o')">o</button>
+            <button class="quiz-btn" data-q="1" data-answer="e" onclick="checkQuiz(this,'e')">e</button>
+            <button class="quiz-btn" data-q="1" data-answer="i" onclick="checkQuiz(this,'i')">i</button>
+          </div>
+          <div class="quiz-feedback" id="fb1"></div>
+        </div>
+        <!-- Q2 -->
+        <div class="quiz-card" id="quiz2">
+          <div class="quiz-q">f___ <span class="hint">飞 fly</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="2" data-answer="ei" onclick="checkQuiz(this,'ei')">ei</button>
+            <button class="quiz-btn" data-q="2" data-answer="ai" onclick="checkQuiz(this,'ai')">ai</button>
+            <button class="quiz-btn" data-q="2" data-answer="ui" onclick="checkQuiz(this,'ui')">ui</button>
+            <button class="quiz-btn" data-q="2" data-answer="ie" onclick="checkQuiz(this,'ie')">ie</button>
+          </div>
+          <div class="quiz-feedback" id="fb2"></div>
+        </div>
+        <!-- Q3 -->
+        <div class="quiz-card" id="quiz3">
+          <div class="quiz-q">l___ <span class="hint">龙 dragon</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="3" data-answer="ong" onclick="checkQuiz(this,'ong')">ong</button>
+            <button class="quiz-btn" data-q="3" data-answer="ang" onclick="checkQuiz(this,'ang')">ang</button>
+            <button class="quiz-btn" data-q="3" data-answer="eng" onclick="checkQuiz(this,'eng')">eng</button>
+            <button class="quiz-btn" data-q="3" data-answer="ing" onclick="checkQuiz(this,'ing')">ing</button>
+          </div>
+          <div class="quiz-feedback" id="fb3"></div>
+        </div>
+        <!-- Q4 -->
+        <div class="quiz-card" id="quiz4">
+          <div class="quiz-q">x___ <span class="hint">星 star</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="4" data-answer="ing" onclick="checkQuiz(this,'ing')">ing</button>
+            <button class="quiz-btn" data-q="4" data-answer="in" onclick="checkQuiz(this,'in')">in</button>
+            <button class="quiz-btn" data-q="4" data-answer="eng" onclick="checkQuiz(this,'eng')">eng</button>
+            <button class="quiz-btn" data-q="4" data-answer="un" onclick="checkQuiz(this,'un')">un</button>
+          </div>
+          <div class="quiz-feedback" id="fb4"></div>
+        </div>
+        <!-- Q5 -->
+        <div class="quiz-card" id="quiz5">
+          <div class="quiz-q">y___ <span class="hint">月 moon</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="5" data-answer="üe" onclick="checkQuiz(this,'üe')">üe</button>
+            <button class="quiz-btn" data-q="5" data-answer="ie" onclick="checkQuiz(this,'ie')">ie</button>
+            <button class="quiz-btn" data-q="5" data-answer="ui" onclick="checkQuiz(this,'ui')">ui</button>
+            <button class="quiz-btn" data-q="5" data-answer="iu" onclick="checkQuiz(this,'iu')">iu</button>
+          </div>
+          <div class="quiz-feedback" id="fb5"></div>
+        </div>
+        <img src="images/chinese-12/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="quiz" style="width:130px;border-radius:12px;margin:6px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 10 – CELEBRATION                                         -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="10" id="page10">
+    <div class="page-content" style="justify-content:center">
+      <div class="celebration">
+        <span class="trophy float-anim">🏆</span>
+        <div class="congrats">🎉 太棒了！完美完成！</div>
+        <p class="sub">你学会了全部的韵母！<br>🎊 24 个韵母全部掌握啦 🎊</p>
+        <div class="star-row">
+          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0">
+          <span class="pinyin-chip">a</span>
+          <span class="pinyin-chip">o</span>
+          <span class="pinyin-chip">e</span>
+          <span class="pinyin-chip">i</span>
+          <span class="pinyin-chip">u</span>
+          <span class="pinyin-chip">ü</span>
+          <span class="pinyin-chip">ai</span>
+          <span class="pinyin-chip">ei</span>
+          <span class="pinyin-chip">ui</span>
+          <span class="pinyin-chip">ao</span>
+          <span class="pinyin-chip">ou</span>
+          <span class="pinyin-chip">iu</span>
+          <span class="pinyin-chip">ie</span>
+          <span class="pinyin-chip">üe</span>
+          <span class="pinyin-chip">an</span>
+          <span class="pinyin-chip">en</span>
+          <span class="pinyin-chip">in</span>
+          <span class="pinyin-chip">un</span>
+          <span class="pinyin-chip">ün</span>
+          <span class="pinyin-chip">ang</span>
+          <span class="pinyin-chip">eng</span>
+          <span class="pinyin-chip">ing</span>
+          <span class="pinyin-chip">ong</span>
+          <span class="pinyin-chip">er</span>
+        </div>
+        <img src="images/chinese-12/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="celebration" style="width:180px;border-radius:16px;margin:8px 0;box-shadow:0 8px 30px rgba(239,83,80,.2)" loading="lazy" onerror="this.style.display='none'">
+        <p style="color:#999;font-size:14px;margin:10px 0 6px">✨ 你已是韵母小达人 ✨</p>
+        <button class="restart-btn" onclick="goHome()">🔄 再学一遍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV DOTS -->
+  <div class="nav-dots" id="navDots"></div>
+
+  <!-- ARROWS -->
+  <div class="nav-arrows">
+    <button id="prevBtn" onclick="prevPage()" disabled>◀</button>
+    <button id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+// ===================================================================
+// STATE
+// ===================================================================
+const TOTAL = 10;
+let current = 1;
+let quizState = {};
+let soundEnabled = true;
+const synth = window.speechSynthesis;
+
+// ===================================================================
+// INIT
+// ===================================================================
+function init() {
+  renderDots();
+  goTo(1);
+  // Preload voices
+  if (synth) {
+    synth.getVoices();
+    synth.onvoiceschanged = () => synth.getVoices();
+  }
+}
+
+function renderDots() {
+  const container = document.getElementById('navDots');
+  container.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.onclick = () => goTo(i);
+    container.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === current);
+    d.classList.toggle('seen', i + 1 < current);
+  });
+}
+
+function updateArrows() {
+  document.getElementById('prevBtn').disabled = current === 1;
+  document.getElementById('nextBtn').disabled = current === TOTAL;
+  document.getElementById('progressFill').style.width = ((current - 1) / (TOTAL - 1) * 100) + '%';
+}
+
+// ===================================================================
+// NAVIGATION
+// ===================================================================
+function goTo(n) {
+  if (n < 1 || n > TOTAL) return;
+  const prev = current;
+  current = n;
+
+  const prevEl = document.querySelector('.page.active');
+  const nextEl = document.getElementById('page' + n);
+
+  if (prevEl && prevEl !== nextEl) {
+    prevEl.classList.remove('active');
+    prevEl.classList.add('prev');
+  }
+  nextEl.classList.remove('prev');
+  nextEl.classList.add('active');
+
+  // GSAP enter animation on page content children
+  const content = nextEl.querySelector('.page-content');
+  if (content) {
+    const kids = content.querySelectorAll(':scope > *');
+    gsap.fromTo(kids,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out', clearProps: 'opacity,y' }
+    );
+  }
+
+  updateDots();
+  updateArrows();
+
+  // Auto-read cover title
+  if (n === 1 && soundEnabled) {
+    setTimeout(() => speakText('第12课 韵母大冒险 Finals Adventure'), 600);
+  }
+
+  // Celebration confetti on last page
+  if (n === TOTAL) {
+    setTimeout(launchConfetti, 400);
+  }
+}
+
+function nextPage() { if (current < TOTAL) goTo(current + 1); }
+
+function prevPage() { if (current > 1) goTo(current - 1); }
+
+function goHome() {
+  // Reset quiz
+  quizState = {};
+  document.querySelectorAll('.quiz-btn').forEach(b => {
+    b.disabled = false;
+    b.className = 'quiz-btn';
+  });
+  document.querySelectorAll('.quiz-feedback').forEach(f => {
+    f.textContent = '';
+  });
+  goTo(1);
+}
+
+// ===================================================================
+// SPEECH
+// ===================================================================
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+  if (!soundEnabled && synth) synth.cancel();
+}
+
+function speak(text, fullText, cardEl, cellEl) {
+  if (!soundEnabled) return;
+  // Highlight the tapped card
+  const el = cardEl || cellEl;
+  if (el) {
+    document.querySelectorAll('.yunmu-card,.blend-card,.poem-box .line,.init-card,.quiz-card,.syl-chip,.pinyin-chip').forEach(c => c.classList.remove('playing'));
+    el.classList.add('playing');
+    setTimeout(() => el.classList.remove('playing'), 600);
+  }
+  speakText(fullText || text);
+}
+
+function speakText(text) {
+  if (!synth || !soundEnabled) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.85;
+  u.pitch = 1.05;
+  const voices = synth.getVoices();
+  const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+  if (zhVoice) u.voice = zhVoice;
+  synth.speak(u);
+}
+
+// ===================================================================
+// QUIZ
+// ===================================================================
+function checkQuiz(btn, answer) {
+  const q = btn.dataset.q;
+  const correct = btn.dataset.answer;
+  const card = btn.closest('.quiz-card');
+  const feedback = document.getElementById('fb' + q);
+  if (quizState[q]) return; // already answered
+  quizState[q] = true;
+
+  const allBtns = card.querySelectorAll('.quiz-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (answer === correct) {
+    btn.classList.add('correct');
+    feedback.textContent = '✅ 正确！太棒啦！';
+    feedback.style.color = '#27ae60';
+    if (soundEnabled) speakText('正确');
+  } else {
+    btn.classList.add('wrong');
+    feedback.textContent = '❌ 不对哦，正确答案已标绿';
+    feedback.style.color = '#e74c3c';
+    // Highlight correct answer
+    allBtns.forEach(b => {
+      if (b.dataset.answer === correct) b.classList.add('correct');
+    });
+    if (soundEnabled) speakText('再想想');
+  }
+
+  // Check if all 5 questions done
+  const done = Object.keys(quizState).length;
+  if (done === 5) {
+    setTimeout(() => {
+      if (soundEnabled) speakText('恭喜你完成测验，你太棒了');
+      setTimeout(() => goTo(10), 1000);
+    }, 700);
+  }
+}
+
+// ===================================================================
+// CONFETTI
+// ===================================================================
+function launchConfetti() {
+  const colors = ['#EF5350', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff8fab', '#e17055', '#a29bfe', '#fd79a8'];
+  const book = document.getElementById('book');
+  for (let i = 0; i < 70; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (4 + Math.random() * 8) + 'px';
+    el.style.height = (4 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+    el.style.animationDelay = (Math.random() * 2) + 's';
+    el.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    book.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+}
+
+// ===================================================================
+// KEYBOARD
+// ===================================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft') prevPage();
+});
+
+// ===================================================================
+// START
+// ===================================================================
+init();
+</script>
+</body>
+</html>

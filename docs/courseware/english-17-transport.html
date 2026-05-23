@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English Lesson 17 — Let's Go! 🚗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+html{font-size:clamp(14px,2vw,20px);-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#e8f5e9;color:#333;min-height:100vh;overflow-x:hidden}
+.page{display:none;min-height:100vh;padding:1.2rem 1rem 1.5rem;max-width:960px;margin:0 auto;flex-direction:column;justify-content:flex-start}
+.page.active{display:flex;animation:fadeIn .4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.top-bar{position:sticky;top:0;z-index:100;background:#43A047;color:#fff;padding:.5rem 1rem;border-radius:0 0 1rem 1rem;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 12px rgba(0,0,0,.15);font-weight:700;font-size:1rem;margin:-1.2rem -1rem 1rem;width:calc(100% + 2rem)}
+.top-bar a{color:#fff;text-decoration:none;display:flex;align-items:center;gap:.4rem;padding:.3rem .6rem;border-radius:2rem;background:rgba(255,255,255,.2);transition:background .2s}
+.top-bar a:hover,.top-bar a:active{background:rgba(255,255,255,.35)}
+.top-bar .spacer{flex:1}
+h1{font-size:2rem;font-weight:900;color:#2e7d32;text-align:center;margin:.4rem 0 .2rem}
+h2{font-size:1.5rem;font-weight:800;color:#43A047;margin:.6rem 0 .3rem;display:flex;align-items:center;gap:.5rem}
+h3{font-size:1.2rem;font-weight:700;color:#388e3c;margin:.5rem 0 .3rem}
+.emoji-big{font-size:2.2rem;line-height:1}
+.hero{text-align:center;padding:.6rem 0}
+.hero .emoji-big{font-size:4rem;display:block;margin:.2rem auto}
+.hero p{font-size:1.2rem;color:#555;max-width:500px;margin:.2rem auto}
+.card{background:#fff;border-radius:1.2rem;padding:1rem 1.2rem;margin:.5rem 0;box-shadow:0 2px 10px rgba(0,0,0,.08);border-left:4px solid #66BB6A}
+.card-green{background:#e8f5e9;border-left-color:#43A047}
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.4rem;border:none;border-radius:2.5rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;touch-action:manipulation}
+.btn-primary{background:#66BB6A;color:#fff;box-shadow:0 3px 8px rgba(102,187,106,.35)}
+.btn-primary:hover,.btn-primary:active{background:#43A047;transform:scale(1.03)}
+.btn-secondary{background:#fff;color:#43A047;border:2px solid #66BB6A}
+.btn-secondary:hover,.btn-secondary:active{background:#e8f5e9}
+.btn-voice{background:#e3f2fd;color:#1565c0;border-radius:50%;width:2.6rem;height:2.6rem;display:inline-flex;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer;border:none;transition:all .2s;flex-shrink:0}
+.btn-voice:hover,.btn-voice:active{background:#bbdefb;transform:scale(1.1)}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem}
+.img-wrap{background:#c8e6c9;border-radius:1rem;overflow:hidden;margin:.4rem 0;box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center}
+.img-wrap img{width:100%;height:auto;display:block;object-fit:contain;background:#fff}
+.img-label{background:#43A047;color:#fff;padding:.2rem .8rem;border-radius:0 0 1rem 1rem;display:inline-block;font-weight:700;font-size:.9rem;margin-top:-.3rem}
+.word-card{background:#fff;border-radius:1rem;padding:.8rem;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid transparent;transition:all .2s;cursor:pointer}
+.word-card.selected{border-color:#66BB6A;background:#e8f5e9}
+.word-card .word{font-size:1.3rem;font-weight:800;color:#2e7d32}
+.word-card .hint{font-size:.8rem;color:#888;margin-top:.2rem}
+.quiz-option{padding:.7rem 1rem;background:#fff;border:2px solid #c8e6c9;border-radius:1rem;cursor:pointer;transition:all .2s;font-weight:600;font-size:1rem;text-align:center}
+.quiz-option:hover{background:#e8f5e9}
+.quiz-option.correct{background:#c8e6c9;border-color:#43A047;color:#2e7d32}
+.quiz-option.wrong{background:#ffcdd2;border-color:#e53935;color:#c62828}
+.quiz-option.disabled{pointer-events:none;opacity:.7}
+.match-item{background:#fff;border-radius:1rem;padding:.6rem .8rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer;transition:all .2s;border:2px solid transparent;touch-action:manipulation}
+.match-item:active{transform:scale(.97)}
+.match-item.matched{background:#e8f5e9;border-color:#66BB6A;pointer-events:none}
+.match-item.selected{background:#c8e6c9;border-color:#43A047}
+.match-item .match-word{font-weight:800;font-size:1.1rem;color:#2e7d32}
+.match-item .match-emoji{font-size:1.5rem}
+.fill-input{width:100%;padding:.6rem .8rem;border:2px solid #c8e6c9;border-radius:.8rem;font-family:'Nunito',sans-serif;font-size:1rem;outline:none;transition:border .2s;background:#fff}
+.fill-input:focus{border-color:#66BB6A}
+.fill-input.correct{border-color:#43A047;background:#e8f5e9}
+.fill-input.wrong{border-color:#e53935;background:#ffebee}
+.progress-dots{display:flex;justify-content:center;gap:.5rem;margin:.6rem 0;flex-wrap:wrap}
+.progress-dot{width:2.2rem;height:2.2rem;border-radius:50%;background:#c8e6c9;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:#fff;cursor:pointer;transition:all .2s;border:2px solid transparent}
+.progress-dot.active{background:#66BB6A;border-color:#43A047;transform:scale(1.15)}
+.progress-dot.done{background:#43A047}
+.confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+.speech-btn-wrap{text-align:center;margin:.3rem 0}
+.story-text{font-size:1.1rem;line-height:1.7;color:#444;background:#fff;border-radius:1rem;padding:.8rem 1rem;margin:.3rem 0;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.story-text em{color:#66BB6A;font-weight:700;font-style:normal}
+.transport-row{display:flex;align-items:center;gap:.8rem;padding:.5rem;background:#fff;border-radius:1rem;margin:.3rem 0;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.transport-row .tr-emoji{font-size:2rem;min-width:2.5rem;text-align:center}
+.transport-row .tr-word{font-size:1.2rem;font-weight:800;color:#2e7d32;flex:1}
+.transport-row .tr-grammar{font-size:.9rem;color:#888}
+.sound-block{background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-radius:1.2rem;padding:1rem;text-align:center;margin:.5rem 0}
+.sound-block .sound-pair{font-size:2.5rem;font-weight:900;color:#2e7d32;letter-spacing:.3rem;margin:.3rem 0}
+.sound-block .sound-example{font-size:1.2rem;color:#555;margin:.2rem 0}
+@media(max-width:600px){
+h1{font-size:1.6rem}
+h2{font-size:1.2rem}
+.grid-2,.grid-3{grid-template-columns:1fr}
+.hero .emoji-big{font-size:3rem}
+}
+@media(min-width:601px)and(max-width:960px){
+html{font-size:16px}
+.page{padding:1.5rem 2rem}
+.top-bar{margin:-1.5rem -2rem 1rem;width:calc(100% + 4rem);border-radius:0 0 1.2rem 1.2rem}
+}
+</style>
+</head>
+<body>
+
+<canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+<!-- ===== PAGE 0: TITLE ===== -->
+<div class="page active" id="page0">
+<div class="top-bar">
+<a href="../">🏠首页</a>
+<div class="spacer"></div>
+<span>🚗 Lesson 17: Let's Go!</span>
+<div class="spacer"></div>
+<a href="../english-18-review.html">▶下一个</a>
+</div>
+<div class="hero">
+<div class="emoji-big">🚗🚌🚂⛵✈️🚲</div>
+<h1>Let's Go!</h1>
+<p>English Lesson 17 — Transport &amp; Travel</p>
+<div class="img-wrap" style="max-width:450px;margin:.8rem auto">
+<img src="images/english-17/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="Transport" loading="lazy">
+</div>
+<div style="margin:1rem 0">
+<button class="btn btn-primary" onclick="goPage(1)">▶ Start Lesson</button>
+</div>
+</div>
+<div class="progress-dots" id="progressDots"></div>
+</div>
+
+<!-- ===== PAGE 1: Sound Block tr/dr ===== -->
+<div class="page" id="page1">
+<div class="top-bar">
+<a href="javascript:goPage(0)">🏠首页</a>
+<div class="spacer"></div>
+<span>🚗 Sound Block: tr / dr</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(2)">▶下一个</a>
+</div>
+<h2>🔊 Sound Block: <em>tr</em> &amp; <em>dr</em></h2>
+<div class="sound-block">
+<div class="sound-pair">tr — dr</div>
+<div class="sound-example">Touch your tongue! <strong>tr</strong> as in <span style="color:#2e7d32;font-weight:800">truck</span></div>
+<div class="sound-example">Feel the rumble! <strong>dr</strong> as in <span style="color:#2e7d32;font-weight:800">drum</span></div>
+</div>
+<div class="grid-2" style="margin-top:.6rem">
+<div class="card" style="text-align:center">
+<div class="emoji-big" style="font-size:3rem">🚚</div>
+<div style="font-size:1.8rem;font-weight:900;color:#2e7d32">truck</div>
+<div style="color:#888;font-size:.9rem">/trʌk/ — <strong>tr</strong></div>
+<button class="btn-voice" onclick="speak('truck')" aria-label="Listen">🔊</button>
+</div>
+<div class="card" style="text-align:center">
+<div class="emoji-big" style="font-size:3rem">🥁</div>
+<div style="font-size:1.8rem;font-weight:900;color:#2e7d32">drum</div>
+<div style="color:#888;font-size:.9rem">/drʌm/ — <strong>dr</strong></div>
+<button class="btn-voice" onclick="speak('drum')" aria-label="Listen">🔊</button>
+</div>
+<div class="card" style="text-align:center">
+<div class="emoji-big" style="font-size:3rem">🚂</div>
+<div style="font-size:1.8rem;font-weight:900;color:#2e7d32">train</div>
+<div style="color:#888;font-size:.9rem">/treɪn/ — <strong>tr</strong></div>
+<button class="btn-voice" onclick="speak('train')" aria-label="Listen">🔊</button>
+</div>
+<div class="card" style="text-align:center">
+<div class="emoji-big" style="font-size:3rem">👗</div>
+<div style="font-size:1.8rem;font-weight:900;color:#2e7d32">dress</div>
+<div style="color:#888;font-size:.9rem">/drɛs/ — <strong>dr</strong></div>
+<button class="btn-voice" onclick="speak('dress')" aria-label="Listen">🔊</button>
+</div>
+</div>
+<div style="text-align:center;margin:.6rem 0">
+<button class="btn btn-secondary" onclick="speak('truck drum train dress')">🔊 Say them all!</button>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Sound Block tr dr" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(2)">▶ Next: How Do We Go?</button>
+</div>
+</div>
+
+<!-- ===== PAGE 2: How Do We Go? (he/she) ===== -->
+<div class="page" id="page2">
+<div class="top-bar">
+<a href="javascript:goPage(1)">🏠首页</a>
+<div class="spacer"></div>
+<span>🚗 How Do We Go?</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(3)">▶下一个</a>
+</div>
+<h2>🚶 How Do We Go?</h2>
+<p style="color:#555;margin-bottom:.4rem">Use <strong>he</strong> or <strong>she</strong> to talk about how people travel.</p>
+<div class="grid-2">
+<div class="card">
+<div class="transport-row">
+<div class="tr-emoji">🚗</div>
+<div><div style="font-weight:800;color:#2e7d32">He drives a car.</div><div style="color:#888;font-size:.85rem"><em>He</em> + drives</div></div>
+<button class="btn-voice" onclick="speak('He drives a car.')" style="margin-left:auto">🔊</button>
+</div>
+</div>
+<div class="card">
+<div class="transport-row">
+<div class="tr-emoji">🚲</div>
+<div><div style="font-weight:800;color:#2e7d32">She rides a bike.</div><div style="color:#888;font-size:.85rem"><em>She</em> + rides</div></div>
+<button class="btn-voice" onclick="speak('She rides a bike.')" style="margin-left:auto">🔊</button>
+</div>
+</div>
+<div class="card">
+<div class="transport-row">
+<div class="tr-emoji">🚌</div>
+<div><div style="font-weight:800;color:#2e7d32">He takes the bus.</div><div style="color:#888;font-size:.85rem"><em>He</em> + takes</div></div>
+<button class="btn-voice" onclick="speak('He takes the bus.')" style="margin-left:auto">🔊</button>
+</div>
+</div>
+<div class="card">
+<div class="transport-row">
+<div class="tr-emoji">🚂</div>
+<div><div style="font-weight:800;color:#2e7d32">She takes the train.</div><div style="color:#888;font-size:.85rem"><em>She</em> + takes</div></div>
+<button class="btn-voice" onclick="speak('She takes the train.')" style="margin-left:auto">🔊</button>
+</div>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="How Do We Go he she" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(3)">▶ Next: Car and Bus (this)</button>
+</div>
+</div>
+
+<!-- ===== PAGE 3: Car and Bus (this) ===== -->
+<div class="page" id="page3">
+<div class="top-bar">
+<a href="javascript:goPage(2)">🏠首页</a>
+<div class="spacer"></div>
+<span>🚗 Car &amp; Bus (this)</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(4)">▶下一个</a>
+</div>
+<h2>🚗🚌 This is ...</h2>
+<p style="color:#555;margin-bottom:.4rem">Use <strong>this</strong> for one thing near you.</p>
+<div class="grid-2">
+<div class="card card-green" style="text-align:center">
+<div class="emoji-big" style="font-size:3.5rem">🚗</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">This is a car.</div>
+<button class="btn-voice" onclick="speak('This is a car.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem"><strong>this</strong> → one thing</div>
+</div>
+<div class="card card-green" style="text-align:center">
+<div class="emoji-big" style="font-size:3.5rem">🚌</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">This is a bus.</div>
+<button class="btn-voice" onclick="speak('This is a bus.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem"><strong>this</strong> → one thing</div>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Car and Bus" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(4)">▶ Next: Train (they)</button>
+</div>
+</div>
+
+<!-- ===== PAGE 4: Train (they) ===== -->
+<div class="page" id="page4">
+<div class="top-bar">
+<a href="javascript:goPage(3)">🏠首页</a>
+<div class="spacer"></div>
+<span>🚂 Train (they)</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(5)">▶下一个</a>
+</div>
+<h2>🚂 They are ...</h2>
+<p style="color:#555;margin-bottom:.4rem">Use <strong>they</strong> for more than one thing.</p>
+<div class="card card-green" style="text-align:center;max-width:400px;margin:.4rem auto">
+<div class="emoji-big" style="font-size:3.5rem">🚂🚂</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">They are trains.</div>
+<button class="btn-voice" onclick="speak('They are trains.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem"><strong>they</strong> → more than one</div>
+</div>
+<div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
+<div class="card" style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:1.2rem;font-weight:800;color:#2e7d32">🚂 train</div>
+<div style="color:#888;font-size:.85rem">one train</div>
+<button class="btn-voice" onclick="speak('train')">🔊</button>
+</div>
+<div class="card" style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:1.2rem;font-weight:800;color:#2e7d32">🚂🚂 trains</div>
+<div style="color:#888;font-size:.85rem">two trains → <strong>they</strong></div>
+<button class="btn-voice" onclick="speak('trains')">🔊</button>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Train they" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(5)">▶ Next: Boat (those)</button>
+</div>
+</div>
+
+<!-- ===== PAGE 5: Boat (those) ===== -->
+<div class="page" id="page5">
+<div class="top-bar">
+<a href="javascript:goPage(4)">🏠首页</a>
+<div class="spacer"></div>
+<span>⛵ Boat (those)</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(6)">▶下一个</a>
+</div>
+<h2>⛵ Those are ...</h2>
+<p style="color:#555;margin-bottom:.4rem">Use <strong>those</strong> for things far away.</p>
+<div class="card card-green" style="text-align:center;max-width:400px;margin:.4rem auto">
+<div class="emoji-big" style="font-size:3.5rem">⛵⛵</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">Those are boats.</div>
+<button class="btn-voice" onclick="speak('Those are boats.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem"><strong>those</strong> → far away, plural</div>
+</div>
+<div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:.4rem 0">
+<div class="card" style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:1.2rem;font-weight:800;color:#2e7d32">⛵ boat</div>
+<div style="color:#888;font-size:.85rem">near: <strong>this</strong> boat</div>
+<button class="btn-voice" onclick="speak('boat')">🔊</button>
+</div>
+<div class="card" style="text-align:center;flex:1;min-width:120px">
+<div style="font-size:1.2rem;font-weight:800;color:#2e7d32">⛵⛵ boats</div>
+<div style="color:#888;font-size:.85rem">far: <strong>those</strong> boats</div>
+<button class="btn-voice" onclick="speak('boats')">🔊</button>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="Boat those" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(6)">▶ Next: Plane</button>
+</div>
+</div>
+
+<!-- ===== PAGE 6: Plane ===== -->
+<div class="page" id="page6">
+<div class="top-bar">
+<a href="javascript:goPage(5)">🏠首页</a>
+<div class="spacer"></div>
+<span>✈️ Plane</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(7)">▶下一个</a>
+</div>
+<h2>✈️ Plane</h2>
+<div class="card card-green" style="text-align:center;max-width:450px;margin:.4rem auto">
+<div class="emoji-big" style="font-size:4rem">✈️</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">This is a plane.</div>
+<button class="btn-voice" onclick="speak('This is a plane.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem">✈️ plane /pleɪn/</div>
+</div>
+<div class="grid-2" style="margin-top:.5rem">
+<div class="card" style="text-align:center">
+<div style="font-size:2rem">🛩️</div>
+<div style="font-weight:800;color:#2e7d32">small plane</div>
+<button class="btn-voice" onclick="speak('small plane')">🔊</button>
+</div>
+<div class="card" style="text-align:center">
+<div style="font-size:2rem">🛫</div>
+<div style="font-weight:800;color:#2e7d32">take off</div>
+<button class="btn-voice" onclick="speak('take off')">🔊</button>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="Plane" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(7)">▶ Next: Bike</button>
+</div>
+</div>
+
+<!-- ===== PAGE 7: Bike ===== -->
+<div class="page" id="page7">
+<div class="top-bar">
+<a href="javascript:goPage(6)">🏠首页</a>
+<div class="spacer"></div>
+<span>🚲 Bike</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(8)">▶下一个</a>
+</div>
+<h2>🚲 Bike</h2>
+<div class="card card-green" style="text-align:center;max-width:450px;margin:.4rem auto">
+<div class="emoji-big" style="font-size:4rem">🚲</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">This is a bike.</div>
+<button class="btn-voice" onclick="speak('This is a bike.')">🔊</button>
+<div style="color:#888;font-size:.85rem;margin-top:.2rem">🚲 bike /baɪk/</div>
+</div>
+<div class="grid-2" style="margin-top:.5rem">
+<div class="card" style="text-align:center">
+<div style="font-size:2rem">🚴</div>
+<div style="font-weight:800;color:#2e7d32">ride a bike</div>
+<button class="btn-voice" onclick="speak('ride a bike')">🔊</button>
+</div>
+<div class="card" style="text-align:center">
+<div style="font-size:2rem">🚵</div>
+<div style="font-weight:800;color:#2e7d32">mountain bike</div>
+<button class="btn-voice" onclick="speak('mountain bike')">🔊</button>
+</div>
+</div>
+<div class="img-wrap" style="max-width:450px;margin:.5rem auto">
+<img src="images/english-17/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="Bike" loading="lazy">
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(8)">▶ Next: Great Transport Race</button>
+</div>
+</div>
+
+<!-- ===== PAGE 8: Great Transport Race Story ===== -->
+<div class="page" id="page8">
+<div class="top-bar">
+<a href="javascript:goPage(7)">🏠首页</a>
+<div class="spacer"></div>
+<span>🏁 Great Transport Race</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(9)">▶下一个</a>
+</div>
+<h2>🏁 The Great Transport Race!</h2>
+<div class="img-wrap" style="max-width:450px;margin:.4rem auto">
+<img src="images/english-17/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="Transport Race" loading="lazy">
+</div>
+<div class="story-text">
+<p><strong>Tom</strong> drives a <em>car</em> 🚗. <strong>Anna</strong> rides a <em>bike</em> 🚲.</p>
+<p><strong>He</strong> goes fast, but <strong>she</strong> goes faster!</p>
+<p><em>This</em> car is red. <em>Those</em> bikes are blue.</p>
+<p><strong>They</strong> take the <em>train</em> 🚂. <em>Those</em> boats ⛵ are on the river.</p>
+<p>A big <em>plane</em> ✈️ flies in the sky.</p>
+<p>Who wins? Everyone wins because we all go together! 🎉</p>
+</div>
+<div class="speech-btn-wrap">
+<button class="btn btn-primary" onclick="speak('Tom drives a car. Anna rides a bike. He goes fast, but she goes faster. This car is red. Those bikes are blue. They take the train. Those boats are on the river. A big plane flies in the sky. Who wins? Everyone wins because we all go together!')">🔊 Read the Story</button>
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(9)">▶ Next: Practice!</button>
+</div>
+</div>
+
+<!-- ===== PAGE 9: Practice — tr/dr Quiz ===== -->
+<div class="page" id="page9">
+<div class="top-bar">
+<a href="javascript:goPage(8)">🏠首页</a>
+<div class="spacer"></div>
+<span>📝 Practice: tr / dr</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(10)">▶下一个</a>
+</div>
+<h2>📝 Sound Sort: <em>tr</em> or <em>dr</em>?</h2>
+<p style="color:#555;margin-bottom:.4rem">Tap the word to hear it, then choose <strong>tr</strong> or <strong>dr</strong>.</p>
+<div id="trdrQuiz"></div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-secondary" onclick="resetTrDrQuiz()">🔄 Try Again</button>
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(10)">▶ Next: Fill in the Blank</button>
+</div>
+</div>
+
+<!-- ===== PAGE 10: Practice — Fill in the Blank ===== -->
+<div class="page" id="page10">
+<div class="top-bar">
+<a href="javascript:goPage(9)">🏠首页</a>
+<div class="spacer"></div>
+<span>📝 Fill in the Blank</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(11)">▶下一个</a>
+</div>
+<h2>📝 Fill in the Blank</h2>
+<p style="color:#555;margin-bottom:.4rem">Type the missing word. Use: <strong>car, bus, train, boat, plane, bike</strong></p>
+<div id="fillQuiz"></div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-secondary" onclick="resetFillQuiz()">🔄 Try Again</button>
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(11)">▶ Next: He / She / They</button>
+</div>
+</div>
+
+<!-- ===== PAGE 11: Practice — He / She / They ===== -->
+<div class="page" id="page11">
+<div class="top-bar">
+<a href="javascript:goPage(10)">🏠首页</a>
+<div class="spacer"></div>
+<span>📝 He / She / They</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(12)">▶下一个</a>
+</div>
+<h2>📝 Choose: He, She, or They</h2>
+<p style="color:#555;margin-bottom:.4rem">Tap the correct pronoun for each sentence.</p>
+<div id="pronounQuiz"></div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-secondary" onclick="resetPronounQuiz()">🔄 Try Again</button>
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(12)">▶ Next: Match Game</button>
+</div>
+</div>
+
+<!-- ===== PAGE 12: Practice — Match Game ===== -->
+<div class="page" id="page12">
+<div class="top-bar">
+<a href="javascript:goPage(11)">🏠首页</a>
+<div class="spacer"></div>
+<span>🎯 Match Game</span>
+<div class="spacer"></div>
+<a href="javascript:goPage(13)">▶下一个</a>
+</div>
+<h2>🎯 Match the Word!</h2>
+<p style="color:#555;margin-bottom:.4rem">Tap a word, then tap the matching picture.</p>
+<div id="matchGame"></div>
+<div id="matchStatus" style="text-align:center;font-weight:700;color:#43A047;margin:.3rem 0"></div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-secondary" onclick="resetMatchGame()">🔄 Try Again</button>
+</div>
+<div style="text-align:center;margin:.5rem 0">
+<button class="btn btn-primary" onclick="goPage(13)">▶ Summary</button>
+</div>
+</div>
+
+<!-- ===== PAGE 13: Summary ===== -->
+<div class="page" id="page13">
+<div class="top-bar">
+<a href="../">🏠首页</a>
+<div class="spacer"></div>
+<span>✅ Summary</span>
+<div class="spacer"></div>
+<a href="../english-18-review.html">▶下一个</a>
+</div>
+<h2>✅ Great Job!</h2>
+<div class="hero">
+<div class="emoji-big" style="font-size:3.5rem">🚗🚌🚂⛵✈️🚲</div>
+<h1 style="font-size:1.8rem">You did it!</h1>
+</div>
+<div class="card card-green">
+<h3>📖 Words We Learned</h3>
+<div class="grid-2" style="margin-top:.3rem">
+<div>🚗 car</div><div>🚌 bus</div>
+<div>🚂 train</div><div>⛵ boat</div>
+<div>✈️ plane</div><div>🚲 bike</div>
+</div>
+</div>
+<div class="card card-green">
+<h3>📖 Grammar We Learned</h3>
+<ul style="padding-left:1.2rem;line-height:1.8">
+<li><strong>This</strong> is a car. (one thing)</li>
+<li><strong>They</strong> are trains. (more than one)</li>
+<li><strong>Those</strong> are boats. (far away)</li>
+<li><strong>He</strong> drives / <strong>She</strong> rides</li>
+<li><strong>tr</strong> as in truck, train</li>
+<li><strong>dr</strong> as in drum, dress</li>
+</ul>
+</div>
+<div class="speech-btn-wrap">
+<button class="btn btn-primary" onclick="celebrate()">🎉 Celebrate!</button>
+<button class="btn btn-secondary" onclick="speak('Great job! You learned many transport words. Car, bus, train, boat, plane, bike. This is a car. They are trains. Those are boats. He drives. She rides. Well done!')" style="margin-left:.5rem">🔊 Listen</button>
+</div>
+<div style="text-align:center;margin:.8rem 0;display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap">
+<button class="btn btn-secondary" onclick="goPage(0)">🏠 Home</button>
+<button class="btn btn-primary" onclick="goPage(9)">📝 Practice Again</button>
+<a href="../english-18-review.html" class="btn btn-primary" style="text-decoration:none">▶ Next Lesson</a>
+</div>
+</div>
+
+<script>
+// ===== CONFETTI =====
+const canvas = document.getElementById('confettiCanvas');
+const ctx = canvas.getContext('2d');
+let confettiPieces = [];
+let confettiActive = false;
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+
+class ConfettiPiece{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height-canvas.height;
+this.w=Math.random()*10+5;
+this.h=Math.random()*6+3;
+this.color=`hsl(${Math.random()*360},80%,60%)`;
+this.vx=(Math.random()-0.5)*4;
+this.vy=Math.random()*3+2;
+this.rot=Math.random()*360;
+this.rotSpeed=(Math.random()-0.5)*8;
+}
+update(){
+this.x+=this.vx;
+this.y+=this.vy;
+this.vy+=0.05;
+this.rot+=this.rotSpeed;
+if(this.y>canvas.height+20){this.y=-20;this.x=Math.random()*canvas.width}
+}
+draw(){
+ctx.save();
+ctx.translate(this.x,this.y);
+ctx.rotate(this.rot*Math.PI/180);
+ctx.fillStyle=this.color;
+ctx.fillRect(-this.w/2,-this.h/2,this.w,this.h);
+ctx.restore();
+}
+}
+
+function startConfetti(){
+if(confettiActive)return;
+confettiActive=true;
+confettiPieces=[];
+for(let i=0;i<150;i++)confettiPieces.push(new ConfettiPiece());
+animateConfetti();
+}
+
+function animateConfetti(){
+if(!confettiActive)return;
+ctx.clearRect(0,0,canvas.width,canvas.height);
+let alive=false;
+for(let p of confettiPieces){
+p.update();
+p.draw();
+if(p.y<canvas.height+50)alive=true;
+}
+if(alive)requestAnimationFrame(animateConfetti);
+else{confettiActive=false;ctx.clearRect(0,0,canvas.width,canvas.height)}
+}
+
+function celebrate(){
+startConfetti();
+if(typeof gsap!=='undefined'){
+gsap.fromTo('.page.active .card',{scale:0.8,opacity:0},{scale:1,opacity:1,duration:0.5,stagger:0.1,ease:'back.out(1.7)'});
+}
+setTimeout(()=>{if(confettiActive)confettiActive=false},5000);
+}
+
+// ===== SPEECH SYNTHESIS =====
+function speak(text){
+if(!window.speechSynthesis)return;
+window.speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(text);
+u.lang='en-US';
+u.rate=0.9;
+u.pitch=1.05;
+const voices=speechSynthesis.getVoices();
+const engVoice=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Female'))||voices.find(v=>v.lang.startsWith('en'));
+if(engVoice)u.voice=engVoice;
+speechSynthesis.speak(u);
+}
+
+// Load voices early
+if(window.speechSynthesis)speechSynthesis.getVoices();
+
+// ===== PAGE NAVIGATION =====
+const totalPages=14;
+let currentPage=0;
+
+function buildProgressDots(){
+const container=document.getElementById('progressDots');
+if(!container)return;
+container.innerHTML='';
+for(let i=0;i<totalPages;i++){
+const dot=document.createElement('div');
+dot.className='progress-dot'+(i===currentPage?' active':'');
+dot.textContent=i+1;
+dot.onclick=()=>goPage(i);
+container.appendChild(dot);
+}
+}
+
+function goPage(n){
+if(n<0||n>=totalPages)return;
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+const el=document.getElementById('page'+n);
+if(el)el.classList.add('active');
+currentPage=n;
+// Update progress dots
+document.querySelectorAll('.progress-dot').forEach((d,i)=>{
+d.className='progress-dot';
+if(i===n)d.classList.add('active');
+else if(i<n)d.classList.add('done');
+});
+// Scroll to top
+window.scrollTo({top:0,behavior:'smooth'});
+// Animate cards
+if(typeof gsap!=='undefined'){
+gsap.fromTo(el.querySelectorAll('.card, .img-wrap, .transport-row, .word-card'),{opacity:0,y:20},{opacity:1,y:0,duration:0.4,stagger:0.08,ease:'power2.out',delay:0.1});
+}
+// Init quizzes on specific pages
+if(n===9)initTrDrQuiz();
+if(n===10)initFillQuiz();
+if(n===11)initPronounQuiz();
+if(n===12)initMatchGame();
+}
+
+buildProgressDots();
+
+// ===== TR/DR QUIZ =====
+const trdrData=[
+{word:'truck',sound:'tr',emoji:'🚚'},
+{word:'train',sound:'tr',emoji:'🚂'},
+{word:'drum',sound:'dr',emoji:'🥁'},
+{word:'dress',sound:'dr',emoji:'👗'},
+{word:'tree',sound:'tr',emoji:'🌳'},
+{word:'drink',sound:'dr',emoji:'🥤'},
+];
+let trdrIndex=0;
+let trdrCorrect=0;
+let trdrAnswered=false;
+
+function initTrDrQuiz(){
+trdrIndex=0;
+trdrCorrect=0;
+trdrAnswered=false;
+renderTrDr();
+}
+
+function renderTrDr(){
+const c=document.getElementById('trdrQuiz');
+if(!c)return;
+if(trdrIndex>=trdrData.length){
+c.innerHTML=`
+<div class="card card-green" style="text-align:center">
+<div style="font-size:3rem">🎉</div>
+<h3>All done! ${trdrCorrect}/${trdrData.length} correct!</h3>
+${trdrCorrect===trdrData.length?'<p style="color:#2e7d32;font-weight:700">Perfect score! 🌟</p>':''}
+</div>`;
+return;
+}
+const item=trdrData[trdrIndex];
+c.innerHTML=`
+<div class="card" style="text-align:center">
+<div style="font-size:3.5rem">${item.emoji}</div>
+<div style="font-size:1.6rem;font-weight:900;color:#2e7d32">${item.word}</div>
+<button class="btn-voice" onclick="speak('${item.word}')">🔊</button>
+<p style="color:#888;margin:.3rem 0">Is it <strong>tr</strong> or <strong>dr</strong>?</p>
+<div style="display:flex;gap:.6rem;justify-content:center;margin:.4rem 0">
+<button class="btn btn-secondary quiz-trdr" data-answer="tr" onclick="checkTrDr('tr')">tr</button>
+<button class="btn btn-secondary quiz-trdr" data-answer="dr" onclick="checkTrDr('dr')">dr</button>
+</div>
+<div id="trdrFeedback" style="font-weight:700;margin:.3rem 0"></div>
+<div style="color:#888;font-size:.85rem">${trdrIndex+1} of ${trdrData.length}</div>
+</div>`;
+}
+
+function checkTrDr(choice){
+if(trdrAnswered)return;
+trdrAnswered=true;
+const item=trdrData[trdrIndex];
+const fb=document.getElementById('trdrFeedback');
+const btns=document.querySelectorAll('.quiz-trdr');
+btns.forEach(b=>b.disabled=true);
+if(choice===item.sound){
+fb.innerHTML='✅ Correct!';
+fb.style.color='#2e7d32';
+trdrCorrect++;
+document.querySelector(`[data-answer="${choice}"]`).classList.add('correct');
+}else{
+fb.innerHTML=`❌ Oops! "${item.word}" starts with <strong>${item.sound}</strong>.`;
+fb.style.color='#c62828';
+document.querySelector(`[data-answer="${choice}"]`).classList.add('wrong');
+document.querySelector(`[data-answer="${item.sound}"]`).classList.add('correct');
+}
+setTimeout(()=>{
+trdrIndex++;
+trdrAnswered=false;
+renderTrDr();
+},1200);
+}
+
+function resetTrDrQuiz(){
+trdrIndex=0;
+trdrCorrect=0;
+trdrAnswered=false;
+renderTrDr();
+}
+
+// ===== FILL IN THE BLANK QUIZ =====
+const fillData=[
+{sentence:'This is a ___.',answer:'car',hint:'🚗'},
+{sentence:'She rides a ___.',answer:'bike',hint:'🚲'},
+{sentence:'He takes the ___.',answer:'bus',hint:'🚌'},
+{sentence:'They are ___.',answer:'trains',hint:'🚂 (plural)',accept:['trains','train']},
+{sentence:'Those are ___.',answer:'boats',hint:'⛵ (plural)',accept:['boats','boat']},
+{sentence:'This is a ___.',answer:'plane',hint:'✈️'},
+];
+let fillIndex=0;
+let fillCorrect=0;
+
+function initFillQuiz(){
+fillIndex=0;
+fillCorrect=0;
+renderFill();
+}
+
+function renderFill(){
+const c=document.getElementById('fillQuiz');
+if(!c)return;
+if(fillIndex>=fillData.length){
+c.innerHTML=`
+<div class="card card-green" style="text-align:center">
+<div style="font-size:3rem">🎉</div>
+<h3>All done! ${fillCorrect}/${fillData.length} correct!</h3>
+${fillCorrect===fillData.length?'<p style="color:#2e7d32;font-weight:700">Amazing! 🌟</p>':''}
+</div>`;
+return;
+}
+const item=fillData[fillIndex];
+c.innerHTML=`
+<div class="card" style="text-align:center">
+<div style="font-size:2.5rem">${item.hint}</div>
+<p style="font-size:1.1rem;font-weight:600;margin:.3rem 0">${item.sentence.replace('___','<span style="color:#66BB6A;font-weight:900">___</span>')}</p>
+<div style="display:flex;gap:.5rem;justify-content:center;margin:.4rem 0;flex-wrap:wrap">
+<input type="text" class="fill-input" id="fillInput" placeholder="type the word..." autocomplete="off" style="max-width:200px" onkeydown="if(event.key==='Enter')checkFill()">
+<button class="btn btn-primary" onclick="checkFill()">Check</button>
+</div>
+<div id="fillFeedback" style="font-weight:700;margin:.3rem 0"></div>
+<div style="color:#888;font-size:.85rem">${fillIndex+1} of ${fillData.length}</div>
+</div>`;
+document.getElementById('fillInput').focus();
+}
+
+function checkFill(){
+const input=document.getElementById('fillInput');
+const fb=document.getElementById('fillFeedback');
+if(!input||!fb)return;
+const val=input.value.trim().toLowerCase();
+const item=fillData[fillIndex];
+const accepted=item.accept||[item.answer];
+if(accepted.includes(val)){
+fb.innerHTML='✅ Correct!';
+fb.style.color='#2e7d32';
+input.className='fill-input correct';
+fillCorrect++;
+input.disabled=true;
+setTimeout(()=>{
+fillIndex++;
+renderFill();
+},1000);
+}else{
+fb.innerHTML=`❌ Try again! Hint: ${item.hint}`;
+fb.style.color='#c62828';
+input.className='fill-input wrong';
+input.value='';
+setTimeout(()=>{
+input.className='fill-input';
+fb.innerHTML='';
+},800);
+}
+}
+
+function resetFillQuiz(){
+fillIndex=0;
+fillCorrect=0;
+renderFill();
+}
+
+// ===== PRONOUN QUIZ (He/She/They) =====
+const pronounData=[
+{sentence:'___ drives a car.',answer:'He',options:['He','She','They'],hint:'🚗 (man)'},
+{sentence:'___ rides a bike.',answer:'She',options:['He','She','They'],hint:'🚲 (woman)'},
+{sentence:'___ are trains.',answer:'They',options:['He','She','They'],hint:'🚂 (plural)'},
+{sentence:'___ takes the bus.',answer:'He',options:['He','She','They'],hint:'🚌 (boy)'},
+{sentence:'___ takes the train.',answer:'She',options:['He','She','They'],hint:'🚂 (girl)'},
+{sentence:'___ are boats.',answer:'They',options:['He','She','They'],hint:'⛵ (many)'},
+];
+let pronounIndex=0;
+let pronounCorrect=0;
+let pronounAnswered=false;
+
+function initPronounQuiz(){
+pronounIndex=0;
+pronounCorrect=0;
+pronounAnswered=false;
+renderPronoun();
+}
+
+function renderPronoun(){
+const c=document.getElementById('pronounQuiz');
+if(!c)return;
+if(pronounIndex>=pronounData.length){
+c.innerHTML=`
+<div class="card card-green" style="text-align:center">
+<div style="font-size:3rem">🎉</div>
+<h3>All done! ${pronounCorrect}/${pronounData.length} correct!</h3>
+${pronounCorrect===pronounData.length?'<p style="color:#2e7d32;font-weight:700">Super! 🌟</p>':''}
+</div>`;
+return;
+}
+const item=pronounData[pronounIndex];
+c.innerHTML=`
+<div class="card" style="text-align:center">
+<div style="font-size:2.5rem">${item.hint}</div>
+<p style="font-size:1.1rem;font-weight:600;margin:.3rem 0">${item.sentence.replace('___','<span style="color:#66BB6A;font-weight:900">___</span>')}</p>
+<div style="display:flex;gap:.5rem;justify-content:center;margin:.4rem 0;flex-wrap:wrap">
+${item.options.map(o=>`<button class="btn btn-secondary quiz-pronoun" data-answer="${o}" onclick="checkPronoun('${o}')">${o}</button>`).join('')}
+</div>
+<div id="pronounFeedback" style="font-weight:700;margin:.3rem 0"></div>
+<div style="color:#888;font-size:.85rem">${pronounIndex+1} of ${pronounData.length}</div>
+</div>`;
+}
+
+function checkPronoun(choice){
+if(pronounAnswered)return;
+pronounAnswered=true;
+const item=pronounData[pronounIndex];
+const fb=document.getElementById('pronounFeedback');
+const btns=document.querySelectorAll('.quiz-pronoun');
+btns.forEach(b=>b.disabled=true);
+if(choice===item.answer){
+fb.innerHTML='✅ Correct!';
+fb.style.color='#2e7d32';
+pronounCorrect++;
+document.querySelector(`[data-answer="${choice}"]`).classList.add('correct');
+}else{
+fb.innerHTML=`❌ The answer is <strong>${item.answer}</strong>.`;
+fb.style.color='#c62828';
+document.querySelector(`[data-answer="${choice}"]`).classList.add('wrong');
+document.querySelector(`[data-answer="${item.answer}"]`).classList.add('correct');
+}
+speak(item.sentence.replace('___',item.answer));
+setTimeout(()=>{
+pronounIndex++;
+pronounAnswered=false;
+renderPronoun();
+},1200);
+}
+
+function resetPronounQuiz(){
+pronounIndex=0;
+pronounCorrect=0;
+pronounAnswered=false;
+renderPronoun();
+}
+
+// ===== MATCH GAME =====
+const matchData=[
+{word:'car',emoji:'🚗'},
+{word:'bus',emoji:'🚌'},
+{word:'train',emoji:'🚂'},
+{word:'boat',emoji:'⛵'},
+{word:'plane',emoji:'✈️'},
+{word:'bike',emoji:'🚲'},
+];
+let shuffledWords=[];
+let shuffledEmojis=[];
+let matchSelected=null;
+let matchPairs=0;
+let matchAttempts=0;
+let matchLocked=false;
+
+function shuffle(arr){
+const a=[...arr];
+for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}
+return a;
+}
+
+function initMatchGame(){
+matchSelected=null;
+matchPairs=0;
+matchAttempts=0;
+matchLocked=false;
+shuffledWords=shuffle(matchData);
+shuffledEmojis=shuffle(matchData);
+renderMatch();
+document.getElementById('matchStatus').textContent='Match each word with its picture!';
+}
+
+function renderMatch(){
+const c=document.getElementById('matchGame');
+if(!c)return;
+if(matchPairs===matchData.length){
+c.innerHTML=`
+<div class="card card-green" style="text-align:center">
+<div style="font-size:3.5rem">🎉</div>
+<h3>All matched!</h3>
+<p>You got it in ${matchAttempts} tries!</p>
+</div>`;
+document.getElementById('matchStatus').textContent='🎉 Perfect!';
+setTimeout(celebrate,300);
+return;
+}
+// Show unmatched only
+const unmatchedWords=shuffledWords.filter((_,i)=>!document.querySelector(`[data-wi="${i}"].matched`));
+const unmatchedEmojis=shuffledEmojis.filter((_,i)=>!document.querySelector(`[data-ei="${i}"].matched`));
+
+// Rebuild from actual state
+let wordsHtml='', emojisHtml='';
+shuffledWords.forEach((item,i)=>{
+const matched=document.querySelector(`[data-wi="${i}"].matched`);
+wordsHtml+=`<div class="match-item" data-wi="${i}" data-word="${item.word}" onclick="selectMatchWord(${i})">
+<span class="match-word">${item.word}</span>
+</div>`;
+});
+shuffledEmojis.forEach((item,i)=>{
+const matched=document.querySelector(`[data-ei="${i}"].matched`);
+emojisHtml+=`<div class="match-item" data-ei="${i}" data-emoji="${item.word}" onclick="selectMatchEmoji(${i})">
+<span class="match-emoji">${item.emoji}</span>
+</div>`;
+});
+
+c.innerHTML=`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+<div>${wordsHtml}</div>
+<div>${emojisHtml}</div>
+</div>
+`;
+// Re-apply matched/selected classes from state
+shuffledWords.forEach((item,i)=>{
+if(matchPairs>0){
+const el=c.querySelector(`[data-wi="${i}"]`);
+if(el&&!el.classList.contains('matched')){
+// Check if this word's emoji is matched
+const emojiItem=shuffledEmojis.find((e,j)=>e.word===item.word);
+if(emojiItem){
+const emojiEl=c.querySelector(`[data-ei="${shuffledEmojis.indexOf(emojiItem)}"]`);
+if(emojiEl&&emojiEl.classList.contains('matched')){
+el.classList.add('matched');
+el.style.pointerEvents='none';
+}
+}
+}
+}
+});
+if(matchSelected!==null){
+const selEl=c.querySelector(`[data-wi="${matchSelected}"]`);
+if(selEl&&!selEl.classList.contains('matched'))selEl.classList.add('selected');
+}
+}
+
+// Simplified match using a different approach - track state in arrays
+let matchState = {words:[], emojis:[]};
+
+function initMatchGame(){
+matchState={words:[],emojis:[]};
+matchSelected=null;
+matchPairs=0;
+matchAttempts=0;
+matchLocked=false;
+shuffledWords=shuffle(matchData);
+shuffledEmojis=shuffle(matchData);
+// Initialize state
+shuffledWords.forEach(()=>matchState.words.push({matched:false}));
+shuffledEmojis.forEach(()=>matchState.emojis.push({matched:false}));
+renderMatchFull();
+document.getElementById('matchStatus').textContent='Tap a word, then tap the matching picture!';
+}
+
+function renderMatchFull(){
+const c=document.getElementById('matchGame');
+if(!c)return;
+const allMatched=matchState.words.every(w=>w.matched);
+if(allMatched&&matchPairs===matchData.length){
+c.innerHTML=`
+<div class="card card-green" style="text-align:center">
+<div style="font-size:3.5rem">🎉</div>
+<h3>All matched!</h3>
+<p>You got it in ${matchAttempts} tries!</p>
+</div>`;
+document.getElementById('matchStatus').textContent='🎉 Perfect!';
+celebrate();
+return;
+}
+let wordsHtml='', emojisHtml='';
+shuffledWords.forEach((item,i)=>{
+const cls='match-item'+(matchState.words[i].matched?' matched':'')+(matchSelected===i&&!matchState.words[i].matched?' selected':'');
+wordsHtml+=`<div class="${cls}" data-wi="${i}" data-word="${item.word}" onclick="selectWord(${i})">
+<span class="match-word">${item.word}</span>
+</div>`;
+});
+shuffledEmojis.forEach((item,i)=>{
+const cls='match-item'+(matchState.emojis[i].matched?' matched':'');
+emojisHtml+=`<div class="${cls}" data-ei="${i}" data-word="${item.word}" onclick="selectEmoji(${i})">
+<span class="match-emoji">${item.emoji}</span>
+</div>`;
+});
+c.innerHTML=`
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+<div>${wordsHtml}</div>
+<div>${emojisHtml}</div>
+</div>`;
+}
+
+function selectWord(i){
+if(matchLocked||matchState.words[i].matched)return;
+if(matchSelected===i){
+matchSelected=null;
+renderMatchFull();
+return;
+}
+matchSelected=i;
+renderMatchFull();
+}
+
+function selectEmoji(i){
+if(matchLocked||matchState.emojis[i].matched||matchSelected===null)return;
+matchLocked=true;
+const wordIdx=matchSelected;
+const wordItem=shuffledWords[wordIdx];
+const emojiItem=shuffledEmojis[i];
+matchAttempts++;
+if(wordItem.word===emojiItem.word){
+// Correct match!
+matchState.words[wordIdx].matched=true;
+matchState.emojis[i].matched=true;
+matchPairs++;
+matchSelected=null;
+matchLocked=false;
+renderMatchFull();
+document.getElementById('matchStatus').textContent=`✅ Matched! ${matchPairs}/${matchData.length}`;
+if(matchPairs===matchData.length){
+document.getElementById('matchStatus').textContent='🎉 All matched!';
+}
+}else{
+// Wrong
+document.getElementById('matchStatus').textContent='❌ Try again!';
+const prevSelected=matchSelected;
+matchSelected=null;
+renderMatchFull();
+setTimeout(()=>{
+matchLocked=false;
+document.getElementById('matchStatus').textContent=`Keep going! ${matchPairs}/${matchData.length} matched`;
+renderMatchFull();
+},800);
+}
+}
+
+function resetMatchGame(){
+initMatchGame();
+}
+
+// Keyboard shortcut: left/right arrows
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'){e.preventDefault();goPage(Math.min(currentPage+1,totalPages-1))}
+if(e.key==='ArrowLeft'){e.preventDefault();goPage(Math.max(currentPage-1,0))}
+});
+
+// Init first page animations
+setTimeout(()=>{
+if(typeof gsap!=='undefined'){
+gsap.fromTo('#page0 .hero',{opacity:0,scale:0.9},{opacity:1,scale:1,duration:0.6,ease:'back.out(1.7)'});
+}
+},200);
+
+console.log('🚗 English Lesson 17 — Let\'s Go! loaded');
+</script>
+</body>
+</html>

@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English Lesson 16 — Time ⏰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #e8f5e9;
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== APP CONTAINER ===== */
+.app {
+  position: relative;
+  width: 100%; max-width: 960px;
+  height: 100vh; max-height: 780px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%);
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(67,160,71,0.15);
+}
+@media(min-width:421px){
+  .app { border-radius: 28px; height: 94vh; margin-top: 3vh; }
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-wrap {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 25;
+  height: 4px;
+  background: rgba(200,230,200,0.4);
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #81c784, #43A047, #2e7d32);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: absolute; top: 4px; left: 0; right: 0;
+  z-index: 20;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 60%, transparent);
+}
+.header a, .header button {
+  background: none; border: none; cursor: pointer;
+  font-size: 26px; line-height: 1;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+.header a:hover, .header button:hover { background: rgba(67,160,71,0.15); transform: scale(1.08); }
+.header a:active, .header button:active { transform: scale(0.92); }
+#speakBtn { color: #43A047; font-size: 22px; }
+#speakBtn.speaking { animation: pulse-speak 0.8s ease-in-out infinite; }
+@keyframes pulse-speak {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.18); color: #2e7d32; }
+}
+
+/* ===== SLIDES ===== */
+.slides {
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px 100px;
+  opacity: 0; visibility: hidden;
+  will-change: transform, opacity;
+}
+.slide.active {
+  opacity: 1; visibility: visible;
+  z-index: 10;
+}
+.slide.exit { z-index: 5; }
+
+/* ===== SLIDE CONTENTS ===== */
+.slide-icon { font-size: 72px; margin-bottom: 10px; line-height: 1.2; }
+.slide-img {
+  width: 200px; height: 200px;
+  object-fit: contain;
+  border-radius: 20px;
+  background: #f0faf0;
+  box-shadow: 0 4px 20px rgba(67,160,71,0.20);
+  margin-bottom: 16px;
+  padding: 12px;
+}
+.slide-word {
+  font-size: 42px; font-weight: 800;
+  color: #1b5e20;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(67,160,71,0.15);
+}
+.slide-chinese {
+  font-size: 20px; font-weight: 600;
+  color: #43A047;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.slide-hint {
+  font-size: 14px; font-weight: 600;
+  color: #a5d6a7;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+.slide-sentence {
+  font-size: 17px; font-weight: 600;
+  color: #2e7d32;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background: #f1f8e9;
+  border-radius: 12px;
+  line-height: 1.3;
+  text-align: center;
+  max-width: 280px;
+}
+.phonics-desc {
+  font-size: 14px; font-weight: 600;
+  color: #66BB6A;
+  margin-bottom: 12px;
+  text-align: center;
+  padding: 0 20px;
+  line-height: 1.4;
+}
+
+/* Title slide */
+.slide-title .title-main {
+  font-size: 34px; font-weight: 900;
+  color: #1b5e20;
+  text-align: center;
+  line-height: 1.3;
+}
+.slide-title .title-sub {
+  font-size: 28px; font-weight: 700;
+  color: #43A047;
+  margin-top: 4px;
+}
+.slide-title .title-icons {
+  font-size: 60px;
+  margin-top: 18px;
+  letter-spacing: 10px;
+  animation: float-icons 3s ease-in-out infinite;
+}
+@keyframes float-icons {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.slide-title .lesson-num {
+  font-size: 14px; font-weight: 700;
+  color: #a5d6a7;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+/* Phonics slide */
+.phonics-rule {
+  display: inline-block;
+  background: #e8f5e9;
+  border: 3px solid #43A047;
+  border-radius: 16px;
+  padding: 8px 22px;
+  font-size: 28px; font-weight: 800;
+  color: #1b5e20;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.18);
+}
+.phonics-words {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+}
+.phonics-word {
+  display: flex; flex-direction: column; align-items: center;
+  background: #f9fbe7;
+  border-radius: 16px;
+  padding: 14px 18px 10px;
+  box-shadow: 0 3px 12px rgba(67,160,71,0.12);
+  min-width: 90px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.phonics-word:active { transform: scale(0.92); }
+.phonics-word .pw-emoji {
+  font-size: 48px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.phonics-word .pw-text {
+  font-size: 22px; font-weight: 700;
+  color: #1b5e20;
+}
+.phonics-word .pw-phone {
+  font-size: 14px; font-weight: 600;
+  color: #66BB6A;
+}
+
+/* Content slide */
+.slide-content-text {
+  font-size: 15px; font-weight: 600;
+  color: #333;
+  text-align: center;
+  line-height: 1.6;
+  max-width: 320px;
+  margin-top: 6px;
+}
+.slide-highlight {
+  display: inline-block;
+  background: #f1f8e9;
+  border-left: 4px solid #43A047;
+  padding: 8px 14px;
+  border-radius: 0 10px 10px 0;
+  font-size: 14px;
+  color: #2e7d32;
+  margin-top: 8px;
+  max-width: 300px;
+  line-height: 1.4;
+}
+.sight-word-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff8e1;
+  border: 2px solid #ffb300;
+  border-radius: 12px;
+  padding: 6px 14px;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e65100;
+}
+.sight-word-box .sw-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff8f00;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.sight-word-box .sw-word {
+  font-size: 18px;
+  font-weight: 800;
+  color: #e65100;
+}
+
+/* Story slide */
+.story-text-block {
+  font-size: 14px;
+  color: #444;
+  text-align: center;
+  line-height: 1.7;
+  max-width: 320px;
+  margin-top: 8px;
+  padding: 0 6px;
+}
+
+/* Dual slide */
+.slide-dual { gap: 16px; padding-left: 12px; padding-right: 12px; }
+.dual-item { flex:1; display:flex; flex-direction:column; align-items:center; }
+
+/* Review / summary slide */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 350px;
+  margin-top: 8px;
+}
+.review-card {
+  display: flex; flex-direction: column; align-items: center;
+  background: #f9fbe7;
+  border-radius: 14px;
+  padding: 12px 8px 8px;
+  box-shadow: 0 3px 10px rgba(67,160,71,0.10);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.review-card:active { transform: scale(0.94); }
+.review-card .rc-emoji {
+  font-size: 36px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.review-card .rc-en {
+  font-size: 16px; font-weight: 700;
+  color: #1b5e20;
+}
+.review-card .rc-zh {
+  font-size: 12px; font-weight: 600;
+  color: #66BB6A;
+}
+.review-card.tapped { background: #c8e6c9; transform: scale(0.96); }
+
+/* Quiz / interactive */
+.quiz-options {
+  display: flex; flex-direction: column; gap: 8px;
+  width: 100%; max-width: 300px;
+  margin-top: 8px;
+}
+.quiz-opt {
+  display: flex; align-items: center; gap: 8px;
+  background: #FFF; border: 2px solid #E0E0E0;
+  border-radius: 12px; padding: 10px 16px; cursor: pointer;
+  font-size: 15px; font-weight: 600;
+  transition: all 0.15s;
+  touch-action: manipulation; user-select: none;
+}
+.quiz-opt:hover { border-color: #66BB6A; }
+.quiz-opt.correct { border-color: #4CAF50; background: #E8F5E9; }
+.quiz-opt.wrong { border-color: #F44336; background: #FFEBEE; }
+.quiz-feedback {
+  font-size: 14px; padding: 6px 14px; border-radius: 8px;
+  margin-top: 8px; display: none;
+  font-weight: 600;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.correct { background: #E8F5E9; color: #2E7D32; }
+.quiz-feedback.wrong { background: #FFEBEE; color: #C62828; }
+
+/* Fill-in-the-blank */
+.fill-group {
+  display: flex; flex-direction: column; gap: 10px;
+  width: 100%; max-width: 300px;
+  margin-top: 8px;
+}
+.fill-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 15px; font-weight: 600;
+  color: #333;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.fill-item .fill-blank {
+  display: inline-block;
+  background: #FFF;
+  border: 2px dashed #66BB6A;
+  border-radius: 8px;
+  padding: 3px 12px;
+  min-width: 80px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #2e7d32;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.fill-item .fill-blank:hover { background: #f1f8e9; }
+.fill-item .fill-blank.filled { border-style: solid; background: #e8f5e9; }
+
+/* Day Wheel activity */
+.wheel-container {
+  position: relative;
+  width: 200px; height: 200px;
+  margin: 8px 0;
+}
+.wheel-svg {
+  width: 100%; height: 100%;
+  transform: rotate(-90deg);
+  transition: transform 0.8s cubic-bezier(0.34,1.56,0.64,1);
+}
+.wheel-svg.spinning {
+  transform: rotate(calc(-90deg + 360deg * var(--spin-target, 0)));
+}
+.wheel-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  pointer-events: none;
+}
+.wheel-label {
+  font-size: 14px; font-weight: 700;
+  color: #2e7d32;
+  margin-top: 6px;
+  min-height: 24px;
+}
+.spin-btn {
+  background: #43A047;
+  border: none;
+  color: #FFF;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 700;
+  padding: 10px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.30);
+  touch-action: manipulation;
+}
+.spin-btn:active { transform: scale(0.92); }
+.spin-btn:hover { background: #2e7d32; }
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 10px 18px 18px;
+  background: linear-gradient(0deg, rgba(255,255,255,0.98) 60%, transparent);
+}
+.nav button {
+  background: #43A047; border: none; cursor: pointer;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  font-size: 20px; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.30);
+  touch-action: manipulation;
+}
+.nav button:active { transform: scale(0.88); }
+.nav button:disabled { opacity: 0.35; box-shadow: none; background: #bdbdbd; pointer-events: none; }
+.nav button:hover:not(:disabled) { background: #2e7d32; }
+
+.dots {
+  display: flex; gap: 8px; align-items: center;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #c8e6c9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none; padding: 0;
+  touch-action: manipulation;
+}
+.dot.active {
+  width: 28px; border-radius: 6px;
+  background: #43A047;
+}
+.dot:hover:not(.active) { background: #a5d6a7; }
+
+/* Page counter */
+.page-num {
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  font-size: 12px; font-weight: 700;
+  color: #a5d6a7;
+  background: rgba(255,255,255,0.85);
+  padding: 4px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+/* ===== CELEBRATION OVERLAY ===== */
+.celebration {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.celebration.show {
+  opacity: 1;
+  pointer-events: auto;
+  background: rgba(255,255,255,0.70);
+}
+.celeb-inner {
+  text-align: center;
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 8px 40px rgba(67,160,71,0.25);
+  max-width: 300px;
+  transform: scale(0.85);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.celebration.show .celeb-inner {
+  transform: scale(1);
+}
+.celeb-icon { font-size: 56px; margin-bottom: 8px; }
+.celeb-title { font-size: 28px; font-weight: 900; color: #1b5e20; }
+.celeb-sub { font-size: 18px; font-weight: 700; color: #43A047; margin-top: 2px; }
+.celeb-text { font-size: 14px; font-weight: 600; color: #66BB6A; margin-top: 10px; line-height: 1.4; }
+.celeb-btn {
+  margin-top: 18px;
+  background: #43A047;
+  border: none;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 700;
+  padding: 10px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.30);
+}
+.celeb-btn:hover { background: #2e7d32; }
+.celeb-btn:active { transform: scale(0.92); }
+
+/* ===== CONFETTI CANVAS ===== */
+#confettiCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  .app { max-width: 100%; max-height: 100vh; border-radius: 0; margin-top: 0; }
+  .slide-word { font-size: 36px; }
+  .slide-img { width: 160px; height: 160px; }
+  .slide-icon { font-size: 60px; }
+  .slide-title .title-main { font-size: 28px; }
+  .slide-title .title-sub { font-size: 24px; }
+  .slide-title .title-icons { font-size: 48px; }
+  .phonics-word { min-width: 80px; padding: 10px 12px 8px; }
+  .phonics-word .pw-emoji { font-size: 40px; }
+  .review-grid { gap: 8px; }
+  .review-card .rc-emoji { font-size: 32px; }
+  .review-card .rc-en { font-size: 15px; }
+  .slide-content-text { font-size: 14px; }
+  .wheel-container { width: 160px; height: 160px; }
+  .wheel-center { font-size: 34px; }
+}
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+/* ===== UTILITY ===== */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Header -->
+  <header class="header">
+    <a href="../" aria-label="Home" title="首页">🏠</a>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="speakBtn" aria-label="Listen" title="🔊 朗读">🔊</button>
+      <a href="english-17.html" aria-label="Next lesson" title="▶ 下一课" style="font-size:20px">▶</a>
+    </div>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Slides -->
+  <div class="slides" id="slides">
+    <!-- Injected by JS -->
+  </div>
+
+  <!-- Page Counter -->
+  <div class="page-num" id="pageNum">1 / 14</div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <button id="prevBtn" aria-label="Previous">◀</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn" aria-label="Next">▶</button>
+  </nav>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration" id="celebration">
+    <div class="celeb-inner">
+      <div class="celeb-icon">🎉</div>
+      <div class="celeb-title">Great Job!</div>
+      <div class="celeb-sub">你太棒了！</div>
+      <div class="celeb-text" id="celebMsg">You completed Lesson 16 — Time ⏰</div>
+      <button class="celeb-btn" onclick="goTo(0)">🔄 Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="confettiCanvas"></canvas>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<script>
+/* ============================================================
+   ENGLISH LESSON 16 — TIME ⏰
+   ============================================================ */
+
+// ── IMAGE BASE PATH ─────────────────────────────────────────
+const IMG_BASE = 'images/english-16/webp/';
+
+// ── SLIDES DATA ─────────────────────────────────────────────
+const SLIDES = [
+  // 0 — Cover / Title
+  {
+    type: 'title',
+    lesson: 'Lesson 16',
+    main: 'Time ⏰',
+    chinese: '时间',
+    emoji: '☀️🌙⭐',
+    goals: [
+      'Time words: morning, afternoon, night, day, today, tomorrow',
+      'Sight words: be, ate, four, get, soon',
+      'Sentences: "In the ___..." / "What time is it?"',
+      'Sound Block: -ay says /eɪ/ (day, play, say, today)'
+    ],
+    speak: 'Lesson 16, Time. Let us learn about time! Morning, afternoon, and night.'
+  },
+  // 1 — Sound Block: ay = /eɪ/
+  {
+    type: 'phonics',
+    rule: 'ay = /eɪ/',
+    desc: 'The letters "ay" say /eɪ/ like "A!"',
+    words: [
+      { text: 'day', phone: '/deɪ/', emoji: '☀️', speak: 'day' },
+      { text: 'play', phone: '/pleɪ/', emoji: '🎮', speak: 'play' },
+      { text: 'say', phone: '/seɪ/', emoji: '🗣️', speak: 'say' },
+      { text: 'today', phone: '/tədeɪ/', emoji: '📅', speak: 'today' },
+      { text: 'Friday', phone: '/fraɪdeɪ/', emoji: '🎉', speak: 'Friday' },
+      { text: 'way', phone: '/weɪ/', emoji: '🛤️', speak: 'way' }
+    ],
+    speak: 'ay says ay. day, play, say, today, Friday, way.'
+  },
+  // 2 — Page 1: What Time Is It?
+  {
+    type: 'content',
+    img: 'page-01.webp',
+    imgAlt: 'Steve looking at clock with sun positions',
+    title: 'What Time Is It? ⏰',
+    text: 'Steve looks at his clock. Alex points at the sun. "Use the sun! When it is low, it is morning. When it is high, it is afternoon. When it goes down, it is night."',
+    highlights: [
+      '☀️ morning — sun comes up',
+      '🌤️ afternoon — sun is high',
+      '🌙 night — sun goes down, moon comes out'
+    ],
+    sightWord: { word: 'be', meaning: '是/在 — is, am, are', example: 'What will the weather be today?' },
+    speak: 'What time is it? Morning, afternoon, night. Sight word: be.'
+  },
+  // 3 — Page 2: Morning
+  {
+    type: 'content',
+    img: 'page-02.webp',
+    imgAlt: 'Morning scene with sunrise',
+    title: 'Morning 🌅',
+    text: '"In the morning, the sun comes up. A new day begins!"',
+    highlights: [
+      '☀️ wake up, eat breakfast, go to school',
+      '👋 "Good morning!"'
+    ],
+    sightWord: { word: 'get', meaning: '得到/变得', example: 'I get up at seven in the morning.' },
+    speak: 'In the morning, the sun comes up. A new day begins. Good morning! Sight word: get.'
+  },
+  // 4 — Page 3: Afternoon
+  {
+    type: 'content',
+    img: 'page-03.webp',
+    imgAlt: 'Afternoon scene with sun high',
+    title: 'Afternoon ☀️',
+    text: '"After lunch, it is the afternoon. The sun is high and hot."',
+    highlights: [
+      '🍽️ after lunch, play time, school ends',
+      '👋 "Good afternoon!"'
+    ],
+    sightWord: { word: 'four', meaning: '四', example: 'School ends at four o\'clock!' },
+    speak: 'In the afternoon, the sun is high. Good afternoon! Sight word: four.'
+  },
+  // 5 — Page 4: Night
+  {
+    type: 'content',
+    img: 'page-04.webp',
+    imgAlt: 'Night scene with moon and stars',
+    title: 'Night 🌙',
+    text: '"When the sun goes down, it becomes night."',
+    highlights: [
+      '⭐ moon and stars, eat dinner, go to sleep',
+      '👋 "Good night!"'
+    ],
+    sightWord: { word: 'ate', meaning: 'eat的过去式 — 吃了', example: 'I ate dinner at night.' },
+    phonicNote: 'ay says /eɪ/: d-ay → day! Every DAY has morning, afternoon, and night.',
+    speak: 'Good night! The moon and stars come out. Sight word: ate.'
+  },
+  // 6 — Page 5: Today and Tomorrow
+  {
+    type: 'content',
+    img: 'page-05.webp',
+    imgAlt: 'Today and tomorrow calendar',
+    title: 'Today and Tomorrow 📅',
+    text: 'Steve and Alex make plans. "Today we go to the zoo!" "And tomorrow we go to the farm!"',
+    highlights: [
+      'today = this day, right now',
+      'tomorrow = the day after today'
+    ],
+    sightWord: { word: 'soon', meaning: '很快', example: 'Tomorrow will come soon!' },
+    speak: 'Today we go to the zoo. Tomorrow we go to the farm. Sight word: soon.'
+  },
+  // 7 — Page 6: The Day Wheel
+  {
+    type: 'content',
+    img: 'page-06.webp',
+    imgAlt: 'Day Wheel with teacher',
+    title: 'The Day Wheel 🎡',
+    text: 'The teacher brings a big wheel to class. "This is the Day Wheel! Let\'s spin it!"',
+    highlights: [
+      '🌅 Morning — wake up, eat, go to school',
+      '☀️ Afternoon — learn, play, go home',
+      '🌙 Night — eat dinner, read, sleep'
+    ],
+    speak: 'The Day Wheel! Morning, afternoon, night. Let us spin it!'
+  },
+  // 8 — Page 7: Story Time — The Mixed-Up Clock
+  {
+    type: 'story',
+    img: 'page-07.webp',
+    imgAlt: 'Broken clock tower',
+    title: 'Story Time 📖',
+    subtitle: 'The Mixed-Up Clock ⏲️',
+    text: 'The village clock tower broke! Hands spinning backwards. Sun at night, moon at morning! Steve and Alex fix it by remembering day order: morning → afternoon → night. "Time is the most reliable friend — it never stops, never changes its order."',
+    speak: 'The Mixed-Up Clock. Morning, afternoon, night. Time is our friend.'
+  },
+  // 9 — Day Wheel Interactive Activity
+  {
+    type: 'wheel',
+    title: 'Spin the Day Wheel! 🎡',
+    segments: [
+      { label: 'Morning 🌅', activity: 'Wake up, eat breakfast, go to school!' },
+      { label: 'Afternoon ☀️', activity: 'Learn, play outside, go home!' },
+      { label: 'Night 🌙', activity: 'Eat dinner, read books, sleep!' }
+    ],
+    speak: 'Spin the Day Wheel! What time of day will we get?'
+  },
+  // 10 — Fill-in Practice
+  {
+    type: 'fillin',
+    title: 'Parts of the Day ✏️',
+    prompts: [
+      { before: 'In the ', blank: 'morning', after: ', I wake up. 🌅' },
+      { before: 'In the ', blank: 'afternoon', after: ', I play outside. ☀️' },
+      { before: 'At ', blank: 'night', after: ', I go to sleep. 🌙' }
+    ],
+    speak: 'Fill in the parts of the day.'
+  },
+  // 11 — Sight Words Quiz
+  {
+    type: 'quiz',
+    title: 'Sight Words Quiz 🧠',
+    questions: [
+      {
+        q: 'I will ___ there soon.',
+        options: ['be', 'ate'],
+        correct: 0,
+        wrongHint: 'Try "be" — be = 是/在'
+      },
+      {
+        q: 'I ___ breakfast this morning.',
+        options: ['ate', 'four'],
+        correct: 0,
+        wrongHint: 'Try "ate" — ate = 吃了 (eat的过去式)'
+      },
+      {
+        q: 'I am ___ years old.',
+        options: ['four', 'be'],
+        correct: 0,
+        wrongHint: 'Try "four" — four = 四'
+      },
+      {
+        q: '___ your coat. It is cold!',
+        options: ['Get', 'Soon'],
+        correct: 0,
+        wrongHint: 'Try "Get" — get = 得到'
+      },
+      {
+        q: 'See you ___!',
+        options: ['soon', 'get'],
+        correct: 0,
+        wrongHint: 'Try "soon" — soon = 很快'
+      }
+    ],
+    speak: 'Let us practice the sight words!'
+  },
+  // 12 — Summary / Review
+  {
+    type: 'review',
+    title: 'Lesson Review 📖',
+    chinese: '复习 · 本课重点',
+    hint: 'Tap a card to hear the word',
+    words: [
+      { en: 'Morning', zh: '早上', emoji: '🌅' },
+      { en: 'Afternoon', zh: '下午', emoji: '☀️' },
+      { en: 'Night', zh: '晚上', emoji: '🌙' },
+      { en: 'Day', zh: '天/日', emoji: '☀️' },
+      { en: 'Today', zh: '今天', emoji: '📅' },
+      { en: 'Tomorrow', zh: '明天', emoji: '📆' },
+      { en: 'be', zh: '是/在', emoji: '✅' },
+      { en: 'get', zh: '得到', emoji: '🙌' },
+      { en: 'four', zh: '四', emoji: '4️⃣' },
+      { en: 'ate', zh: '吃了', emoji: '🍽️' },
+      { en: 'soon', zh: '很快', emoji: '⏳' },
+      { en: 'play', zh: '玩', emoji: '🎮' }
+    ],
+    speak: 'Let us review all the words we learned today!'
+  },
+  // 13 — Final Celebration (no confetti here, handled by goTo)
+  {
+    type: 'final',
+    title: 'Lesson Complete! 🎉',
+    message: 'You learned all about Time ⏰',
+    submessage: 'morning · afternoon · night · today · tomorrow',
+    speak: 'Great job! You completed Lesson 16 about Time!'
+  }
+];
+
+// ── STATE ───────────────────────────────────────────────────
+let current = 0;
+let isAnimating = false;
+let speechUtterance = null;
+
+// ── DOM REFS ────────────────────────────────────────────────
+const slidesEl     = document.getElementById('slides');
+const dotsEl       = document.getElementById('dots');
+const prevBtn      = document.getElementById('prevBtn');
+const nextBtn      = document.getElementById('nextBtn');
+const speakBtn     = document.getElementById('speakBtn');
+const progressBar  = document.getElementById('progressBar');
+const pageNumEl    = document.getElementById('pageNum');
+const celebration  = document.getElementById('celebration');
+const confettiCtx  = document.getElementById('confettiCanvas').getContext('2d');
+
+// ── BUILD SLIDES ────────────────────────────────────────────
+function buildSlides() {
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.dataset.index = i;
+    div.dataset.speak = s.speak || '';
+
+    switch (s.type) {
+      case 'title':
+        div.classList.add('slide-title');
+        let goalsHtml = '';
+        if (s.goals && s.goals.length) {
+          goalsHtml = '<div style="background:#e8f5e9;border-radius:14px;padding:12px 16px;margin-top:12px;max-width:320px;text-align:left">';
+          goalsHtml += '<div style="font-size:13px;font-weight:700;color:#2e7d32;margin-bottom:6px">📋 Learning Goals</div><ul style="list-style:none;padding:0">';
+          s.goals.forEach(g => {
+            goalsHtml += '<li style="font-size:12px;color:#444;padding:3px 0;line-height:1.4">✅ ' + g + '</li>';
+          });
+          goalsHtml += '</ul></div>';
+        }
+        div.innerHTML = `
+          <div class="lesson-num">${s.lesson}</div>
+          <div class="title-main">${s.main}</div>
+          <div class="title-sub">${s.chinese}</div>
+          <div class="title-icons">${s.emoji}</div>
+          ${goalsHtml}
+          <div class="slide-hint" style="margin-top:10px">👆 Swipe or tap ◀▶ to begin</div>
+        `;
+        break;
+
+      case 'phonics':
+        div.innerHTML = `
+          <div class="phonics-rule">${s.rule}</div>
+          ${s.desc ? `<div class="phonics-desc">${s.desc}</div>` : ''}
+          <div class="phonics-words">
+            ${s.words.map(w => `
+              <div class="phonics-word" data-speak="${w.speak}">
+                <div class="pw-emoji">${w.emoji}</div>
+                <span class="pw-text">${w.text}</span>
+                <span class="pw-phone">${w.phone}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="slide-hint" style="margin-top:16px">👆 Tap a word to hear it</div>
+        `;
+        // Click to speak individual phonics words
+        setTimeout(() => {
+          div.querySelectorAll('.phonics-word').forEach(el => {
+            el.addEventListener('click', () => {
+              const txt = el.dataset.speak;
+              if (txt) speak(txt);
+            });
+          });
+        }, 0);
+        break;
+
+      case 'content':
+        let highlightsHtml = '';
+        if (s.highlights && s.highlights.length) {
+          highlightsHtml = s.highlights.map(h =>
+            '<div class="slide-highlight">' + h + '</div>'
+          ).join('');
+        }
+        let sightHtml = '';
+        if (s.sightWord) {
+          sightHtml = `<div class="sight-word-box">
+            <span class="sw-label">Sight Word</span>
+            <span class="sw-word">${s.sightWord.word}</span>
+            <span style="font-size:12px;color:#888;font-weight:400">${s.sightWord.meaning}</span>
+          </div>
+          <div style="font-size:13px;color:#666;font-style:italic;margin-top:4px">"${s.sightWord.example}"</div>`;
+        }
+        let phonicNoteHtml = '';
+        if (s.phonicNote) {
+          phonicNoteHtml = `<div class="slide-highlight" style="border-left-color:#ffb300;background:#fff8e1">🔤 ${s.phonicNote}</div>`;
+        }
+        div.innerHTML = `
+          <div class="slide-icon" style="font-size:40px;margin-bottom:6px">${s.title.split(' ').pop()}</div>
+          <img class="slide-img" src="${IMG_BASE}${s.img}" alt="${s.imgAlt}" loading="lazy" onerror="this.style.display='none'">
+          <div class="slide-word" style="font-size:26px">${s.title}</div>
+          <div class="slide-content-text">${s.text}</div>
+          ${highlightsHtml}
+          ${phonicNoteHtml}
+          ${sightHtml}
+        `;
+        break;
+
+      case 'story':
+        div.innerHTML = `
+          <img class="slide-img" src="${IMG_BASE}${s.img}" alt="${s.imgAlt}" loading="lazy" onerror="this.style.display='none'">
+          <div class="slide-word" style="font-size:22px">${s.subtitle || s.title}</div>
+          <div class="story-text-block">${s.text}</div>
+        `;
+        break;
+
+      case 'wheel':
+        div.innerHTML = `
+          <div class="slide-word" style="font-size:24px;margin-bottom:4px">${s.title}</div>
+          <div class="wheel-container">
+            <svg class="wheel-svg" id="wheelSvg" viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="90" fill="#e8f5e9" stroke="#43A047" stroke-width="3"/>
+              <path d="M100,10 A90,90 0 0,1 190,100" fill="#FFCC80" stroke="#FF8F00" stroke-width="2"/>
+              <path d="M190,100 A90,90 0 0,1 100,190" fill="#A5D6A7" stroke="#43A047" stroke-width="2"/>
+              <path d="M100,190 A90,90 0 0,1 10,100" fill="#90CAF9" stroke="#1565C0" stroke-width="2"/>
+              <path d="M10,100 A90,90 0 0,1 100,10" fill="#CE93D8" stroke="#7B1FA2" stroke-width="2"/>
+              <text x="100" y="55" text-anchor="middle" font-size="13" font-weight="700" fill="#E65100">🌅</text>
+              <text x="155" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#2E7D32">☀️</text>
+              <text x="100" y="170" text-anchor="middle" font-size="13" font-weight="700" fill="#0D47A1">🌙</text>
+              <text x="45" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#4A148C">🎡</text>
+            </svg>
+            <div class="wheel-center">⏰</div>
+          </div>
+          <div class="wheel-label" id="wheelLabel">Tap SPIN to start! 🎡</div>
+          <button class="spin-btn" onclick="spinWheel()">🎡 SPIN!</button>
+        `;
+        break;
+
+      case 'fillin':
+        const fillWords = ['morning', 'afternoon', 'night'];
+        // Shuffle fill words for display
+        const shuffled = [...fillWords].sort(() => Math.random() - 0.5);
+        div.innerHTML = `
+          <div class="slide-word" style="font-size:24px;margin-bottom:6px">${s.title}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:8px">
+            ${shuffled.map(w => `<span class="phonics-word" style="padding:6px 14px;min-width:auto;cursor:pointer;font-size:16px" data-word="${w}" onclick="fillSelectWord('${w}')">${w}</span>`).join('')}
+          </div>
+          <div class="fill-group" id="fillGroup">
+            ${s.prompts.map((p, i) => `
+              <div class="fill-item">
+                <span>${p.before}</span>
+                <span class="fill-blank" data-idx="${i}" data-answer="${p.blank}" onclick="onFillBlank(${i})">______</span>
+                <span>${p.after}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="quiz-feedback" id="fillFeedback"></div>
+          <div class="slide-hint" style="font-size:12px;margin-top:6px">👆 Tap a word above, then tap the blank to fill it</div>
+        `;
+        // Store fill state
+        window._fillState = { selectedWord: null, filled: {} };
+        break;
+
+      case 'quiz':
+        div.innerHTML = `
+          <div class="slide-word" style="font-size:24px;margin-bottom:4px">${s.title}</div>
+          <div class="quiz-options" id="quizOptions">
+            ${s.questions.map((q, qi) => `
+              <div class="quiz-question" data-qidx="${qi}" style="margin-bottom:6px;width:100%">
+                <div style="font-size:14px;font-weight:600;color:#333;margin-bottom:4px;text-align:center">${qi+1}. ${q.q}</div>
+                <div style="display:flex;gap:8px;justify-content:center">
+                  ${q.options.map((opt, oi) => `
+                    <div class="quiz-opt" style="width:auto;padding:6px 18px" data-qidx="${qi}" data-optidx="${oi}" onclick="onQuizAnswer(${qi},${oi})">${opt}</div>
+                  `).join('')}
+                </div>
+                <div class="quiz-feedback" id="qfb-${qi}"></div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        window._quizState = {};
+        break;
+
+      case 'review':
+        div.innerHTML = `
+          <div class="slide-word" style="font-size:24px;margin-bottom:2px">${s.title}</div>
+          <div class="slide-chinese" style="font-size:16px;margin-bottom:4px">${s.chinese}</div>
+          <div class="slide-hint" style="margin-bottom:6px">${s.hint || '👆 Tap a card to practice'}</div>
+          <div class="review-grid">
+            ${s.words.map(w => `
+              <div class="review-card" data-speak="${w.en}">
+                <div class="rc-emoji">${w.emoji}</div>
+                <span class="rc-en">${w.en}</span>
+                <span class="rc-zh">${w.zh}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        // Click to speak review cards
+        setTimeout(() => {
+          div.querySelectorAll('.review-card').forEach(el => {
+            el.addEventListener('click', function() {
+              const txt = this.dataset.speak;
+              if (txt) {
+                speak(txt);
+                this.classList.add('tapped');
+                setTimeout(() => this.classList.remove('tapped'), 300);
+              }
+            });
+          });
+        }, 0);
+        break;
+
+      case 'final':
+        div.innerHTML = `
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center">
+            <div class="celeb-icon" style="font-size:72px">🏆</div>
+            <div class="celeb-title" style="font-size:32px">${s.title}</div>
+            <div style="font-size:20px;font-weight:700;color:#43A047">${s.message}</div>
+            <div style="font-size:15px;font-weight:600;color:#66BB6A;margin-top:4px">${s.submessage || ''}</div>
+          </div>
+        `;
+        break;
+
+      default:
+        div.innerHTML = '<div style="font-size:18px;color:#999">Page ' + (i+1) + '</div>';
+    }
+
+    slidesEl.appendChild(div);
+  });
+}
+
+// ── BUILD DOTS ──────────────────────────────────────────────
+function buildDots() {
+  SLIDES.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(dot);
+  });
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function goTo(index) {
+  if (isAnimating || index === current) return;
+  if (index < 0 || index >= SLIDES.length) return;
+
+  isAnimating = true;
+  const prev = current;
+  current = index;
+
+  const prevSlide = slidesEl.children[prev];
+  const nextSlide = slidesEl.children[current];
+
+  // Exit animation
+  gsap.to(prevSlide, {
+    opacity: 0,
+    scale: 0.92,
+    duration: 0.30,
+    ease: 'power2.in',
+    onComplete: () => {
+      prevSlide.classList.remove('active');
+      prevSlide.classList.add('exit');
+      prevSlide.style.cssText = '';
+    }
+  });
+
+  // Enter animation
+  nextSlide.classList.remove('exit');
+  nextSlide.classList.add('active');
+  gsap.fromTo(nextSlide,
+    { opacity: 0, scale: 1.08 },
+    { opacity: 1, scale: 1, duration: 0.38, ease: 'back.out(1.4)', onComplete: () => { isAnimating = false; } }
+  );
+
+  // Entrance stagger for inner elements
+  const kids = nextSlide.querySelectorAll('.slide-word, .slide-chinese, .slide-icon, .slide-img, .phonics-rule, .phonics-word, .review-card, .title-main, .title-sub, .title-icons, .lesson-num, .slide-content-text, .slide-highlight, .sight-word-box, .slide-sentence, .story-text-block, .quiz-opt, .quiz-question, .fill-item, .wheel-container, .spin-btn, .wheel-label, .celeb-icon, .celeb-title, .dual-item');
+  if (kids.length) {
+    gsap.fromTo(kids,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out', delay: 0.10 }
+    );
+  }
+
+  updateUI();
+
+  // Confetti on last page
+  if (current === SLIDES.length - 1) {
+    launchConfetti();
+  }
+}
+
+function prev() { goTo(current - 1); }
+function next() { goTo(current + 1); }
+
+function updateUI() {
+  const total = SLIDES.length;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === total - 1;
+
+  // Update dots
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === current);
+  });
+
+  // Update progress bar
+  const pct = ((current + 1) / total) * 100;
+  if (progressBar) progressBar.style.width = pct + '%';
+
+  // Update page counter
+  if (pageNumEl) pageNumEl.textContent = (current + 1) + ' / ' + total;
+
+  // Toggle celebration overlay on last page
+  if (celebration) {
+    if (current === total - 1) {
+      celebration.classList.add('show');
+    } else {
+      celebration.classList.remove('show');
+    }
+  }
+}
+
+// ── SPEECH SYNTHESIS ────────────────────────────────────────
+function speak(text) {
+  if (!window.speechSynthesis) return;
+
+  // Cancel any ongoing speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.88;
+  utterance.pitch = 1.05;
+  utterance.volume = 1;
+
+  speechUtterance = utterance;
+
+  speakBtn.classList.add('speaking');
+
+  utterance.onend = () => {
+    speakBtn.classList.remove('speaking');
+    speechUtterance = null;
+  };
+  utterance.onerror = () => {
+    speakBtn.classList.remove('speaking');
+    speechUtterance = null;
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakCurrent() {
+  const slide = slidesEl.children[current];
+  if (!slide) return;
+  const text = slide.dataset.speak || '';
+  if (text) speak(text);
+}
+
+// ── INTERACTIVE: DAY WHEEL ──────────────────────────────────
+function spinWheel() {
+  const svg = document.getElementById('wheelSvg');
+  const label = document.getElementById('wheelLabel');
+  if (!svg || !label) return;
+
+  const segments = SLIDES.find(s => s.type === 'wheel');
+  if (!segments || !segments.segments) return;
+
+  // Random spin
+  const target = Math.floor(Math.random() * segments.segments.length);
+  const extraSpins = 2 + Math.floor(Math.random() * 3);
+  const degrees = (extraSpins * 360) + (target * 90);
+
+  svg.style.setProperty('--spin-target', degrees / 360);
+  svg.classList.add('spinning');
+
+  setTimeout(() => {
+    const seg = segments.segments[target];
+    label.textContent = seg.label + ' — ' + seg.activity;
+    speak(seg.label.replace(/[🌅☀️🌙🎡]/g,'').trim());
+    svg.classList.remove('spinning');
+  }, 900);
+}
+
+// ── INTERACTIVE: FILL-IN ────────────────────────────────────
+function fillSelectWord(word) {
+  window._fillState.selectedWord = word;
+  // Visually highlight selected word
+  document.querySelectorAll('.phonics-word[data-word]').forEach(el => {
+    el.style.border = el.dataset.word === word ? '3px solid #43A047' : '2px solid #e8f5e9';
+  });
+}
+
+function onFillBlank(idx) {
+  const blank = document.querySelector('.fill-blank[data-idx="' + idx + '"]');
+  const feedback = document.getElementById('fillFeedback');
+  if (!blank || !feedback) return;
+
+  const answer = blank.dataset.answer;
+  const sel = window._fillState.selectedWord;
+
+  if (!sel) {
+    feedback.className = 'quiz-feedback show wrong';
+    feedback.textContent = '👆 Tap a word first!';
+    return;
+  }
+
+  if (sel === answer) {
+    blank.textContent = sel;
+    blank.classList.add('filled');
+    window._fillState.filled[idx] = true;
+    feedback.className = 'quiz-feedback show correct';
+    feedback.textContent = '✅ Correct!';
+
+    // Check if all filled
+    const blanks = document.querySelectorAll('.fill-blank');
+    let allDone = true;
+    blanks.forEach(b => {
+      if (!b.classList.contains('filled')) allDone = false;
+    });
+    if (allDone) {
+      setTimeout(() => {
+        feedback.textContent = '🎉 Great! You completed the fill-in!';
+        speak('Great job! Morning, afternoon, night!');
+      }, 300);
+    }
+  } else {
+    feedback.className = 'quiz-feedback show wrong';
+    feedback.textContent = '❌ Try a different word!';
+  }
+}
+
+// ── INTERACTIVE: QUIZ ───────────────────────────────────────
+function onQuizAnswer(qidx, optidx) {
+  const slide = SLIDES[current];
+  if (!slide || slide.type !== 'quiz') return;
+  const q = slide.questions[qidx];
+  if (!q) return;
+
+  const fb = document.getElementById('qfb-' + qidx);
+  if (!fb) return;
+
+  // Check if already answered
+  if (window._quizState[qidx] !== undefined) return;
+
+  const allOpts = document.querySelectorAll('.quiz-opt[data-qidx="' + qidx + '"]');
+
+  if (optidx === q.correct) {
+    allOpts.forEach(el => {
+      if (parseInt(el.dataset.optidx) === optidx) el.classList.add('correct');
+    });
+    fb.className = 'quiz-feedback show correct';
+    fb.textContent = '✅ Correct!';
+    window._quizState[qidx] = true;
+    speak(q.options[optidx] + ' is correct!');
+  } else {
+    allOpts.forEach(el => {
+      if (parseInt(el.dataset.optidx) === optidx) el.classList.add('wrong');
+    });
+    fb.className = 'quiz-feedback show wrong';
+    fb.textContent = '❌ ' + (q.wrongHint || 'Try again!');
+  }
+}
+
+// ── CONFETTI ────────────────────────────────────────────────
+const confettiParticles = [];
+const CONFETTI_COLORS = ['#43A047','#66BB6A','#FFD54F','#FF7043','#42A5F5','#AB47BC','#EF5350','#26C6DA','#FFEE58'];
+
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const W = canvas.width  = window.innerWidth;
+  const H = canvas.height = window.innerHeight;
+
+  // Clear old particles
+  confettiParticles.length = 0;
+
+  // Burst 200 particles
+  for (let i = 0; i < 200; i++) {
+    confettiParticles.push({
+      x: W / 2 + (Math.random() - 0.5) * 60,
+      y: H / 2,
+      vx: (Math.random() - 0.5) * 18,
+      vy: -Math.random() * 16 - 4,
+      size: Math.random() * 10 + 5,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 12,
+      gravity: 0.30 + Math.random() * 0.15,
+      opacity: 1,
+      drag: 0.97
+    });
+  }
+
+  if (!confettiParticles.length) return;
+  animateConfetti();
+}
+
+function animateConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const ctx = confettiCtx;
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  for (let i = confettiParticles.length - 1; i >= 0; i--) {
+    const p = confettiParticles[i];
+    p.vx *= p.drag;
+    p.vy += p.gravity;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rotation += p.rotSpeed;
+    p.opacity -= 0.002;
+
+    if (p.opacity <= 0 || p.y > H + 20) {
+      confettiParticles.splice(i, 1);
+      continue;
+    }
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation * Math.PI / 180);
+    ctx.globalAlpha = Math.max(0, p.opacity);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    ctx.restore();
+  }
+
+  if (confettiParticles.length > 0) {
+    requestAnimationFrame(animateConfetti);
+  } else {
+    ctx.clearRect(0, 0, W, H);
+  }
+}
+
+// ── KEYBOARD / SWIPE ────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') prev();
+  if (e.key === 'ArrowRight') next();
+  if (e.key === ' ') { e.preventDefault(); speakCurrent(); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (dx < 0) next();
+    else prev();
+  }
+}, { passive: true });
+
+// ── EVENT LISTENERS ─────────────────────────────────────────
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+speakBtn.addEventListener('click', speakCurrent);
+
+// ── INIT ────────────────────────────────────────────────────
+buildSlides();
+buildDots();
+updateUI();
+
+// Entrance animation for first slide
+const firstKids = slidesEl.children[0].querySelectorAll('.lesson-num, .title-main, .title-sub, .title-icons');
+gsap.fromTo(firstKids,
+  { opacity: 0, y: 24 },
+  { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out', delay: 0.2 }
+);
+
+// Resize handler for confetti canvas
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+console.log('⏰ English Lesson 16 — Time ready!');
+</script>
+
+</body>
+</html>

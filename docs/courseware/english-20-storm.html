@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>Lesson 20: The Storm 🌩️ | English</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation;font-family:'Nunito',sans-serif;background:#1a1a2e}
+body{display:flex;justify-content:center;align-items:center}
+#app{width:1024px;height:768px;position:relative;overflow:hidden;background:linear-gradient(145deg,#e8f5e9 0,#c8e6c9 100%);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.4);display:flex;flex-direction:column}
+/* Top Bar */
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);border-bottom:3px solid #66BB6A;z-index:100;flex-shrink:0}
+.top-bar .nav{display:flex;gap:12px}
+.top-bar .nav a{text-decoration:none;font-size:28px;font-weight:800;color:#2e7d32;background:#e8f5e9;padding:2px 16px;border-radius:40px;border:2px solid #66BB6A;transition:.2s;display:inline-flex;align-items:center;gap:4px}
+.top-bar .nav a:active{transform:scale(.92);background:#c8e6c9}
+.top-bar .lesson-title{font-size:22px;font-weight:900;color:#1b5e20;letter-spacing:.5px}
+.top-bar .lesson-title span{color:#66BB6A}
+/* Pages */
+.page{display:none;flex:1;position:relative;width:100%;overflow-y:auto;overflow-x:hidden;padding:20px 30px;-webkit-overflow-scrolling:touch}
+.page.active{display:flex;flex-direction:column}
+/* Splash */
+#page-splash{background:linear-gradient(135deg,#66BB6A 0,#388E3C 100%);justify-content:center;align-items:center;text-align:center;padding:40px}
+#page-splash h1{font-size:56px;font-weight:900;color:#fff;text-shadow:0 4px 12px rgba(0,0,0,.2);margin-bottom:8px}
+#page-splash .emoji-big{font-size:80px;display:block;margin-bottom:8px}
+#page-splash p{font-size:24px;color:rgba(255,255,255,.9);font-weight:700}
+#page-splash .start-btn{background:#fff;color:#2e7d32;border:none;padding:16px 60px;border-radius:60px;font-size:28px;font-weight:900;margin-top:30px;cursor:pointer;box-shadow:0 6px 0 #1b5e20;transition:.1s linear;touch-action:manipulation}
+#page-splash .start-btn:active{transform:translateY(6px);box-shadow:none}
+/* Sound Block */
+.sound-block{background:#fff;border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,.08);border-left:6px solid #66BB6A}
+.sound-block h2{font-size:22px;color:#2e7d32;margin-bottom:12px}
+.sound-block .blend-list{display:flex;flex-wrap:wrap;gap:10px}
+.sound-block .blend-chip{background:#e8f5e9;padding:8px 20px;border-radius:40px;font-size:20px;font-weight:800;color:#1b5e20;border:2px solid #66BB6A;cursor:pointer;transition:.15s;touch-action:manipulation;user-select:none}
+.sound-block .blend-chip:active{transform:scale(.92);background:#c8e6c9}
+.sound-block .blend-chip .highlight{color:#e53935}
+/* Story Cards */
+.story-section{flex:1;display:flex;flex-direction:column;gap:16px}
+.story-scene{display:none;background:#fff;border-radius:24px;padding:20px 24px;flex:1;box-shadow:0 6px 20px rgba(0,0,0,.08);flex-direction:column;justify-content:space-between}
+.story-scene.active{display:flex}
+.story-scene .scene-img{width:100%;height:200px;object-fit:contain;border-radius:16px;background:#f1f8e9;margin-bottom:12px}
+.story-scene h3{font-size:26px;color:#1b5e20;font-weight:900}
+.story-scene p{font-size:20px;color:#333;line-height:1.5;font-weight:600}
+.story-scene .word-highlight{color:#e53935;font-weight:900}
+.story-nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;flex-shrink:0}
+.story-nav button{background:#66BB6A;color:#fff;border:none;padding:10px 28px;border-radius:40px;font-size:20px;font-weight:800;cursor:pointer;transition:.1s;touch-action:manipulation;font-family:'Nunito',sans-serif}
+.story-nav button:disabled{opacity:.3;pointer-events:none}
+.story-nav button:active{transform:scale(.92);background:#388E3C}
+.story-nav .page-dots{display:flex;gap:8px}
+.story-nav .page-dots span{width:14px;height:14px;border-radius:50%;background:#c8e6c9;transition:.2s}
+.story-nav .page-dots span.active{background:#66BB6A;transform:scale(1.3)}
+/* Quiz / Match */
+.quiz-section{background:#fff;border-radius:20px;padding:24px;flex:1;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center}
+.quiz-section h2{font-size:24px;color:#2e7d32;margin-bottom:16px;text-align:center}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:500px;margin:0 auto;width:100%}
+.quiz-opt{background:#f1f8e9;border:3px solid #c8e6c9;border-radius:16px;padding:14px;font-size:20px;font-weight:700;color:#1b5e20;text-align:center;cursor:pointer;transition:.12s;touch-action:manipulation;user-select:none}
+.quiz-opt:active{transform:scale(.94)}
+.quiz-opt.correct{background:#a5d6a7;border-color:#66BB6A;color:#1b5e20}
+.quiz-opt.wrong{background:#ffcdd2;border-color:#e53935;color:#b71c1c}
+.quiz-opt.disabled{pointer-events:none;opacity:.7}
+.quiz-feedback{text-align:center;margin-top:16px;font-size:22px;font-weight:800;min-height:40px}
+/* Match Game */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:560px;margin:0 auto;width:100%}
+.match-col{display:flex;flex-direction:column;gap:10px}
+.match-card{background:#e8f5e9;border:3px solid #a5d6a7;border-radius:14px;padding:14px 12px;font-size:20px;font-weight:700;color:#1b5e20;text-align:center;cursor:pointer;transition:.12s;touch-action:manipulation;user-select:none}
+.match-card:active{transform:scale(.94)}
+.match-card.selected{border-color:#66BB6A;background:#c8e6c9;box-shadow:0 0 0 3px #66BB6A}
+.match-card.matched{background:#a5d6a7;border-color:#388E3C;pointer-events:none;opacity:.8}
+.match-card.wrong{border-color:#e53935;background:#ffcdd2}
+/* Fill-in */
+.fill-section{background:#fff;border-radius:20px;padding:24px;flex:1;box-shadow:0 4px 16px rgba(0,0,0,.08);display:flex;flex-direction:column;justify-content:center}
+.fill-section h2{font-size:24px;color:#2e7d32;margin-bottom:16px;text-align:center}
+.fill-sentences{display:flex;flex-direction:column;gap:14px;max-width:600px;margin:0 auto;width:100%}
+.fill-item{background:#f1f8e9;border-radius:14px;padding:14px 18px;font-size:20px;font-weight:700;color:#333;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.fill-item .blank{background:#fff;border:3px dashed #66BB6A;border-radius:10px;padding:4px 16px;font-size:20px;font-weight:800;color:#2e7d32;cursor:pointer;transition:.12s;touch-action:manipulation;display:inline-block}
+.fill-item .blank:active{transform:scale(.94)}
+.fill-item .blank.filled{border-style:solid;background:#e8f5e9}
+.fill-item .blank.correct{border-color:#2e7d32;background:#a5d6a7}
+.fill-item .blank.wrong{border-color:#e53935;background:#ffcdd2}
+.word-bank{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:14px}
+.word-bank .wb-word{background:#66BB6A;color:#fff;padding:8px 20px;border-radius:40px;font-size:20px;font-weight:800;cursor:pointer;transition:.12s;touch-action:manipulation;user-select:none}
+.word-bank .wb-word:active{transform:scale(.9)}
+.word-bank .wb-word.used{opacity:.25;pointer-events:none}
+/* Celebration */
+.celebration-overlay{position:absolute;inset:0;background:rgba(255,255,255,.92);display:none;justify-content:center;align-items:center;flex-direction:column;z-index:200;border-radius:24px}
+.celebration-overlay.show{display:flex}
+.celebration-overlay .big{font-size:80px}
+.celebration-overlay h2{font-size:44px;color:#1b5e20;font-weight:900;margin:10px 0 6px}
+.celebration-overlay p{font-size:22px;color:#555;font-weight:600}
+.celebration-overlay .next-btn{background:#66BB6A;color:#fff;border:none;padding:14px 50px;border-radius:60px;font-size:24px;font-weight:900;margin-top:24px;cursor:pointer;box-shadow:0 5px 0 #2e7d32;transition:.1s;touch-action:manipulation;font-family:'Nunito',sans-serif}
+.celebration-overlay .next-btn:active{transform:translateY(5px);box-shadow:none}
+/* Confetti Canvas */
+#confetti-canvas{position:absolute;inset:0;pointer-events:none;z-index:300;border-radius:24px}
+/* Bottom Nav */
+.bottom-nav{display:flex;justify-content:space-around;padding:10px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);border-top:3px solid #66BB6A;flex-shrink:0}
+.bottom-nav button{background:transparent;border:2px solid #a5d6a7;border-radius:40px;padding:8px 20px;font-size:18px;font-weight:800;color:#2e7d32;cursor:pointer;transition:.15s;touch-action:manipulation;font-family:'Nunito',sans-serif}
+.bottom-nav button.active{background:#66BB6A;color:#fff;border-color:#66BB6A}
+.bottom-nav button:active{transform:scale(.92)}
+/* Scrollbar */
+.page::-webkit-scrollbar{width:6px}
+.page::-webkit-scrollbar-thumb{background:#66BB6A;border-radius:10px}
+/* Speak button */
+.speak-btn{display:inline-flex;align-items:center;gap:6px;background:#e3f2fd;border:2px solid #42a5f5;border-radius:40px;padding:4px 14px;font-size:16px;font-weight:700;color:#1565c0;cursor:pointer;transition:.12s;touch-action:manipulation;font-family:'Nunito',sans-serif;margin-left:6px}
+.speak-btn:active{transform:scale(.9);background:#bbdefb}
+/* Responsive scaling for smaller windows */
+@media(max-width:1060px),(max-height:90vh){
+  #app{width:100vw;height:100vh;border-radius:0}
+  .celebration-overlay,.bottom-nav,.top-bar{border-radius:0}
+  #confetti-canvas{border-radius:0}
+}
+@media(max-width:700px){
+  .story-scene .scene-img{height:140px}
+  .quiz-options{grid-template-columns:1fr}
+  #page-splash h1{font-size:38px}
+  #page-splash .emoji-big{font-size:56px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="nav">
+      <a href="../" title="Home">🏠</a>
+      <a href="../english-21-birthday.html" title="Next">▶</a>
+    </div>
+    <div class="lesson-title"><span>🌩️</span> Lesson 20: The Storm</div>
+    <div style="width:60px"></div>
+  </div>
+
+  <!-- Pages -->
+  <!-- SPLASH -->
+  <div id="page-splash" class="page active">
+    <span class="emoji-big">🌩️</span>
+    <h1>The Storm</h1>
+    <p>English Lesson 20</p>
+    <button class="start-btn" onclick="goPage('story')">▶ Start Story</button>
+  </div>
+
+  <!-- STORY -->
+  <div id="page-story" class="page">
+    <div class="sound-block">
+      <h2>🔊 Sound Block: <em>st</em> blends</h2>
+      <div class="blend-list">
+        <div class="blend-chip" onclick="speakText('storm')"><span class="highlight">st</span>orm</div>
+        <div class="blend-chip" onclick="speakText('stop')"><span class="highlight">st</span>op</div>
+        <div class="blend-chip" onclick="speakText('star')"><span class="highlight">st</span>ar</div>
+        <div class="blend-chip" onclick="speakText('stone')"><span class="highlight">st</span>one</div>
+        <div class="blend-chip" onclick="speakText('still')"><span class="highlight">st</span>ill</div>
+      </div>
+      <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px">
+        <span style="background:#fff3e0;padding:4px 14px;border-radius:20px;font-size:16px;font-weight:700;color:#e65100">👀 Sight: there · their · them · then</span>
+        <span style="background:#e8f5e9;padding:4px 14px;border-radius:20px;font-size:16px;font-weight:700;color:#2e7d32">📖 Story: storm · cloud · rain · wind · thunder · lightning · safe · dry</span>
+      </div>
+    </div>
+    <div class="story-section">
+      <div class="story-scene active" data-page="0">
+        <img class="scene-img" src="images/english-20/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="Dark Clouds" loading="lazy">
+        <h3>🌥️ Dark Clouds</h3>
+        <p>Steve and Alex are playing outside. <span class="word-highlight">Then</span> they see dark clouds in the sky. <span class="word-highlight">There</span> is a big <span class="word-highlight">storm</span> coming!</p>
+        <div class="story-nav">
+          <button disabled>← Back</button>
+          <div class="page-dots">
+            <span class="active"></span><span></span><span></span><span></span><span></span>
+          </div>
+          <button onclick="nextStoryPage(1)">Next →</button>
+        </div>
+      </div>
+      <div class="story-scene" data-page="1">
+        <img class="scene-img" src="images/english-20/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Wind and Rain" loading="lazy">
+        <h3>💨 Wind and Rain</h3>
+        <p>The <span class="word-highlight">wind</span> blows hard. The <span class="word-highlight">rain</span> comes down. Steve and Alex call <span class="word-highlight">their</span> friends to come inside.</p>
+        <div class="story-nav">
+          <button onclick="nextStoryPage(0)">← Back</button>
+          <div class="page-dots">
+            <span></span><span class="active"></span><span></span><span></span><span></span>
+          </div>
+          <button onclick="nextStoryPage(2)">Next →</button>
+        </div>
+      </div>
+      <div class="story-scene" data-page="2">
+        <img class="scene-img" src="images/english-20/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="Thunder and Lightning" loading="lazy">
+        <h3>⚡ Thunder and Lightning</h3>
+        <p><span class="word-highlight">Thunder</span> booms! <span class="word-highlight">Lightning</span> flashes across the sky! Steve helps <span class="word-highlight">them</span> get inside quickly.</p>
+        <div class="story-nav">
+          <button onclick="nextStoryPage(1)">← Back</button>
+          <div class="page-dots">
+            <span></span><span></span><span class="active"></span><span></span><span></span>
+          </div>
+          <button onclick="nextStoryPage(3)">Next →</button>
+        </div>
+      </div>
+      <div class="story-scene" data-page="3">
+        <img class="scene-img" src="images/english-20/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Safe Inside" loading="lazy">
+        <h3>🏠 Safe Inside</h3>
+        <p>Everyone is <span class="word-highlight">safe</span> and <span class="word-highlight">dry</span> inside. <span class="word-highlight">Their</span> home is warm. <span class="word-highlight">They</span> wait for the storm to pass.</p>
+        <div class="story-nav">
+          <button onclick="nextStoryPage(2)">← Back</button>
+          <div class="page-dots">
+            <span></span><span></span><span></span><span class="active"></span><span></span>
+          </div>
+          <button onclick="nextStoryPage(4)">Next →</button>
+        </div>
+      </div>
+      <div class="story-scene" data-page="4">
+        <img class="scene-img" src="images/english-20/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Sun Comes Out" loading="lazy">
+        <h3>☀️ Sun Comes Out</h3>
+        <p>The <span class="word-highlight">storm</span> stops. The sun comes out! A beautiful rainbow appears. <span class="word-highlight">Then</span> everyone goes outside to play again.</p>
+        <div class="story-nav">
+          <button onclick="nextStoryPage(3)">← Back</button>
+          <div class="page-dots">
+            <span></span><span></span><span></span><span></span><span class="active"></span>
+          </div>
+          <button onclick="showCelebration()">🎉 Done!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ: st blend -->
+  <div id="page-quiz" class="page">
+    <div class="quiz-section">
+      <h2>🔊 <em>st</em> Blend Quiz</h2>
+      <p id="quiz-question" style="text-align:center;font-size:24px;font-weight:800;color:#1b5e20;margin-bottom:16px">What word starts with <em>st</em>?</p>
+      <div class="quiz-options" id="quiz-options"></div>
+      <div class="quiz-feedback" id="quiz-feedback">Tap an answer!</div>
+      <button style="margin:14px auto 0;background:#66BB6A;color:#fff;border:none;padding:10px 32px;border-radius:40px;font-size:20px;font-weight:800;cursor:pointer;touch-action:manipulation;font-family:'Nunito',sans-serif;display:block" onclick="nextQuiz()">Next ➜</button>
+    </div>
+  </div>
+
+  <!-- MATCH: storm vocab -->
+  <div id="page-match" class="page">
+    <div class="quiz-section">
+      <h2>🌩️ Storm Vocab Match</h2>
+      <p style="text-align:center;font-size:18px;color:#555;margin-bottom:14px">Tap a word, then tap its meaning!</p>
+      <div class="match-grid" id="match-grid"></div>
+      <div id="match-feedback" style="text-align:center;margin-top:16px;font-size:20px;font-weight:800;min-height:36px">Match the pairs!</div>
+    </div>
+  </div>
+
+  <!-- FILL-IN: there/their/them/then -->
+  <div id="page-fill" class="page">
+    <div class="fill-section">
+      <h2>✏️ there · their · them · then</h2>
+      <p style="text-align:center;font-size:18px;color:#555;margin-bottom:6px">Tap a blank, then a word from the bank!</p>
+      <div class="fill-sentences" id="fill-sentences"></div>
+      <div class="word-bank" id="word-bank"></div>
+      <div id="fill-feedback" style="text-align:center;margin-top:14px;font-size:20px;font-weight:800;min-height:30px"></div>
+      <button style="margin:12px auto 0;background:#66BB6A;color:#fff;border:none;padding:10px 32px;border-radius:40px;font-size:20px;font-weight:800;cursor:pointer;touch-action:manipulation;font-family:'Nunito',sans-serif;display:none" id="fill-next-btn" onclick="showCelebration()">🎉 All Done!</button>
+    </div>
+  </div>
+
+  <!-- Celebration Overlay -->
+  <div class="celebration-overlay" id="celebration">
+    <div class="big">🌩️☀️</div>
+    <h2>Great Job!</h2>
+    <p>You finished "The Storm"! 🌈</p>
+    <button class="next-btn" onclick="window.location.href='../english-21-birthday.html'">Next Lesson ▶</button>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Bottom Nav -->
+  <div class="bottom-nav">
+    <button class="active" onclick="goPage('story')">📖 Story</button>
+    <button onclick="goPage('quiz')">✅ Quiz</button>
+    <button onclick="goPage('match')">🔗 Match</button>
+    <button onclick="goPage('fill')">✏️ Fill-In</button>
+  </div>
+</div>
+
+<script>
+// ====== SPEECH SYNTHESIS ======
+function speakText(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=.9;u.pitch=1.05;
+  window.speechSynthesis.speak(u);
+}
+
+// ====== PAGE NAV ======
+const pages=['page-splash','page-story','page-quiz','page-match','page-fill'];
+function goPage(id){
+  const map={splash:'page-splash',story:'page-story',quiz:'page-quiz',match:'page-match',fill:'page-fill'};
+  const target=map[id]||id;
+  pages.forEach(p=>document.getElementById(p).classList.remove('active'));
+  document.getElementById(target).classList.add('active');
+  // update bottom nav
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  const idx=pages.indexOf(target);
+  if(idx>=0){
+    const btns=document.querySelectorAll('.bottom-nav button');
+    if(btns[idx-1]) btns[idx-1].classList.add('active');
+  }
+  if(target==='page-quiz'&&!quizStarted) initQuiz();
+  if(target==='page-match'&&!matchStarted) initMatch();
+  if(target==='page-fill'&&!fillStarted) initFill();
+}
+
+// ====== STORY NAV ======
+let storyPage=0;
+function nextStoryPage(idx){
+  document.querySelectorAll('.story-scene').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.story-scene')[idx].classList.add('active');
+  storyPage=idx;
+}
+
+// ====== QUIZ ======
+let quizStarted=false;
+const quizData=[
+  {q:'___ op',a:'st',opts:['st','sp','sn','sk']},
+  {q:'___ ar',a:'st',opts:['st','sl','sm','sw']},
+  {q:'___ orm',a:'st',opts:['st','str','sp','sc']},
+  {q:'___ one',a:'st',opts:['st','sn','sp','sk']},
+  {q:'___ ill',a:'st',opts:['st','sl','sw','sm']}
+];
+let quizIndex=0;
+function initQuiz(){
+  quizStarted=true;quizIndex=0;
+  showQuizItem();
+}
+function showQuizItem(){
+  const d=quizData[quizIndex];
+  document.getElementById('quiz-question').innerHTML='What letter blend fits? <em>'+d.q+'</em>';
+  const c=document.getElementById('quiz-options');
+  c.innerHTML='';
+  d.opts.forEach(o=>{
+    const div=document.createElement('div');
+    div.className='quiz-opt';
+    div.textContent=o;
+    div.onclick=()=>checkQuiz(o,div);
+    c.appendChild(div);
+  });
+  document.getElementById('quiz-feedback').textContent='Tap an answer!';
+}
+let quizAnswered=false;
+function checkQuiz(opt,el){
+  if(quizAnswered) return;
+  quizAnswered=true;
+  const d=quizData[quizIndex];
+  const opts=document.querySelectorAll('.quiz-opt');
+  opts.forEach(o=>o.classList.add('disabled'));
+  if(opt===d.a){
+    el.classList.add('correct');
+    document.getElementById('quiz-feedback').innerHTML='✅ Correct! <em>'+d.a+d.q.slice(2)+'</em>';
+    speakText(d.a+d.q.slice(2));
+  } else {
+    el.classList.add('wrong');
+    opts.forEach(o=>{if(o.textContent===d.a)o.classList.add('correct');});
+    document.getElementById('quiz-feedback').innerHTML='❌ The answer is <strong>'+d.a+'</strong>';
+  }
+}
+function nextQuiz(){
+  if(!quizAnswered) return;
+  quizAnswered=false;
+  quizIndex++;
+  if(quizIndex>=quizData.length){
+    document.getElementById('quiz-feedback').innerHTML='🎉 Quiz complete! Try the Match game!';
+    document.querySelector('#page-quiz .quiz-section button').textContent='Go to Match ➜';
+    document.querySelector('#page-quiz .quiz-section button').onclick=()=>goPage('match');
+    return;
+  }
+  showQuizItem();
+}
+
+// ====== MATCH GAME ======
+let matchStarted=false;
+const matchPairs=[
+  {word:'storm',def:'a big weather event with rain and wind'},
+  {word:'cloud',def:'white or gray thing in the sky'},
+  {word:'rain',def:'water that falls from the sky'},
+  {word:'wind',def:'moving air you can feel'},
+  {word:'thunder',def:'a loud boom sound in a storm'},
+  {word:'lightning',def:'bright flash of light in the sky'},
+  {word:'safe',def:'protected from danger'},
+  {word:'dry',def:'not wet'}
+];
+let matchSelected=null;
+let matchMatched=0;
+function initMatch(){
+  matchStarted=true;matchSelected=null;matchMatched=0;
+  const grid=document.getElementById('match-grid');
+  grid.innerHTML='';
+  // shuffle and split
+  const words=[...matchPairs];
+  const defs=matchPairs.map(p=>({...p,isDef:true}));
+  const all=[...words.map((p,i)=>({...p,id:'w'+i})),...defs.map((p,i)=>({...p,id:'d'+i}))];
+  shuffle(all);
+  const left=[],right=[];
+  all.forEach((item,i)=>{
+    if(i<all.length/2) left.push(item); else right.push(item);
+  });
+  ['left','right'].forEach(side=>{
+    const col=document.createElement('div');
+    col.className='match-col';
+    const items=side==='left'?left:right;
+    items.forEach(item=>{
+      const card=document.createElement('div');
+      card.className='match-card';
+      card.dataset.id=item.id;
+      card.dataset.word=item.word;
+      card.dataset.isDef=item.isDef?'1':'0';
+      card.textContent=item.isDef?item.def:item.word;
+      card.onclick=()=>matchClick(card);
+      col.appendChild(card);
+    });
+    grid.appendChild(col);
+  });
+  document.getElementById('match-feedback').textContent='Match the pairs!';
+}
+function matchClick(card){
+  if(card.classList.contains('matched')) return;
+  if(matchSelected===null){
+    card.classList.add('selected');
+    matchSelected=card;
+    return;
+  }
+  if(matchSelected===card){card.classList.remove('selected');matchSelected=null;return;}
+  const first=matchSelected;
+  const second=card;
+  first.classList.remove('selected');
+  matchSelected=null;
+  if(first.dataset.isDef!==second.dataset.isDef&&first.dataset.word===second.dataset.word){
+    first.classList.add('matched');
+    second.classList.add('matched');
+    matchMatched++;
+    document.getElementById('match-feedback').textContent='✅ Matched: '+first.dataset.word+'! ('+matchMatched+'/'+matchPairs.length+')';
+    speakText(first.dataset.word);
+    if(matchMatched===matchPairs.length){
+      document.getElementById('match-feedback').innerHTML='🎉 All matched! Great job!';
+    }
+  } else {
+    first.classList.add('wrong');
+    second.classList.add('wrong');
+    document.getElementById('match-feedback').textContent='❌ Not a match. Try again!';
+    setTimeout(()=>{
+      first.classList.remove('wrong');
+      second.classList.remove('wrong');
+    },600);
+  }
+}
+
+// ====== FILL-IN ======
+let fillStarted=false;
+const fillSentences=[
+  {text:'The storm is over ___ .',blank:'there',answer:'there'},
+  {text:'Steve and Alex put away ___ toys.',blank:'their',answer:'their'},
+  {text:'Mother called ___ inside for dinner.',blank:'them',answer:'them'},
+  {text:'First it rained, ___ the sun came out.',blank:'then',answer:'then'},
+  {text:'___ are dark clouds in the sky.',blank:'there',answer:'there'},
+  {text:'The children love ___ new books.',blank:'their',answer:'their'}
+];
+let fillIndex=0;
+let fillActiveBlank=null;
+let fillCompleted=0;
+const fillBank=['there','their','them','then'];
+function initFill(){
+  fillStarted=true;fillIndex=0;fillActiveBlank=null;fillCompleted=0;
+  renderFill();
+}
+function renderFill(){
+  const container=document.getElementById('fill-sentences');
+  container.innerHTML='';
+  const shuffled=[...fillSentences];
+  shuffle(shuffled);
+  shuffled.forEach((item,i)=>{
+    const div=document.createElement('div');
+    div.className='fill-item';
+    const parts=item.text.split('___');
+    div.innerHTML='<span>'+parts[0]+'</span><span class="blank" data-idx="'+i+'" data-answer="'+item.answer+'">______</span><span>'+parts[1]+'</span>';
+    div.querySelector('.blank').onclick=function(){fillSelectBlank(this);};
+    container.appendChild(div);
+  });
+  const bank=document.getElementById('word-bank');
+  bank.innerHTML='';
+  shuffle([...fillBank]).forEach(w=>{
+    const span=document.createElement('span');
+    span.className='wb-word';
+    span.textContent=w;
+    span.dataset.word=w;
+    span.onclick=()=>fillPlaceWord(span);
+    bank.appendChild(span);
+  });
+  document.getElementById('fill-feedback').textContent='Tap a blank, then a word!';
+  document.getElementById('fill-next-btn').style.display='none';
+}
+function fillSelectBlank(el){
+  document.querySelectorAll('.fill-item .blank').forEach(b=>b.classList.remove('filled'));
+  el.classList.add('filled');
+  fillActiveBlank=el;
+}
+function fillPlaceWord(el){
+  if(!fillActiveBlank) return;
+  if(el.classList.contains('used')) return;
+  const blank=fillActiveBlank;
+  blank.textContent=el.textContent;
+  blank.classList.remove('filled');
+  blank.dataset.placed=el.textContent;
+  if(blank.dataset.placed===blank.dataset.answer){
+    blank.classList.add('correct');
+    el.classList.add('used');
+    fillCompleted++;
+    document.getElementById('fill-feedback').textContent='✅ Correct! ('+fillCompleted+'/'+fillSentences.length+')';
+    speakText(el.textContent);
+    fillActiveBlank=null;
+    if(fillCompleted===fillSentences.length){
+      document.getElementById('fill-feedback').innerHTML='🎉 All sentences complete!';
+      document.getElementById('fill-next-btn').style.display='block';
+    }
+  } else {
+    blank.classList.add('wrong');
+    document.getElementById('fill-feedback').textContent='❌ Try a different word.';
+    setTimeout(()=>{
+      blank.textContent='______';
+      blank.classList.remove('wrong','correct');
+    },600);
+    fillActiveBlank=null;
+  }
+}
+
+// ====== CELEBRATION ======
+function showCelebration(){
+  document.getElementById('celebration').classList.add('show');
+  launchConfetti();
+  // GSAP entrance
+  gsap.from('#celebration .big',{scale:0,rotation:-20,duration:.6,ease:'back.out(1.7)'});
+  gsap.from('#celebration h2',{y:30,opacity:0,duration:.5,delay:.2});
+  gsap.from('#celebration p',{y:20,opacity:0,duration:.4,delay:.35});
+  gsap.from('#celebration .next-btn',{scale:0,duration:.5,delay:.5,ease:'back.out(2)'});
+}
+
+// ====== CONFETTI ======
+function launchConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=1024;canvas.height=768;
+  const colors=['#66BB6A','#FFD54F','#EF5350','#42A5F5','#AB47BC','#FF7043','#26C6DA'];
+  const particles=[];
+  for(let i=0;i<120;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height-canvas.height,
+      w:6+Math.random()*8,
+      h:4+Math.random()*6,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      vx:(Math.random()-.5)*3,
+      vy:2+Math.random()*4,
+      rot:Math.random()*360,
+      rv:(Math.random()-.5)*8
+    });
+  }
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.rot+=p.rv;
+      if(p.y<canvas.height+20){
+        alive=true;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+    });
+    if(alive&&frame<180) requestAnimationFrame(draw);
+    frame++;
+  }
+  draw();
+  setTimeout(()=>{ctx.clearRect(0,0,canvas.width,canvas.height);},4000);
+}
+
+// ====== UTILITY ======
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+// ====== KEYBOARD / ACCESSIBILITY ======
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){
+    const story=document.querySelector('.story-scene.active');
+    if(story){
+      const btn=story.querySelector('.story-nav button:last-child');
+      if(btn&&!btn.disabled) btn.click();
+    }
+  }
+  if(e.key==='ArrowLeft'){
+    const story=document.querySelector('.story-scene.active');
+    if(story){
+      const btn=story.querySelector('.story-nav button:first-child');
+      if(btn&&!btn.disabled) btn.click();
+    }
+  }
+});
+
+// ====== INIT ======
+// Ensure splash is active
+goPage('splash');
+</script>
+</body>
+</html>

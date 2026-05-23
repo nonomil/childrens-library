@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第16课：动作乐园</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; background: #1a1a2e; }
+body { position: relative; }
+
+/* ===== SLIDER CONTAINER ===== */
+.slider { width: 100%; height: 100vh; position: relative; overflow: hidden; }
+
+/* ===== INDIVIDUAL SLIDES ===== */
+.slide {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; visibility: hidden; transition: none;
+  background: linear-gradient(145deg, #fff5f5 0%, #ffe0e0 100%);
+  overflow-y: auto;
+}
+.slide.active { opacity: 1; visibility: visible; z-index: 10; }
+.slide.bg-red { background: linear-gradient(145deg, #EF5350 0%, #c62828 100%); color: #fff; }
+.slide.bg-white { background: #fff; }
+.slide.bg-cream { background: linear-gradient(145deg, #fff8f0 0%, #fff0e0 100%); }
+
+/* ===== TOP NAV BAR ===== */
+.top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 16px; pointer-events: none;
+}
+.top-bar button {
+  pointer-events: auto; width: 44px; height: 44px; border: none; border-radius: 50%;
+  font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15); transition: transform 0.2s ease;
+  background: rgba(255,255,255,0.92); color: #333;
+}
+.top-bar button:active { transform: scale(0.9); }
+.top-bar .btn-home { font-size: 20px; }
+.top-bar .btn-sound { font-size: 20px; }
+
+/* ===== PAGE DOTS ===== */
+.page-dots {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 100;
+  display: flex; gap: 6px; align-items: center;
+}
+.dot {
+  width: 10px; height: 10px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(239,83,80,0.3); transition: all 0.3s ease; padding: 0;
+}
+.dot.active { background: #EF5350; width: 28px; border-radius: 5px; }
+.dot:hover { background: rgba(239,83,80,0.6); }
+
+/* ===== NAV BUTTONS (prev/next) ===== */
+.nav-btn {
+  position: fixed; z-index: 100; bottom: 50%; transform: translateY(50%);
+  width: 44px; height: 44px; border: none; border-radius: 50%;
+  background: rgba(255,255,255,0.92); color: #EF5350; font-size: 22px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12); transition: all 0.2s ease;
+}
+.nav-btn:active { transform: translateY(50%) scale(0.9); }
+.nav-btn.prev { left: 6px; }
+.nav-btn.next { right: 6px; }
+.nav-btn:disabled { opacity: 0; pointer-events: none; }
+
+/* ===== SLIDE CONTENT ===== */
+.slide-inner {
+  width: 100%; max-width: 960px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  padding: 60px 10px 60px; min-height: 100vh;
+}
+
+/* TITLE SLIDE */
+.title-slide .big-title { font-size: 42px; font-weight: 900; margin-bottom: 8px; line-height: 1.2; }
+.title-slide .sub-title { font-size: 22px; font-weight: 700; margin-bottom: 20px; opacity: 0.9; }
+.title-slide .lesson-num { font-size: 16px; font-weight: 600; opacity: 0.8; margin-bottom: 6px; }
+.title-slide .char-preview { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 20px; }
+.title-slide .char-preview span {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: rgba(255,255,255,0.2); font-size: 22px; font-weight: 700;
+}
+.title-slide .start-btn {
+  margin-top: 28px; padding: 14px 48px; border: none; border-radius: 30px;
+  background: #fff; color: #EF5350; font-size: 18px; font-weight: 800;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15); transition: transform 0.2s;
+}
+.title-slide .start-btn:active { transform: scale(0.95); }
+
+/* CHARACTER SLIDES */
+.char-slide .char-display {
+  font-size: 110px; font-weight: 900; line-height: 1;
+  margin-bottom: 6px; text-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+.char-slide .pinyin {
+  font-size: 26px; font-weight: 700; margin-bottom: 4px;
+  letter-spacing: 2px;
+}
+.char-slide .stroke-info {
+  font-size: 15px; font-weight: 600; opacity: 0.75; margin-bottom: 14px;
+}
+.char-slide .char-image {
+  width: 200px; height: 120px; border-radius: 16px; overflow: hidden;
+  margin-bottom: 16px; box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+}
+.char-slide .char-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.char-slide .words-box {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px;
+}
+.char-slide .words-box .word-chip {
+  padding: 6px 16px; border-radius: 20px; font-size: 17px; font-weight: 700;
+  background: rgba(239,83,80,0.12); color: #c62828;
+}
+.char-slide .sentence-box {
+  max-width: 360px; padding: 12px 18px; border-radius: 14px;
+  background: rgba(239,83,80,0.08); font-size: 16px; font-weight: 600;
+  line-height: 1.6; color: #555;
+}
+.char-slide .sentence-box .zh { color: #333; }
+.char-slide .sentence-box .en { font-size: 14px; font-weight: 400; color: #888; margin-top: 2px; }
+.char-slide .play-char-btn {
+  margin-bottom: 10px; padding: 6px 20px; border: 2px solid rgba(239,83,80,0.3);
+  border-radius: 20px; background: transparent; color: #EF5350;
+  font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif;
+  transition: all 0.2s;
+}
+.char-slide .play-char-btn:active { background: rgba(239,83,80,0.1); }
+
+/* MATCHING SLIDE */
+.match-slide { background: linear-gradient(145deg, #fff5f5 0%, #ffe0e0 100%); }
+.match-slide .match-title { font-size: 28px; font-weight: 800; color: #c62828; margin-bottom: 6px; }
+.match-slide .match-sub { font-size: 14px; font-weight: 600; color: #888; margin-bottom: 20px; }
+.match-slide .match-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 380px;
+}
+.match-slide .match-col { display: flex; flex-direction: column; gap: 10px; }
+.match-slide .match-item {
+  padding: 14px 8px; border-radius: 14px; text-align: center;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  background: #fff; border: 3px solid #e0e0e0;
+  transition: all 0.25s ease; user-select: none;
+  min-height: 52px; display: flex; align-items: center; justify-content: center;
+}
+.match-slide .match-item.selected { border-color: #EF5350; background: #fff0f0; transform: scale(1.03); }
+.match-slide .match-item.matched { border-color: #4caf50; background: #e8f5e9; cursor: default; opacity: 0.7; }
+.match-slide .match-item.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.4s ease; }
+.match-slide .match-item .pinyin-small { font-size: 13px; font-weight: 600; color: #999; display: block; margin-top: 2px; }
+.match-slide .match-item .pinyin-small.cn { color: #EF5350; }
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-4px); }
+}
+
+.match-slide .match-score {
+  margin-top: 16px; font-size: 15px; font-weight: 700; color: #888;
+}
+.match-slide .match-score span { color: #EF5350; }
+
+/* ===== CONFETTI CANVAS ===== */
+#confetti-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 200;
+}
+
+/* ===== CELEBRATION OVERLAY ===== */
+.celebration {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.6); z-index: 150; opacity: 0; visibility: hidden;
+  transition: all 0.5s ease;
+}
+.celebration.show { opacity: 1; visibility: visible; }
+.celebration .trophy { font-size: 80px; margin-bottom: 10px; }
+.celebration .congrats { font-size: 32px; font-weight: 900; color: #fff; margin-bottom: 4px; }
+.celebration .congrats-sub { font-size: 16px; font-weight: 600; color: rgba(255,255,255,0.8); margin-bottom: 20px; }
+.celebration .btn-replay {
+  padding: 14px 40px; border: none; border-radius: 30px;
+  background: #EF5350; color: #fff; font-size: 17px; font-weight: 800;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3); transition: transform 0.2s;
+}
+.celebration .btn-replay:active { transform: scale(0.95); }
+
+/* ===== RESPONSIVE ===== */
+@media (min-width: 420px) {
+  .slide-inner { padding: 60px 20px 60px; }
+  .char-slide .char-display { font-size: 130px; }
+  .nav-btn { width: 48px; height: 48px; font-size: 24px; }
+  .nav-btn.prev { left: 12px; }
+  .nav-btn.next { right: 12px; }
+  .match-slide .match-item { font-size: 20px; min-height: 58px; }
+}
+
+@media (min-width: 768px) {
+  .char-slide .char-display { font-size: 160px; }
+  .slide-inner { max-width: 500px; }
+  .nav-btn.prev { left: 24px; }
+  .nav-btn.next { right: 24px; }
+}
+
+/* ===== SCROLLBAR ===== */
+.slide::-webkit-scrollbar { width: 4px; }
+.slide::-webkit-scrollbar-track { background: transparent; }
+.slide::-webkit-scrollbar-thumb { background: rgba(239,83,80,0.3); border-radius: 4px; }
+
+/* ===== RESPONSIVE IMAGE FALLBACK ===== */
+.char-image img { background: #f0f0f0; }
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+  <!-- ===== SLIDE 0: TITLE ===== -->
+  <div class="slide bg-red title-slide active" data-index="0">
+    <div class="slide-inner">
+      <div class="lesson-num">🌟 第16课</div>
+      <div class="big-title">动作乐园</div>
+      <div class="sub-title">Action Park</div>
+      <div class="char-preview">
+        <span>吃</span><span>喝</span><span>看</span><span>走</span>
+        <span>笑</span><span>来</span><span>去</span><span>坐</span>
+        <span>睡</span><span>站</span><span>跑</span><span>跳</span>
+      </div>
+      <img src="images/chinese-16/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="动作" style="width:140px;height:100px;border-radius:16px;margin-top:16px;object-fit:cover;box-shadow:0 3px 15px rgba(0,0,0,0.15);">
+      <button class="start-btn" onclick="goToSlide(1)">开始学习 ▶</button>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 1: 吃 ===== -->
+  <div class="slide char-slide bg-white" data-index="1">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">吃</div>
+      <div class="pinyin" style="color:#EF5350;">chī</div>
+      <div class="stroke-info">🖊 6 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="吃" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('吃 chī')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">吃饭 chīfàn</span>
+        <span class="word-chip">好吃 hǎochī</span>
+        <span class="word-chip">小吃 xiǎochī</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我很喜欢吃苹果。</div>
+        <div class="en">I really like eating apples.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 2: 喝 ===== -->
+  <div class="slide char-slide bg-cream" data-index="2">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">喝</div>
+      <div class="pinyin" style="color:#EF5350;">hē</div>
+      <div class="stroke-info">🖊 12 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="喝" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('喝 hē')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">喝水 hēshuǐ</span>
+        <span class="word-chip">喝茶 hēchá</span>
+        <span class="word-chip">喝汤 hētāng</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我每天喝牛奶。</div>
+        <div class="en">I drink milk every day.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 3: 看 ===== -->
+  <div class="slide char-slide bg-white" data-index="3">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">看</div>
+      <div class="pinyin" style="color:#EF5350;">kàn</div>
+      <div class="stroke-info">🖊 9 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="看" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('看 kàn')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">看见 kànjiàn</span>
+        <span class="word-chip">看书 kànshū</span>
+        <span class="word-chip">看电视 kàn diànshì</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我喜欢看书。</div>
+        <div class="en">I like reading books.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 4: 走 ===== -->
+  <div class="slide char-slide bg-cream" data-index="4">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">走</div>
+      <div class="pinyin" style="color:#EF5350;">zǒu</div>
+      <div class="stroke-info">🖊 7 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="走" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('走 zǒu')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">走路 zǒulù</span>
+        <span class="word-chip">行走 xíngzǒu</span>
+        <span class="word-chip">走开 zǒukāi</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我们一起走路去学校。</div>
+        <div class="en">Let's walk to school together.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 5: 笑 ===== -->
+  <div class="slide char-slide bg-white" data-index="5">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">笑</div>
+      <div class="pinyin" style="color:#EF5350;">xiào</div>
+      <div class="stroke-info">🖊 10 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="笑" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('笑 xiào')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">微笑 wēixiào</span>
+        <span class="word-chip">大笑 dàxiào</span>
+        <span class="word-chip">笑声 xiàoshēng</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">妹妹笑得很开心。</div>
+        <div class="en">Little sister laughs happily.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 6: 来 ===== -->
+  <div class="slide char-slide bg-cream" data-index="6">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">来</div>
+      <div class="pinyin" style="color:#EF5350;">lái</div>
+      <div class="stroke-info">🖊 7 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="来" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('来 lái')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">过来 guòlái</span>
+        <span class="word-chip">出来 chūlái</span>
+        <span class="word-chip">回来 huílái</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">春天来了。</div>
+        <div class="en">Spring has come.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 7: 去 ===== -->
+  <div class="slide char-slide bg-white" data-index="7">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">去</div>
+      <div class="pinyin" style="color:#EF5350;">qù</div>
+      <div class="stroke-info">🖊 5 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="去" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('去 qù')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">出去 chūqù</span>
+        <span class="word-chip">回去 huíqù</span>
+        <span class="word-chip">过去 guòqù</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我去公园玩。</div>
+        <div class="en">I go to the park to play.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 8: 坐 ===== -->
+  <div class="slide char-slide bg-cream" data-index="8">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">坐</div>
+      <div class="pinyin" style="color:#EF5350;">zuò</div>
+      <div class="stroke-info">🖊 7 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="坐" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('坐 zuò')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">坐下 zuòxià</span>
+        <span class="word-chip">请坐 qǐngzuò</span>
+        <span class="word-chip">坐车 zuòchē</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">请坐下来。</div>
+        <div class="en">Please sit down.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 9: 睡 ===== -->
+  <div class="slide char-slide bg-white" data-index="9">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">睡</div>
+      <div class="pinyin" style="color:#EF5350;">shuì</div>
+      <div class="stroke-info">🖊 13 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="睡" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('睡 shuì')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">睡觉 shuìjiào</span>
+        <span class="word-chip">睡着 shuìzháo</span>
+        <span class="word-chip">睡衣 shuìyī</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我晚上九点睡觉。</div>
+        <div class="en">I go to sleep at 9pm.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 10: 站 ===== -->
+  <div class="slide char-slide bg-cream" data-index="10">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">站</div>
+      <div class="pinyin" style="color:#EF5350;">zhàn</div>
+      <div class="stroke-info">🖊 10 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="站" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('站 zhàn')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">站立 zhànlì</span>
+        <span class="word-chip">车站 chēzhàn</span>
+        <span class="word-chip">站好 zhànhǎo</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">请大家站好。</div>
+        <div class="en">Everyone please stand properly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 11: 跑 ===== -->
+  <div class="slide char-slide bg-white" data-index="11">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">跑</div>
+      <div class="pinyin" style="color:#EF5350;">pǎo</div>
+      <div class="stroke-info">🖊 12 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-11.webp" onerror="this.style.display=\'none\'" alt="跑" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('跑 pǎo')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">跑步 pǎobù</span>
+        <span class="word-chip">奔跑 bēnpǎo</span>
+        <span class="word-chip">跑道 pǎodào</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">他跑得很快。</div>
+        <div class="en">He runs very fast.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 12: 跳 ===== -->
+  <div class="slide char-slide bg-cream" data-index="12">
+    <div class="slide-inner">
+      <div class="char-display" style="color:#EF5350;">跳</div>
+      <div class="pinyin" style="color:#EF5350;">tiào</div>
+      <div class="stroke-info">🖊 13 画</div>
+      <div class="char-image">
+        <img src="images/chinese-16/webp/page-12.webp" onerror="this.style.display=\'none\'" alt="跳" loading="lazy">
+      </div>
+      <button class="play-char-btn" onclick="speakChinese('跳 tiào')">🔊 听发音</button>
+      <div class="words-box">
+        <span class="word-chip">跳高 tiàogāo</span>
+        <span class="word-chip">跳绳 tiàoshéng</span>
+        <span class="word-chip">跳舞 tiàowǔ</span>
+      </div>
+      <div class="sentence-box">
+        <div class="zh">我们一起跳绳吧！</div>
+        <div class="en">Let's jump rope together!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SLIDE 13: MATCHING EXERCISE ===== -->
+  <div class="slide match-slide" data-index="13">
+    <div class="slide-inner">
+      <div class="match-title">🧩 连一连</div>
+      <div class="match-sub">把汉字和拼音连起来</div>
+      <div class="match-grid" id="matchGrid">
+        <div class="match-col" id="matchLeft"></div>
+        <div class="match-col" id="matchRight"></div>
+      </div>
+      <div class="match-score">⭐ 得分：<span id="matchScore">0</span> / 12</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <button class="btn-home" onclick="goToSlide(0)" title="返回首页">🏠</button>
+  <button class="btn-sound" onclick="speakSlide()" title="朗读本页">▶</button>
+</div>
+
+<!-- ===== PAGE DOTS ===== -->
+<div class="page-dots" id="pageDots"></div>
+
+<!-- ===== NAV BUTTONS ===== -->
+<button class="nav-btn prev" id="prevBtn" onclick="prevSlide()">‹</button>
+<button class="nav-btn next" id="nextBtn" onclick="nextSlide()">›</button>
+
+<!-- ===== CELEBRATION OVERLAY ===== -->
+<div class="celebration" id="celebration">
+  <div class="trophy">🏆</div>
+  <div class="congrats">太棒了！</div>
+  <div class="congrats-sub">你完成了所有练习！</div>
+  <button class="btn-replay" onclick="resetMatch()">🔄 再玩一次</button>
+</div>
+
+<!-- ===== CONFETTI CANVAS ===== -->
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+/* ============================================================
+   CONFIGURATION
+   ============================================================ */
+const TOTAL_SLIDES = 14; // 0-13
+const CHARACTERS = [
+  { char: '吃', pinyin: 'chī', strokes: 6, words: ['吃饭 chīfàn', '好吃 hǎochī', '小吃 xiǎochī'], sentence: '我很喜欢吃苹果。' },
+  { char: '喝', pinyin: 'hē', strokes: 12, words: ['喝水 hēshuǐ', '喝茶 hēchá', '喝汤 hētāng'], sentence: '我每天喝牛奶。' },
+  { char: '看', pinyin: 'kàn', strokes: 9, words: ['看见 kànjiàn', '看书 kànshū', '看电视 kàn diànshì'], sentence: '我喜欢看书。' },
+  { char: '走', pinyin: 'zǒu', strokes: 7, words: ['走路 zǒulù', '行走 xíngzǒu', '走开 zǒukāi'], sentence: '我们一起走路去学校。' },
+  { char: '笑', pinyin: 'xiào', strokes: 10, words: ['微笑 wēixiào', '大笑 dàxiào', '笑声 xiàoshēng'], sentence: '妹妹笑得很开心。' },
+  { char: '来', pinyin: 'lái', strokes: 7, words: ['过来 guòlái', '出来 chūlái', '回来 huílái'], sentence: '春天来了。' },
+  { char: '去', pinyin: 'qù', strokes: 5, words: ['出去 chūqù', '回去 huíqù', '过去 guòqù'], sentence: '我去公园玩。' },
+  { char: '坐', pinyin: 'zuò', strokes: 7, words: ['坐下 zuòxià', '请坐 qǐngzuò', '坐车 zuòchē'], sentence: '请坐下来。' },
+  { char: '睡', pinyin: 'shuì', strokes: 13, words: ['睡觉 shuìjiào', '睡着 shuìzháo', '睡衣 shuìyī'], sentence: '我晚上九点睡觉。' },
+  { char: '站', pinyin: 'zhàn', strokes: 10, words: ['站立 zhànlì', '车站 chēzhàn', '站好 zhànhǎo'], sentence: '请大家站好。' },
+  { char: '跑', pinyin: 'pǎo', strokes: 12, words: ['跑步 pǎobù', '奔跑 bēnpǎo', '跑道 pǎodào'], sentence: '他跑得很快。' },
+  { char: '跳', pinyin: 'tiào', strokes: 13, words: ['跳高 tiàogāo', '跳绳 tiàoshéng', '跳舞 tiàowǔ'], sentence: '我们一起跳绳吧！' }
+];
+
+let currentSlide = 0;
+let isAnimating = false;
+
+/* ============================================================
+   SPEECH SYNTHESIS (zh-CN)
+   ============================================================ */
+function speakChinese(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.85;
+  u.pitch = 1.0;
+  u.volume = 1.0;
+  const voices = window.speechSynthesis.getVoices();
+  const zh = voices.find(v => v.lang.startsWith('zh'));
+  if (zh) u.voice = zh;
+  window.speechSynthesis.speak(u);
+}
+
+function speakSlide() {
+  const slide = document.querySelector('.slide.active');
+  if (!slide) return;
+  const idx = parseInt(slide.dataset.index);
+  if (idx === 0) {
+    speakChinese('第16课，动作乐园');
+  } else if (idx >= 1 && idx <= 12) {
+    const c = CHARACTERS[idx - 1];
+    const wordsText = c.words.map(w => w.split(' ')[0]).join('，');
+    speakChinese(`${c.char}，${c.pinyin}，${wordsText}，${c.sentence}`);
+  } else if (idx === 13) {
+    speakChinese('连一连，把汉字和拼音连起来');
+  }
+}
+
+/* Preload voices */
+if (window.speechSynthesis) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+}
+
+/* ============================================================
+   SLIDE NAVIGATION
+   ============================================================ */
+function goToSlide(idx) {
+  if (isAnimating) return;
+  if (idx < 0 || idx >= TOTAL_SLIDES) return;
+  isAnimating = true;
+
+  const slides = document.querySelectorAll('.slide');
+  const current = slides[currentSlide];
+  const next = slides[idx];
+
+  if (!next) { isAnimating = false; return; }
+
+  /* GSAP exit */
+  gsap.to(current, {
+    opacity: 0,
+    scale: 0.96,
+    duration: 0.3,
+    ease: 'power2.in',
+    onComplete: () => {
+      current.classList.remove('active');
+
+      /* GSAP enter */
+      next.classList.add('active');
+      gsap.fromTo(next,
+        { opacity: 0, scale: 1.04 },
+        { opacity: 1, scale: 1, duration: 0.35, ease: 'power2.out', onComplete: () => { isAnimating = false; } }
+      );
+
+      currentSlide = idx;
+      updateDots();
+      updateNavButtons();
+
+      /* Auto-speak character slide */
+      if (idx >= 1 && idx <= 12) {
+        const c = CHARACTERS[idx - 1];
+        speakChinese(`${c.char}，${c.pinyin}`);
+      }
+    }
+  });
+}
+
+function nextSlide() {
+  if (currentSlide < TOTAL_SLIDES - 1) goToSlide(currentSlide + 1);
+}
+
+function prevSlide() {
+  if (currentSlide > 0) goToSlide(currentSlide - 1);
+}
+
+/* Keyboard support */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+  if (e.key === 'Home') goToSlide(0);
+});
+
+/* Touch swipe */
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', (e) => {
+  const diff = touchStartX - e.changedTouches[0].screenX;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0) nextSlide();
+    else prevSlide();
+  }
+});
+
+/* ============================================================
+   PAGE DOTS
+   ============================================================ */
+function initDots() {
+  const container = document.getElementById('pageDots');
+  container.innerHTML = '';
+  for (let i = 0; i < TOTAL_SLIDES; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.addEventListener('click', () => goToSlide(i));
+    container.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentSlide);
+  });
+}
+
+function updateNavButtons() {
+  document.getElementById('prevBtn').disabled = currentSlide === 0;
+  document.getElementById('nextBtn').disabled = currentSlide === TOTAL_SLIDES - 1;
+}
+
+/* ============================================================
+   MATCHING EXERCISE
+   ============================================================ */
+let matchData = [];
+let matchSelected = null;
+let matchScore = 0;
+let matchMatched = new Set();
+
+function shuffleArray(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function initMatch() {
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+  if (!leftCol || !rightCol) return;
+
+  matchData = [];
+  matchSelected = null;
+  matchScore = 0;
+  matchMatched = new Set();
+  document.getElementById('matchScore').textContent = '0';
+
+  /* Build pairs */
+  const pairs = CHARACTERS.map((c, i) => ({
+    id: i,
+    char: c.char,
+    pinyin: c.pinyin
+  }));
+
+  /* Left side: characters (shuffled) */
+  const leftItems = shuffleArray([...pairs]);
+  /* Right side: pinyin (shuffled) */
+  const rightItems = shuffleArray([...pairs]);
+
+  leftCol.innerHTML = '';
+  rightCol.innerHTML = '';
+
+  leftItems.forEach((item) => {
+    const div = document.createElement('div');
+    div.className = 'match-item';
+    div.dataset.id = item.id;
+    div.dataset.side = 'left';
+    div.textContent = item.char;
+    div.addEventListener('click', () => handleMatchClick(div));
+    leftCol.appendChild(div);
+  });
+
+  rightItems.forEach((item) => {
+    const div = document.createElement('div');
+    div.className = 'match-item';
+    div.dataset.id = item.id;
+    div.dataset.side = 'right';
+    div.innerHTML = `${item.pinyin} <span class="pinyin-small cn">${item.char}</span>`;
+    div.addEventListener('click', () => handleMatchClick(div));
+    rightCol.appendChild(div);
+  });
+}
+
+function handleMatchClick(el) {
+  if (el.classList.contains('matched')) return;
+  if (matchMatched.has(el.dataset.id) && el.dataset.side === 'left') return;
+  if (matchMatched.has(el.dataset.id) && el.dataset.side === 'right') return;
+
+  /* Deselect if same side clicked again */
+  if (matchSelected && matchSelected.dataset.side === el.dataset.side) {
+    matchSelected.classList.remove('selected');
+    matchSelected = null;
+    if (el !== matchSelected) {
+      el.classList.add('selected');
+      matchSelected = el;
+    }
+    return;
+  }
+
+  if (!matchSelected) {
+    el.classList.add('selected');
+    matchSelected = el;
+    return;
+  }
+
+  /* Second selection - check match */
+  const left = matchSelected.dataset.side === 'left' ? matchSelected : el;
+  const right = matchSelected.dataset.side === 'right' ? matchSelected : el;
+
+  if (left.dataset.id === right.dataset.id) {
+    /* Correct! */
+    left.classList.remove('selected');
+    right.classList.remove('selected');
+    left.classList.add('matched');
+    right.classList.add('matched');
+    matchMatched.add(left.dataset.id);
+    matchScore++;
+    document.getElementById('matchScore').textContent = matchScore;
+
+    /* Celebrate word */
+    const c = CHARACTERS[parseInt(left.dataset.id)];
+    speakChinese(c.char);
+
+    if (matchScore === 12) {
+      setTimeout(() => {
+        showCelebration();
+      }, 600);
+    }
+  } else {
+    /* Wrong */
+    left.classList.remove('selected');
+    right.classList.remove('selected');
+    left.classList.add('wrong');
+    right.classList.add('wrong');
+    speakChinese('不对');
+
+    setTimeout(() => {
+      left.classList.remove('wrong');
+      right.classList.remove('wrong');
+    }, 500);
+  }
+
+  matchSelected = null;
+}
+
+function resetMatch() {
+  document.getElementById('celebration').classList.remove('show');
+  stopConfetti();
+  initMatch();
+  goToSlide(13);
+}
+
+/* ============================================================
+   CONFETTI
+   ============================================================ */
+let confettiAnimationId = null;
+let confettiPieces = [];
+
+function startConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#EF5350', '#FF6F61', '#FFD54F', '#4CAF50', '#42A5F5', '#AB47BC', '#FF8A65', '#26C6DA'];
+  confettiPieces = [];
+
+  for (let i = 0; i < 150; i++) {
+    confettiPieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height - canvas.height,
+      w: 6 + Math.random() * 8,
+      h: 4 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: 1.5 + Math.random() * 3,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - 0.5) * 6,
+      opacity: 0.8 + Math.random() * 0.2
+    });
+  }
+
+  let frame = 0;
+
+  function draw() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+
+    confettiPieces.forEach((p) => {
+      p.x += p.vx + Math.sin(frame * 0.02 + p.y * 0.01) * 0.5;
+      p.y += p.vy;
+      p.rot += p.rotV;
+      if (p.y > canvas.height + 20) {
+        p.y = -20;
+        p.x = Math.random() * canvas.width;
+      }
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+
+    confettiAnimationId = requestAnimationFrame(draw);
+  }
+
+  draw();
+}
+
+function stopConfetti() {
+  if (confettiAnimationId) {
+    cancelAnimationFrame(confettiAnimationId);
+    confettiAnimationId = null;
+  }
+  const canvas = document.getElementById('confetti-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  confettiPieces = [];
+}
+
+/* ============================================================
+   CELEBRATION
+   ============================================================ */
+function showCelebration() {
+  document.getElementById('celebration').classList.add('show');
+  startConfetti();
+  speakChinese('太棒了！你完成了所有练习！');
+
+  /* GSAP entrance */
+  gsap.fromTo('#celebration .trophy',
+    { scale: 0, rotation: -20 },
+    { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' }
+  );
+  gsap.fromTo('#celebration .congrats',
+    { y: 30, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.5, delay: 0.2 }
+  );
+  gsap.fromTo('#celebration .congrats-sub',
+    { y: 20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.5, delay: 0.35 }
+  );
+  gsap.fromTo('#celebration .btn-replay',
+    { y: 20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.5, delay: 0.5 }
+  );
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  initDots();
+  updateNavButtons();
+
+  /* Init match when slide 13 becomes active */
+  const observer = new MutationObserver(() => {
+    const active = document.querySelector('.slide.active');
+    if (active && parseInt(active.dataset.index) === 13) {
+      if (document.getElementById('matchLeft').children.length === 0) {
+        initMatch();
+      }
+    }
+  });
+  document.querySelectorAll('.slide').forEach((s) => {
+    observer.observe(s, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  /* Also init match on first visit */
+  setTimeout(() => {
+    const active = document.querySelector('.slide.active');
+    if (active && parseInt(active.dataset.index) === 13) {
+      initMatch();
+    }
+  }, 500);
+
+  /* Resize handler for confetti */
+  window.addEventListener('resize', () => {
+    const canvas = document.getElementById('confetti-canvas');
+    if (canvas) {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

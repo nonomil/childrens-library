@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <title>🏆 English Lesson 24: Phase 4 Complete! Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Nunito', sans-serif;
+      background: #e8f5e9;
+      color: #2e7d32;
+      min-height: 100vh;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+    :root {
+      --green: #66BB6A;
+      --green-dark: #43A047;
+      --green-bg: #e8f5e9;
+      --green-light: #c8e6c9;
+      --green-pale: #f1f8e9;
+      --radius: 20px;
+      --shadow: 0 8px 32px rgba(102,187,106,0.25);
+      --card-bg: rgba(255,255,255,0.85);
+    }
+    /* ---------- TOP BAR ---------- */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+    .top-bar a {
+      color: #fff; text-decoration: none; font-weight: 700; font-size: 15px;
+      background: rgba(255,255,255,0.2); padding: 6px 16px; border-radius: 30px;
+      transition: background .25s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .top-bar a:hover { background: rgba(255,255,255,0.35); }
+    .top-bar .title { color: #fff; font-weight: 800; font-size: 17px; letter-spacing: 0.5px; }
+    /* ---------- HERO ---------- */
+    .hero {
+      margin-top: 60px; padding: 40px 20px 30px; text-align: center;
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border-bottom: 4px solid var(--green);
+    }
+    .hero .icon { font-size: 54px; }
+    .hero h1 { font-size: 32px; font-weight: 900; color: var(--green-dark); margin: 8px 0 4px; }
+    .hero p { font-size: 17px; color: #388e3c; font-weight: 600; }
+    /* ---------- PAGES ---------- */
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-content {
+      max-width: 820px; margin: 0 auto; padding: 20px 18px 120px;
+    }
+    .page-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+    }
+    .page-header .num {
+      background: var(--green); color: #fff; width: 38px; height: 38px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 17px; flex-shrink: 0;
+    }
+    .page-header h2 { font-size: 22px; font-weight: 800; color: var(--green-dark); }
+    /* ---------- CARDS ---------- */
+    .card {
+      background: var(--card-bg); backdrop-filter: blur(4px);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 18px;
+      box-shadow: var(--shadow); border: 2px solid var(--green-light);
+    }
+    .card h3 { font-size: 19px; font-weight: 800; color: var(--green-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .card p, .card li { font-size: 16px; line-height: 1.7; color: #33691e; }
+    .card ul { list-style: none; padding: 0; }
+    .card ul li::before { content: "🌟 "; font-size: 14px; }
+    /* ---------- IMAGE ---------- */
+    .story-img {
+      width: 100%; max-height: 280px; object-fit: cover; border-radius: 16px;
+      margin-bottom: 16px; box-shadow: var(--shadow); border: 3px solid var(--green-light);
+      background: #c8e6c9; display: block;
+    }
+    /* ---------- WORD GRID ---------- */
+    .word-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+      gap: 10px; margin: 12px 0;
+    }
+    .word-chip {
+      background: linear-gradient(135deg,#e8f5e9,#c8e6c9); border: 2px solid var(--green);
+      border-radius: 14px; padding: 10px 8px; text-align: center;
+      font-weight: 700; font-size: 16px; color: #1b5e20; cursor: pointer;
+      transition: all .2s; user-select: none;
+    }
+    .word-chip:hover { transform: scale(1.04); background: var(--green); color: #fff; }
+    .word-chip:active { transform: scale(0.96); }
+    /* ---------- SOUND BLOCKS ---------- */
+    .sound-block-group {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 12px 0;
+    }
+    .sound-block {
+      display: inline-flex; flex-direction: column; align-items: center; gap: 4px;
+      background: linear-gradient(135deg,#fff3e0,#ffe0b2);
+      border: 2px solid #ffb74d; border-radius: 16px; padding: 12px 16px;
+      font-weight: 800; font-size: 22px; color: #e65100; margin: 4px;
+      cursor: pointer; transition: all .2s; min-width: 80px;
+    }
+    .sound-block:hover { transform: scale(1.05); background: #ffb74d; color: #fff; }
+    .sound-block:active { transform: scale(0.97); }
+    .sound-block small {
+      font-weight: 600; font-size: 12px; color: #bf360c; opacity: 0.8;
+    }
+    .sound-block:hover small { color: #fff; }
+    .sound-block-examples {
+      display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 4px;
+    }
+    .sound-block-examples .ex-word {
+      background: rgba(255,255,255,0.6); border-radius: 8px;
+      padding: 2px 10px; font-size: 14px; font-weight: 700; color: #e65100;
+      cursor: pointer; transition: all .2s;
+    }
+    .sound-block-examples .ex-word:hover { background: #fff; transform: scale(1.05); }
+    /* ---------- SIGHT WORDS ---------- */
+    .sight-word {
+      display: inline-block;
+      background: linear-gradient(135deg,#e3f2fd,#bbdefb);
+      border: 2px solid #42a5f5; border-radius: 10px; padding: 4px 14px;
+      font-weight: 700; font-size: 16px; color: #1565c0; margin: 3px;
+      cursor: pointer; transition: all .2s;
+    }
+    .sight-word:hover { transform: scale(1.05); background: #42a5f5; color: #fff; }
+    /* ---------- STORY TEXT ---------- */
+    .story-text {
+      font-size: 17px; line-height: 1.9; color: #1b5e20;
+      background: rgba(255,255,255,0.5); border-radius: 14px; padding: 14px 18px;
+      border-left: 5px solid var(--green);
+    }
+    .story-text strong { color: var(--green-dark); }
+    .story-text .sound-highlight {
+      color: #e65100; font-weight: 800; text-decoration: underline;
+      text-decoration-color: #ffb74d; text-underline-offset: 3px;
+    }
+    .story-text .word-highlight {
+      background: #fff9c4; padding: 1px 6px; border-radius: 4px;
+      font-weight: 700; color: #2e7d32;
+    }
+    /* ---------- INTERACTIVE ---------- */
+    .sort-area {
+      display: flex; flex-wrap: wrap; gap: 8px; min-height: 60px;
+      background: #f1f8e9; border: 3px dashed var(--green-light);
+      border-radius: 14px; padding: 12px; margin: 6px 0;
+    }
+    .sort-zone {
+      flex: 1; min-width: 130px;
+      background: rgba(255,255,255,0.6); border-radius: 12px;
+      padding: 10px; text-align: center;
+    }
+    .sort-zone h4 { font-size: 14px; color: var(--green-dark); margin-bottom: 6px; }
+    .sort-word {
+      display: inline-block; padding: 6px 14px; margin: 3px;
+      background: var(--green); color: #fff; border-radius: 10px;
+      font-weight: 700; font-size: 15px; cursor: grab; user-select: none;
+      transition: all .2s;
+    }
+    .sort-word:active { cursor: grabbing; transform: scale(0.95); }
+    /* ---------- MATCH ---------- */
+    .match-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0;
+    }
+    .match-col { display: flex; flex-direction: column; gap: 8px; }
+    .match-card {
+      background: #fff; border: 3px solid var(--green-light); border-radius: 14px;
+      padding: 12px; text-align: center; font-weight: 700; font-size: 16px;
+      color: #1b5e20; cursor: pointer; transition: all .2s; user-select: none;
+    }
+    .match-card:active { transform: scale(0.95); }
+    .match-card.selected { border-color: #ffb74d; background: #fff3e0; }
+    .match-card.matched { border-color: var(--green-dark); background: #c8e6c9; opacity: 0.7; cursor: default; }
+    .match-card.wrong { border-color: #e53935; background: #ffebee; animation: shake .3s ease; }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+    /* ---------- FORM ---------- */
+    .fill-input {
+      border: none; border-bottom: 3px solid var(--green); background: transparent;
+      font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700;
+      color: var(--green-dark); width: 120px; outline: none; text-align: center;
+      transition: border-color .25s;
+    }
+    .fill-input:focus { border-color: #ffb74d; }
+    .fill-input.correct { border-color: #43A047; background: #e8f5e9; }
+    .fill-input.wrong { border-color: #e53935; background: #ffebee; }
+    /* ---------- BUTTONS ---------- */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      color: #fff; border: none; border-radius: 30px; padding: 12px 28px;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px;
+      cursor: pointer; transition: all .25s; box-shadow: 0 4px 12px rgba(67,160,71,0.3);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(67,160,71,0.4); }
+    .btn:active { transform: scale(0.97); }
+    .btn-outline {
+      background: transparent; border: 3px solid var(--green); color: var(--green-dark);
+      box-shadow: none;
+    }
+    .btn-outline:hover { background: var(--green); color: #fff; }
+    .btn-sm { padding: 8px 18px; font-size: 14px; }
+    .btn-gold {
+      background: linear-gradient(135deg, #FFD54F, #FFB300);
+      box-shadow: 0 4px 12px rgba(255,179,0,0.4);
+    }
+    /* ---------- CELEBRATION ---------- */
+    .celebration-page {
+      text-align: center; padding: 20px 10px;
+    }
+    .celebration-page .big-icon { font-size: 80px; }
+    .celebration-page h2 { font-size: 32px; color: var(--green-dark); margin: 12px 0; }
+    .star-rating { font-size: 36px; letter-spacing: 4px; }
+    /* ---------- CONFETTI ---------- */
+    #confetti-canvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 9999;
+    }
+    /* ---------- CERTIFICATE ---------- */
+    .certificate {
+      background: #fff8e1; border: 4px solid #FFD54F; border-radius: 20px;
+      padding: 30px 20px; margin: 16px auto; max-width: 480px;
+      box-shadow: 0 8px 40px rgba(255,179,0,0.3);
+      position: relative; overflow: hidden;
+    }
+    .certificate::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: repeating-linear-gradient(
+        45deg, transparent, transparent 20px,
+        rgba(255,213,79,0.05) 20px, rgba(255,213,79,0.05) 40px
+      );
+      pointer-events: none;
+    }
+    .certificate .seal {
+      font-size: 60px; margin-bottom: 8px;
+    }
+    .certificate h3 {
+      font-size: 24px; font-weight: 900; color: #e65100;
+      margin-bottom: 6px; position: relative; z-index: 1;
+    }
+    .certificate .sub {
+      font-size: 18px; font-weight: 700; color: #2e7d32;
+      position: relative; z-index: 1;
+    }
+    .certificate .body {
+      font-size: 15px; color: #555; margin: 10px 0;
+      position: relative; z-index: 1;
+    }
+    .certificate .sig {
+      font-size: 14px; color: #888; margin-top: 12px;
+      font-style: italic; position: relative; z-index: 1;
+    }
+    /* ---------- MASTERY CHECK ---------- */
+    .mastery-word {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 2px solid var(--green-light);
+      border-radius: 12px; padding: 8px 14px; margin: 4px;
+      font-weight: 700; font-size: 15px; transition: all .3s;
+      cursor: pointer; user-select: none;
+    }
+    .mastery-word:active { transform: scale(0.95); }
+    .mastery-word.done {
+      background: var(--green); color: #fff; border-color: var(--green-dark);
+    }
+    /* ---------- NAV BOTTOM ---------- */
+    .nav-bottom {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 99;
+      background: linear-gradient(135deg, var(--green), var(--green-dark));
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+    }
+    .nav-bottom .page-dots {
+      display: flex; gap: 6px;
+    }
+    .nav-bottom .dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.3); cursor: pointer; transition: all .25s;
+    }
+    .nav-bottom .dot.active { background: #fff; transform: scale(1.3); }
+    .nav-btn {
+      background: rgba(255,255,255,0.2); border: none; color: #fff;
+      width: 44px; height: 44px; border-radius: 50%;
+      font-size: 20px; cursor: pointer; transition: all .2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .nav-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.35); }
+    /* ---------- RESPONSIVE ---------- */
+    @media (min-width: 768px) {
+      .hero h1 { font-size: 40px; }
+      .page-content { padding: 30px 30px 130px; }
+      .word-grid { grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); }
+    }
+    @media (min-width: 768px) {
+      .page-content { max-width: 900px; }
+    }
+    /* ---------- MISC ---------- */
+    .flex-center { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; }
+    .mt-12 { margin-top: 12px; }
+    .mb-8 { margin-bottom: 8px; }
+    .gap-6 { gap: 6px; }
+    .text-center { text-align: center; }
+    .tag {
+      display: inline-block; background: var(--green-light); color: #1b5e20;
+      border-radius: 8px; padding: 2px 12px; font-size: 13px; font-weight: 700;
+    }
+    .hidden { display: none !important; }
+    .fade-in { animation: fadeIn .4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)} }
+    .bounce { animation: bounce .5s ease; }
+    /* Speech button */
+    .speak-btn {
+      background: none; border: none; cursor: pointer; font-size: 22px;
+      transition: transform .2s; vertical-align: middle;
+    }
+    .speak-btn:hover { transform: scale(1.2); }
+    .speak-btn:active { transform: scale(0.9); }
+    /* Phase icon */
+    .phase-icon {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: linear-gradient(135deg,#fff8e1,#ffecb3);
+      border: 2px solid #FFD54F; border-radius: 12px;
+      padding: 4px 12px; font-weight: 700; font-size: 14px; color: #e65100;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <a href="../">🏠 首页</a>
+    <span class="title">🏆 Lesson 24 · Phase 4 Review</span>
+    <a href="../">▶ 完成</a>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero" id="hero">
+    <div class="icon">🏆</div>
+    <h1>Phase 4 Complete!</h1>
+    <p>Review ALL Phase 4 · wh · st · th · sh · ch · Sight Words (L19–L23)</p>
+  </div>
+
+  <!-- PAGES -->
+  <div id="pages-container">
+
+    <!-- PAGE 0: Sound Block Review -->
+    <div class="page active" data-page="0">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">1</div><h2>Sound Block Review 🎵</h2></div>
+        <div class="card">
+          <h3>🔊 All 5 Phase 4 Sounds</h3>
+          <p>Listen and practice each sound block. Tap a block to hear the sound. Tap example words to hear them too!</p>
+          <div class="sound-block-group" id="soundBlocks0">
+            <div class="sound-block" data-sound="wh">
+              <span>wh /w/</span>
+              <small>what · when · where</small>
+            </div>
+            <div class="sound-block" data-sound="st">
+              <span>st /st/</span>
+              <small>storm · stop · star</small>
+            </div>
+            <div class="sound-block" data-sound="th">
+              <span>th /θ,ð/</span>
+              <small>this · that · weather</small>
+            </div>
+            <div class="sound-block" data-sound="sh">
+              <span>sh /ʃ/</span>
+              <small>sheep · fish · ship</small>
+            </div>
+            <div class="sound-block" data-sound="ch">
+              <span>ch /tʃ/</span>
+              <small>chest · chair · chicken</small>
+            </div>
+          </div>
+          <p class="mt-12">🔊 Tap any word below to practice:</p>
+          <div class="word-grid" style="grid-template-columns:repeat(auto-fill,minmax(90px,1fr))">
+            <!-- wh words -->
+            <span class="word-chip" onclick="speakText(this.textContent)">what</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">when</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">where</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">white</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">why</span>
+            <!-- st words -->
+            <span class="word-chip" onclick="speakText(this.textContent)">storm</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">stop</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">star</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">stone</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">still</span>
+            <!-- th words -->
+            <span class="word-chip" onclick="speakText(this.textContent)">this</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">that</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">thank</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">weather</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">birthday</span>
+            <!-- sh words -->
+            <span class="word-chip" onclick="speakText(this.textContent)">sheep</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">fish</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">ship</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">shop</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">wash</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">wish</span>
+            <!-- ch words -->
+            <span class="word-chip" onclick="speakText(this.textContent)">chest</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">chair</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">chicken</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">lunch</span>
+            <span class="word-chip" onclick="speakText(this.textContent)">much</span>
+          </div>
+          <p class="mt-12 text-center"><small>👆 Tap any word to hear it spoken</small></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 1: Words Review -->
+    <div class="page" data-page="1">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">2</div><h2>Words Review 📚</h2></div>
+        <img class="story-img" src="images/english-24/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Words Review" loading="lazy">
+        <div class="card">
+          <h3>👁️ Sight Words (Lessons 19–23)</h3>
+          <p>All the sight words we learned in Phase 4. Tap any word to hear it!</p>
+          <div class="word-grid" style="grid-template-columns:repeat(auto-fill,minmax(100px,1fr))">
+            <span class="sight-word" onclick="speakText(this.textContent)">was</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">went</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">what</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">when</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">where</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">there</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">their</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">them</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">then</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">this</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">that</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">thank</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">find</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">look</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">help</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">open</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">hide</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">lost</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">live</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">work</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">grow</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">safe</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">dry</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">gold</span>
+            <span class="sight-word" onclick="speakText(this.textContent)">gem</span>
+          </div>
+          <p class="mt-12 text-center"><small>👆 25 sight words — tap any to hear it!</small></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: Story – Part 1 -->
+    <div class="page" data-page="2">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">3</div><h2>The Great Adventure Begins 🌟</h2></div>
+        <img class="story-img" src="images/english-24/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="The Great Adventure" loading="lazy">
+        <div class="card">
+          <h3>📖 The Lost Cat &amp; The Storm</h3>
+          <div class="story-text">
+            <p><strong>Where</strong> is Ginger? Steve <strong>went</strong> to <strong>look</strong> for his cat. He <strong>was</strong> <strong>lost</strong>!</p>
+            <p>Steve asked a <strong>friend</strong> for <strong>help</strong>. "<strong>When</strong> did you see her? <strong>Where</strong> did she go?"</p>
+            <p><strong>Then</strong> dark clouds came. A big <strong class="sound-highlight">storm</strong> was coming! The <strong class="sound-highlight">wind</strong> blew hard and <strong class="sound-highlight">rain</strong> fell down.</p>
+            <p>"We need to <strong class="sound-highlight">stop</strong> and find <strong>their</strong> <strong>safe</strong> place!" ⚡</p>
+          </div>
+          <div class="flex-center mt-12">
+            <span class="tag">🔊 wh</span>
+            <span class="tag">🌩️ st</span>
+            <span class="tag">👀 sight words</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: Story – Part 2 -->
+    <div class="page" data-page="3">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">4</div><h2>The Birthday Treasure 🎂🏴‍☠️</h2></div>
+        <img class="story-img" src="images/english-24/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Birthday Treasure" loading="lazy">
+        <div class="card">
+          <h3>📖 Birthday &amp; Treasure Hunt</h3>
+          <div class="story-text">
+            <p>It was Lily's <strong class="sound-highlight">birthday</strong>! "I <strong class="sound-highlight">thank</strong> you all for coming!" she said.</p>
+            <p>"<strong class="sound-highlight">This</strong> is the best day!" <strong>Them</strong> and <strong>their</strong> friends played games in the sunny <strong class="sound-highlight">weather</strong>.</p>
+            <p>Then a treasure hunt began! "Let's <strong>find</strong> the <strong>treasure</strong>!" They used a <strong>map</strong> and found a <strong class="sound-highlight">chest</strong> full of <strong>gold</strong> and <strong>gems</strong>! 🪙💎</p>
+            <p>"Let's <strong>open</strong> it!" <strong>There</strong> were shiny coins inside. 🎉</p>
+          </div>
+          <div class="flex-center mt-12">
+            <span class="tag">🔊 th</span>
+            <span class="tag">🔊 ch</span>
+            <span class="tag">🏴‍☠️ treasure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: Story – Part 3 -->
+    <div class="page" data-page="4">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">5</div><h2>Down on the Farm 🐑</h2></div>
+        <img class="story-img" src="images/english-24/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Down on the Farm" loading="lazy">
+        <div class="card">
+          <h3>📖 At the Farm with sh Words</h3>
+          <div class="story-text">
+            <p>Steve visited a farm. He saw fluffy <strong class="sound-highlight">sheep</strong> in the field. 🐑</p>
+            <p>Farmers <strong>work</strong> hard. They <strong>grow</strong> food and take care of animals. <strong>Animals live</strong> in the barn.</p>
+            <p>Steve helped <strong class="sound-highlight">wash</strong> the <strong class="sound-highlight">sheep</strong>. He made a <strong class="sound-highlight">wish</strong> to come back again!</p>
+            <p>At the <strong class="sound-highlight">shop</strong>, he bought fresh eggs. "<strong class="sound-highlight">Fish</strong> for dinner tonight!" 🐟</p>
+          </div>
+          <div class="flex-center mt-12">
+            <span class="tag">🔊 sh</span>
+            <span class="tag">🚜 farm words</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: Practice -->
+    <div class="page" data-page="5">
+      <div class="page-content fade-in">
+        <div class="page-header"><div class="num">6</div><h2>Practice Time ✏️</h2></div>
+
+        <!-- Sound Sort -->
+        <div class="card">
+          <h3>🔤 Sound Sort</h3>
+          <p>Drag each word into the correct sound block group!</p>
+          <div id="soundSort" style="margin-top:10px;">
+            <div class="sort-area" id="sortPool">
+              <span class="sort-word" draggable="true" data-cat="st">storm</span>
+              <span class="sort-word" draggable="true" data-cat="th">this</span>
+              <span class="sort-word" draggable="true" data-cat="sh">sheep</span>
+              <span class="sort-word" draggable="true" data-cat="ch">chest</span>
+              <span class="sort-word" draggable="true" data-cat="wh">what</span>
+              <span class="sort-word" draggable="true" data-cat="st">star</span>
+              <span class="sort-word" draggable="true" data-cat="th">thank</span>
+              <span class="sort-word" draggable="true" data-cat="sh">fish</span>
+              <span class="sort-word" draggable="true" data-cat="ch">chair</span>
+              <span class="sort-word" draggable="true" data-cat="wh">when</span>
+              <span class="sort-word" draggable="true" data-cat="st">stop</span>
+              <span class="sort-word" draggable="true" data-cat="sh">ship</span>
+              <span class="sort-word" draggable="true" data-cat="ch">chicken</span>
+              <span class="sort-word" draggable="true" data-cat="th">that</span>
+              <span class="sort-word" draggable="true" data-cat="wh">where</span>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+              <div class="sort-zone" data-cat="wh"><h4>❓ wh</h4><div class="drop-area"></div></div>
+              <div class="sort-zone" data-cat="st"><h4>🌩️ st</h4><div class="drop-area"></div></div>
+              <div class="sort-zone" data-cat="th"><h4>🎂 th</h4><div class="drop-area"></div></div>
+              <div class="sort-zone" data-cat="sh"><h4>🐑 sh</h4><div class="drop-area"></div></div>
+              <div class="sort-zone" data-cat="ch"><h4>📦 ch</h4><div class="drop-area"></div></div>
+            </div>
+          </div>
+          <button class="btn btn-sm mt-12" onclick="resetSort()">🔄 Reset</button>
+          <button class="btn btn-sm mt-12" onclick="checkSort()">✅ Check</button>
+          <span id="sortResult" style="margin-left:12px;font-weight:700;"></span>
+        </div>
+
+        <!-- Word Match -->
+        <div class="card">
+          <h3>🃏 Word Match</h3>
+          <p>Match each word with its sound block!</p>
+          <div class="match-grid" id="matchGrid"></div>
+          <div style="display:flex;justify-content:center;gap:12px;margin-top:12px;">
+            <button class="btn btn-sm" onclick="resetMatch()">🔄 Reset</button>
+            <span id="matchFeedback" style="font-weight:700;font-size:18px;display:flex;align-items:center;"></span>
+          </div>
+        </div>
+
+        <!-- Fill-in -->
+        <div class="card">
+          <h3>✏️ Fill in the Blank</h3>
+          <p>Fill in the missing sight words!</p>
+          <div id="sightFill">
+            <p>1. I <input class="fill-input" data-answer="was" type="text" placeholder="?"> happy to see my friend.</p>
+            <p>2. She <input class="fill-input" data-answer="went" type="text" placeholder="?"> to the shop to buy food.</p>
+            <p>3. <input class="fill-input" data-answer="where" type="text" placeholder="?"> is my treasure map?</p>
+            <p>4. <input class="fill-input" data-answer="their" type="text" placeholder="?"> house is safe from the storm.</p>
+            <p>5. I <input class="fill-input" data-answer="thank" type="text" placeholder="?"> you for the birthday gift!</p>
+            <p>6. Can you help me <input class="fill-input" data-answer="find" type="text" placeholder="?"> my cat?</p>
+            <p>7. <input class="fill-input" data-answer="this" type="text" placeholder="?"> is the best treasure ever!</p>
+            <p>8. Let's <input class="fill-input" data-answer="open" type="text" placeholder="?"> the chest together!</p>
+          </div>
+          <button class="btn btn-sm mt-12" onclick="checkFill()">✅ Check Answers</button>
+          <span id="fillResult" style="margin-left:12px;font-weight:700;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: Phase 4 Complete Celebration -->
+    <div class="page" data-page="6">
+      <div class="page-content fade-in" style="padding-bottom:140px;">
+        <div class="celebration-page">
+          <div class="big-icon">🏆</div>
+          <h2>Phase 4 Complete!</h2>
+          <p>You reviewed ALL Phase 4 sound blocks and sight words! 🎉</p>
+
+          <!-- Certificate -->
+          <div class="certificate" id="certificate">
+            <div class="seal">🏅</div>
+            <h3>Certificate of Achievement</h3>
+            <div class="sub">Phase 4 — Sound Blocks &amp; Sight Words</div>
+            <div class="body">
+              Congratulations! You have successfully completed <strong>Phase 4</strong> of English learning!<br><br>
+              🎵 wh · st · th · sh · ch<br>
+              👁️ 25 sight words mastered!
+            </div>
+            <div class="sig">🌟 Reading Star · Lesson 24</div>
+          </div>
+
+          <div class="star-rating" id="starRating">⭐⭐⭐⭐⭐</div>
+          <p style="margin-top:8px;font-size:15px;color:#558b2f;">You are a Phase 4 Champion!</p>
+
+          <div class="flex-center mt-12" style="gap:12px;">
+            <button class="btn btn-gold" onclick="triggerConfetti(200);celebrateSound();">🎊 Celebrate!</button>
+            <button class="btn btn-outline btn-sm" onclick="speakText('Congratulations! You completed Phase 4! You are a reading star!')">🔊 Hear It</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="nav-bottom">
+    <button class="nav-btn" onclick="prevPage()">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="nav-btn" onclick="nextPage()">▶</button>
+  </div>
+
+  <!-- CONFETTI CANVAS -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script>
+    // ===== PAGE NAVIGATION =====
+    const totalPages = 7;
+    let currentPage = 0;
+    const dotsContainer = document.getElementById('pageDots');
+
+    function initDots() {
+      dotsContainer.innerHTML = '';
+      for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'dot' + (i === currentPage ? ' active' : '');
+        dot.onclick = () => goToPage(i);
+        dotsContainer.appendChild(dot);
+      }
+    }
+
+    function goToPage(idx) {
+      if (idx < 0 || idx >= totalPages) return;
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const pages = document.querySelectorAll('.page');
+      pages[idx].classList.add('active');
+      pages[idx].classList.remove('fade-in');
+      void pages[idx].offsetWidth;
+      pages[idx].classList.add('fade-in');
+      currentPage = idx;
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Trigger confetti on celebration page
+      if (idx === 6) {
+        setTimeout(() => triggerConfetti(100), 400);
+      }
+    }
+
+    function nextPage() { goToPage(currentPage + 1); }
+    function prevPage() { goToPage(currentPage - 1); }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') nextPage();
+      if (e.key === 'ArrowLeft') prevPage();
+    });
+
+    // Touch swipe
+    let touchStartX = 0;
+    document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0) nextPage();
+        else prevPage();
+      }
+    }, { passive: true });
+
+    // ===== SPEECH =====
+    function speakText(text) {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function celebrateSound() {
+      speakText('Congratulations! You completed Phase 4! You are a reading star!');
+    }
+
+    // Sound blocks speak
+    document.querySelectorAll('.sound-block').forEach(el => {
+      el.addEventListener('click', function(e) {
+        const sound = this.dataset.sound || this.textContent.trim();
+        speakText(sound);
+      });
+    });
+
+    // ===== WORD SORT =====
+    function initSort() {
+      const draggables = document.querySelectorAll('.sort-word');
+      draggables.forEach(el => {
+        el.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', JSON.stringify({
+            text: el.textContent,
+            cat: el.dataset.cat
+          }));
+          el.classList.add('dragging');
+        });
+        el.addEventListener('dragend', e => {
+          el.classList.remove('dragging');
+        });
+        // Also support touch via click-to-move
+        el.addEventListener('click', function(e2) {
+          const zone = prompt('Move "' + this.textContent + '" to which group? (wh, st, th, sh, ch)');
+          if (zone && ['wh','st','th','sh','ch'].includes(zone)) {
+            const targetZone = document.querySelector('.sort-zone[data-cat="' + zone + '"] .drop-area');
+            if (targetZone) {
+              const span = document.createElement('span');
+              span.className = 'sort-word';
+              span.draggable = true;
+              span.textContent = this.textContent;
+              span.dataset.cat = this.dataset.cat;
+              span.addEventListener('click', function(e3) {
+                const z = prompt('Move "' + this.textContent + '" to which group? (wh, st, th, sh, ch)');
+                if (z && ['wh','st','th','sh','ch'].includes(z)) {
+                  const tz = document.querySelector('.sort-zone[data-cat="' + z + '"] .drop-area');
+                  if (tz) { tz.appendChild(this); }
+                }
+              });
+              targetZone.appendChild(span);
+              if (this.parentElement.id === 'sortPool' || this.parentElement.classList.contains('drop-area')) {
+                this.remove();
+              }
+            }
+          }
+        });
+      });
+
+      const zones = document.querySelectorAll('.drop-area');
+      zones.forEach(zone => {
+        zone.addEventListener('dragover', e => { e.preventDefault(); });
+        zone.addEventListener('drop', e => {
+          e.preventDefault();
+          const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+          const span = document.createElement('span');
+          span.className = 'sort-word';
+          span.draggable = true;
+          span.textContent = data.text;
+          span.dataset.cat = data.cat;
+          span.addEventListener('click', function(e2) {
+            const z = prompt('Move "' + this.textContent + '" to which group? (wh, st, th, sh, ch)');
+            if (z && ['wh','st','th','sh','ch'].includes(z)) {
+              const tz = document.querySelector('.sort-zone[data-cat="' + z + '"] .drop-area');
+              if (tz) { tz.appendChild(this); }
+            }
+          });
+          zone.appendChild(span);
+          // Remove from pool if dragged from pool
+          const pool = document.getElementById('sortPool');
+          const originals = pool.querySelectorAll('.sort-word');
+          originals.forEach(o => {
+            if (o.textContent === data.text && !o.classList.contains('dragging') && o.parentElement === pool) {
+              o.remove();
+            }
+          });
+          // Also check other zones
+          document.querySelectorAll('.drop-area').forEach(az => {
+            if (az !== zone) {
+              const items = az.querySelectorAll('.sort-word');
+              items.forEach(item => {
+                if (item.textContent === data.text && item !== span) {
+                  item.remove();
+                }
+              });
+            }
+          });
+        });
+      });
+    }
+
+    function resetSort() {
+      const pool = document.getElementById('sortPool');
+      pool.innerHTML = '';
+      const words = [
+        { text: 'storm', cat: 'st' },
+        { text: 'this', cat: 'th' },
+        { text: 'sheep', cat: 'sh' },
+        { text: 'chest', cat: 'ch' },
+        { text: 'what', cat: 'wh' },
+        { text: 'star', cat: 'st' },
+        { text: 'thank', cat: 'th' },
+        { text: 'fish', cat: 'sh' },
+        { text: 'chair', cat: 'ch' },
+        { text: 'when', cat: 'wh' },
+        { text: 'stop', cat: 'st' },
+        { text: 'ship', cat: 'sh' },
+        { text: 'chicken', cat: 'ch' },
+        { text: 'that', cat: 'th' },
+        { text: 'where', cat: 'wh' },
+      ];
+      words.forEach(w => {
+        const span = document.createElement('span');
+        span.className = 'sort-word';
+        span.draggable = true;
+        span.textContent = w.text;
+        span.dataset.cat = w.cat;
+        span.addEventListener('click', function(e2) {
+          const z = prompt('Move "' + this.textContent + '" to which group? (wh, st, th, sh, ch)');
+          if (z && ['wh','st','th','sh','ch'].includes(z)) {
+            const tz = document.querySelector('.sort-zone[data-cat="' + z + '"] .drop-area');
+            if (tz) { tz.appendChild(this); }
+          }
+        });
+        span.addEventListener('dragstart', e => {
+          e.dataTransfer.setData('text/plain', JSON.stringify({ text: span.textContent, cat: span.dataset.cat }));
+        });
+        pool.appendChild(span);
+      });
+      document.querySelectorAll('.drop-area').forEach(z => z.innerHTML = '');
+      document.getElementById('sortResult').textContent = '';
+      initSort();
+    }
+
+    function checkSort() {
+      let correct = 0;
+      let total = 0;
+      document.querySelectorAll('.drop-area').forEach(zone => {
+        const cat = zone.parentElement.dataset.cat;
+        const items = zone.querySelectorAll('.sort-word');
+        items.forEach(item => {
+          total++;
+          if (item.dataset.cat === cat) correct++;
+        });
+      });
+      const result = document.getElementById('sortResult');
+      if (total === 0) {
+        result.textContent = '😅 Drag some words first!';
+        result.style.color = '#ff8f00';
+      } else if (correct === total && total === 15) {
+        result.textContent = '🎉 Perfect! All words sorted correctly!';
+        result.style.color = '#2e7d32';
+        triggerConfetti();
+      } else if (correct === total) {
+        result.textContent = '👍 ' + correct + '/' + total + ' correct!';
+        result.style.color = '#2e7d32';
+      } else {
+        result.textContent = '🤔 ' + correct + '/' + total + ' correct — keep trying!';
+        result.style.color = '#e65100';
+      }
+    }
+
+    // ===== WORD MATCH =====
+    const matchPairs = [
+      { word: 'what', cat: 'wh' },
+      { word: 'storm', cat: 'st' },
+      { word: 'this', cat: 'th' },
+      { word: 'sheep', cat: 'sh' },
+      { word: 'chest', cat: 'ch' },
+      { word: 'where', cat: 'wh' },
+      { word: 'star', cat: 'st' },
+      { word: 'thank', cat: 'th' },
+      { word: 'fish', cat: 'sh' },
+      { word: 'chair', cat: 'ch' },
+    ];
+    const catLabels = { wh: '❓ wh', st: '🌩️ st', th: '🎂 th', sh: '🐑 sh', ch: '📦 ch' };
+    let matchSelected = null;
+    let matchScore = 0;
+
+    function initMatch() {
+      const grid = document.getElementById('matchGrid');
+      grid.innerHTML = '';
+      matchSelected = null;
+      matchScore = 0;
+
+      // Create shuffled word cards
+      const words = [...matchPairs];
+      for (let i = words.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [words[i], words[j]] = [words[j], words[i]];
+      }
+
+      const col1 = document.createElement('div');
+      col1.className = 'match-col';
+      const col2 = document.createElement('div');
+      col2.className = 'match-col';
+
+      words.forEach((pair, idx) => {
+        const card = document.createElement('div');
+        card.className = 'match-card';
+        card.textContent = pair.word;
+        card.dataset.word = pair.word;
+        card.dataset.cat = pair.cat;
+        card.dataset.col = 'word';
+        card.onclick = () => selectMatch(card);
+        col1.appendChild(card);
+      });
+
+      // Create shuffled category cards
+      const cats = matchPairs.map(p => ({ cat: p.cat, label: catLabels[p.cat] }));
+      for (let i = cats.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cats[i], cats[j]] = [cats[j], cats[i]];
+      }
+
+      cats.forEach((pair, idx) => {
+        const card = document.createElement('div');
+        card.className = 'match-card';
+        card.textContent = pair.label;
+        card.dataset.cat = pair.cat;
+        card.dataset.col = 'cat';
+        card.onclick = () => selectMatch(card);
+        col2.appendChild(card);
+      });
+
+      grid.appendChild(col1);
+      grid.appendChild(col2);
+
+      document.getElementById('matchFeedback').textContent = '🔊 Match words to sound blocks!';
+    }
+
+    function selectMatch(card) {
+      if (card.classList.contains('matched')) return;
+      if (matchSelected === null) {
+        // Select first card
+        card.classList.add('selected');
+        matchSelected = card;
+      } else if (matchSelected === card) {
+        card.classList.remove('selected');
+        matchSelected = null;
+      } else {
+        // Try to match
+        const firstCat = matchSelected.dataset.col === 'cat' ? matchSelected.dataset.cat : null;
+        const firstWord = matchSelected.dataset.col === 'word' ? matchSelected.dataset.word : null;
+        const secondCat = card.dataset.col === 'cat' ? card.dataset.cat : null;
+        const secondWord = card.dataset.col === 'word' ? card.dataset.word : null;
+
+        const wordEl = matchSelected.dataset.col === 'word' ? matchSelected : card;
+        const catEl = matchSelected.dataset.col === 'cat' ? matchSelected : card;
+        const word = wordEl.dataset.word;
+        const expectedCat = wordEl.dataset.cat;
+        const chosenCat = catEl.dataset.cat;
+
+        if (expectedCat === chosenCat) {
+          wordEl.classList.remove('selected');
+          catEl.classList.remove('selected');
+          wordEl.classList.add('matched');
+          catEl.classList.add('matched');
+          wordEl.onclick = null;
+          catEl.onclick = null;
+          matchScore++;
+          matchSelected = null;
+          speakText(word);
+
+          const fb = document.getElementById('matchFeedback');
+          if (matchScore === matchPairs.length) {
+            fb.textContent = '🎉 All matched! Perfect!';
+            fb.style.color = '#2e7d32';
+            triggerConfetti();
+          } else {
+            fb.textContent = '✅ ' + matchScore + '/' + matchPairs.length + ' matched!';
+            fb.style.color = '#2e7d32';
+          }
+        } else {
+          wordEl.classList.remove('selected');
+          catEl.classList.remove('selected');
+          wordEl.classList.add('wrong');
+          catEl.classList.add('wrong');
+          matchSelected = null;
+          setTimeout(() => {
+            wordEl.classList.remove('wrong');
+            catEl.classList.remove('wrong');
+          }, 500);
+          document.getElementById('matchFeedback').textContent = '❌ Try again!';
+          document.getElementById('matchFeedback').style.color = '#e53935';
+        }
+      }
+    }
+
+    function resetMatch() {
+      initMatch();
+    }
+
+    // ===== SIGHT WORDS FILL =====
+    function checkFill() {
+      const inputs = document.querySelectorAll('#sightFill .fill-input');
+      let correct = 0;
+      inputs.forEach(inp => {
+        const ans = inp.dataset.answer.toLowerCase().trim();
+        const val = inp.value.toLowerCase().trim();
+        if (val === ans) {
+          inp.className = 'fill-input correct';
+          correct++;
+        } else if (val === '') {
+          inp.className = 'fill-input';
+        } else {
+          inp.className = 'fill-input wrong';
+        }
+      });
+      const result = document.getElementById('fillResult');
+      if (correct === inputs.length) {
+        result.textContent = '🎉 All correct! Amazing!';
+        result.style.color = '#2e7d32';
+        triggerConfetti();
+      } else {
+        result.textContent = '✅ ' + correct + '/' + inputs.length + ' correct';
+        result.style.color = '#e65100';
+      }
+    }
+
+    // ===== CONFETTI =====
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiPieces = [];
+    let confettiRunning = false;
+    let confettiFrame;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ConfettiPiece {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = -20 - Math.random() * 100;
+        this.w = 6 + Math.random() * 8;
+        this.h = 4 + Math.random() * 6;
+        const colors = ['#66BB6A','#43A047','#FFD54F','#FF8A65','#4FC3F7','#BA68C8','#EF5350','#81C784','#FFB300','#26A69A'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.vy = 1.5 + Math.random() * 2.5;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.rotation = Math.random() * 360;
+        this.rotSpeed = (Math.random() - 0.5) * 8;
+        this.opacity = 0.8 + Math.random() * 0.2;
+      }
+      update() {
+        this.y += this.vy;
+        this.x += this.vx;
+        this.rotation += this.rotSpeed;
+        if (this.y > canvas.height + 30) return false;
+        return true;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation * Math.PI / 180);
+        ctx.globalAlpha = this.opacity;
+        ctx.fillStyle = this.color;
+        ctx.fillRect(-this.w/2, -this.h/2, this.w, this.h);
+        ctx.restore();
+      }
+    }
+
+    function triggerConfetti(count = 120) {
+      if (confettiRunning && count < 200) {
+        for (let i = 0; i < count; i++) {
+          confettiPieces.push(new ConfettiPiece());
+        }
+        return;
+      }
+      if (!confettiRunning) {
+        confettiRunning = true;
+      }
+      for (let i = 0; i < count; i++) {
+        confettiPieces.push(new ConfettiPiece());
+      }
+      if (!confettiFrame) {
+        animateConfetti();
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confettiPieces = confettiPieces.filter(p => p.update());
+      confettiPieces.forEach(p => p.draw());
+      if (confettiPieces.length > 0) {
+        confettiFrame = requestAnimationFrame(animateConfetti);
+      } else {
+        confettiRunning = false;
+        confettiFrame = null;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // ===== GSAP ENTRIES =====
+    function animateEntries() {
+      gsap.from('.hero .icon', { duration: 0.6, scale: 0, rotation: -20, ease: 'back.out(1.7)' });
+      gsap.from('.hero h1', { duration: 0.5, y: 30, opacity: 0, delay: 0.2 });
+      gsap.from('.hero p', { duration: 0.5, y: 20, opacity: 0, delay: 0.35 });
+    }
+
+    // Watch for page changes to animate
+    const pageObserver = new MutationObserver(() => {
+      gsap.from('.page.active .card', { duration: 0.4, y: 20, opacity: 0, stagger: 0.08, ease: 'power2.out' });
+      gsap.from('.page.active .story-img', { duration: 0.4, scale: 0.95, opacity: 0, ease: 'power2.out' });
+      gsap.from('.page.active .celebration-page .big-icon', { duration: 0.5, scale: 0, rotation: 360, ease: 'elastic.out(1,0.5)', delay: 0.1 });
+      gsap.from('.page.active .certificate', { duration: 0.6, y: 40, opacity: 0, ease: 'back.out(1.7)', delay: 0.2 });
+      gsap.from('.page.active .star-rating', { duration: 0.5, scale: 0, ease: 'back.out(2)', delay: 0.5 });
+    });
+    document.querySelectorAll('.page').forEach(p => {
+      pageObserver.observe(p, { attributes: true, attributeFilter: ['class'] });
+    });
+
+    // ===== INIT =====
+    initDots();
+    initSort();
+    initMatch();
+    animateEntries();
+
+    // Initial card animation
+    setTimeout(() => {
+      gsap.from('.page.active .card', { duration: 0.4, y: 20, opacity: 0, stagger: 0.1, ease: 'power2.out' });
+    }, 400);
+
+    console.log('🏆 English Lesson 24: Phase 4 Complete Review loaded!');
+    console.log('🎯 Phase 4 - 5 sound blocks, 25+ sight words, 7 pages');
+  </script>
+</body>
+</html>

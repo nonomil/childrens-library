@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Math 19 · 简单统计</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #e3f2fd;
+  color: #1a237e;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+.container { max-width: 900px; margin: 0 auto; padding: 0 16px 40px; }
+
+/* top bar */
+.topbar {
+  background: #1E88E5; padding: 10px 16px; display: flex; justify-content: space-between;
+  align-items: center; position: sticky; top:0; z-index:100; box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.topbar a { color:#fff; text-decoration:none; font-weight:700; font-size:.9rem; padding:6px 14px; border-radius:20px; background:rgba(255,255,255,.18); transition:.2s; display:inline-flex; align-items:center; gap:5px; }
+.topbar a:hover { background:rgba(255,255,255,.3); }
+.topbar .next { background:#fff; color:#1E88E5; }
+
+/* section cards */
+.section {
+  background:#fff; border-radius:24px; padding:24px 20px; margin:24px 0;
+  box-shadow:0 4px 20px rgba(66,165,245,.20); position:relative; overflow:hidden;
+}
+.section h2 { font-size:1.3rem; color:#1E88E5; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.section h3 { font-size:1.1rem; color:#1565C0; margin:14px 0 8px; display:flex; align-items:center; gap:6px; }
+
+/* cover */
+.cover { text-align:center; padding:40px 20px 30px; background:linear-gradient(135deg,#42A5F5,#1E88E5); color:#fff; border-radius:24px; margin:24px 0; }
+.cover h1 { font-size:2rem; font-weight:900; letter-spacing:1px; }
+.cover .emoji-big { font-size:4rem; display:block; margin-bottom:6px; }
+.cover p { font-size:1rem; opacity:.9; margin:6px 0; }
+.goal-list { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:14px; }
+.goal-list span { background:rgba(255,255,255,.2); padding:6px 16px; border-radius:20px; font-size:.85rem; }
+
+/* buttons */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:10px 24px; border:none; border-radius:30px;
+  font-family:inherit; font-size:.9rem; font-weight:700; cursor:pointer; transition:.15s; touch-action:manipulation; }
+.btn-primary { background:#42A5F5; color:#fff; }
+.btn-primary:hover { background:#1E88E5; transform:scale(1.03); }
+.btn-success { background:#66BB6A; color:#fff; }
+.btn-warning { background:#FFA726; color:#fff; }
+.btn-small { padding:6px 16px; font-size:.8rem; }
+.btn:active { transform:scale(.95); }
+
+/* ooo counter */
+.ooo { color:#42A5F5; font-size:1.3rem; letter-spacing:3px; word-break:break-all; display:inline-block; }
+.ooo-count { display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
+
+/* villager grid */
+.villager-grid { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:12px 0; }
+.villager-card {
+  background:#fff8e1; border:2px solid #ffe082; border-radius:16px; padding:8px 12px;
+  text-align:center; cursor:pointer; transition:.12s; user-select:none; min-width:70px;
+}
+.villager-card:active { transform:scale(.92); }
+.villager-card .v-emoji { font-size:1.8rem; display:block; }
+.villager-card .v-name { font-size:.7rem; color:#795548; font-weight:700; }
+.villager-card .v-count { font-size:.85rem; color:#1E88E5; font-weight:800; margin-top:2px; }
+.villager-card.selected { border-color:#42A5F5; background:#e3f2fd; }
+
+/* drag categories */
+.drag-zone { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:10px 0; }
+.drag-item {
+  padding:10px 18px; background:#e3f2fd; border:2px solid #90caf9; border-radius:16px;
+  cursor:grab; font-weight:700; font-size:.9rem; transition:.1s; touch-action:manipulation;
+}
+.drag-item.dragging { opacity:.4; }
+.drop-zone {
+  display:flex; flex-wrap:wrap; gap:8px; min-height:50px; padding:10px; background:#f5f5f5;
+  border:2px dashed #90caf9; border-radius:16px; margin:6px 0; align-items:center;
+}
+.drop-zone .drag-item { cursor:default; }
+
+/* svg bar chart */
+.chart-wrap { background:#fafafa; border-radius:16px; padding:16px 10px; margin:12px 0; overflow-x:auto; }
+.chart-inner { min-width:300px; }
+.bar-label { font-size:.8rem; fill:#555; font-weight:600; }
+.bar-value { font-size:.75rem; fill:#1E88E5; font-weight:800; }
+.bar-rect { transition:opacity .3s; }
+.bar-rect:hover { opacity:.8; }
+
+/* quiz */
+.quiz-options { display:flex; flex-direction:column; gap:8px; margin:10px 0; }
+.quiz-option {
+  padding:12px 16px; background:#f5f5f5; border:2px solid #e0e0e0; border-radius:14px;
+  cursor:pointer; font-weight:700; font-size:.9rem; transition:.12s; touch-action:manipulation;
+}
+.quiz-option:hover { border-color:#90caf9; background:#e3f2fd; }
+.quiz-option.correct { border-color:#66BB6A; background:#e8f5e9; }
+.quiz-option.wrong { border-color:#ef5350; background:#ffebee; }
+.quiz-option:active { transform:scale(.97); }
+.quiz-feedback { margin-top:8px; padding:10px; border-radius:12px; font-weight:700; display:none; }
+.quiz-feedback.show { display:block; }
+.quiz-feedback.ok { background:#e8f5e9; color:#2e7d32; }
+.quiz-feedback.fail { background:#ffebee; color:#c62828; }
+
+/* challenge */
+.challenge-box {
+  background:linear-gradient(135deg,#fff3e0,#ffe0b2); border:2px solid #ffb74d; border-radius:20px;
+  padding:18px; margin:12px 0; text-align:center;
+}
+.challenge-box h3 { color:#e65100; justify-content:center; }
+.challenge-step { background:#fff; border-radius:14px; padding:14px; margin:10px 0; }
+
+/* badge */
+.badge-wrap { text-align:center; margin:16px 0; }
+.badge { display:inline-block; font-size:4rem; animation:badgePop .5s ease; }
+@keyframes badgePop {
+  0% { transform:scale(0) rotate(-20deg); opacity:0; }
+  60% { transform:scale(1.2) rotate(5deg); }
+  100% { transform:scale(1) rotate(0deg); opacity:1; }
+}
+
+/* misconception */
+.miscon { background:#fff3e0; border-left:4px solid #FFA726; padding:12px 14px; border-radius:0 12px 12px 0; margin:10px 0; }
+.miscon strong { color:#e65100; }
+
+/* misc */
+.speak-btn { background:transparent; border:1px solid #90caf9; border-radius:50%; width:32px; height:32px;
+  cursor:pointer; font-size:.9rem; display:inline-flex; align-items:center; justify-content:center;
+  vertical-align:middle; transition:.1s; }
+.speak-btn:hover { background:#e3f2fd; }
+
+.progress-bar { height:6px; background:#e0e0e0; border-radius:3px; margin:6px 0; overflow:hidden; }
+.progress-bar .fill { height:100%; background:#42A5F5; border-radius:3px; transition:width .5s ease; }
+
+.hidden { display:none !important; }
+.text-center { text-align:center; }
+.mt-8 { margin-top:8px; }
+.mt-16 { margin-top:16px; }
+.gap-6 { gap:6px; }
+
+@media(max-width:600px){
+  html { font-size:16px; }
+  .section { padding:18px 14px; }
+  .cover { padding:30px 14px; }
+  .cover h1 { font-size:1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../index.html">🏠 首页</a>
+  <span style="color:#fff;font-weight:700;font-size:.85rem;">📊 第19课 · 简单统计</span>
+  <a href="../math-20-direction.html" class="next">▶ 下一个</a>
+</div>
+
+<div class="container">
+
+<!-- ═══════ COVER ═══════ -->
+<div class="cover" id="cover">
+  <span class="emoji-big">📊</span>
+  <h1>简单统计</h1>
+  <p>Math · 第19课</p>
+  <p style="margin-top:8px;font-size:.9rem;">分类 · 计数 · 画○记录 · 柱状图</p>
+  <div class="goal-list">
+    <span>🔢 分类</span>
+    <span>🔢 计数</span>
+    <span>⭕ 用○记录</span>
+    <span>📊 看柱状图</span>
+    <span>🏆 找出最多最少</span>
+  </div>
+  <button class="btn" style="background:#fff;color:#1E88E5;margin-top:16px;" onclick="scrollToSection('story')">开始学习 🚀</button>
+</div>
+
+<!-- ═══════ MINECRAFT STORY ═══════ -->
+<div class="section" id="story">
+  <h2>⛏️ Minecraft 村庄普查</h2>
+  <p>小明的 Minecraft 村庄今天要统计村民人数啦！每个村民都有不同的职业。村长需要知道：</p>
+  <ul style="padding-left:20px;margin:8px 0;">
+    <li>🧑‍🌾 有多少个农民？</li>
+    <li>⚔️ 有多少个铁傀儡？</li>
+    <li>📖 有多少个图书管理员？</li>
+  </ul>
+  <p style="margin:8px 0;"><strong>👆 点击下面的村民来统计人数吧！</strong> 每点一次就记录一个～</p>
+
+  <div class="villager-grid" id="villagerGrid">
+    <div class="villager-card" data-type="farmer" onclick="countVillager('farmer')">
+      <span class="v-emoji">🧑‍🌾</span>
+      <span class="v-name">农民</span>
+      <span class="v-count" id="v-farmer">0</span>
+    </div>
+    <div class="villager-card" data-type="librarian" onclick="countVillager('librarian')">
+      <span class="v-emoji">📖</span>
+      <span class="v-name">图书管理员</span>
+      <span class="v-count" id="v-librarian">0</span>
+    </div>
+    <div class="villager-card" data-type="blacksmith" onclick="countVillager('blacksmith')">
+      <span class="v-emoji">⚒️</span>
+      <span class="v-name">铁匠</span>
+      <span class="v-count" id="v-blacksmith">0</span>
+    </div>
+    <div class="villager-card" data-type="butcher" onclick="countVillager('butcher')">
+      <span class="v-emoji">🥩</span>
+      <span class="v-name">屠夫</span>
+      <span class="v-count" id="v-butcher">0</span>
+    </div>
+    <div class="villager-card" data-type="golem" onclick="countVillager('golem')">
+      <span class="v-emoji">🤖</span>
+      <span class="v-name">铁傀儡</span>
+      <span class="v-count" id="v-golem">0</span>
+    </div>
+  </div>
+
+  <div class="text-center mt-16">
+    <button class="btn btn-primary" onclick="showVillagerCounts()">✅ 统计完成！</button>
+    <button class="btn btn-small" style="background:#eee;color:#666;" onclick="resetVillagers()">🔄 重置</button>
+  </div>
+
+  <div id="villagerResult" class="hidden" style="margin-top:14px;padding:14px;background:#e3f2fd;border-radius:14px;">
+    <p style="font-weight:700;">📋 村民统计结果：</p>
+    <div id="villagerResultContent"></div>
+  </div>
+</div>
+
+<!-- ═══════ CORE CONCEPTS ═══════ -->
+<div class="section" id="concepts">
+  <h2>💡 核心概念</h2>
+  <p style="margin-bottom:12px;">统计的四个步骤：</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:12px;justify-content:center;">
+    <div style="flex:1;min-width:140px;background:#e3f2fd;border-radius:16px;padding:14px;text-align:center;">
+      <div style="font-size:2rem;">🔀</div>
+      <div style="font-weight:800;color:#1E88E5;">分类</div>
+      <div style="font-size:.8rem;color:#555;">把东西分成不同的组</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#e3f2fd;border-radius:16px;padding:14px;text-align:center;">
+      <div style="font-size:2rem;">🔢</div>
+      <div style="font-weight:800;color:#1E88E5;">计数</div>
+      <div style="font-size:.8rem;color:#555;">数一数每组有多少个</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#e3f2fd;border-radius:16px;padding:14px;text-align:center;">
+      <div style="font-size:2rem;">⭕</div>
+      <div style="font-weight:800;color:#1E88E5;">画○记录</div>
+      <div style="font-size:.8rem;color:#555;">用○表示数量</div>
+    </div>
+    <div style="flex:1;min-width:140px;background:#e3f2fd;border-radius:16px;padding:14px;text-align:center;">
+      <div style="font-size:2rem;">📊</div>
+      <div style="font-weight:800;color:#1E88E5;">柱状图</div>
+      <div style="font-size:.8rem;color:#555;">用柱子长短比多少</div>
+    </div>
+  </div>
+
+  <div style="margin-top:16px;padding:14px;background:#e8f5e9;border-radius:14px;">
+    <p><strong>🌰 例子：</strong> 小明有 3 个🍎、2 个🍊、4 个🍌。</p>
+    <p>➡️ 分类：🍎 / 🍊 / 🍌</p>
+    <p>➡️ 计数：3、2、4</p>
+    <p>➡️ 画○记录：🍎 ○○○ &nbsp; 🍊 ○○ &nbsp; 🍌 ○○○○</p>
+    <p>➡️ 柱状图：🍌最高（最多）🍊最矮（最少）</p>
+  </div>
+</div>
+
+<!-- ═══════ HANDS-ON PRACTICE ═══════ -->
+<div class="section" id="practice1">
+  <h2>✋ 动手练习 · 分一分，画一画</h2>
+  <p>把下面的动物分类，然后用○记录数量。</p>
+
+  <div style="font-size:2.2rem;letter-spacing:8px;text-align:center;padding:10px;background:#fff8e1;border-radius:14px;margin:10px 0;">
+    🐶 🐱 🐰 🐶 🐱 🐶 🐰 🐱 🐶 🐰 🐱 🐶
+  </div>
+  <p style="font-size:.8rem;color:#888;text-align:center;">👆 共12只小动物</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:16px;margin:12px 0;">
+    <div style="flex:1;min-width:120px;background:#e3f2fd;border-radius:14px;padding:12px;text-align:center;">
+      <div style="font-size:2rem;">🐶</div>
+      <div style="font-weight:700;">小狗</div>
+      <div class="ooo-count">
+        <span class="ooo" id="ooo-dog"></span>
+        <span style="font-weight:800;color:#1E88E5;" id="num-dog">0</span>
+      </div>
+      <button class="btn btn-small btn-primary mt-8" onclick="addOOO('dog')">+🐶</button>
+    </div>
+    <div style="flex:1;min-width:120px;background:#e3f2fd;border-radius:14px;padding:12px;text-align:center;">
+      <div style="font-size:2rem;">🐱</div>
+      <div style="font-weight:700;">小猫</div>
+      <div class="ooo-count">
+        <span class="ooo" id="ooo-cat"></span>
+        <span style="font-weight:800;color:#1E88E5;" id="num-cat">0</span>
+      </div>
+      <button class="btn btn-small btn-primary mt-8" onclick="addOOO('cat')">+🐱</button>
+    </div>
+    <div style="flex:1;min-width:120px;background:#e3f2fd;border-radius:14px;padding:12px;text-align:center;">
+      <div style="font-size:2rem;">🐰</div>
+      <div style="font-weight:700;">兔子</div>
+      <div class="ooo-count">
+        <span class="ooo" id="ooo-rabbit"></span>
+        <span style="font-weight:800;color:#1E88E5;" id="num-rabbit">0</span>
+      </div>
+      <button class="btn btn-small btn-primary mt-8" onclick="addOOO('rabbit')">+🐰</button>
+    </div>
+  </div>
+
+  <div class="text-center mt-8">
+    <button class="btn btn-success btn-small" onclick="checkAnimalCounts()">✅ 我分好了！</button>
+    <button class="btn btn-small" style="background:#eee;color:#666;" onclick="resetAnimals()">🔄 重置</button>
+  </div>
+  <div id="animalResult" class="hidden" style="margin-top:10px;padding:10px;background:#e8f5e9;border-radius:12px;font-weight:700;"></div>
+
+  <div style="margin-top:14px;">
+    <h3>📊 比一比</h3>
+    <p id="compareResult">点击「我分好了！」看看哪种动物最多，哪种最少 👆</p>
+  </div>
+</div>
+
+<!-- ═══════ MISCONCEPTIONS ═══════ -->
+<div class="section" id="misconceptions">
+  <h2>⚠️ 常见误解</h2>
+
+  <div class="miscon">
+    <strong>❌ 没有分类就开始数</strong><br>
+    <span>把所有东西混在一起数，就不知道每样有多少了。</span><br>
+    <span style="color:#1E88E5;">✅ 先分类，再计数！</span>
+  </div>
+  <div class="miscon">
+    <strong>❌ 画○时漏画了或少画了</strong><br>
+    <span>数了3个却只画了2个○，记录就不准确了。</span><br>
+    <span style="color:#1E88E5;">✅ 数一个画一个○，一一对应！</span>
+  </div>
+  <div class="miscon">
+    <strong>❌ 柱子越高 = 最少</strong><br>
+    <span>以为最高的柱子代表最少，搞反了！</span><br>
+    <span style="color:#1E88E5;">✅ 柱子越高 = 数量越多！就像叠积木，叠得越高东西越多。</span>
+  </div>
+  <div class="miscon">
+    <strong>❌ 看错类别</strong><br>
+    <span>把🍎的柱子看成🍊的，比较错了。</span><br>
+    <span style="color:#1E88E5;">✅ 先看柱子下面的标签是什么，再比较！</span>
+  </div>
+</div>
+
+<!-- ═══════ PRACTICE: OOO & BAR CHART ═══════ -->
+<div class="section" id="practice2">
+  <h2>📝 练习 · 画○记录 + 读柱状图</h2>
+
+  <h3>🍎 水果摊统计</h3>
+  <p>水果店有这些水果，请你用○记录：</p>
+  <div style="font-size:2rem;letter-spacing:6px;text-align:center;padding:10px;background:#fff3e0;border-radius:14px;margin:10px 0;">
+    🍎🍎🍎🍊🍊🍊🍊🍌🍌🍇🍇🍇🍇🍇
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;">
+    <div style="flex:1;min-width:100px;background:#fff;border-radius:12px;padding:10px;text-align:center;border:2px solid #e0e0e0;">
+      <div>🍎 苹果</div>
+      <div class="ooo" id="ooo-apple">○○○</div>
+      <div style="font-weight:800;">3</div>
+    </div>
+    <div style="flex:1;min-width:100px;background:#fff;border-radius:12px;padding:10px;text-align:center;border:2px solid #e0e0e0;">
+      <div>🍊 橙子</div>
+      <div class="ooo" id="ooo-orange"></div>
+      <div style="font-weight:800;" id="num-orange">?</div>
+      <button class="btn btn-small btn-primary mt-8" onclick="fruitOOO('orange')">⭕ 画○</button>
+    </div>
+    <div style="flex:1;min-width:100px;background:#fff;border-radius:12px;padding:10px;text-align:center;border:2px solid #e0e0e0;">
+      <div>🍌 香蕉</div>
+      <div class="ooo" id="ooo-banana"></div>
+      <div style="font-weight:800;" id="num-banana">?</div>
+      <button class="btn btn-small btn-primary mt-8" onclick="fruitOOO('banana')">⭕ 画○</button>
+    </div>
+    <div style="flex:1;min-width:100px;background:#fff;border-radius:12px;padding:10px;text-align:center;border:2px solid #e0e0e0;">
+      <div>🍇 葡萄</div>
+      <div class="ooo" id="ooo-grape"></div>
+      <div style="font-weight:800;" id="num-grape">?</div>
+      <button class="btn btn-small btn-primary mt-8" onclick="fruitOOO('grape')">⭕ 画○</button>
+    </div>
+  </div>
+  <div class="text-center">
+    <button class="btn btn-success btn-small" onclick="checkFruit()">✅ 检查答案</button>
+  </div>
+  <div id="fruitResult" class="hidden mt-8" style="padding:10px;background:#e8f5e9;border-radius:12px;font-weight:700;"></div>
+
+  <h3 class="mt-16">📊 读柱状图：班级宠物调查</h3>
+  <p>下面是一（2）班同学养的宠物统计图，看图回答问题：</p>
+
+  <div class="chart-wrap">
+    <svg viewBox="0 0 400 220" width="100%" style="max-width:400px;display:block;margin:0 auto;font-family:'Nunito',sans-serif;">
+      <text x="200" y="22" text-anchor="middle" font-size="14" font-weight="800" fill="#333">班级宠物统计</text>
+      <!-- bars -->
+      <rect x="35" y="160" width="55" height="40" rx="6" fill="#42A5F5" class="bar-rect"></rect>
+      <text x="62" y="156" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">2</text>
+      <text x="62" y="196" text-anchor="middle" font-size="11" fill="#555">🐶</text>
+
+      <rect x="115" y="120" width="55" height="80" rx="6" fill="#1E88E5" class="bar-rect"></rect>
+      <text x="142" y="116" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">4</text>
+      <text x="142" y="196" text-anchor="middle" font-size="11" fill="#555">🐱</text>
+
+      <rect x="195" y="80" width="55" height="120" rx="6" fill="#42A5F5" class="bar-rect"></rect>
+      <text x="222" y="76" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">6</text>
+      <text x="222" y="196" text-anchor="middle" font-size="11" fill="#555">🐰</text>
+
+      <rect x="275" y="40" width="55" height="160" rx="6" fill="#1E88E5" class="bar-rect"></rect>
+      <text x="302" y="36" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">8</text>
+      <text x="302" y="196" text-anchor="middle" font-size="11" fill="#555">🐟</text>
+
+      <rect x="345" y="160" width="55" height="40" rx="6" fill="#90caf9" class="bar-rect"></rect>
+      <text x="372" y="156" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">2</text>
+      <text x="372" y="196" text-anchor="middle" font-size="11" fill="#555">🐹</text>
+
+      <!-- y axis -->
+      <line x1="25" y1="20" x2="25" y2="200" stroke="#ccc" stroke-width="2"></line>
+      <line x1="25" y1="200" x2="400" y2="200" stroke="#ccc" stroke-width="2"></line>
+    </svg>
+  </div>
+
+  <div style="margin-top:10px;">
+    <div class="quiz-options" id="petQuiz1">
+      <p style="font-weight:700;">❓ 哪种宠物养的人最多？</p>
+      <div class="quiz-option" onclick="petQuiz('dog',false)">🐶 小狗 (2人)</div>
+      <div class="quiz-option" onclick="petQuiz('cat',false)">🐱 小猫 (4人)</div>
+      <div class="quiz-option" onclick="petQuiz('rabbit',false)">🐰 兔子 (6人)</div>
+      <div class="quiz-option" onclick="petQuiz('fish',true)">🐟 金鱼 (8人) ✅</div>
+      <div class="quiz-option" onclick="petQuiz('hamster',false)">🐹 仓鼠 (2人)</div>
+    </div>
+    <div id="petQuizFeedback" class="quiz-feedback"></div>
+  </div>
+
+  <div style="margin-top:10px;">
+    <div class="quiz-options" id="petQuiz2">
+      <p style="font-weight:700;">❓ 哪种宠物养的人最少？（选2个）</p>
+      <div class="quiz-option" onclick="petQuiz2('fish',false)">🐟 金鱼 (8人)</div>
+      <div class="quiz-option" onclick="petQuiz2('cat',false)">🐱 小猫 (4人)</div>
+      <div class="quiz-option" onclick="petQuiz2('both',true)">🐶 小狗 和 🐹 仓鼠 (都是2人) ✅</div>
+    </div>
+    <div id="petQuiz2Feedback" class="quiz-feedback"></div>
+  </div>
+</div>
+
+<!-- ═══════ CHALLENGE ═══════ -->
+<div class="section" id="challenge">
+  <h2>🏆 闯关挑战</h2>
+  <p>一共3关，全部通过就能获得统计小达人徽章！</p>
+  <div class="progress-bar" style="margin:10px 0;"><div class="fill" id="challengeProgress" style="width:0%;"></div></div>
+  <p id="challengeStatus" style="font-size:.85rem;color:#888;">🏁 第 1 / 3 关</p>
+
+  <!-- LEVEL 1 -->
+  <div class="challenge-box" id="challenge1">
+    <h3>🏁 第1关 · 分一分</h3>
+    <p>把下面的图形拖到对应的类别框里：</p>
+    <div style="font-size:2.5rem;text-align:center;padding:10px;letter-spacing:10px;">
+      🔴 🔵 🟡 🔴 🟡 🔵 🔴 🟡
+    </div>
+    <div class="drag-zone" id="dragItems">
+      <span class="drag-item" draggable="true" data-shape="red" data-category="color">🔴</span>
+      <span class="drag-item" draggable="true" data-shape="blue" data-category="color">🔵</span>
+      <span class="drag-item" draggable="true" data-shape="yellow" data-category="color">🟡</span>
+      <span class="drag-item" draggable="true" data-shape="red" data-category="color">🔴</span>
+      <span class="drag-item" draggable="true" data-shape="yellow" data-category="color">🟡</span>
+      <span class="drag-item" draggable="true" data-shape="blue" data-category="color">🔵</span>
+      <span class="drag-item" draggable="true" data-shape="red" data-category="color">🔴</span>
+      <span class="drag-item" draggable="true" data-shape="yellow" data-category="color">🟡</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;">
+      <div style="flex:1;min-width:80px;">
+        <div style="font-weight:700;color:#e53935;text-align:center;">🔴 红色</div>
+        <div class="drop-zone" id="drop-red"></div>
+      </div>
+      <div style="flex:1;min-width:80px;">
+        <div style="font-weight:700;color:#1E88E5;text-align:center;">🔵 蓝色</div>
+        <div class="drop-zone" id="drop-blue"></div>
+      </div>
+      <div style="flex:1;min-width:80px;">
+        <div style="font-weight:700;color:#f9a825;text-align:center;">🟡 黄色</div>
+        <div class="drop-zone" id="drop-yellow"></div>
+      </div>
+    </div>
+    <div class="text-center mt-8">
+      <button class="btn btn-success btn-small" onclick="checkChallenge1()">✅ 检查分类</button>
+    </div>
+    <div id="challenge1Result" class="hidden" style="margin-top:8px;font-weight:700;"></div>
+  </div>
+
+  <!-- LEVEL 2 -->
+  <div class="challenge-box hidden" id="challenge2">
+    <h3>🏁 第2关 · 画○记录</h3>
+    <p>统计下面每种水果的数量，用○记录下来：</p>
+    <div style="font-size:2rem;letter-spacing:6px;text-align:center;padding:10px;background:#fff;border-radius:14px;margin:10px 0;">
+      🍓🍓🍓🍓🍋🍋🍋🍋🍋🥝🥝🥝
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:10px 0;">
+      <div style="background:#fff3e0;border-radius:12px;padding:10px;text-align:center;min-width:90px;">
+        <div>🍓 草莓</div>
+        <div class="ooo" id="ooo-straw"></div>
+        <button class="btn btn-small btn-primary mt-8" onclick="addChallengeOOO('straw')">⭕ +1</button>
+        <button class="btn btn-small" style="background:#eee;color:#666;" onclick="subChallengeOOO('straw')">−1</button>
+      </div>
+      <div style="background:#fff3e0;border-radius:12px;padding:10px;text-align:center;min-width:90px;">
+        <div>🍋 柠檬</div>
+        <div class="ooo" id="ooo-lemon"></div>
+        <button class="btn btn-small btn-primary mt-8" onclick="addChallengeOOO('lemon')">⭕ +1</button>
+        <button class="btn btn-small" style="background:#eee;color:#666;" onclick="subChallengeOOO('lemon')">−1</button>
+      </div>
+      <div style="background:#fff3e0;border-radius:12px;padding:10px;text-align:center;min-width:90px;">
+        <div>🥝 猕猴桃</div>
+        <div class="ooo" id="ooo-kiwi"></div>
+        <button class="btn btn-small btn-primary mt-8" onclick="addChallengeOOO('kiwi')">⭕ +1</button>
+        <button class="btn btn-small" style="background:#eee;color:#666;" onclick="subChallengeOOO('kiwi')">−1</button>
+      </div>
+    </div>
+    <div class="text-center mt-8">
+      <button class="btn btn-success btn-small" onclick="checkChallenge2()">✅ 检查记录</button>
+    </div>
+    <div id="challenge2Result" class="hidden" style="margin-top:8px;font-weight:700;"></div>
+  </div>
+
+  <!-- LEVEL 3 -->
+  <div class="challenge-box hidden" id="challenge3">
+    <h3>🏁 第3关 · 读柱状图</h3>
+    <p>下面是小明一周吃水果的统计图，回答问题：</p>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 380 200" width="100%" style="max-width:380px;display:block;margin:0 auto;font-family:'Nunito',sans-serif;">
+        <text x="190" y="22" text-anchor="middle" font-size="13" font-weight="800" fill="#333">一周水果统计</text>
+        <rect x="25" y="140" width="60" height="50" rx="6" fill="#FFA726" class="bar-rect"></rect>
+        <text x="55" y="136" text-anchor="middle" font-size="11" fill="#e65100" font-weight="800">3</text>
+        <text x="55" y="200" text-anchor="middle" font-size="11" fill="#555">🍎</text>
+        <rect x="105" y="100" width="60" height="90" rx="6" fill="#66BB6A" class="bar-rect"></rect>
+        <text x="135" y="96" text-anchor="middle" font-size="11" fill="#2e7d32" font-weight="800">5</text>
+        <text x="135" y="200" text-anchor="middle" font-size="11" fill="#555">🍐</text>
+        <rect x="185" y="60" width="60" height="130" rx="6" fill="#42A5F5" class="bar-rect"></rect>
+        <text x="215" y="56" text-anchor="middle" font-size="11" fill="#1E88E5" font-weight="800">7</text>
+        <text x="215" y="200" text-anchor="middle" font-size="11" fill="#555">🍇</text>
+        <rect x="265" y="120" width="60" height="70" rx="6" fill="#ef5350" class="bar-rect"></rect>
+        <text x="295" y="116" text-anchor="middle" font-size="11" fill="#c62828" font-weight="800">4</text>
+        <text x="295" y="200" text-anchor="middle" font-size="11" fill="#555">🍊</text>
+        <line x1="18" y1="30" x2="18" y2="200" stroke="#ccc" stroke-width="2"></line>
+        <line x1="18" y1="200" x2="380" y2="200" stroke="#ccc" stroke-width="2"></line>
+      </svg>
+    </div>
+    <div class="quiz-options" id="challengeQuiz">
+      <div class="quiz-option" onclick="challenge3Answer('grape')">🍇 葡萄 (7个) ✅</div>
+      <div class="quiz-option" onclick="challenge3Answer('pear')">🍐 梨 (5个)</div>
+      <div class="quiz-option" onclick="challenge3Answer('apple')">🍎 苹果 (3个)</div>
+    </div>
+    <div id="challenge3Result" class="hidden" style="margin-top:8px;font-weight:700;"></div>
+  </div>
+
+  <!-- WIN -->
+  <div class="challenge-box hidden" id="challengeWin" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border-color:#66BB6A;">
+    <h3 style="color:#2e7d32;">🎉 恭喜通关！</h3>
+    <div class="badge-wrap">
+      <div class="badge">🏅</div>
+    </div>
+    <p style="font-weight:700;font-size:1.1rem;">统计小达人 🏆</p>
+    <p>你学会了分类、计数、画○记录和看柱状图！</p>
+  </div>
+</div>
+
+<!-- ═══════ CELEBRATION ═══════ -->
+<div class="section" id="celebration">
+  <h2>🎉 庆祝 · 小结</h2>
+  <div class="text-center">
+    <div style="font-size:3rem;">📊✨</div>
+    <p style="font-size:1.1rem;font-weight:800;margin:8px 0;">太棒了！你完成了第19课！</p>
+  </div>
+  <div style="background:#e3f2fd;border-radius:14px;padding:14px;margin:10px 0;">
+    <p style="font-weight:700;">📌 本节课我们学了：</p>
+    <ul style="padding-left:20px;">
+      <li>✅ <strong>分类</strong> — 把东西按类别分开</li>
+      <li>✅ <strong>计数</strong> — 数一数每类有多少个</li>
+      <li>✅ <strong>用○记录</strong> — 数一个画一个○</li>
+      <li>✅ <strong>看柱状图</strong> — 柱子越高数量越多</li>
+      <li>✅ <strong>比较最多最少</strong> — 找最高和最短的柱子</li>
+    </ul>
+  </div>
+  <div class="text-center mt-16">
+    <a href="../math-20-direction.html" class="btn btn-primary">▶ 下一课：方向与位置</a>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ====== SPEECH SYNTHESIS ======
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 1.0;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+function scrollToSection(id) {
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ====== VILLAGER COUNT ======
+var villagerCounts = { farmer:0, librarian:0, blacksmith:0, butcher:0, golem:0 };
+
+function countVillager(type) {
+  villagerCounts[type]++;
+  document.getElementById('v-'+type).textContent = villagerCounts[type];
+  // animate the card
+  var card = document.querySelector('.villager-card[data-type="'+type+'"]');
+  if (card) {
+    card.classList.add('selected');
+    gsap.fromTo(card, { scale:1.15 }, { scale:1, duration:.2, ease:'back.out(2)' });
+  }
+  speak(villagerCounts[type]+'个');
+}
+
+function resetVillagers() {
+  for (var k in villagerCounts) villagerCounts[k]=0;
+  document.querySelectorAll('.villager-card .v-count').forEach(function(el){ el.textContent='0'; });
+  document.querySelectorAll('.villager-card').forEach(function(el){ el.classList.remove('selected'); });
+  document.getElementById('villagerResult').classList.add('hidden');
+}
+
+function showVillagerCounts() {
+  var total = 0;
+  var html = '';
+  var items = [
+    ['🧑‍🌾','农民','farmer'],
+    ['📖','图书管理员','librarian'],
+    ['⚒️','铁匠','blacksmith'],
+    ['🥩','屠夫','butcher'],
+    ['🤖','铁傀儡','golem']
+  ];
+  items.sort(function(a,b){ return villagerCounts[b[2]] - villagerCounts[a[2]]; });
+  var most = items[0];
+  var least = items[items.length-1];
+  for (var i=0;i<items.length;i++) {
+    var c = villagerCounts[items[i][2]];
+    total += c;
+    var ooos = '';
+    for (var j=0;j<Math.min(c,15);j++) ooos += '○';
+    if (c>15) ooos += '…';
+    var tag = '';
+    if (i===0 && c>0) tag = ' 🥇最多';
+    if (i===items.length-1 && c>0 && items.length>1 && c<items[0].count) tag = ' 📉最少';
+    // recompute least
+    html += '<p>'+items[i][0]+' '+items[i][1]+'：<strong>'+c+'</strong> 个 '+(ooos ? '<span class="ooo">'+ooos+'</span>':'')+tag+'</p>';
+  }
+  // fix least tag properly
+  html = '';
+  for (var i=0;i<items.length;i++) {
+    var c = villagerCounts[items[i][2]];
+    var ooos = '';
+    for (var j=0;j<Math.min(c,15);j++) ooos += '○';
+    if (c>15) ooos += '…';
+    var tag = '';
+    if (c>0 && c===villagerCounts[items[0][2]] && items[0][2]===items[i][2]) tag = ' 🥇最多';
+    if (c>0 && c===villagerCounts[items[items.length-1][2]] && items[items.length-1][2]===items[i][2] && items.length>1 && c<villagerCounts[items[0][2]]) tag = ' 📉最少';
+    html += '<p>'+items[i][0]+' '+items[i][1]+'：<strong>'+c+'</strong> 个 '+(ooos ? '<span class="ooo">'+ooos+'</span>':'')+tag+'</p>';
+  }
+  html += '<p style="margin-top:6px;font-weight:800;">📊 总共 '+total+' 个村民</p>';
+  document.getElementById('villagerResultContent').innerHTML = html;
+  document.getElementById('villagerResult').classList.remove('hidden');
+  gsap.from('#villagerResult', {opacity:0,y:10,duration:.3});
+  speak('统计完成！一共有'+total+'个村民');
+}
+
+// ====== ANIMAL OOO ======
+var animalCounts = { dog:0, cat:0, rabbit:0 };
+var animalExpected = { dog:4, cat:3, rabbit:3 };
+
+function addOOO(type) {
+  var labels = { dog:'🐶', cat:'🐱', rabbit:'🐰' };
+  if (animalCounts[type] < 6) {
+    animalCounts[type]++;
+    updateAnimalOOO(type);
+    speak(animalCounts[type]+'个');
+  }
+}
+
+function updateAnimalOOO(type) {
+  var ooo = '';
+  for (var i=0;i<animalCounts[type];i++) ooo += '○';
+  document.getElementById('ooo-'+type).textContent = ooo;
+  document.getElementById('num-'+type).textContent = animalCounts[type];
+}
+
+function resetAnimals() {
+  animalCounts = { dog:0, cat:0, rabbit:0 };
+  document.getElementById('ooo-dog').textContent = '';
+  document.getElementById('ooo-cat').textContent = '';
+  document.getElementById('ooo-rabbit').textContent = '';
+  document.getElementById('num-dog').textContent = '0';
+  document.getElementById('num-cat').textContent = '0';
+  document.getElementById('num-rabbit').textContent = '0';
+  document.getElementById('animalResult').classList.add('hidden');
+  document.getElementById('compareResult').textContent = '点击「我分好了！」看看哪种动物最多，哪种最少 👆';
+}
+
+function checkAnimalCounts() {
+  var total = animalCounts.dog + animalCounts.cat + animalCounts.rabbit;
+  var result = document.getElementById('animalResult');
+  result.classList.remove('hidden');
+
+  if (total === 0) {
+    result.textContent = '⚠️ 还没有分类计数呢，先点 + 按钮把动物分类吧！';
+    result.style.background = '#fff3e0';
+    return;
+  }
+
+  var labels = { dog:'🐶小狗', cat:'🐱小猫', rabbit:'🐰兔子' };
+  var arr = [
+    { name:labels.dog, count:animalCounts.dog, expected:animalExpected.dog },
+    { name:labels.cat, count:animalCounts.cat, expected:animalExpected.cat },
+    { name:labels.rabbit, count:animalCounts.rabbit, expected:animalExpected.rabbit }
+  ];
+  arr.sort(function(a,b){ return b.count - a.count; });
+
+  var correct = true;
+  var details = '';
+  for (var i=0;i<arr.length;i++) {
+    var ok = arr[i].count === arr[i].expected ? '✅' : '⚠️';
+    if (arr[i].count !== arr[i].expected) correct = false;
+    var tag = '';
+    if (i===0 && arr[i].count>0) tag = ' 🥇最多';
+    var lastIdx = arr.length-1;
+    if (i===lastIdx && arr[i].count>0 && arr.length>1 && arr[i].count < arr[0].count) tag = ' 📉最少';
+    details += '<p>'+ok+' '+arr[i].name+'：'+arr[i].count+' 个（应有'+arr[i].expected+'个）'+tag+'</p>';
+  }
+
+  if (correct) {
+    result.innerHTML = '🎉 完全正确！你分类统计得很棒！<br>'+details;
+    result.style.background = '#e8f5e9';
+    speak('完全正确！');
+  } else {
+    result.innerHTML = '⚠️ 数量和实际不太一样，再数数看吧！<br>'+details;
+    result.style.background = '#fff3e0';
+  }
+
+  // compare result
+  var compareEl = document.getElementById('compareResult');
+  if (arr[0].count > 0) {
+    compareEl.innerHTML = '🥇 <strong>最多：</strong>'+arr[0].name+'（'+arr[0].count+'个）<br>📉 <strong>最少：</strong>'+arr[arr.length-1].name+'（'+arr[arr.length-1].count+'个）';
+  } else {
+    compareEl.innerHTML = '还没有统计完呢，继续加油！';
+  }
+  gsap.from(result, {opacity:0,y:8,duration:.3});
+}
+
+// ====== FRUIT OOO PRACTICE ======
+var fruitCounts = { orange:0, banana:0, grape:0 };
+var fruitExpected = { orange:4, banana:2, grape:5 };
+
+function fruitOOO(type) {
+  if (fruitCounts[type] < 10) {
+    fruitCounts[type]++;
+    var ooo = '';
+    for (var i=0;i<fruitCounts[type];i++) ooo += '○';
+    document.getElementById('ooo-'+type).textContent = ooo;
+    document.getElementById('num-'+type).textContent = fruitCounts[type];
+  }
+}
+
+function checkFruit() {
+  var result = document.getElementById('fruitResult');
+  result.classList.remove('hidden');
+  var ok = true;
+  var msgs = [];
+  var fruits = [
+    { name:'🍊 橙子', key:'orange', exp:4 },
+    { name:'🍌 香蕉', key:'banana', exp:2 },
+    { name:'🍇 葡萄', key:'grape', exp:5 }
+  ];
+  for (var i=0;i<fruits.length;i++) {
+    var f = fruits[i];
+    if (fruitCounts[f.key] === f.exp) {
+      msgs.push('✅ '+f.name+'：'+fruitCounts[f.key]+'个 ✓');
+    } else {
+      msgs.push('❌ '+f.name+'：你画了'+fruitCounts[f.key]+'个，应该是'+f.exp+'个');
+      ok = false;
+    }
+  }
+  var expApple = 3;
+  msgs.unshift('🍎 苹果：'+expApple+'个 ✅（已给出）');
+  if (ok) {
+    result.innerHTML = '🎉 太棒了！全部正确！<br>'+msgs.join('<br>');
+    result.style.background = '#e8f5e9';
+    speak('全部正确');
+  } else {
+    result.innerHTML = '⚠️ 有些不对哦，再看看水果的数量吧！<br>'+msgs.join('<br>');
+    result.style.background = '#fff3e0';
+  }
+  gsap.from(result, {opacity:0,y:8,duration:.3});
+}
+
+// ====== PET QUIZ ======
+function petQuiz(which, isCorrect) {
+  var opts = document.querySelectorAll('#petQuiz1 .quiz-option');
+  var fb = document.getElementById('petQuizFeedback');
+  for (var i=0;i<opts.length;i++) {
+    opts[i].style.pointerEvents = 'none';
+  }
+  if (isCorrect) {
+    opts.forEach(function(o){ if(o.textContent.includes('🐟')) o.classList.add('correct'); });
+    fb.textContent = '✅ 对啦！金鱼的柱子最高（8人），所以最多人养金鱼！';
+    fb.className = 'quiz-feedback show ok';
+    speak('答对了！金鱼最多');
+  } else {
+    opts.forEach(function(o){ if(o.textContent.includes(which==='dog'?'🐶':which==='cat'?'🐱':which==='rabbit'?'🐰':'🐹')) o.classList.add('wrong'); });
+    fb.textContent = '❌ 再想想～最高的柱子代表最多的数量哦！';
+    fb.className = 'quiz-feedback show fail';
+  }
+  gsap.from(fb, {opacity:0,y:6,duration:.2});
+}
+
+function petQuiz2(which, isCorrect) {
+  var opts = document.querySelectorAll('#petQuiz2 .quiz-option');
+  var fb = document.getElementById('petQuiz2Feedback');
+  for (var i=0;i<opts.length;i++) {
+    opts[i].style.pointerEvents = 'none';
+  }
+  if (isCorrect) {
+    opts.forEach(function(o){ if(o.textContent.includes('🐶') && o.textContent.includes('🐹')) o.classList.add('correct'); });
+    fb.textContent = '✅ 对啦！小狗和仓鼠的柱子最矮（都是2人），所以养的人最少！';
+    fb.className = 'quiz-feedback show ok';
+  } else {
+    fb.textContent = '❌ 不太对哦～看看哪根柱子最矮！有两根一样矮的。';
+    fb.className = 'quiz-feedback show fail';
+  }
+  gsap.from(fb, {opacity:0,y:6,duration:.2});
+}
+
+// ====== CHALLENGE ======
+var challengeLevel = 1;
+
+// Drag & Drop
+document.addEventListener('DOMContentLoaded', function(){
+  var items = document.querySelectorAll('.drag-item');
+  items.forEach(function(item){
+    item.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', this.dataset.category+':'+this.dataset.shape+':'+this.textContent);
+      this.classList.add('dragging');
+    });
+    item.addEventListener('dragend', function(e){
+      this.classList.remove('dragging');
+    });
+    // touch support
+    item.addEventListener('touchstart', function(e){
+      this.classList.add('dragging');
+    });
+    item.addEventListener('touchend', function(e){
+      this.classList.remove('dragging');
+    });
+  });
+  var drops = document.querySelectorAll('.drop-zone');
+  drops.forEach(function(zone){
+    zone.addEventListener('dragover', function(e){ e.preventDefault(); });
+    zone.addEventListener('drop', function(e){
+      e.preventDefault();
+      var data = e.dataTransfer.getData('text/plain');
+      if (!data) return;
+      var parts = data.split(':');
+      var cat = parts[0];
+      var shape = parts[1];
+      var emoji = parts[2];
+      var span = document.createElement('span');
+      span.className = 'drag-item';
+      span.textContent = emoji;
+      span.draggable = true;
+      span.dataset.category = cat;
+      span.dataset.shape = shape;
+      // re-attach drag events
+      span.addEventListener('dragstart', function(ev){
+        ev.dataTransfer.setData('text/plain', this.dataset.category+':'+this.dataset.shape+':'+this.textContent);
+        this.classList.add('dragging');
+      });
+      span.addEventListener('dragend', function(ev){ this.classList.remove('dragging'); });
+      this.appendChild(span);
+      // remove from original
+      var drags = document.querySelectorAll('#dragItems .drag-item');
+      for (var i=0;i<drags.length;i++){
+        if (drags[i].classList.contains('dragging')) {
+          drags[i].remove();
+          break;
+        }
+      }
+    });
+  });
+});
+
+function checkChallenge1() {
+  var redCount = document.getElementById('drop-red').querySelectorAll('.drag-item').length;
+  var blueCount = document.getElementById('drop-blue').querySelectorAll('.drag-item').length;
+  var yellowCount = document.getElementById('drop-yellow').querySelectorAll('.drag-item').length;
+  var result = document.getElementById('challenge1Result');
+  result.classList.remove('hidden');
+
+  if (redCount === 3 && blueCount === 2 && yellowCount === 3) {
+    result.innerHTML = '✅ 正确！红色3个，蓝色2个，黄色3个。通过第1关！';
+    result.style.color = '#2e7d32';
+    advanceChallenge(2);
+  } else {
+    result.innerHTML = '⚠️ 再分分看～红色应该有3个，蓝色2个，黄色3个。当前：红色'+redCount+'、蓝色'+blueCount+'、黄色'+yellowCount;
+    result.style.color = '#c62828';
+  }
+  gsap.from(result, {opacity:0,y:6,duration:.2});
+}
+
+function advanceChallenge(level) {
+  if (level === 2) {
+    document.getElementById('challenge1').classList.add('hidden');
+    document.getElementById('challenge2').classList.remove('hidden');
+    challengeLevel = 2;
+    updateChallengeProgress();
+  } else if (level === 3) {
+    document.getElementById('challenge2').classList.add('hidden');
+    document.getElementById('challenge3').classList.remove('hidden');
+    challengeLevel = 3;
+    updateChallengeProgress();
+  }
+}
+
+function updateChallengeProgress() {
+  var pct = ((challengeLevel-1)/3)*100;
+  document.getElementById('challengeProgress').style.width = pct+'%';
+  document.getElementById('challengeStatus').textContent = '🏁 第 '+challengeLevel+' / 3 关';
+}
+
+// Challenge 2 OOO
+var challenge2Counts = { straw:0, lemon:0, kiwi:0 };
+var challenge2Expected = { straw:4, lemon:5, kiwi:3 };
+
+function addChallengeOOO(type) {
+  if (challenge2Counts[type] < 12) {
+    challenge2Counts[type]++;
+    updateChallenge2OOO(type);
+  }
+}
+function subChallengeOOO(type) {
+  if (challenge2Counts[type] > 0) {
+    challenge2Counts[type]--;
+    updateChallenge2OOO(type);
+  }
+}
+function updateChallenge2OOO(type) {
+  var ooo = '';
+  for (var i=0;i<challenge2Counts[type];i++) ooo += '○';
+  document.getElementById('ooo-'+type).textContent = ooo;
+}
+
+function checkChallenge2() {
+  var result = document.getElementById('challenge2Result');
+  result.classList.remove('hidden');
+  var ok = true;
+  var items = [
+    { name:'🍓草莓', key:'straw', exp:4 },
+    { name:'🍋柠檬', key:'lemon', exp:5 },
+    { name:'🥝猕猴桃', key:'kiwi', exp:3 }
+  ];
+  var msgs = [];
+  for (var i=0;i<items.length;i++) {
+    var it = items[i];
+    if (challenge2Counts[it.key] === it.exp) {
+      msgs.push('✅ '+it.name+':'+challenge2Counts[it.key]+'个');
+    } else {
+      msgs.push('❌ '+it.name+':你画了'+challenge2Counts[it.key]+'个,应该是'+it.exp+'个');
+      ok = false;
+    }
+  }
+  if (ok) {
+    result.innerHTML = '🎉 全部正确！通过第2关！<br>'+msgs.join('<br>');
+    result.style.color = '#2e7d32';
+    advanceChallenge(3);
+  } else {
+    result.innerHTML = '⚠️ 有些不对，再数数看吧！<br>'+msgs.join('<br>');
+    result.style.color = '#c62828';
+  }
+  gsap.from(result, {opacity:0,y:6,duration:.2});
+}
+
+// Challenge 3
+function challenge3Answer(which) {
+  var opts = document.querySelectorAll('#challengeQuiz .quiz-option');
+  var result = document.getElementById('challenge3Result');
+  result.classList.remove('hidden');
+  for (var i=0;i<opts.length;i++) opts[i].style.pointerEvents = 'none';
+
+  if (which === 'grape') {
+    opts.forEach(function(o){ if(o.textContent.includes('🍇')) o.classList.add('correct'); });
+    result.innerHTML = '✅ 正确！葡萄的柱子最高（7个），所以小明一周吃葡萄最多！通过第3关！🎉';
+    result.style.color = '#2e7d32';
+    // show win
+    setTimeout(function(){
+      document.getElementById('challenge3').classList.add('hidden');
+      document.getElementById('challengeWin').classList.remove('hidden');
+      document.getElementById('challengeProgress').style.width = '100%';
+      document.getElementById('challengeStatus').textContent = '🏁 全部通关！🎉';
+      gsap.from('.badge', {scale:0,rotation:-20,duration:.5,ease:'back.out(2)'});
+      speak('恭喜通关！你是统计小达人');
+    }, 800);
+  } else {
+    result.innerHTML = '❌ 再想想～哪根柱子最高？最高的代表最多哦！';
+    result.style.color = '#c62828';
+  }
+  gsap.from(result, {opacity:0,y:6,duration:.2});
+}
+
+// ====== INIT GSAP ANIMATIONS ======
+document.addEventListener('DOMContentLoaded', function(){
+  // cover entrance
+  gsap.from('.cover .emoji-big', {scale:0,rotation:-30,duration:.6,ease:'back.out(2)',delay:.1});
+  gsap.from('.cover h1', {opacity:0,y:-20,duration:.5,delay:.3});
+  gsap.from('.cover p', {opacity:0,y:-10,duration:.4,delay:.5});
+  gsap.from('.goal-list span', {opacity:0,y:10,duration:.3,stagger:.1,delay:.7});
+  gsap.from('.cover .btn', {opacity:0,scale:.8,duration:.4,delay:1.2});
+
+  // section entrances
+  gsap.utils.toArray('.section').forEach(function(s,i){
+    gsap.from(s, {opacity:0,y:30,duration:.5,delay:.2*i+.5,scrollTrigger:{
+      trigger:s,
+      start:'top 85%',
+      toggleActions:'play none none none'
+    }});
+  });
+
+  // bar chart animate
+  gsap.utils.toArray('svg .bar-rect').forEach(function(rect,i){
+    var h = rect.getAttribute('height');
+    var y = rect.getAttribute('y');
+    gsap.from(rect, {
+      attr:{height:0,y:200},
+      duration:.5,
+      delay:.3*i+.5,
+      ease:'bounce.out'
+    });
+  });
+
+  // scrollTrigger polyfill
+  if(typeof ScrollTrigger !== 'undefined'){
+    gsap.registerPlugin(ScrollTrigger);
+  } else {
+    // simple fallback: just animate visible
+    gsap.utils.toArray('.section').forEach(function(s){
+      var top = s.getBoundingClientRect().top;
+      if(top > window.innerHeight) s.style.opacity = '0';
+    });
+    window.addEventListener('scroll', function(){
+      gsap.utils.toArray('.section').forEach(function(s){
+        var top = s.getBoundingClientRect().top;
+        if(top < window.innerHeight * .85) {
+          gsap.to(s, {opacity:1,y:0,duration:.5});
+        }
+      });
+    });
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第10课：声母王国中 | Chinese Lesson 10: Initial Consonants Part 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Nunito',sans-serif;
+  background:#1a1a2e;
+  display:flex;justify-content:center;align-items:center;
+  color:#2d3436;
+  -webkit-font-smoothing:antialiased;
+}
+/* ===== APP CONTAINER ===== */
+.app{flex-shrink:0;
+  width:100%;max-width:960px;height:100vh;max-height:820px;
+  background:#fff8f0;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 0 40px rgba(0,0,0,.4);
+  border-radius:0;
+}
+@media(min-width:421px){
+  .app{border-radius:28px;height:96vh}
+}
+/* ===== TOP BAR ===== */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 8px;background:#ef5350;color:#fff;
+  position:relative;z-index:20;
+  box-shadow:0 4px 0 #c62828;
+  flex-shrink:0;
+}
+.top-bar .btn-home,.top-bar .btn-sound{
+  background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:38px;height:38px;border-radius:12px;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);
+}
+.top-bar .btn-home:active,.top-bar .btn-sound:active{transform:translateY(2px);box-shadow:none}
+.top-bar .lesson-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:8px;text-align:center;line-height:1.4;
+  text-shadow:2px 2px 0 #c62828;
+}
+.top-bar .btn-sound.active{background:rgba(255,255,255,.4)}
+/* ===== PAGES CONTAINER ===== */
+.pages-wrap{flex:1;position:relative;overflow:hidden}
+.page{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  overflow-y:auto;overflow-x:hidden;
+  padding:18px 18px 80px;
+  opacity:0;visibility:hidden;transition:none;
+  -webkit-overflow-scrolling:touch;
+}
+.page.active{opacity:1;visibility:visible;z-index:10}
+.page-inner{max-width:400px;margin:0 auto}
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 14px;background:#fff;border-top:3px solid #ffcdd2;
+  flex-shrink:0;position:relative;z-index:20;
+}
+.bottom-nav .btn-prev,.bottom-nav .btn-next{
+  background:#ef5350;border:none;color:#fff;
+  width:44px;height:44px;border-radius:14px;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  box-shadow:0 4px 0 #c62828;
+}
+.bottom-nav .btn-prev:active,.bottom-nav .btn-next:active{transform:translateY(4px);box-shadow:none}
+.bottom-nav .btn-prev:disabled,.bottom-nav .btn-next:disabled{opacity:.3;box-shadow:0 2px 0 #c62828;transform:none;pointer-events:none}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.dots .dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#ffcdd2;border:none;cursor:pointer;transition:all .3s;
+  padding:0;flex-shrink:0;
+}
+.dots .dot.active{background:#ef5350;transform:scale(1.3);box-shadow:0 0 8px rgba(239,83,80,.5)}
+/* ===== TYPOGRAPHY ===== */
+.page-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:12px;color:#ef5350;margin-bottom:10px;
+  text-shadow:2px 2px 0 #ffcdd2;
+}
+.page-subtitle{font-size:16px;color:#666;margin-bottom:14px;font-weight:600}
+/* ===== COVER PAGE ===== */
+.cover{text-align:center;padding-top:16px}
+.cover .big-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:17px;color:#ef5350;line-height:1.6;
+  text-shadow:3px 3px 0 #ffcdd2;margin-bottom:6px;
+}
+.cover .sub{
+  font-size:18px;color:#555;font-weight:700;margin-bottom:10px
+}
+.cover .mascot{font-size:70px;margin:8px 0;line-height:1}
+.cover .lesson-badge{
+  display:inline-block;background:#ef5350;color:#fff;padding:6px 20px;
+  border-radius:30px;font-weight:800;font-size:16px;margin-top:6px;
+  box-shadow:0 4px 0 #c62828;
+}
+.cover .total-count{margin-top:10px;font-size:15px;color:#888;font-weight:600}
+.cover .img-wrap{
+  margin:14px auto 0;width:100%;max-width:360px;border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.15);
+}
+.cover .img-wrap img{width:100%;display:block}
+/* ===== IMAGE WRAPPER ===== */
+.img-wrap{
+  margin:12px 0;width:100%;max-width:400px;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+.img-wrap img{width:100%;display:block;background:#f5ede4}
+.img-wrap .fallback{
+  width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#ffcdd2,#fff8f0);
+  color:#ef5350;font-weight:700;font-size:14px;text-align:center;padding:20px;
+}
+/* ===== PINYIN DISPLAY ===== */
+.pinyin-display{text-align:center;margin:8px 0}
+.pinyin-display .pinyin-big{
+  font-size:56px;color:#ef5350;font-weight:900;margin-bottom:2px;
+  letter-spacing:6px;line-height:1.1;
+}
+.pinyin-display .pinyin-chars{
+  font-size:18px;color:#666;font-weight:600;margin-top:4px;
+}
+.pinyin-display .tone-badge{
+  display:inline-block;background:#ef5350;color:#fff;
+  padding:3px 14px;border-radius:20px;font-weight:800;font-size:14px;
+  margin-top:4px;box-shadow:0 2px 0 #c62828;
+}
+/* ===== INITIAL CARDS ===== */
+.initial-grid{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;
+}
+.initial-card{
+  background:#fff;border:3px solid #ffcdd2;border-radius:16px;
+  padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;
+  min-width:75px;flex:1 0 calc(50% - 10px);max-width:155px;
+  user-select:none;
+}
+.initial-card:active{transform:scale(.93)}
+.initial-card .init-pinyin{
+  font-size:40px;font-weight:900;color:#ef5350;line-height:1.1;
+}
+.initial-card .init-example{
+  font-size:16px;color:#7b1fa2;font-weight:700;margin-top:4px;
+}
+.initial-card .init-word{
+  font-size:14px;color:#888;font-weight:600;margin-top:2px;
+}
+.initial-card.speaking{border-color:#ef5350;background:#fff5f0;transform:scale(1.02);box-shadow:0 0 16px rgba(239,83,80,.25)}
+.initial-card .init-icon{font-size:32px;margin-bottom:4px;display:block}
+/* ===== INFO BOX ===== */
+.info-box{
+  background:#fff;border:2px solid #ffcdd2;border-radius:14px;
+  padding:12px 14px;margin:8px 0;
+}
+.info-box .label{
+  font-weight:800;font-size:13px;color:#ef5350;margin-bottom:6px;
+  font-family:'Press Start 2P',monospace;font-size:9px;
+}
+.info-box p{font-size:15px;color:#444;line-height:1.6}
+.info-box .highlight{color:#ef5350;font-weight:800}
+/* ===== FACT BOX ===== */
+.fact-box{
+  background:linear-gradient(135deg,#fff5f0,#fff);
+  border:2px solid #ef5350;border-radius:14px;
+  padding:10px 14px;margin:8px 0;
+}
+.fact-box .fact-icon{font-size:24px;margin-right:6px}
+.fact-box .fact-text{font-size:14px;color:#555;line-height:1.5}
+.fact-box .fact-text strong{color:#ef5350}
+/* ===== CHIP GROUP ===== */
+.chip-group{margin:8px 0}
+.chip-group .group-label{
+  font-family:'Press Start 2P',monospace;
+  font-size:9px;color:#ef5350;margin:8px 0 4px;
+}
+.chip-group .chips{
+  display:flex;flex-wrap:wrap;gap:5px;justify-content:center;
+}
+.chip-group .chip{
+  background:#fff;border:2px solid #ffcdd2;border-radius:10px;
+  padding:6px 14px;font-weight:700;font-size:18px;color:#2d3436;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.chip-group .chip:active{transform:scale(.9)}
+.chip-group .chip.speaking{background:#fff5f0;border-color:#ef5350;transform:scale(1.05)}
+/* ===== BLENDING AREA ===== */
+.blend-area{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.blend-card{
+  background:#fff;border:2px solid #ffcdd2;border-radius:14px;
+  padding:10px 14px;text-align:center;cursor:pointer;transition:all .2s;
+  min-width:80px;flex:1 0 calc(50% - 10px);max-width:170px;
+}
+.blend-card:active{transform:scale(.95)}
+.blend-card .blend-pinyin{font-size:26px;font-weight:900;color:#ef5350}
+.blend-card .blend-meaning{font-size:13px;color:#888;font-weight:600;margin-top:2px}
+.blend-card .blend-desc{font-size:12px;color:#7b1fa2;font-weight:700}
+.blend-card.speaking{border-color:#ef5350;background:#fff5f0}
+/* ===== PRACTICE QUIZ ===== */
+.quiz-q{margin:10px 0}
+.quiz-q .q-text{font-weight:700;font-size:15px;margin-bottom:8px;color:#ef5350}
+.quiz-q .q-opts{display:flex;flex-direction:column;gap:5px}
+.quiz-q .q-opt{
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:10px 14px;cursor:pointer;font-weight:600;font-size:15px;
+  transition:all .2s;text-align:left;
+}
+.quiz-q .q-opt:active{transform:scale(.98)}
+.quiz-q .q-opt.selected{border-color:#ef5350;background:#fff5f0}
+.quiz-q .q-opt.correct{border-color:#4caf50;background:#e8f5e9}
+.quiz-q .q-opt.wrong{border-color:#f44336;background:#ffebee}
+.quiz-score{text-align:center;font-weight:800;font-size:20px;color:#ef5350;margin:8px 0}
+/* ===== CELEBRATION PAGE ===== */
+.celebrate{text-align:center;padding-top:30px}
+.celebrate .big-emoji{font-size:80px;margin-bottom:10px}
+.celebrate .msg{font-family:'Press Start 2P',monospace;font-size:11px;color:#ef5350;margin:10px 0;line-height:1.8}
+.celebrate .stats{font-size:16px;color:#555;font-weight:700;margin:8px 0}
+.celebrate .badge-earned{
+  display:inline-block;background:linear-gradient(135deg,#ef5350,#ff8a80);
+  color:#fff;padding:10px 24px;border-radius:30px;font-weight:800;font-size:18px;
+  margin:10px 0;box-shadow:0 4px 0 #c62828,0 6px 20px rgba(239,83,80,.3);
+  font-family:'Press Start 2P',monospace;font-size:13px;
+}
+.celebrate .review-grid{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
+.celebrate .review-grid .rev-item{
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:6px 12px;font-size:18px;font-weight:800;color:#ef5350;
+  transition:all .3s;cursor:pointer;
+}
+.celebrate .review-grid .rev-item:hover{transform:scale(1.1);border-color:#ef5350}
+/* ===== CONFETTI CANVAS ===== */
+#confetti-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:50;
+}
+/* ===== SCROLLBAR ===== */
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:#ffcdd2;border-radius:4px}
+/* ===== RESPONSIVE ===== */
+@media(max-width:360px){
+  .initial-card .init-pinyin{font-size:32px}
+  .cover .big-title{font-size:14px}
+  .pinyin-display .pinyin-big{font-size:42px}
+  .blend-card{flex:1 0 100%;max-width:100%}
+  .initial-card{flex:1 0 100%;max-width:100%}
+}
+/* ===== UTILITIES ===== */
+.text-center{text-align:center}
+.mt-4{margin-top:4px}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.gap-4{gap:4px}
+/* ===== MC BORDER ===== */
+.mc-border{
+  border:3px solid #ef5350;
+  box-shadow:
+    inset -3px -3px 0 #c62828,
+    inset 3px 3px 0 #ff8a80,
+    0 4px 12px rgba(239,83,80,.2);
+}
+/* ===== MINI SOUND BUTTON ===== */
+.btn-sound-mini{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#fff;border:2px solid #ef5350;color:#ef5350;
+  padding:6px 16px;border-radius:20px;font-weight:700;font-size:13px;
+  cursor:pointer;transition:all .2s;
+  font-family:'Nunito',sans-serif;
+}
+.btn-sound-mini:active{transform:scale(.93);background:#fff5f0}
+/* ===== PINYIN DECORATION ===== */
+.pinyin-deco{display:flex;gap:4px;justify-content:center;margin:4px 0}
+.pinyin-deco .pixel{
+  width:8px;height:8px;background:#ef5350;border-radius:1px;
+  box-shadow:1px 1px 0 #c62828;
+}
+/* ===== INITIAL CHART ===== */
+.init-chart{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0}
+.init-chart .chart-item{
+  background:#fff;border:2px solid #ffcdd2;border-radius:10px;
+  padding:4px 10px;font-weight:700;font-size:18px;color:#ef5350;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.init-chart .chart-item:active{transform:scale(.9)}
+.init-chart .chart-item.speaking{background:#fff5f0;border-color:#ef5350;transform:scale(1.08)}
+/* ===== THREE-CARD GRID ===== */
+.initial-grid-3{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0;
+}
+.initial-card-3{
+  background:#fff;border:3px solid #ffcdd2;border-radius:16px;
+  padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s;
+  min-width:65px;flex:1 0 calc(33% - 8px);max-width:125px;
+  user-select:none;
+}
+.initial-card-3:active{transform:scale(.93)}
+.initial-card-3 .init-pinyin{font-size:32px;font-weight:900;color:#ef5350;line-height:1.1}
+.initial-card-3 .init-example{font-size:14px;color:#7b1fa2;font-weight:700;margin-top:3px}
+.initial-card-3 .init-word{font-size:12px;color:#888;font-weight:600;margin-top:2px}
+.initial-card-3 .init-icon{font-size:28px;margin-bottom:2px;display:block}
+.initial-card-3.speaking{border-color:#ef5350;background:#fff5f0;transform:scale(1.02);box-shadow:0 0 16px rgba(239,83,80,.25)}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <button class="btn-home" id="btnHome" title="首页">🏠</button>
+    <div class="lesson-title">第10课·声母王国中</div>
+    <button class="btn-sound" id="btnSound" title="朗读">▶</button>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-wrap" id="pagesWrap">
+
+    <!-- PAGE 1: COVER -->
+    <div class="page active" data-page="1">
+      <div class="page-inner cover">
+        <div class="pinyin-deco"><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span></div>
+        <div class="big-title">声母王国中</div>
+        <div class="sub">🔊 Initial Consonants Part 2</div>
+        <div class="mascot">🎯</div>
+        <div class="lesson-badge">第10课</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="声母王国中 - Initial Consonants Part 2" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🎯 声母王国中<br>j q x zh ch sh r z c s y w<br><span style=font-size:12px;color:#999>page-01.webp</span></div>'">
+        </div>
+        <div class="total-count">📖 学习 <strong style="color:#ef5350">12个声母</strong>：j q x zh ch sh r z c s y w</div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: j, q, x -->
+    <div class="page" data-page="2">
+      <div class="page-inner">
+        <div class="page-title">声母 j · q · x</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="声母 j q x" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🔊 声母 j q x<br>舌面音：jī 鸡 · qì 气 · xī 西<br><span style=font-size:12px;color:#999>page-02.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">👅 舌面音</div>
+          <p>舌面抬起贴近上颚，轻轻摩擦发音！<br>
+          <span class="highlight">j</span> 不送气，像小鸡啄米<br>
+          <span class="highlight">q</span> 送气，像气球放气<br>
+          <span class="highlight">x</span> 像微笑时轻轻吹气</p>
+        </div>
+        <div class="initial-grid-3">
+          <div class="initial-card-3" onclick="speak('ji');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">🐔</span>
+            <div class="init-pinyin">j</div>
+            <div class="init-example">jī · 鸡</div>
+            <div class="init-word">chicken</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('qi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">🎈</span>
+            <div class="init-pinyin">q</div>
+            <div class="init-example">qì · 气</div>
+            <div class="init-word">air/gas</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('xi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">🌅</span>
+            <div class="init-pinyin">x</div>
+            <div class="init-example">xī · 西</div>
+            <div class="init-word">west</div>
+          </div>
+        </div>
+        <div class="chip-group">
+          <div class="group-label">🎧 点一点练拼读</div>
+          <div class="chips">
+            <span class="chip" onclick="speak('jia');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">jiā 家</span>
+            <span class="chip" onclick="speak('qiu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">qiú 球</span>
+            <span class="chip" onclick="speak('xia');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">xià 下</span>
+            <span class="chip" onclick="speak('jiao');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">jiào 叫</span>
+            <span class="chip" onclick="speak('qu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">qù 去</span>
+            <span class="chip" onclick="speak('xiao');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">xiǎo 小</span>
+          </div>
+        </div>
+        <div class="pinyin-display">
+          <div class="pinyin-deco"><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span></div>
+          <div class="pinyin-big">j · q · x</div>
+          <div class="pinyin-chars">鸡(jī) · 气(qì) · 西(xī) · 家(jiā) · 球(qiú) · 小(xiǎo)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: zh, ch, sh -->
+    <div class="page" data-page="3">
+      <div class="page-inner">
+        <div class="page-title">声母 zh · ch · sh</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="声母 zh ch sh" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🔊 声母 zh ch sh<br>翘舌音：zhī 知 · chī 吃 · shī 师<br><span style=font-size:12px;color:#999>page-03.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">👅 翘舌音</div>
+          <p>舌尖卷起抵住硬腭前部，像在说英文 "j"！<br>
+          <span class="highlight">zh</span> 不送气，卷舌轻弹<br>
+          <span class="highlight">ch</span> 送气，卷舌吹气<br>
+          <span class="highlight">sh</span> 卷舌摩擦，像"狮"吼</p>
+        </div>
+        <div class="initial-grid-3">
+          <div class="initial-card-3" onclick="speak('zhi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">📚</span>
+            <div class="init-pinyin">zh</div>
+            <div class="init-example">zhī · 知</div>
+            <div class="init-word">know</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('chi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">🍽️</span>
+            <div class="init-pinyin">ch</div>
+            <div class="init-example">chī · 吃</div>
+            <div class="init-word">eat</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('shi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">👩‍🏫</span>
+            <div class="init-pinyin">sh</div>
+            <div class="init-example">shī · 师</div>
+            <div class="init-word">teacher</div>
+          </div>
+        </div>
+        <div class="chip-group">
+          <div class="group-label">🎧 点一点练拼读</div>
+          <div class="chips">
+            <span class="chip" onclick="speak('zhu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">zhù 住</span>
+            <span class="chip" onclick="speak('cha');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">chá 茶</span>
+            <span class="chip" onclick="speak('she');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">shé 蛇</span>
+            <span class="chip" onclick="speak('zhou');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">zhōu 周</span>
+            <span class="chip" onclick="speak('chou');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">chǒu 丑</span>
+            <span class="chip" onclick="speak('shou');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">shǒu 手</span>
+          </div>
+        </div>
+        <div class="pinyin-display">
+          <div class="pinyin-deco"><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span></div>
+          <div class="pinyin-big">zh · ch · sh</div>
+          <div class="pinyin-chars">知(zhī) · 吃(chī) · 师(shī) · 住(zhù) · 茶(chá) · 手(shǒu)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: r, z, c -->
+    <div class="page" data-page="4">
+      <div class="page-inner">
+        <div class="page-title">声母 r · z · c</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="声母 r z c" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🔊 声母 r z c<br>rì 日 · zì 字 · cì 次<br><span style=font-size:12px;color:#999>page-04.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">👅 翘舌 + 平舌音</div>
+          <p><span class="highlight">r</span> 翘舌浊音，像"日"出温暖<br>
+          <span class="highlight">z</span> 平舌不送气，像"字"正腔圆<br>
+          <span class="highlight">c</span> 平舌送气，像"刺"出尖锐</p>
+        </div>
+        <div class="initial-grid-3">
+          <div class="initial-card-3" onclick="speak('ri');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">☀️</span>
+            <div class="init-pinyin">r</div>
+            <div class="init-example">rì · 日</div>
+            <div class="init-word">sun</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('zi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">📝</span>
+            <div class="init-pinyin">z</div>
+            <div class="init-example">zì · 字</div>
+            <div class="init-word">character</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('ci');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">🔢</span>
+            <div class="init-pinyin">c</div>
+            <div class="init-example">cì · 次</div>
+            <div class="init-word">time/order</div>
+          </div>
+        </div>
+        <div class="chip-group">
+          <div class="group-label">🎧 点一点练拼读</div>
+          <div class="chips">
+            <span class="chip" onclick="speak('re');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">rè 热</span>
+            <span class="chip" onclick="speak('zuo');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">zuò 坐</span>
+            <span class="chip" onclick="speak('cai');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">cài 菜</span>
+            <span class="chip" onclick="speak('ran');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">rán 然</span>
+            <span class="chip" onclick="speak('zao');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">zǎo 早</span>
+            <span class="chip" onclick="speak('cu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">cū 粗</span>
+          </div>
+        </div>
+        <div class="pinyin-display">
+          <div class="pinyin-deco"><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span></div>
+          <div class="pinyin-big">r · z · c</div>
+          <div class="pinyin-chars">日(rì) · 字(zì) · 次(cì) · 热(rè) · 坐(zuò) · 菜(cài)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: s, y, w -->
+    <div class="page" data-page="5">
+      <div class="page-inner">
+        <div class="page-title">声母 s · y · w</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="声母 s y w" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🔊 声母 s y w<br>sì 四 · yī 一 · wǔ 五<br><span style=font-size:12px;color:#999>page-05.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">👅 平舌 + 半元音</div>
+          <p><span class="highlight">s</span> 平舌擦音，像蛇吐信子<br>
+          <span class="highlight">y</span> 半元音，像"一"样轻快<br>
+          <span class="highlight">w</span> 半元音，像"五"指张开</p>
+        </div>
+        <div class="initial-grid-3">
+          <div class="initial-card-3" onclick="speak('si');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">4️⃣</span>
+            <div class="init-pinyin">s</div>
+            <div class="init-example">sì · 四</div>
+            <div class="init-word">four</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('yi');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">1️⃣</span>
+            <div class="init-pinyin">y</div>
+            <div class="init-example">yī · 一</div>
+            <div class="init-word">one</div>
+          </div>
+          <div class="initial-card-3" onclick="speak('wu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <span class="init-icon">✋</span>
+            <div class="init-pinyin">w</div>
+            <div class="init-example">wǔ · 五</div>
+            <div class="init-word">five</div>
+          </div>
+        </div>
+        <div class="chip-group">
+          <div class="group-label">🎧 点一点练拼读</div>
+          <div class="chips">
+            <span class="chip" onclick="speak('san');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">sān 三</span>
+            <span class="chip" onclick="speak('you');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">yǒu 有</span>
+            <span class="chip" onclick="speak('wo');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">wǒ 我</span>
+            <span class="chip" onclick="speak('sui');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">suì 岁</span>
+            <span class="chip" onclick="speak('yu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">yú 鱼</span>
+            <span class="chip" onclick="speak('wan');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">wán 玩</span>
+          </div>
+        </div>
+        <div class="pinyin-display">
+          <div class="pinyin-deco"><span class="pixel"></span><span class="pixel"></span><span class="pixel"></span></div>
+          <div class="pinyin-big">s · y · w</div>
+          <div class="pinyin-chars">四(sì) · 一(yī) · 五(wǔ) · 三(sān) · 有(yǒu) · 我(wǒ)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: Blending j, q, x -->
+    <div class="page" data-page="6">
+      <div class="page-inner">
+        <div class="page-title">🧩 拼读乐园 · j q x</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="拼读 j q x" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🧩 拼读 j q x<br>j + i = ji · q + i = qi · x + i = xi<br><span style=font-size:12px;color:#999>page-06.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">🧩 j q x + i = 拼音</div>
+          <p>声母 <span class="highlight">j q x</span> 和 <span class="highlight">i</span> 拼在一起，注意：j q x 只与 i、ü 开头的韵母相拼！<br>
+          例如 <span class="highlight">j + i = jī</span>（鸡）· <span class="highlight">q + i = qì</span>（气）· <span class="highlight">x + i = xī</span>（西）</p>
+        </div>
+        <div class="blend-area">
+          <div class="blend-card" onclick="speak('jia');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">jiā</div>
+            <div class="blend-desc">j + iā</div>
+            <div class="blend-meaning">家 · home</div>
+          </div>
+          <div class="blend-card" onclick="speak('qiu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">qiú</div>
+            <div class="blend-desc">q + iú</div>
+            <div class="blend-meaning">球 · ball</div>
+          </div>
+          <div class="blend-card" onclick="speak('xihuan');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">xǐ huān</div>
+            <div class="blend-desc">x + ǐ · h + uān</div>
+            <div class="blend-meaning">喜欢 · like</div>
+          </div>
+          <div class="blend-card" onclick="speak('jian');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">jiàn</div>
+            <div class="blend-desc">j + iàn</div>
+            <div class="blend-meaning">见 · see</div>
+          </div>
+          <div class="blend-card" onclick="speak('qing');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">qīng</div>
+            <div class="blend-desc">q + īng</div>
+            <div class="blend-meaning">清 · clear</div>
+          </div>
+          <div class="blend-card" onclick="speak('xing');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">xīng</div>
+            <div class="blend-desc">x + īng</div>
+            <div class="blend-meaning">星 · star</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: Blending zh, ch, sh -->
+    <div class="page" data-page="7">
+      <div class="page-inner">
+        <div class="page-title">🧩 拼读乐园 · zh ch sh</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="拼读 zh ch sh" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🧩 拼读 zh ch sh<br>zh + a = zha · ch + a = cha · sh + a = sha<br><span style=font-size:12px;color:#999>page-07.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">🧩 翘舌音拼读</div>
+          <p><span class="highlight">zh ch sh</span> 可以和很多韵母相拼！<br>
+          注意 <span class="highlight">zh + u</span> 读起来像"猪"，<span class="highlight">ch + u</span> 像"出"，<span class="highlight">sh + u</span> 像"书"。</p>
+        </div>
+        <div class="blend-area">
+          <div class="blend-card" onclick="speak('zhu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">zhū</div>
+            <div class="blend-desc">zh + ū</div>
+            <div class="blend-meaning">猪 · pig</div>
+          </div>
+          <div class="blend-card" onclick="speak('che');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">chē</div>
+            <div class="blend-desc">ch + ē</div>
+            <div class="blend-meaning">车 · car</div>
+          </div>
+          <div class="blend-card" onclick="speak('shu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">shū</div>
+            <div class="blend-desc">sh + ū</div>
+            <div class="blend-meaning">书 · book</div>
+          </div>
+          <div class="blend-card" onclick="speak('zhan');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">zhàn</div>
+            <div class="blend-desc">zh + àn</div>
+            <div class="blend-meaning">站 · stand</div>
+          </div>
+          <div class="blend-card" onclick="speak('chang');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">chàng</div>
+            <div class="blend-desc">ch + àng</div>
+            <div class="blend-meaning">唱 · sing</div>
+          </div>
+          <div class="blend-card" onclick="speak('shui');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">shuǐ</div>
+            <div class="blend-desc">sh + uǐ</div>
+            <div class="blend-meaning">水 · water</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: Blending r, z, c, s, y, w -->
+    <div class="page" data-page="8">
+      <div class="page-inner">
+        <div class="page-title">🧩 拼读乐园 · r z c s y w</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="拼读 r z c s y w" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🧩 拼读 r z c s y w<br>r + e = re · z + uo = zuo · s + i = si<br><span style=font-size:12px;color:#999>page-08.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">🧩 更多拼读练习</div>
+          <p>把这些声母和韵母拼起来，试试看！<br>
+          <span class="highlight">y</span> 和 <span class="highlight">w</span> 是特殊的声母，它们和韵母拼在一起就是完整的音节。</p>
+        </div>
+        <div class="blend-area">
+          <div class="blend-card" onclick="speak('ren');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">rén</div>
+            <div class="blend-desc">r + én</div>
+            <div class="blend-meaning">人 · person</div>
+          </div>
+          <div class="blend-card" onclick="speak('zao');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">zǎo</div>
+            <div class="blend-desc">z + ǎo</div>
+            <div class="blend-meaning">早 · early</div>
+          </div>
+          <div class="blend-card" onclick="speak('cai');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">cài</div>
+            <div class="blend-desc">c + ài</div>
+            <div class="blend-meaning">菜 · vegetable</div>
+          </div>
+          <div class="blend-card" onclick="speak('si');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">sì</div>
+            <div class="blend-desc">s + ì</div>
+            <div class="blend-meaning">四 · four</div>
+          </div>
+          <div class="blend-card" onclick="speak('yu');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">yú</div>
+            <div class="blend-desc">y + ú</div>
+            <div class="blend-meaning">鱼 · fish</div>
+          </div>
+          <div class="blend-card" onclick="speak('wan');this.classList.add('speaking');setTimeout(()=>this.classList.remove('speaking'),400)">
+            <div class="blend-pinyin">wán</div>
+            <div class="blend-desc">w + án</div>
+            <div class="blend-meaning">玩 · play</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 9: Practice Quiz -->
+    <div class="page" data-page="9">
+      <div class="page-inner">
+        <div class="page-title">✏️ 小小练习</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-10/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="Practice Quiz" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>✏️ 选一选，哪个声母？<br><span style=font-size:12px;color:#999>page-09.webp</span></div>'">
+        </div>
+        <div class="info-box">
+          <div class="label">✏️ 选一选</div>
+          <p>点击正确答案。🎯 全部答对会有惊喜！</p>
+        </div>
+        <div id="quizArea"></div>
+        <div class="quiz-score" id="quizScore">得分：0 / 6</div>
+      </div>
+    </div>
+
+    <!-- PAGE 10: CELEBRATION -->
+    <div class="page" data-page="10">
+      <div class="page-inner celebrate">
+        <div class="big-emoji">🎉</div>
+        <div class="msg">太棒了！<br>你学会了12个新声母！</div>
+        <div class="badge-earned">🏅 声母小达人</div>
+        <div class="stats">第10课 完成！</div>
+        <div class="review-grid" id="reviewGrid">
+          <span class="rev-item" onclick="speak('ji')">jī</span>
+          <span class="rev-item" onclick="speak('qi')">qì</span>
+          <span class="rev-item" onclick="speak('xi')">xī</span>
+          <span class="rev-item" onclick="speak('zhi')">zhī</span>
+          <span class="rev-item" onclick="speak('chi')">chī</span>
+          <span class="rev-item" onclick="speak('shi')">shī</span>
+          <span class="rev-item" onclick="speak('ri')">rì</span>
+          <span class="rev-item" onclick="speak('zi')">zì</span>
+          <span class="rev-item" onclick="speak('ci')">cì</span>
+          <span class="rev-item" onclick="speak('si')">sì</span>
+          <span class="rev-item" onclick="speak('yi')">yī</span>
+          <span class="rev-item" onclick="speak('wu')">wǔ</span>
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#aaa">
+          🗣️ 声母王国中完成！继续加油练习！
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages-wrap -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="btn-prev" id="btnPrev">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="btn-next" id="btnNext">▶</button>
+  </div>
+
+</div><!-- /app -->
+
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'chinese-10-shengmu2';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+/* ===== DATA ===== */
+const TOTAL_PAGES = 10;
+
+const QUIZ_DATA = [
+  {q:'jī（鸡）的声母是？',opts:['j','q','x'],ans:0},
+  {q:'qì（气）的声母是？',opts:['j','q','x'],ans:1},
+  {q:'shī（师）的声母是？',opts:['zh','ch','sh'],ans:2},
+  {q:'zì（字）的声母是？',opts:['z','c','s'],ans:0},
+  {q:'yī（一）的声母是？',opts:['r','y','w'],ans:1},
+  {q:'wǔ（五）的声母是？',opts:['y','w','m'],ans:1},
+];
+
+/* ===== STATE ===== */
+let currentPage = 1;
+let isSpeaking = false;
+let quizAnswers = [];
+
+/* ===== NAVIGATION ===== */
+function goToPage(n){
+  if(n<1||n>TOTAL_PAGES)return;
+  const oldEl=document.querySelector('.page.active');
+  const newEl=document.querySelector(`.page[data-page="${n}"]`);
+  if(!newEl)return;
+  if(oldEl&&oldEl!==newEl){
+    gsap.to(oldEl,{opacity:0,duration:.25,onComplete:()=>{oldEl.classList.remove('active')}});
+  }
+  newEl.style.opacity=0;
+  newEl.classList.add('active');
+  gsap.to(newEl,{opacity:1,duration:.35,ease:'power2.out'});
+  currentPage=n;
+  updateDots();
+  updateButtons();
+  if(n===TOTAL_PAGES){
+    setTimeout(startConfetti,300);
+  }
+  document.querySelector('.btn-sound').classList.remove('active');
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+}
+
+function updateDots(){
+  document.querySelectorAll('.dots .dot').forEach((d,i)=>{
+    d.classList.toggle('active',i+1===currentPage);
+  });
+}
+
+function updateButtons(){
+  document.getElementById('btnPrev').disabled=currentPage===1;
+  document.getElementById('btnNext').disabled=currentPage===TOTAL_PAGES;
+}
+
+function initDots(){
+  const c=document.getElementById('dots');
+  for(let i=1;i<=TOTAL_PAGES;i++){
+    const b=document.createElement('button');
+    b.className='dot'+(i===1?' active':'');
+    b.setAttribute('aria-label','Page '+i);
+    b.onclick=()=>goToPage(i);
+    c.appendChild(b);
+  }
+}
+
+/* ===== SPEECH ===== */
+function speak(text){
+  if(!window.speechSynthesis){alert('语音合成不可用');return}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN';u.rate=.85;u.pitch=1.1;
+  u.onstart=()=>{isSpeaking=true;document.querySelector('.btn-sound').classList.add('active')};
+  u.onend=()=>{isSpeaking=false;document.querySelector('.btn-sound').classList.remove('active')};
+  window.speechSynthesis.speak(u);
+}
+
+function speakPageContent(){
+  const page=document.querySelector(`.page[data-page="${currentPage}"]`);
+  if(!page)return;
+  if(isSpeaking){window.speechSynthesis.cancel();document.querySelector('.btn-sound').classList.remove('active');isSpeaking=false;return}
+  let txt='';
+  const titles=page.querySelectorAll('.page-title');
+  const headlines=page.querySelectorAll('.info-box p, .fact-box .fact-text, .initial-card .init-example, .initial-card-3 .init-example');
+  if(titles.length)txt+=titles[0].textContent.replace(/[🧩🗣️✏️🎉🔊🎧💡👄👅🎯]/g,'').trim()+' ';
+  headlines.forEach(h=>{txt+=h.textContent.trim()+' '});
+  if(!txt.trim())txt=page.textContent.substring(0,200);
+  speak(txt.trim());
+}
+
+/* ===== QUIZ ===== */
+function initQuiz(){
+  const c=document.getElementById('quizArea');
+  if(!c)return;
+  c.innerHTML='';quizAnswers=[];
+  QUIZ_DATA.forEach((q,i)=>{
+    const div=document.createElement('div');div.className='quiz-q';
+    const qText=document.createElement('div');qText.className='q-text';
+    qText.textContent=(i+1)+'. '+q.q;
+    const opts=document.createElement('div');opts.className='q-opts';
+    q.opts.forEach((o,j)=>{
+      const btn=document.createElement('span');btn.className='q-opt';
+      btn.textContent=o;btn.dataset.idx=j;
+      btn.onclick=()=>answerQuiz(i,j,btn);
+      opts.appendChild(btn);
+    });
+    div.appendChild(qText);
+    div.appendChild(opts);
+    c.appendChild(div);
+    quizAnswers.push(-1);
+  });
+  updateQuizScore();
+}
+
+function answerQuiz(qIdx,optIdx,btn){
+  if(quizAnswers[qIdx]>=0)return;
+  const parent=btn.parentElement;
+  const allOpts=parent.querySelectorAll('.q-opt');
+  const correct=QUIZ_DATA[qIdx].ans;
+  allOpts.forEach((o,i)=>{
+    o.classList.add('disabled','pointer-events-none');
+    if(i===correct)o.classList.add('correct');
+    else if(i===optIdx&&i!==correct)o.classList.add('wrong');
+  });
+  quizAnswers[qIdx]=optIdx;
+  updateQuizScore();
+}
+
+function updateQuizScore(){
+  const score=quizAnswers.filter((a,i)=>a===QUIZ_DATA[i].ans).length;
+  const el=document.getElementById('quizScore');
+  if(el)el.textContent='得分：'+score+' / '+QUIZ_DATA.length;
+  if(score===QUIZ_DATA.length&&quizAnswers.every(a=>a>=0)){
+    setTimeout(()=>{
+      if(el)el.textContent+=' 🎉 全对！太棒了！';
+      startConfetti();
+    },400);
+  }
+}
+
+function resetQuiz(){
+  initQuiz();
+  const el=document.getElementById('quizScore');
+  if(el)el.textContent='得分：0 / '+QUIZ_DATA.length;
+  stopConfetti();
+}
+
+/* ===== CONFETTI ===== */
+let confettiRunning=false;
+let confettiPieces=[];
+let confettiAnimId=null;
+
+function startConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  if(!canvas)return;
+  if(confettiRunning)return;
+  confettiRunning=true;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth;
+  canvas.height=canvas.parentElement.offsetHeight;
+  const colors=['#ef5350','#ff8a80','#ffd600','#4caf50','#42a5f5','#ab47bc','#ff7043'];
+  confettiPieces=[];
+  for(let i=0;i<80;i++){
+    confettiPieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height-canvas.height,
+      w:6+Math.random()*6,
+      h:4+Math.random()*6,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      speed:2+Math.random()*3,
+      rot:Math.random()*360,
+      rSpeed:-3+Math.random()*6,
+      swing:Math.random()*2-1,
+    });
+  }
+  function draw(){
+    if(!confettiRunning)return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let done=true;
+    confettiPieces.forEach(p=>{
+      p.y+=p.speed;
+      p.x+=p.swing;
+      p.rot+=p.rSpeed;
+      if(p.y<canvas.height+20){
+        done=false;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+    });
+    if(done){confettiRunning=false;ctx.clearRect(0,0,canvas.width,canvas.height);return}
+    confettiAnimId=requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function stopConfetti(){
+  confettiRunning=false;
+  if(confettiAnimId){cancelAnimationFrame(confettiAnimId);confettiAnimId=null}
+  const canvas=document.getElementById('confetti-canvas');
+  if(canvas){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height)}
+}
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',()=>{
+  initDots();
+  updateButtons();
+  initQuiz();
+  initClicks();
+
+  // Navigation
+  document.getElementById('btnPrev').onclick=()=>goToPage(currentPage-1);
+  document.getElementById('btnNext').onclick=()=>goToPage(currentPage+1);
+  document.getElementById('btnHome').onclick=()=>goToPage(1);
+  document.getElementById('btnSound').onclick=speakPageContent;
+
+  // Keyboard
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft')goToPage(currentPage-1);
+    if(e.key==='ArrowRight')goToPage(currentPage+1);
+  });
+
+  // Re-init quiz on page enter
+  document.querySelectorAll('.page').forEach(p=>{
+    const obs=new MutationObserver(()=>{
+      if(p.classList.contains('active')){
+        const pageNum=parseInt(p.dataset.page);
+        if(pageNum===9)initQuiz();
+      }
+    });
+    obs.observe(p,{attributes:true,attributeFilter:['class']});
+  });
+
+  console.log('🎯 第10课：声母王国中 loaded');
+});
+
+function initClicks(){
+  document.querySelectorAll('.initial-card, .initial-card-3, .chip, .blend-card, .chart-item').forEach(el=>{
+    el.addEventListener('click',function(){
+      setTimeout(()=>this.classList.remove('speaking'),400);
+    });
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第4课：大自然 | Chinese Lesson 4: Nature</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Nunito',sans-serif;
+  background:#1a1a2e;
+  display:flex;justify-content:center;align-items:center;
+  color:#2d3436;
+  -webkit-font-smoothing:antialiased;
+}
+/* ===== APP CONTAINER ===== */
+.app{flex-shrink:0;
+  width:100%;max-width:960px;height:100vh;max-height:820px;
+  background:#fff5f5;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 0 40px rgba(0,0,0,.4);
+  border-radius:0;
+}
+@media(min-width:421px){
+  .app{border-radius:28px;height:96vh}
+}
+/* ===== TOP BAR ===== */
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 8px;background:#ef5350;color:#fff;
+  position:relative;z-index:20;
+  box-shadow:0 4px 0 #c62828;
+  flex-shrink:0;
+}
+.top-bar .btn-home,.top-bar .btn-sound{
+  background:rgba(255,255,255,.2);border:none;color:#fff;
+  width:38px;height:38px;border-radius:12px;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  box-shadow:inset 0 -3px 0 rgba(0,0,0,.2);
+}
+.top-bar .btn-home:active,.top-bar .btn-sound:active{transform:translateY(2px);box-shadow:none}
+.top-bar .lesson-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:10px;text-align:center;line-height:1.4;
+  text-shadow:2px 2px 0 #c62828;
+}
+.top-bar .btn-sound.active{background:rgba(255,255,255,.4)}
+/* ===== PAGES CONTAINER ===== */
+.pages-wrap{flex:1;position:relative;overflow:hidden}
+.page{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  overflow-y:auto;overflow-x:hidden;
+  padding:18px 18px 80px;
+  opacity:0;visibility:hidden;transition:none;
+  -webkit-overflow-scrolling:touch;
+}
+.page.active{opacity:1;visibility:visible;z-index:10}
+.page-inner{max-width:400px;margin:0 auto}
+/* ===== PAGE DOTS NAV ===== */
+.bottom-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 14px;background:#fff;border-top:3px solid #ffcdd2;
+  flex-shrink:0;position:relative;z-index:20;
+}
+.bottom-nav .btn-prev,.bottom-nav .btn-next{
+  background:#ef5350;border:none;color:#fff;
+  width:44px;height:44px;border-radius:14px;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+  box-shadow:0 4px 0 #c62828;
+}
+.bottom-nav .btn-prev:active,.bottom-nav .btn-next:active{transform:translateY(4px);box-shadow:none}
+.bottom-nav .btn-prev:disabled,.bottom-nav .btn-next:disabled{opacity:.3;box-shadow:0 2px 0 #c62828;transform:none;pointer-events:none}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.dots .dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#ffcdd2;border:none;cursor:pointer;transition:all .3s;
+  padding:0;flex-shrink:0;
+}
+.dots .dot.active{background:#ef5350;transform:scale(1.3);box-shadow:0 0 8px rgba(239,83,80,.5)}
+/* ===== TYPOGRAPHY ===== */
+.page-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:14px;color:#ef5350;margin-bottom:12px;
+  text-shadow:2px 2px 0 #ffcdd2;
+}
+.page-subtitle{font-size:16px;color:#666;margin-bottom:16px;font-weight:600}
+/* ===== COVER PAGE ===== */
+.cover{text-align:center;padding-top:20px}
+.cover .big-title{
+  font-family:'Press Start 2P',monospace;
+  font-size:22px;color:#ef5350;line-height:1.6;
+  text-shadow:3px 3px 0 #ffcdd2;margin-bottom:8px;
+}
+.cover .sub{
+  font-size:18px;color:#555;font-weight:700;margin-bottom:12px
+}
+.cover .mascot{font-size:80px;margin:10px 0;line-height:1}
+.cover .lesson-badge{
+  display:inline-block;background:#ef5350;color:#fff;padding:6px 20px;
+  border-radius:30px;font-weight:800;font-size:16px;margin-top:8px;
+  box-shadow:0 4px 0 #c62828;
+}
+.cover .total-count{margin-top:12px;font-size:15px;color:#888;font-weight:600}
+.cover .img-wrap{
+  margin:16px auto 0;width:100%;max-width:360px;border-radius:20px;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.15);
+}
+.cover .img-wrap img{width:100%;display:block}
+/* ===== IMAGE WRAPPER ===== */
+.img-wrap{
+  margin:12px 0;width:100%;max-width:400px;border-radius:16px;overflow:hidden;
+  box-shadow:0 4px 16px rgba(0,0,0,.12);
+}
+.img-wrap img{width:100%;display:block;background:#f0e6e6}
+.img-wrap .fallback{
+  width:100%;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#ffcdd2,#fff5f5);
+  color:#ef5350;font-weight:700;font-size:14px;text-align:center;padding:20px;
+}
+/* ===== CHARACTER DISPLAY ===== */
+.char-display{text-align:center;margin:8px 0 10px}
+.char-display .pinyin{
+  font-size:24px;color:#ef5350;font-weight:800;margin-bottom:2px;
+  letter-spacing:2px;
+}
+.char-display .char{
+  font-size:100px;line-height:1.2;font-weight:900;
+  color:#2d3436;display:block;
+  text-shadow:3px 3px 0 #ffcdd2;
+}
+@media(min-width:400px){.char-display .char{font-size:120px}}
+.char-display .stroke-badge{
+  display:inline-block;background:#ef5350;color:#fff;
+  padding:3px 14px;border-radius:20px;font-weight:800;font-size:14px;
+  margin-top:4px;box-shadow:0 2px 0 #c62828;
+}
+.char-display .info-text{
+  margin-top:6px;font-size:15px;color:#666;font-weight:600;
+}
+/* ===== STROKE ORDER ===== */
+.stroke-section{margin:12px 0 8px}
+.stroke-section .label{
+  font-weight:800;font-size:13px;color:#ef5350;margin-bottom:6px;
+  font-family:'Press Start 2P',monospace;font-size:9px;
+}
+.stroke-steps{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;
+}
+.stroke-step{
+  display:flex;flex-direction:column;align-items:center;
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:6px 10px;min-width:48px;
+  transition:all .3s;
+}
+.stroke-step .num{
+  font-weight:900;color:#ef5350;font-size:13px;line-height:1;
+}
+.stroke-step .name{
+  font-size:11px;color:#555;font-weight:600;margin-top:2px;
+}
+.stroke-step.active{border-color:#ef5350;background:#fff5f5;box-shadow:0 0 12px rgba(239,83,80,.2)}
+/* ===== WORD EXAMPLES ===== */
+.word-examples{
+  display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0;
+}
+.word-example{
+  background:#fff;border:2px solid #ffcdd2;border-radius:14px;
+  padding:8px 14px;text-align:center;cursor:pointer;transition:all .2s;
+}
+.word-example:active{transform:scale(.95)}
+.word-example .w-char{font-size:22px;font-weight:800;color:#2d3436}
+.word-example .w-pinyin{font-size:12px;color:#ef5350;font-weight:700}
+.word-example .w-meaning{font-size:11px;color:#888}
+.word-example.play{border-color:#ef5350;background:#fff5f5}
+/* ===== CARDS ===== */
+.card{
+  background:#fff;border-radius:16px;padding:14px;margin:10px 0;
+  box-shadow:0 4px 16px rgba(0,0,0,.08);
+  border:2px solid #ffcdd2;
+}
+.card-title{
+  font-weight:800;font-size:16px;color:#ef5350;margin-bottom:8px;
+}
+/* ===== EXERCISE: MATCHING ===== */
+.match-area{display:flex;gap:12px;margin:10px 0}
+.match-col{flex:1;display:flex;flex-direction:column;gap:6px}
+.match-item{
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:10px 8px;text-align:center;font-weight:700;font-size:18px;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.match-item:active{transform:scale(.95)}
+.match-item.selected{border-color:#ef5350;background:#fff5f5;box-shadow:0 0 12px rgba(239,83,80,.3)}
+.match-item.matched{border-color:#4caf50;background:#e8f5e9;pointer-events:none;opacity:.7}
+.match-item.wrong{border-color:#f44336;background:#ffebee;animation:shake .3s}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+.match-item.pinyin-item{font-size:15px}
+.match-feedback{
+  text-align:center;font-weight:700;font-size:15px;min-height:24px;
+  margin-top:8px;
+}
+/* ===== FILL IN THE BLANK ===== */
+.fill-section{margin:12px 0}
+.fill-item{
+  margin:8px 0;font-size:17px;font-weight:600;
+  display:flex;flex-wrap:wrap;align-items:center;gap:4px;
+}
+.fill-item .blank{
+  display:inline-block;min-width:32px;border-bottom:3px solid #ef5350;
+  cursor:pointer;text-align:center;padding:0 4px;
+}
+.fill-item .blank.filled{color:#ef5350;font-weight:800}
+.fill-options{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;
+}
+.fill-opt{
+  background:#fff;border:2px solid #ffcdd2;border-radius:10px;
+  padding:6px 14px;font-size:20px;font-weight:700;cursor:pointer;
+  transition:all .2s;
+}
+.fill-opt:active{transform:scale(.9)}
+.fill-opt.used{opacity:.3;pointer-events:none}
+/* ===== QUIZ ===== */
+.quiz-q{margin:10px 0}
+.quiz-q .q-text{font-weight:700;font-size:15px;margin-bottom:6px}
+.quiz-q .q-opts{display:flex;flex-direction:column;gap:5px}
+.quiz-q .q-opt{
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:10px 14px;cursor:pointer;font-weight:600;font-size:15px;
+  transition:all .2s;text-align:left;
+}
+.quiz-q .q-opt:active{transform:scale(.98)}
+.quiz-q .q-opt.selected{border-color:#ef5350;background:#fff5f5}
+.quiz-q .q-opt.correct{border-color:#4caf50;background:#e8f5e9}
+.quiz-q .q-opt.wrong{border-color:#f44336;background:#ffebee}
+.quiz-score{text-align:center;font-weight:800;font-size:20px;color:#ef5350;margin:8px 0}
+/* ===== POEM PAGE ===== */
+.poem-container{text-align:center}
+.poem-title{
+  font-family:'Press Start 2P',monospace;font-size:10px;color:#ef5350;
+  margin-bottom:10px;line-height:1.6;
+}
+.poem-line{
+  font-size:24px;font-weight:800;color:#2d3436;margin:6px 0;
+  line-height:1.6;
+}
+.poem-line .pinyin{font-size:14px;color:#ef5350;font-weight:600;display:block}
+.poem-line .meaning{font-size:13px;color:#888;font-weight:600;display:block}
+.poem-img-row{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0;
+}
+.poem-img-row .img-wrap{width:calc(50% - 4px);margin:0;max-width:190px}
+/* ===== CELEBRATION PAGE ===== */
+.celebrate{text-align:center;padding-top:30px}
+.celebrate .big-emoji{font-size:80px;margin-bottom:10px}
+.celebrate .msg{font-family:'Press Start 2P',monospace;font-size:11px;color:#ef5350;margin:10px 0;line-height:1.8}
+.celebrate .stats{font-size:16px;color:#555;font-weight:700;margin:8px 0}
+.celebrate .chars-review{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
+.celebrate .chars-review .rev-char{
+  background:#fff;border:2px solid #ffcdd2;border-radius:12px;
+  padding:6px 10px;font-size:22px;font-weight:800;
+  transition:all .3s;cursor:pointer;
+}
+.celebrate .chars-review .rev-char:hover{transform:scale(1.1);border-color:#ef5350}
+/* ===== CONFETTI CANVAS ===== */
+#confetti-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:50;
+}
+/* ===== MINECRAFT BLOCK DECORATIONS ===== */
+.mc-decoration{display:flex;gap:4px;justify-content:center;margin:4px 0}
+.mc-pixel{
+  width:8px;height:8px;background:#ef5350;border-radius:1px;
+  box-shadow:1px 1px 0 #c62828;
+}
+/* ===== SCROLLBAR ===== */
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-track{background:transparent}
+.page::-webkit-scrollbar-thumb{background:#ffcdd2;border-radius:4px}
+/* ===== RESPONSIVE ===== */
+@media(max-width:360px){
+  .char-display .char{font-size:80px}
+  .cover .big-title{font-size:18px}
+  .match-area{gap:8px}
+  .match-item{padding:8px 6px;font-size:15px}
+}
+/* ===== UTILITIES ===== */
+.text-center{text-align:center}
+.mt-4{margin-top:4px}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.gap-4{gap:4px}
+/* ===== MINECRAFT BLOCKY BORDER ===== */
+.mc-border{
+  border:3px solid #ef5350;
+  box-shadow:
+    inset -3px -3px 0 #c62828,
+    inset 3px 3px 0 #ff8a80,
+    0 4px 12px rgba(239,83,80,.2);
+}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <button class="btn-home" id="btnHome" title="首页">🏠</button>
+    <div class="lesson-title">第4课·大自然</div>
+    <button class="btn-sound" id="btnSound" title="朗读">▶</button>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-wrap" id="pagesWrap">
+
+    <!-- PAGE 1: COVER -->
+    <div class="page active" data-page="1">
+      <div class="page-inner cover">
+        <div class="mc-decoration"><span class="mc-pixel"></span><span class="mc-pixel"></span><span class="mc-pixel"></span><span class="mc-pixel"></span></div>
+        <div class="big-title">大自然</div>
+        <div class="sub">🌤️ 天空在变脸 — 云来了</div>
+        <div class="mascot">☁️⛅🌧️</div>
+        <div class="lesson-badge">第4课</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="天空在变脸 - 云来了" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>☁️ 天空在变脸 — 云来了<br><span style=font-size:12px;color:#999>page-01.webp</span></div>'">
+        </div>
+        <div class="total-count">📖 累计识字 <strong style="color:#ef5350">36</strong> 个</div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: 云 -->
+    <div class="page" data-page="2">
+      <div class="page-inner">
+        <div class="page-title">云 ☁️</div>
+        <div class="char-display">
+          <div class="pinyin">yún</div>
+          <div class="char">云</div>
+          <div class="stroke-badge">4画</div>
+        </div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="云 - 白云" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>☁️ 云 (yún) — 白云 云朵<br><span style=font-size:12px;color:#999>page-02.webp</span></div>'">
+        </div>
+        <div class="stroke-section">
+          <div class="label">▶ 笔画顺序</div>
+          <div class="stroke-steps" id="strokes-yun">
+            <div class="stroke-step active"><span class="num">①</span><span class="name">横</span></div>
+            <div class="stroke-step"><span class="num">②</span><span class="name">横</span></div>
+            <div class="stroke-step"><span class="num">③</span><span class="name">撇折</span></div>
+            <div class="stroke-step"><span class="num">④</span><span class="name">点</span></div>
+          </div>
+        </div>
+        <div class="word-examples">
+          <div class="word-example" data-text="白云" data-pinyin="bái yún">
+            <div class="w-char">白云</div>
+            <div class="w-pinyin">bái yún</div>
+            <div class="w-meaning">white cloud</div>
+          </div>
+          <div class="word-example" data-text="云朵" data-pinyin="yún duǒ">
+            <div class="w-char">云朵</div>
+            <div class="w-pinyin">yún duǒ</div>
+            <div class="w-meaning">cloud (fluffy)</div>
+          </div>
+        </div>
+        <button class="btn-sound-mini" onclick="speak('云')">🔊 听读音</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3: 下雨了 -->
+    <div class="page" data-page="3">
+      <div class="page-inner">
+        <div class="page-title">🌧️ 下雨了</div>
+        <div class="char-display">
+          <div class="pinyin">yǔ</div>
+          <div class="char">雨</div>
+          <div class="stroke-badge">8画</div>
+        </div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="下雨了" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🌧️ 下雨了 — 雨(yǔ) 8画<br><span style=font-size:12px;color:#999>page-03.webp</span></div>'">
+        </div>
+        <div class="card" style="margin-top:10px;text-align:center;font-size:18px;font-weight:700;color:#555">
+          ☔ 淅沥淅沥 — 下雨啦！
+        </div>
+        <div class="word-examples">
+          <div class="word-example" data-text="下雨" data-pinyin="xià yǔ">
+            <div class="w-char">下雨</div>
+            <div class="w-pinyin">xià yǔ</div>
+            <div class="w-meaning">to rain</div>
+          </div>
+          <div class="word-example" data-text="雨天" data-pinyin="yǔ tiān">
+            <div class="w-char">雨天</div>
+            <div class="w-pinyin">yǔ tiān</div>
+            <div class="w-meaning">rainy day</div>
+          </div>
+        </div>
+        <button class="btn-sound-mini" onclick="speak('下雨了')">🔊 听读音</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: 雨 -->
+    <div class="page" data-page="4">
+      <div class="page-inner">
+        <div class="page-title">雨 🌧️</div>
+        <div class="char-display">
+          <div class="pinyin">yǔ</div>
+          <div class="char">雨</div>
+          <div class="stroke-badge">8画</div>
+          <div class="info-text">横横竖折再一竖，四点小雨落进来</div>
+        </div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="雨 - 笔画讲解" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🌧️ 雨 — 横横竖折再一竖，四点小雨落进来<br><span style=font-size:12px;color:#999>page-04.webp</span></div>'">
+        </div>
+        <div class="stroke-section">
+          <div class="label">▶ 笔画顺序</div>
+          <div class="stroke-steps" id="strokes-yu">
+            <div class="stroke-step active"><span class="num">①</span><span class="name">横</span></div>
+            <div class="stroke-step"><span class="num">②</span><span class="name">竖</span></div>
+            <div class="stroke-step"><span class="num">③</span><span class="name">横折钩</span></div>
+            <div class="stroke-step"><span class="num">④</span><span class="name">竖</span></div>
+            <div class="stroke-step"><span class="num">⑤</span><span class="name">点</span></div>
+            <div class="stroke-step"><span class="num">⑥</span><span class="name">点</span></div>
+            <div class="stroke-step"><span class="num">⑦</span><span class="name">点</span></div>
+            <div class="stroke-step"><span class="num">⑧</span><span class="name">点</span></div>
+          </div>
+        </div>
+        <div class="word-examples">
+          <div class="word-example" data-text="大雨" data-pinyin="dà yǔ">
+            <div class="w-char">大雨</div>
+            <div class="w-pinyin">dà yǔ</div>
+            <div class="w-meaning">heavy rain</div>
+          </div>
+          <div class="word-example" data-text="小雨" data-pinyin="xiǎo yǔ">
+            <div class="w-char">小雨</div>
+            <div class="w-pinyin">xiǎo yǔ</div>
+            <div class="w-meaning">light rain</div>
+          </div>
+          <div class="word-example" data-text="雨水" data-pinyin="yǔ shuǐ">
+            <div class="w-char">雨水</div>
+            <div class="w-pinyin">yǔ shuǐ</div>
+            <div class="w-meaning">rain water</div>
+          </div>
+        </div>
+        <button class="btn-sound-mini" onclick="speak('雨')">🔊 听读音</button>
+      </div>
+    </div>
+
+    <!-- PAGE 5: 风雪星 -->
+    <div class="page" data-page="5">
+      <div class="page-inner">
+        <div class="page-title">❄️ 风雪星</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+          <div class="char-display" style="flex:1;min-width:100px">
+            <div class="pinyin" style="font-size:18px">fēng</div>
+            <div class="char" style="font-size:72px">风</div>
+            <div class="stroke-badge">4画</div>
+          </div>
+          <div class="char-display" style="flex:1;min-width:100px">
+            <div class="pinyin" style="font-size:18px">xuě</div>
+            <div class="char" style="font-size:72px">雪</div>
+            <div class="stroke-badge">11画</div>
+          </div>
+          <div class="char-display" style="flex:1;min-width:100px">
+            <div class="pinyin" style="font-size:18px">xīng</div>
+            <div class="char" style="font-size:72px">星</div>
+            <div class="stroke-badge">9画</div>
+          </div>
+        </div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="风 - 风来了" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🌬️ 风 (fēng) — 风吹树叶沙沙响<br><span style=font-size:12px;color:#999>page-05.webp</span></div>'">
+        </div>
+        <div class="img-wrap mc-border" style="margin-top:8px">
+          <img src="images/chinese-04-nature/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="雪和星" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>❄️ 雪 (xuě) ⭐ 星 (xīng)<br><span style=font-size:12px;color:#999>page-06.webp</span></div>'">
+        </div>
+        <div class="word-examples">
+          <div class="word-example" data-text="风" data-pinyin="fēng"><div class="w-char">风</div><div class="w-pinyin">fēng</div><div class="w-meaning">wind</div></div>
+          <div class="word-example" data-text="雪" data-pinyin="xuě"><div class="w-char">雪</div><div class="w-pinyin">xuě</div><div class="w-meaning">snow</div></div>
+          <div class="word-example" data-text="星" data-pinyin="xīng"><div class="w-char">星</div><div class="w-pinyin">xīng</div><div class="w-meaning">star</div></div>
+        </div>
+        <div class="flex-center gap-4" style="margin-top:6px">
+          <button class="btn-sound-mini" onclick="speak('风')">🔊 风</button>
+          <button class="btn-sound-mini" onclick="speak('雪')">🔊 雪</button>
+          <button class="btn-sound-mini" onclick="speak('星')">🔊 星</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: 花草虫鸟 -->
+    <div class="page" data-page="6">
+      <div class="page-inner">
+        <div class="page-title">🌿 花草虫鸟</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="char-display" style="margin:0">
+            <div class="pinyin" style="font-size:16px">huā</div>
+            <div class="char" style="font-size:60px">花</div>
+            <div class="stroke-badge" style="font-size:11px;padding:2px 10px">7画</div>
+          </div>
+          <div class="char-display" style="margin:0">
+            <div class="pinyin" style="font-size:16px">cǎo</div>
+            <div class="char" style="font-size:60px">草</div>
+            <div class="stroke-badge" style="font-size:11px;padding:2px 10px">9画</div>
+          </div>
+          <div class="char-display" style="margin:0">
+            <div class="pinyin" style="font-size:16px">chóng</div>
+            <div class="char" style="font-size:60px">虫</div>
+            <div class="stroke-badge" style="font-size:11px;padding:2px 10px">6画</div>
+          </div>
+          <div class="char-display" style="margin:0">
+            <div class="pinyin" style="font-size:16px">niǎo</div>
+            <div class="char" style="font-size:60px">鸟</div>
+            <div class="stroke-badge" style="font-size:11px;padding:2px 10px">5画</div>
+          </div>
+        </div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="花和草" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🌸 花 (huā) 🌿 草 (cǎo)<br><span style=font-size:12px;color:#999>page-07.webp</span></div>'">
+        </div>
+        <div class="img-wrap mc-border" style="margin-top:8px">
+          <img src="images/chinese-04-nature/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="虫和鸟" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🐛 虫 (chóng) 🐦 鸟 (niǎo)<br><span style=font-size:12px;color:#999>page-08.webp</span></div>'">
+        </div>
+        <div class="word-examples">
+          <div class="word-example" data-text="花" data-pinyin="huā"><div class="w-char">花</div><div class="w-pinyin">huā</div><div class="w-meaning">flower</div></div>
+          <div class="word-example" data-text="草" data-pinyin="cǎo"><div class="w-char">草</div><div class="w-pinyin">cǎo</div><div class="w-meaning">grass</div></div>
+          <div class="word-example" data-text="虫" data-pinyin="chóng"><div class="w-char">虫</div><div class="w-pinyin">chóng</div><div class="w-meaning">insect</div></div>
+          <div class="word-example" data-text="鸟" data-pinyin="niǎo"><div class="w-char">鸟</div><div class="w-pinyin">niǎo</div><div class="w-meaning">bird</div></div>
+        </div>
+        <div class="flex-center gap-4" style="margin-top:6px">
+          <button class="btn-sound-mini" onclick="speak('花')">🔊 花</button>
+          <button class="btn-sound-mini" onclick="speak('草')">🔊 草</button>
+          <button class="btn-sound-mini" onclick="speak('虫')">🔊 虫</button>
+          <button class="btn-sound-mini" onclick="speak('鸟')">🔊 鸟</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: 练一练 -->
+    <div class="page" data-page="7">
+      <div class="page-inner">
+        <div class="page-title">✏️ 练一练</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="练一练 - 练习页面" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>✏️ 练一练 — 匹配与填空<br><span style=font-size:12px;color:#999>page-09.webp</span></div>'">
+        </div>
+
+        <!-- Exercise 1: Matching -->
+        <div class="card">
+          <div class="card-title">🎯 连一连：汉字 → 拼音</div>
+          <p style="font-size:13px;color:#888;margin-bottom:8px">点击左边汉字，再点击右边拼音</p>
+          <div class="match-area" id="matchArea">
+            <div class="match-col" id="matchChars"></div>
+            <div class="match-col" id="matchPinyins"></div>
+          </div>
+          <div class="match-feedback" id="matchFeedback">✅ 匹配正确会变绿哦！</div>
+          <button class="btn-sound-mini" onclick="resetMatching()" style="margin-top:4px">🔄 重新开始</button>
+        </div>
+
+        <!-- Exercise 2: Fill in -->
+        <div class="card">
+          <div class="card-title">📝 填空：选字填空</div>
+          <div class="fill-section" id="fillSection">
+            <div class="fill-options" id="fillOptions">
+              <span class="fill-opt" data-char="云">云</span>
+              <span class="fill-opt" data-char="雨">雨</span>
+              <span class="fill-opt" data-char="星">星</span>
+              <span class="fill-opt" data-char="花">花</span>
+              <span class="fill-opt" data-char="鸟">鸟</span>
+            </div>
+            <div class="fill-item">白 <span class="blank" data-answer="云" data-pinyin="yún">___</span> (bái ___)</div>
+            <div class="fill-item">下 <span class="blank" data-answer="雨" data-pinyin="yǔ">___</span> (xià ___)</div>
+            <div class="fill-item"><span class="blank" data-answer="星" data-pinyin="xīng">___</span> 星 (___ xīng)</div>
+            <div class="fill-item"><span class="blank" data-answer="花" data-pinyin="huā">___</span> 朵 (___ duǒ)</div>
+            <div class="fill-item">小 <span class="blank" data-answer="鸟" data-pinyin="niǎo">___</span> (xiǎo ___)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: 挑战 -->
+    <div class="page" data-page="8">
+      <div class="page-inner">
+        <div class="page-title">🏆 挑战</div>
+        <div class="img-wrap mc-border">
+          <img src="images/chinese-04-nature/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="挑战 - 测验" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>🏆 挑战 — 知识小测验<br><span style=font-size:12px;color:#999>page-10.webp</span></div>'">
+        </div>
+        <div class="card">
+          <div class="card-title">📋 选择题</div>
+          <div class="quiz-score" id="quizScore">得分：0 / 6</div>
+          <div id="quizContainer"></div>
+          <button class="btn-sound-mini" onclick="resetQuiz()" style="margin-top:8px">🔄 重新挑战</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 9: 古诗 -->
+    <div class="page" data-page="9">
+      <div class="page-inner poem-container">
+        <div class="page-title">📜 古诗</div>
+        <div class="poem-title">春晓 · 孟浩然</div>
+        <div class="poem-line">
+          春眠不觉晓
+          <span class="pinyin">chūn mián bù jué xiǎo</span>
+          <span class="meaning">春日贪睡不知不觉天已亮</span>
+        </div>
+        <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
+          <img src="images/chinese-04-nature/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="春眠不觉晓" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>春眠不觉晓<br><span style=font-size:11px;color:#999>poem-line-1.webp</span></div>'">
+        </div>
+        <div class="poem-line">
+          处处闻啼鸟
+          <span class="pinyin">chù chù wén tí niǎo</span>
+          <span class="meaning">到处都能听到鸟儿的啼叫</span>
+        </div>
+        <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
+          <img src="images/chinese-04-nature/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="处处闻啼鸟" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>处处闻啼鸟<br><span style=font-size:11px;color:#999>poem-line-2.webp</span></div>'">
+        </div>
+        <div class="poem-line">
+          夜来风雨声
+          <span class="pinyin">yè lái fēng yǔ shēng</span>
+          <span class="meaning">昨夜听到刮风下雨的声音</span>
+        </div>
+        <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
+          <img src="images/chinese-04-nature/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="夜来风雨声" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>夜来风雨声<br><span style=font-size:11px;color:#999>poem-line-3.webp</span></div>'">
+        </div>
+        <div class="poem-line">
+          花落知多少
+          <span class="pinyin">huā luò zhī duō shǎo</span>
+          <span class="meaning">不知道花落了多少</span>
+        </div>
+        <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
+          <img src="images/chinese-04-nature/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="花落知多少" loading="lazy"
+               onerror="this.parentElement.innerHTML='<div class=fallback>花落知多少<br><span style=font-size:11px;color:#999>poem-line-4.webp</span></div>'">
+        </div>
+        <button class="btn-sound-mini" onclick="speak('春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。')">🔊 听全诗</button>
+        <p style="font-size:13px;color:#999;margin-top:8px">🌟 诗中藏着的字：风、雨、鸟、花</p>
+      </div>
+    </div>
+
+    <!-- PAGE 10: 庆祝 -->
+    <div class="page" data-page="10">
+      <div class="page-inner celebrate">
+        <canvas id="confetti-canvas"></canvas>
+        <div class="big-emoji">🎉</div>
+        <div class="msg">🎊 恭喜完成！<br>第4课 · 大自然</div>
+        <div class="stats">📚 累计识字 <strong style="color:#ef5350;font-size:24px">36</strong> 个</div>
+        <div class="stats" style="font-size:14px;color:#888">🌟 本课学了 9 个新字</div>
+        <div class="mc-decoration"><span class="mc-pixel"></span><span class="mc-pixel"></span><span class="mc-pixel"></span><span class="mc-pixel"></span><span class="mc-pixel"></span></div>
+        <div class="chars-review" id="charsReview">
+          <span class="rev-char" onclick="speak('云')">云</span>
+          <span class="rev-char" onclick="speak('雨')">雨</span>
+          <span class="rev-char" onclick="speak('风')">风</span>
+          <span class="rev-char" onclick="speak('雪')">雪</span>
+          <span class="rev-char" onclick="speak('星')">星</span>
+          <span class="rev-char" onclick="speak('花')">花</span>
+          <span class="rev-char" onclick="speak('草')">草</span>
+          <span class="rev-char" onclick="speak('虫')">虫</span>
+          <span class="rev-char" onclick="speak('鸟')">鸟</span>
+        </div>
+        <div style="margin-top:12px;font-size:14px;color:#aaa">
+          🏆 挑战通过！继续加油！
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /pages-wrap -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="btn-prev" id="btnPrev">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="btn-next" id="btnNext">▶</button>
+  </div>
+
+</div><!-- /app -->
+
+<style>
+/* ===== MINI SOUND BUTTON ===== */
+.btn-sound-mini{
+  display:inline-flex;align-items:center;gap:4px;
+  background:#fff;border:2px solid #ef5350;color:#ef5350;
+  padding:6px 16px;border-radius:20px;font-weight:700;font-size:13px;
+  cursor:pointer;transition:all .2s;
+  font-family:'Nunito',sans-serif;
+}
+.btn-sound-mini:active{transform:scale(.93);background:#fff5f5}
+</style>
+
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'chinese-04-nature';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+/* ===== DATA ===== */
+const TOTAL_PAGES = 10;
+
+const QUIZ_DATA = [
+  {q:'"云"有几画？',opts:['3画','4画','5画'],ans:1},
+  {q:'"雨"的拼音是？',opts:['yǔ','yú','yù'],ans:0},
+  {q:'"花"的第7画是什么？',opts:['竖弯钩','横','撇'],ans:0},
+  {q:'"鸟"的拼音是？',opts:['niǎo','niāo','niào'],ans:0},
+  {q:'下面哪个是"雪"的拼音？',opts:['xuě','xuè','xüě'],ans:0},
+  {q:'"星"有几画？',opts:['8画','9画','10画'],ans:1},
+];
+
+const MATCH_DATA = [
+  {char:'云',pinyin:'yún'},
+  {char:'雨',pinyin:'yǔ'},
+  {char:'风',pinyin:'fēng'},
+  {char:'雪',pinyin:'xuě'},
+  {char:'星',pinyin:'xīng'},
+  {char:'花',pinyin:'huā'},
+  {char:'草',pinyin:'cǎo'},
+  {char:'虫',pinyin:'chóng'},
+  {char:'鸟',pinyin:'niǎo'},
+];
+
+/* ===== STATE ===== */
+let currentPage = 1;
+let isSpeaking = false;
+let matchSelected = null;
+let matchCount = 0;
+let quizAnswers = [];
+let fillAnswers = {};
+
+/* ===== NAVIGATION ===== */
+function goToPage(n){
+  if(n<1||n>TOTAL_PAGES)return;
+  const oldEl=document.querySelector('.page.active');
+  const newEl=document.querySelector(`.page[data-page="${n}"]`);
+  if(!newEl)return;
+  const dir=n>currentPage?1:-1;
+  if(oldEl&&oldEl!==newEl){
+    gsap.to(oldEl,{opacity:0,duration:.25,onComplete:()=>{oldEl.classList.remove('active')}});
+  }
+  newEl.style.opacity=0;
+  newEl.classList.add('active');
+  gsap.to(newEl,{opacity:1,duration:.35,ease:'power2.out'});
+  currentPage=n;
+  updateDots();
+  updateButtons();
+  if(n===TOTAL_PAGES)startConfetti();
+  if(n===10){setTimeout(startConfetti,300)}
+  document.querySelector('.btn-sound').classList.remove('active');
+  window.speechSynthesis&&window.speechSynthesis.cancel();
+}
+
+function updateDots(){
+  document.querySelectorAll('.dots .dot').forEach((d,i)=>{
+    d.classList.toggle('active',i+1===currentPage);
+  });
+}
+
+function updateButtons(){
+  document.getElementById('btnPrev').disabled=currentPage===1;
+  document.getElementById('btnNext').disabled=currentPage===TOTAL_PAGES;
+}
+
+function initDots(){
+  const c=document.getElementById('dots');
+  for(let i=1;i<=TOTAL_PAGES;i++){
+    const b=document.createElement('button');
+    b.className='dot'+(i===1?' active':'');
+    b.setAttribute('aria-label','Page '+i);
+    b.onclick=()=>goToPage(i);
+    c.appendChild(b);
+  }
+}
+
+/* ===== SPEECH ===== */
+function speak(text){
+  if(!window.speechSynthesis){alert('语音合成不可用');return}
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN';u.rate=.85;u.pitch=1.1;
+  u.onstart=()=>{isSpeaking=true;document.querySelector('.btn-sound').classList.add('active')};
+  u.onend=()=>{isSpeaking=false;document.querySelector('.btn-sound').classList.remove('active')};
+  window.speechSynthesis.speak(u);
+}
+
+function speakPageContent(){
+  const page=document.querySelector(`.page[data-page="${currentPage}"]`);
+  if(!page)return;
+  if(isSpeaking){window.speechSynthesis.cancel();document.querySelector('.btn-sound').classList.remove('active');isSpeaking=false;return}
+  let txt='';
+  const pinyin=page.querySelector('.pinyin');
+  const ch=page.querySelector('.char-display .char');
+  const ww=page.querySelectorAll('.word-example .w-pinyin');
+  const poem=page.querySelectorAll('.poem-line .pinyin');
+  if(pinyin&&ch)txt+=ch.textContent+' ';
+  if(pinyin)txt+=pinyin.textContent+' ';
+  ww.forEach(w=>{txt+=w.textContent+' '});
+  poem.forEach(p=>{txt+=p.textContent+' '});
+  if(!txt.trim())txt=page.textContent.substring(0,200);
+  speak(txt.trim());
+}
+
+/* ===== MATCHING EXERCISE ===== */
+function initMatching(){
+  const chars=document.getElementById('matchChars');
+  const pins=document.getElementById('matchPinyins');
+  chars.innerHTML='';pins.innerHTML='';
+  matchCount=0;matchSelected=null;
+  const shuffled=[...MATCH_DATA].sort(()=>Math.random()-.5);
+  const shuffledPy=[...MATCH_DATA].sort(()=>Math.random()-.5);
+  shuffled.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='match-item';el.textContent=d.char;
+    el.dataset.char=d.char;el.dataset.pinyin=d.pinyin;
+    el.onclick=()=>clickMatchChar(el);
+    chars.appendChild(el);
+  });
+  shuffledPy.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='match-item pinyin-item';el.textContent=d.pinyin;
+    el.dataset.char=d.char;el.dataset.pinyin=d.pinyin;
+    el.onclick=()=>clickMatchPinyin(el);
+    pins.appendChild(el);
+  });
+  document.getElementById('matchFeedback').textContent='✅ 点击左边汉字，再点击右边拼音';
+}
+
+function clickMatchChar(el){
+  if(el.classList.contains('matched'))return;
+  document.querySelectorAll('#matchChars .match-item').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  matchSelected=el;
+  document.getElementById('matchFeedback').textContent='👉 现在点击右边对应的拼音';
+}
+
+function clickMatchPinyin(el){
+  if(el.classList.contains('matched')||!matchSelected)return;
+  const correct=matchSelected.dataset.pinyin===el.dataset.pinyin;
+  if(correct){
+    matchSelected.classList.remove('selected');
+    matchSelected.classList.add('matched');
+    el.classList.add('matched');
+    matchCount++;
+    document.getElementById('matchFeedback').textContent='✅ 正确！'+(matchCount===MATCH_DATA.length?' 🎉 全部匹配完成！':'');
+    matchSelected=null;
+  }else{
+    el.classList.add('wrong');
+    const fb=document.getElementById('matchFeedback');
+    fb.textContent='❌ 不对哦，再试试！';
+    fb.style.color='#f44336';
+    setTimeout(()=>{
+      el.classList.remove('wrong');
+      fb.textContent='👉 继续匹配！';
+      fb.style.color='#2d3436';
+    },600);
+  }
+}
+
+function resetMatching(){
+  initMatching();
+  document.getElementById('matchFeedback').textContent='✅ 匹配正确会变绿哦！';
+}
+
+/* ===== FILL IN THE BLANK ===== */
+function initFill(){
+  document.querySelectorAll('.fill-opt').forEach(el=>{
+    el.onclick=()=>{
+      if(el.classList.contains('used'))return;
+      const ch=el.dataset.char;
+      const blanks=document.querySelectorAll('.fill-item .blank');
+      let filled=false;
+      for(const b of blanks){
+        if(!b.dataset.filled&&b.dataset.answer===ch){
+          b.textContent=ch;b.dataset.filled='true';b.classList.add('filled');
+          el.classList.add('used');
+          filled=true;
+          speak(ch);
+          checkFillDone();
+          break;
+        }
+      }
+    };
+  });
+}
+
+function checkFillDone(){
+  const blanks=document.querySelectorAll('.fill-item .blank');
+  const done=[...blanks].every(b=>b.dataset.filled);
+  if(done){
+    setTimeout(()=>{
+      const fb=document.querySelector('.card-title');
+      if(fb)fb.textContent='📝 填空 — 🎉 全部正确！';
+    },300);
+  }
+}
+
+function resetFill(){
+  document.querySelectorAll('.fill-item .blank').forEach(b=>{
+    b.textContent='___';delete b.dataset.filled;b.classList.remove('filled');
+  });
+  document.querySelectorAll('.fill-opt').forEach(el=>el.classList.remove('used'));
+  const fb=document.querySelector('.card-title');
+  if(fb)fb.textContent='📝 填空：选字填空';
+}
+
+/* ===== QUIZ ===== */
+function initQuiz(){
+  const c=document.getElementById('quizContainer');
+  c.innerHTML='';quizAnswers=[];
+  QUIZ_DATA.forEach((q,i)=>{
+    const div=document.createElement('div');div.className='quiz-q';
+    const qtext=document.createElement('div');qtext.className='q-text';
+    qtext.textContent=(i+1)+'. '+q.q;
+    div.appendChild(qtext);
+    const opts=document.createElement('div');opts.className='q-opts';
+    q.opts.forEach((o,j)=>{
+      const btn=document.createElement('div');btn.className='q-opt';
+      btn.textContent=o;btn.dataset.idx=j;
+      btn.onclick=()=>answerQuiz(i,j,btn);
+      opts.appendChild(btn);
+    });
+    div.appendChild(opts);
+    c.appendChild(div);
+    quizAnswers.push(-1);
+  });
+  updateQuizScore();
+}
+
+function answerQuiz(qIdx,optIdx,btn){
+  if(quizAnswers[qIdx]>=0)return;
+  const parent=btn.parentElement;
+  const allOpts=parent.querySelectorAll('.q-opt');
+  const correct=QUIZ_DATA[qIdx].ans;
+  allOpts.forEach((o,i)=>{
+    o.style.pointerEvents='none';
+    if(i===correct)o.classList.add('correct');
+    else if(i===optIdx&&i!==correct)o.classList.add('wrong');
+  });
+  quizAnswers[qIdx]=optIdx;
+  updateQuizScore();
+}
+
+function updateQuizScore(){
+  const score=quizAnswers.filter((a,i)=>a===QUIZ_DATA[i].ans).length;
+  document.getElementById('quizScore').textContent='得分：'+score+' / '+QUIZ_DATA.length;
+  if(score===QUIZ_DATA.length){
+    setTimeout(()=>document.getElementById('quizScore').textContent+=' 🎉 全对！太棒了！',300);
+  }
+}
+
+function resetQuiz(){
+  initQuiz();
+}
+
+/* ===== CONFETTI ===== */
+let confettiRunning=false;
+let confettiPieces=[];
+let confettiAnimId=null;
+
+function startConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  if(!canvas)return;
+  if(confettiRunning)return;
+  confettiRunning=true;
+  const ctx=canvas.getContext('2d');
+  canvas.width=canvas.parentElement.offsetWidth;
+  canvas.height=canvas.parentElement.offsetHeight;
+  const colors=['#ef5350','#ff8a80','#ffd600','#4caf50','#42a5f5','#ab47bc','#ff7043'];
+  confettiPieces=[];
+  for(let i=0;i<80;i++){
+    confettiPieces.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height-canvas.height,
+      w:6+Math.random()*6,
+      h:4+Math.random()*6,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      speed:2+Math.random()*3,
+      rot:Math.random()*360,
+      rSpeed:-3+Math.random()*6,
+      swing:Math.random()*2-1,
+    });
+  }
+  function draw(){
+    if(!confettiRunning)return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let done=true;
+    confettiPieces.forEach(p=>{
+      p.y+=p.speed;
+      p.x+=p.swing;
+      p.rot+=p.rSpeed;
+      if(p.y<canvas.height+20){
+        done=false;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.fillStyle=p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+    });
+    if(done){confettiRunning=false;ctx.clearRect(0,0,canvas.width,canvas.height);return}
+    confettiAnimId=requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function stopConfetti(){
+  confettiRunning=false;
+  if(confettiAnimId){cancelAnimationFrame(confettiAnimId);confettiAnimId=null}
+  const canvas=document.getElementById('confetti-canvas');
+  if(canvas){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height)}
+}
+
+/* ===== WORD CLICK TO SPEAK ===== */
+function initWordClicks(){
+  document.querySelectorAll('.word-example').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const txt=el.dataset.text||el.textContent.trim();
+      speak(txt);
+    });
+  });
+}
+
+/* ===== STROKE ORDER ANIMATION ===== */
+function animateStrokes(containerId){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  const steps=c.querySelectorAll('.stroke-step');
+  let i=0;
+  const interval=setInterval(()=>{
+    steps.forEach(s=>s.classList.remove('active'));
+    if(i<steps.length){steps[i].classList.add('active');i++}
+    else{clearInterval(interval);return}
+  },600);
+}
+
+/* ===== INIT ===== */
+document.addEventListener('DOMContentLoaded',()=>{
+  initDots();
+  updateButtons();
+  initMatching();
+  initFill();
+  initQuiz();
+  initWordClicks();
+
+  // Navigation
+  document.getElementById('btnPrev').onclick=()=>goToPage(currentPage-1);
+  document.getElementById('btnNext').onclick=()=>goToPage(currentPage+1);
+  document.getElementById('btnHome').onclick=()=>goToPage(1);
+  document.getElementById('btnSound').onclick=speakPageContent;
+
+  // Keyboard
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft')goToPage(currentPage-1);
+    if(e.key==='ArrowRight')goToPage(currentPage+1);
+  });
+
+  // Animate strokes on page enter for pages with stroke sections
+  document.querySelectorAll('.page').forEach(p=>{
+    const obs=new MutationObserver(()=>{
+      if(p.classList.contains('active')){
+        const strokes=p.querySelector('.stroke-steps');
+        if(strokes&&strokes.id){
+          setTimeout(()=>animateStrokes(strokes.id),400);
+        }
+      }
+    });
+    obs.observe(p,{attributes:true,attributeFilter:['class']});
+  });
+
+  // Auto-trigger first stroke animation
+  setTimeout(()=>animateStrokes('strokes-yun'),500);
+
+  console.log('📘 第4课：大自然 loaded');
+});
+</script>
+
+</body>
+</html>

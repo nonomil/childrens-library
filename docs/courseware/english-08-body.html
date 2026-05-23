@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Lesson 8: Body Parts 🧍 | 身体部位</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#e8f5e9}
+.slider{position:relative;width:100%;max-width:960px;height:100vh;max-height:780px;margin:0 auto;overflow:hidden;background:#fff;box-shadow:0 0 40px rgba(0,0,0,.12);border-radius:0}
+@media(min-width:421px){.slider{margin:2vh auto;height:96vh;border-radius:24px}}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 20px 72px;opacity:0;visibility:hidden;transition:none;overflow-y:auto;overflow-x:hidden;background:#fff}
+.slide.active{opacity:1;visibility:visible;z-index:2}
+.slide.animating{z-index:3}
+
+/* Cover */
+.cover{background:linear-gradient(145deg,#e8f5e9 0%,#fff 100%)}
+.cover .badge-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.cover .badge{background:#66BB6A;color:#fff;padding:6px 20px;border-radius:30px;font-size:.8rem;font-weight:700;box-shadow:0 3px 10px rgba(102,187,106,.3)}
+.cover .badge.outline{background:transparent;color:#2e7d32;border:2px solid #66BB6A;box-shadow:none}
+.cover h1{font-size:2.4rem;font-weight:900;color:#1b5e20;text-align:center;line-height:1.15;margin-bottom:4px;text-shadow:0 2px 4px rgba(0,0,0,.06)}
+.cover .subtitle{font-size:1.05rem;color:#558b2f;font-weight:700;margin-bottom:2px}
+.cover .lesson-num{font-size:4.5rem;font-weight:900;color:#66BB6A;line-height:1;margin:4px 0;opacity:.85}
+.cover .emoji-row{font-size:2.8rem;margin:8px 0;letter-spacing:6px}
+
+/* Image wrapper */
+.img-wrap{width:100%;max-width:320px;aspect-ratio:4/3;border-radius:18px;overflow:hidden;margin:6px 0;background:#f5f5f5;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(102,187,106,.2);transition:box-shadow .3s}
+.img-wrap:active{box-shadow:0 2px 8px rgba(102,187,106,.15)}
+.img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Vocab cards */
+.vocab-card{width:100%;max-width:320px;background:#fff;border-radius:16px;padding:10px 16px;margin:3px 0;box-shadow:0 2px 10px rgba(0,0,0,.06);border-left:4px solid #66BB6A;transition:transform .2s}
+.vocab-card:active{transform:scale(.98)}
+.vocab-card .en{font-size:1.35rem;font-weight:800;color:#1b5e20}
+.vocab-card .en .ipa{font-size:.8rem;font-weight:400;color:#999;margin-left:6px}
+.vocab-card .zh{font-size:1rem;color:#666;margin-top:1px;font-weight:600}
+.vocab-card .sentence{font-size:.85rem;color:#777;margin-top:4px;padding-top:4px;border-top:1px dashed #eee;font-weight:500}
+.vocab-card.highlight{background:#f1f8e9;border-left-color:#ffb300}
+.vocab-card.phonics{background:#e3f2fd;border-left-color:#42a5f5}
+
+/* Section title */
+.page-title{font-size:1.1rem;font-weight:800;color:#2e7d32;text-align:center;margin-bottom:6px;letter-spacing:.5px}
+.page-subtitle{font-size:.8rem;color:#999;text-align:center;margin-bottom:4px;font-weight:600}
+.page-num{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);font-size:.72rem;color:#bbb;font-weight:700;letter-spacing:1px}
+
+/* Navigation */
+.nav-bar{position:absolute;bottom:0;left:0;right:0;height:58px;background:#fff;border-top:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 12px;z-index:10}
+.nav-btn{width:42px;height:42px;border-radius:50%;border:2px solid #e0e0e0;background:#fff;color:#555;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+.nav-btn:active{transform:scale(.88);background:#f5f5f5}
+.nav-btn:hover{border-color:#66BB6A;color:#66BB6A}
+.nav-btn:disabled{opacity:.25;pointer-events:none}
+.dots{display:flex;gap:5px;flex:1;justify-content:center;overflow:hidden;padding:0 4px}
+.dot{width:7px;height:7px;border-radius:50%;background:#ddd;cursor:pointer;transition:all .35s ease;flex-shrink:0}
+.dot.active{background:#66BB6A;width:22px;border-radius:4px}
+.dot:hover{background:#bbb}
+
+/* Top bar */
+.top-bar{position:absolute;top:0;left:0;right:0;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;z-index:20}
+.top-btn{width:36px;height:36px;border-radius:50%;border:none;background:rgba(255,255,255,.88);box-shadow:0 2px 8px rgba(0,0,0,.1);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px)}
+.top-btn:active{transform:scale(.85)}
+.top-btn:hover{background:#fff;box-shadow:0 2px 12px rgba(102,187,106,.25)}
+
+/* Game page */
+.game-area{position:relative;width:100%;max-width:300px;margin:4px auto}
+.game-img-wrap{width:100%;aspect-ratio:3/4;border-radius:18px;overflow:hidden;background:#f5f5f5;position:relative;box-shadow:0 4px 20px rgba(102,187,106,.2)}
+.game-img-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.label-marker{position:absolute;width:30px;height:30px;border-radius:50%;background:rgba(102,187,106,.85);border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.3);cursor:pointer;transform:translate(-50%,-50%);transition:all .25s;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.7rem;font-weight:800;z-index:4}
+.label-marker:hover{transform:translate(-50%,-50%) scale(1.15)}
+.label-marker.placed{background:#2e7d32;border-color:#ffd54f;animation:pop-green .5s ease}
+.label-marker.wrong{background:#e53935;border-color:#fff;animation:shake .45s ease}
+@keyframes pop-green{0%{transform:translate(-50%,-50%) scale(1)}40%{transform:translate(-50%,-50%) scale(1.35)}100%{transform:translate(-50%,-50%) scale(1)}}
+@keyframes shake{0%,100%{transform:translate(-50%,-50%) translateX(0)}20%{transform:translate(-50%,-50%) translateX(-8px)}40%{transform:translate(-50%,-50%) translateX(8px)}60%{transform:translate(-50%,-50%) translateX(-5px)}80%{transform:translate(-50%,-50%) translateX(5px)}}
+.word-choices{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:8px;padding:0 4px}
+.word-chip{padding:7px 16px;border-radius:30px;border:2.5px solid #66BB6A;background:#fff;color:#1b5e20;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .2s;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.word-chip:active{transform:scale(.9)}
+.word-chip.used{opacity:.3;pointer-events:none;border-color:#ddd;color:#bbb;box-shadow:none}
+.word-chip.correct{background:#66BB6A!important;color:#fff!important;border-color:#66BB6A!important;animation:pop-green .5s}
+.word-chip.incorrect{background:#e53935!important;color:#fff!important;border-color:#e53935!important;animation:shake .45s}
+.game-feedback{text-align:center;font-size:.9rem;font-weight:700;margin-top:6px;min-height:26px;color:#2e7d32}
+
+/* Celebration page */
+.celebration{background:linear-gradient(145deg,#e8f5e9 0%,#c8e6c9 80%,#a5d6a7 100%)}
+.celebration h2{font-size:2rem;font-weight:900;color:#1b5e20;text-align:center;margin-bottom:2px}
+.celebration .celeb-sub{color:#558b2f;font-weight:700;margin:2px 0 8px;font-size:1rem}
+.celebration .song-box{background:#fff;border-radius:20px;padding:14px 20px;max-width:300px;width:100%;margin:6px 0;box-shadow:0 4px 20px rgba(0,0,0,.07);text-align:center}
+.celebration .song-box p{font-size:.9rem;color:#333;line-height:1.8;font-weight:600}
+.celebration .song-box .hl{color:#2e7d32;font-weight:800;text-decoration:underline;text-decoration-color:#66BB6A;text-underline-offset:3px}
+.celebration .song-actions{display:flex;gap:10px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.celebration .song-btn{padding:9px 24px;border:none;border-radius:30px;background:#66BB6A;color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(102,187,106,.35);transition:all .2s}
+.celebration .song-btn:active{transform:scale(.92)}
+.celebration .song-btn.outline{background:transparent;color:#2e7d32;border:2.5px solid #66BB6A;box-shadow:none}
+.confetti-canvas{position:absolute;inset:0;pointer-events:none;z-index:5}
+
+/* Scrollbar hide */
+.slide::-webkit-scrollbar{display:none}
+.slide{scrollbar-width:none}
+
+/* Helper */
+.flex-center{display:flex;flex-direction:column;align-items:center}
+.text-green{color:#2e7d32}
+.text-muted{color:#888;font-size:.8rem}
+.mt-1{margin-top:4px}
+.mt-2{margin-top:8px}
+.gap-1{gap:4px}
+
+/* Swipe indicator */
+.swipe-hint{font-size:.7rem;color:#ccc;margin-top:auto;padding-bottom:4px}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <button class="top-btn" id="homeBtn" aria-label="Home">🏠</button>
+  <button class="top-btn" id="soundBtn" aria-label="Read aloud">▶</button>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 1: COVER                                -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide cover active" data-page="1">
+  <div class="flex-center" style="width:100%">
+    <div class="lesson-num">08</div>
+    <h1>Body Parts 🧍</h1>
+    <p class="subtitle">身体部位 · Shēntǐ bùwèi</p>
+    <div class="emoji-row">👀👂👃👄🖐️🦶</div>
+    <div class="img-wrap" style="max-width:280px;aspect-ratio:1/1">
+      <img src="images/english-08/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Body Parts Cover" loading="lazy">
+    </div>
+    <div class="badge-row">
+      <span class="badge">9 Words 📚</span>
+      <span class="badge outline">Sight Words 📖</span>
+      <span class="badge outline">/ɪ/ Phonics 🔊</span>
+    </div>
+    <p class="swipe-hint">◀ Swipe or tap ▶</p>
+  </div>
+  <div class="page-num">1 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 2: HEAD & EYES                         -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="2">
+  <div class="page-title">🌟 Head &amp; Eyes · 头和眼睛</div>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="Head and Eyes" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="head">
+    <div class="en">head <span class="ipa">/hɛd/</span></div>
+    <div class="zh">头 · tóu</div>
+    <div class="sentence">I have a <strong>head</strong>. · 我有一个头。</div>
+  </div>
+  <div class="vocab-card" data-word="eyes">
+    <div class="en">eyes <span class="ipa">/aɪz/</span></div>
+    <div class="zh">眼睛 · yǎnjīng</div>
+    <div class="sentence">I can see with my <strong>eyes</strong>. · 我用眼睛看。</div>
+  </div>
+  <div class="page-num">2 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 3: EARS & NOSE                          -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="3">
+  <div class="page-title">🌟 Ears &amp; Nose · 耳朵和鼻子</div>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Ears and Nose" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="ears">
+    <div class="en">ears <span class="ipa">/ɪrz/</span></div>
+    <div class="zh">耳朵 · ěrduo</div>
+    <div class="sentence">I hear with my <strong>ears</strong>. · 我用耳朵听。</div>
+  </div>
+  <div class="vocab-card" data-word="nose">
+    <div class="en">nose <span class="ipa">/noʊz/</span></div>
+    <div class="zh">鼻子 · bízi</div>
+    <div class="sentence">I smell with my <strong>nose</strong>. · 我用鼻子闻。</div>
+  </div>
+  <div class="page-num">3 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 4: MOUTH & HANDS                        -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="4">
+  <div class="page-title">🌟 Mouth &amp; Hands · 嘴和手</div>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Mouth and Hands" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="mouth">
+    <div class="en">mouth <span class="ipa">/maʊθ/</span></div>
+    <div class="zh">嘴巴 · zuǐba</div>
+    <div class="sentence">I eat with my <strong>mouth</strong>. · 我用嘴巴吃饭。</div>
+  </div>
+  <div class="vocab-card" data-word="hands">
+    <div class="en">hands <span class="ipa">/hændz/</span></div>
+    <div class="zh">手 · shǒu</div>
+    <div class="sentence">I clap my <strong>hands</strong>! · 我拍拍手！</div>
+  </div>
+  <div class="page-num">4 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 5: FEET & ARMS                          -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="5">
+  <div class="page-title">🌟 Feet &amp; Arms · 脚和手臂</div>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="Feet and Arms" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="feet">
+    <div class="en">feet <span class="ipa">/fiːt/</span></div>
+    <div class="zh">脚 · jiǎo</div>
+    <div class="sentence">I stand on my <strong>feet</strong>. · 我用脚站立。</div>
+  </div>
+  <div class="vocab-card" data-word="arms">
+    <div class="en">arms <span class="ipa">/ɑːrmz/</span></div>
+    <div class="zh">手臂 · shǒubì</div>
+    <div class="sentence">I wave my <strong>arms</strong>. · 我挥动我的手臂。</div>
+  </div>
+  <div class="page-num">5 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 6: LEGS & FULL REVIEW                   -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="6">
+  <div class="page-title">🌟 Legs &amp; Review · 腿和复习</div>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="Legs Review" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="legs">
+    <div class="en">legs <span class="ipa">/lɛɡz/</span></div>
+    <div class="zh">腿 · tuǐ</div>
+    <div class="sentence">I run with my <strong>legs</strong>. · 我用腿跑步。</div>
+  </div>
+  <div class="vocab-card highlight">
+    <div class="en" style="font-size:.95rem;color:#f57f17">📋 All 9 Body Parts</div>
+    <div class="zh" style="font-size:.8rem;line-height:1.6">
+      <strong>head</strong> 头 · <strong>eyes</strong> 眼睛 · <strong>ears</strong> 耳朵 · <strong>nose</strong> 鼻子<br>
+      <strong>mouth</strong> 嘴 · <strong>hands</strong> 手 · <strong>feet</strong> 脚 · <strong>arms</strong> 手臂 · <strong>legs</strong> 腿
+    </div>
+  </div>
+  <div class="page-num">6 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 7: SIGHT WORDS (in, it, is)             -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="7">
+  <div class="page-title">📖 Sight Words · 高频词</div>
+  <p class="page-subtitle">Short /ɪ/ sound words · 短元音 /ɪ/ 单词</p>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="Sight Words" loading="lazy">
+  </div>
+  <div class="vocab-card" data-word="in">
+    <div class="en">in <span class="ipa">/ɪn/</span></div>
+    <div class="zh">在…里面 · zài… lǐmiàn</div>
+    <div class="sentence">It is <strong>in</strong> the box. · 它在盒子里面。</div>
+  </div>
+  <div class="vocab-card" data-word="it">
+    <div class="en">it <span class="ipa">/ɪt/</span></div>
+    <div class="zh">它 · tā</div>
+    <div class="sentence"><strong>It</strong> is a cat. · 它是一只猫。</div>
+  </div>
+  <div class="vocab-card" data-word="is">
+    <div class="en">is <span class="ipa">/ɪz/</span></div>
+    <div class="zh">是 · shì</div>
+    <div class="sentence">This <strong>is</strong> my hand. · 这是我的手。</div>
+  </div>
+  <div class="vocab-card highlight" style="margin-top:4px">
+    <div class="en" style="font-size:1.2rem;color:#f57f17">🔊 <span id="sightPhrase">It is in my hand.</span></div>
+    <div class="zh" style="font-size:.8rem">它在我的手里。 · Tā zài wǒ de shǒu lǐ.</div>
+  </div>
+  <div class="page-num">7 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 8: "I" PHONICS                          -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="8">
+  <div class="page-title">🔊 Short <em>i</em> · 短元音 /ɪ/</div>
+  <p class="page-subtitle">Repeat after me! · 跟我读！</p>
+  <div class="img-wrap">
+    <img src="images/english-08/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="Phonics Short i" loading="lazy">
+  </div>
+  <div class="vocab-card phonics">
+    <div class="en" style="color:#1565c0;font-size:1.8rem;text-align:center">/ɪ/</div>
+    <div class="zh" style="text-align:center;color:#666">Open your mouth a little · 嘴巴微张</div>
+  </div>
+  <div class="vocab-card" data-word="in">
+    <div class="en"><span style="color:#66BB6A;font-size:1.5rem">i</span>n</div>
+    <div class="zh">在…里面 · /ɪn/</div>
+  </div>
+  <div class="vocab-card" data-word="it">
+    <div class="en"><span style="color:#66BB6A;font-size:1.5rem">i</span>t</div>
+    <div class="zh">它 · /ɪt/</div>
+  </div>
+  <div class="vocab-card" data-word="is">
+    <div class="en"><span style="color:#66BB6A;font-size:1.5rem">i</span>s</div>
+    <div class="zh">是 · /ɪz/</div>
+  </div>
+  <div class="vocab-card" data-word="big">
+    <div class="en">b<span style="color:#66BB6A;font-size:1.5rem">i</span>g</div>
+    <div class="zh">大的 · /bɪɡ/</div>
+  </div>
+  <div class="vocab-card" data-word="pig">
+    <div class="en">p<span style="color:#66BB6A;font-size:1.5rem">i</span>g</div>
+    <div class="zh">猪 · /pɪɡ/</div>
+  </div>
+  <div class="page-num">8 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 9: LABEL THE BODY GAME                  -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide" data-page="9">
+  <div class="page-title">🎯 Label the Body! · 标记身体</div>
+  <p class="page-subtitle" style="margin-bottom:2px">Tap a word → Tap a marker</p>
+  <div class="game-area">
+    <div class="game-img-wrap">
+      <img src="images/english-08/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="Body Label Game" loading="lazy" id="gameImg">
+    </div>
+  </div>
+  <div class="word-choices" id="wordChoices"></div>
+  <div class="game-feedback" id="gameFeedback">✨ Pick a word, then find its body part!</div>
+  <div class="page-num">9 / 10</div>
+</div>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- PAGE 10: CELEBRATION + SONG                  -->
+<!-- ════════════════════════════════════════════ -->
+<div class="slide celebration" data-page="10">
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+  <div style="position:relative;z-index:6;display:flex;flex-direction:column;align-items:center;width:100%">
+    <div style="font-size:3.2rem;margin-bottom:2px">🎉🌟🎉</div>
+    <h2>Great Job!</h2>
+    <p class="celeb-sub">太棒了！ · Tài bàng le!</p>
+
+    <div class="song-box">
+      <p style="font-weight:800;font-size:.85rem;color:#66BB6A;margin-bottom:6px">🎵 Head, Shoulders, Knees &amp; Toes</p>
+      <p>
+        <span class="hl">Head</span>, <span class="hl">shoulders</span>,<br>
+        <span class="hl">knees</span> and <span class="hl">toes</span>,<br>
+        <span class="hl">knees</span> and <span class="hl">toes</span>! 🎶<br>
+        <span class="hl">Head</span>, <span class="hl">shoulders</span>,<br>
+        <span class="hl">knees</span> and <span class="hl">toes</span>,<br>
+        <span class="hl">knees</span> and <span class="hl">toes</span>! 🎶<br>
+        And <span class="hl">eyes</span> and <span class="hl">ears</span><br>
+        and <span class="hl">mouth</span> and <span class="hl">nose</span>! 🎵<br>
+        <span class="hl">Head</span>, <span class="hl">shoulders</span>,<br>
+        <span class="hl">knees</span> and <span class="hl">toes</span>!
+      </p>
+    </div>
+
+    <div class="song-actions">
+      <button class="song-btn" id="songPlayBtn">▶ Sing Along!</button>
+      <button class="song-btn outline" id="confettiBtn">🎊 Confetti!</button>
+    </div>
+
+    <p class="text-muted mt-2" style="max-width:260px;text-align:center;line-height:1.4">
+      You learned 9 body parts + sight words!<br>
+      你学会了 9 个身体部位和 sight words！
+    </p>
+  </div>
+  <div class="page-num">10 / 10</div>
+</div>
+
+<!-- ===== NAVIGATION BAR ===== -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" aria-label="Previous">◀</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn" aria-label="Next">▶</button>
+</div>
+
+</div>
+
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'english-08-body';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+(function(){
+'use strict';
+
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const TOTAL = 10;
+const TOTAL_DISPLAY = 10;
+
+// ============================================================
+// DOM REFS
+// ============================================================
+const slider     = document.getElementById('slider');
+const slides     = document.querySelectorAll('.slide');
+const dots       = document.getElementById('dots');
+const prevBtn    = document.getElementById('prevBtn');
+const nextBtn    = document.getElementById('nextBtn');
+const homeBtn    = document.getElementById('homeBtn');
+const soundBtn   = document.getElementById('soundBtn');
+const gameFeed   = document.getElementById('gameFeedback');
+const wordChoice = document.getElementById('wordChoices');
+
+let current = 0;
+let isAnimating = false;
+
+// ============================================================
+// BUILD DOTS
+// ============================================================
+for(let i=0; i<TOTAL; i++){
+  const dot = document.createElement('div');
+  dot.className = 'dot' + (i===0 ? ' active' : '');
+  dot.dataset.index = i;
+  dot.addEventListener('click', ()=>goTo(i));
+  dots.appendChild(dot);
+}
+
+// ============================================================
+// NAVIGATION ENGINE
+// ============================================================
+function goTo(idx){
+  if(isAnimating || idx===current || idx<0 || idx>=TOTAL) return;
+  isAnimating = true;
+
+  const dir = idx > current ? 1 : -1;
+  const $out = slides[current];
+  const $in  = slides[idx];
+  const prevIdx = current;
+  current = idx;
+
+  // Update dots
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+
+  // GSAP transition
+  gsap.set($in, { x: dir*80, opacity:0, scale:.94 });
+  $in.classList.add('active','animating');
+  $out.classList.add('animating');
+
+  gsap.to($out, {
+    x: dir*-60, opacity:0, scale:.92,
+    duration:.32, ease:'power2.in',
+    onComplete:()=>{
+      $out.classList.remove('active','animating');
+      $out.style.transform = ''; $out.style.opacity = '';
+    }
+  });
+
+  gsap.to($in, {
+    x:0, opacity:1, scale:1,
+    duration:.38, delay:.06, ease:'power3.out',
+    onComplete:()=>{
+      $in.classList.remove('animating');
+      $in.style.transform = ''; $in.style.opacity = '';
+      isAnimating = false;
+      updateNav();
+      onPageEnter(idx);
+    }
+  });
+
+  // Update page numbers
+  document.querySelectorAll('.page-num').forEach(el => {
+    el.textContent = (idx+1) + ' / ' + TOTAL_DISPLAY;
+  });
+}
+
+function updateNav(){
+  prevBtn.disabled = (current === 0);
+  nextBtn.disabled = (current === TOTAL-1);
+}
+
+prevBtn.addEventListener('click', ()=>goTo(current-1));
+nextBtn.addEventListener('click', ()=>goTo(current+1));
+homeBtn.addEventListener('click', ()=>goTo(0));
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') goTo(current+1);
+  if(e.key==='ArrowLeft')  goTo(current-1);
+});
+
+// ============================================================
+// SPEECH SYNTHESIS (en-US)
+// ============================================================
+let voicesLoaded = false;
+function getVoices(){ return window.speechSynthesis ? window.speechSynthesis.getVoices() : []; }
+
+function speakText(text, rate=0.82){
+  if(!window.speechSynthesis){ console.warn('speechSynthesis unavailable'); return; }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = rate;
+  utter.pitch = 1.05;
+  const voices = getVoices();
+  // Prefer a female US voice
+  const pref = voices.find(v=>v.lang.startsWith('en-US')&&/female|samantha|zoe|karen/i.test(v.name)) ||
+               voices.find(v=>v.lang.startsWith('en')&&/female|samantha/i.test(v.name)) ||
+               voices.find(v=>v.lang.startsWith('en-US'));
+  if(pref) utter.voice = pref;
+  window.speechSynthesis.speak(utter);
+}
+
+// Warm up voice system
+if(window.speechSynthesis){
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged = ()=>{ voicesLoaded = true; speechSynthesis.getVoices(); };
+}
+
+// Read current page content aloud
+soundBtn.addEventListener('click', ()=>{
+  const slide = slides[current];
+  let text = '';
+  // Gather all English words from vocab cards
+  const cards = slide.querySelectorAll('.vocab-card .en');
+  cards.forEach(el => {
+    // Remove IPA from the text
+    let t = el.textContent.replace(/\/.+\//g,'').trim();
+    if(t) text += t + '. ';
+  });
+  // Sight phrase
+  const phrase = document.getElementById('sightPhrase');
+  if(phrase && slide.contains(phrase)) text += phrase.textContent + '. ';
+  // Fallback
+  if(!text.trim()){
+    const labels = ['Lesson 8: Body Parts!',
+                    'Head and Eyes. I have a head. I can see with my eyes.',
+                    'Ears and Nose. I hear with my ears. I smell with my nose.',
+                    'Mouth and Hands. I eat with my mouth. I clap my hands.',
+                    'Feet and Arms. I stand on my feet. I wave my arms.',
+                    'Legs review. I run with my legs. All nine body parts.',
+                    'Sight words: in, it, is. It is in my hand.',
+                    'Short i phonics: in, it, is, big, pig.',
+                    'Label the body game. Match the words!',
+                    'Great job! Head, shoulders, knees and toes!'];
+    text = labels[current] || 'Body parts lesson.';
+  }
+  speakText(text);
+});
+
+// ============================================================
+// PAGE ENTER HOOKS
+// ============================================================
+function onPageEnter(idx){
+  initGame();
+  if(idx === TOTAL-1){
+    startConfetti();
+  }
+}
+
+// ============================================================
+// INTERACTIVE LABEL GAME (Page 9)
+// ============================================================
+const GAME_WORDS = [
+  { id:'head', en:'head', zh:'头' },
+  { id:'eyes', en:'eyes', zh:'眼睛' },
+  { id:'nose', en:'nose', zh:'鼻子' },
+  { id:'mouth',en:'mouth',zh:'嘴巴' },
+  { id:'hands',en:'hands',zh:'手' },
+  { id:'feet', en:'feet', zh:'脚' },
+  { id:'arms', en:'arms', zh:'手臂' },
+  { id:'legs', en:'legs', zh:'腿' }
+];
+
+// Marker positions as percentages of the game image container
+const MARKER_POS = [
+  { id:'head', top:'12%',  left:'50%' },
+  { id:'eyes', top:'26%',  left:'42%' },
+  { id:'nose', top:'35%',  left:'50%' },
+  { id:'mouth',top:'43%',  left:'50%' },
+  { id:'arms', top:'38%',  left:'14%' },
+  { id:'hands',top:'62%',  left:'12%' },
+  { id:'legs', top:'66%',  left:'30%' },
+  { id:'feet', top:'86%',  left:'42%' }
+];
+
+let gameState = { selected: null, placed: new Set(), done: false };
+
+function initGame(){
+  if(current !== 8) return; // page 9 is index 8
+  if(gameState.done) return;
+
+  const wrap = document.querySelector('.game-img-wrap');
+  if(!wrap) return;
+
+  // Remove old markers
+  wrap.querySelectorAll('.label-marker').forEach(el=>el.remove());
+  wordChoice.innerHTML = '';
+
+  gameState.selected = null;
+  gameState.placed = new Set();
+  gameState.done = false;
+
+  // Create markers
+  MARKER_POS.forEach(pos => {
+    const m = document.createElement('div');
+    m.className = 'label-marker';
+    m.style.top = pos.top;
+    m.style.left = pos.left;
+    m.dataset.id = pos.id;
+    m.textContent = '?';
+    m.addEventListener('click', ()=>handleMarker(pos.id, m));
+    wrap.appendChild(m);
+  });
+
+  // Create word chips (shuffled)
+  const shuffled = [...GAME_WORDS].sort(()=>Math.random()-0.5);
+  shuffled.forEach(w => {
+    const chip = document.createElement('button');
+    chip.className = 'word-chip';
+    chip.textContent = w.en;
+    chip.dataset.id = w.id;
+    chip.addEventListener('click', ()=>handleWord(chip, w.id));
+    wordChoice.appendChild(chip);
+  });
+
+  gameFeed.textContent = '👆 Tap a word, then tap its marker!';
+}
+
+function handleWord(chip, id){
+  if(gameState.placed.has(id)) return;
+  // Deselect all
+  document.querySelectorAll('.word-chip').forEach(c => c.style.borderColor='#66BB6A');
+  chip.style.borderColor = '#ffa000';
+  gameState.selected = id;
+  gameFeed.textContent = '👉 Now tap the matching ' + id + ' marker!';
+}
+
+function handleMarker(id, el){
+  if(!gameState.selected){
+    gameFeed.textContent = '👆 First pick a word from below!';
+    return;
+  }
+  if(gameState.placed.has(id)){
+    gameFeed.textContent = '✅ ' + id + ' is already labeled!';
+    return;
+  }
+
+  const correct = (gameState.selected === id);
+  const chip = document.querySelector(`.word-chip[data-id="${gameState.selected}"]`);
+
+  if(correct){
+    // Success
+    el.classList.add('placed');
+    el.textContent = '✓';
+    if(chip){
+      chip.classList.add('correct','used');
+      chip.style.borderColor = '';
+    }
+    gameState.placed.add(id);
+    const word = GAME_WORDS.find(w=>w.id===id);
+    speakText(word.en);
+    gameFeed.innerHTML = '✅ Correct! <strong>' + word.en + '</strong> · ' + word.zh;
+    gameState.selected = null;
+
+    // Check win
+    if(gameState.placed.size === GAME_WORDS.length){
+      gameState.done = true;
+      gameFeed.innerHTML = '🎉 <strong>All done!</strong> You know your body! 太棒了！';
+      // Confetti burst
+      if(typeof confetti === 'function') confetti({ particleCount:100, spread:80, origin:{y:0.5} });
+      // Also speak
+      speakText('Great job! You labeled the whole body!');
+    }
+  } else {
+    // Wrong
+    el.classList.add('wrong');
+    if(chip) chip.classList.add('incorrect');
+    gameFeed.innerHTML = '❌ That\'s not <strong>' + gameState.selected + '</strong>. Try again!';
+    setTimeout(() => {
+      el.classList.remove('wrong');
+      if(chip) chip.classList.remove('incorrect');
+    }, 550);
+  }
+}
+
+// ============================================================
+// CONFETTI CELEBRATION (Canvas)
+// ============================================================
+let confettiRunning = false;
+let confettiRAF = null;
+let particles = [];
+
+const CONFETTI_COLORS = ['#66BB6A','#43a047','#2e7d32','#558b2f','#ffd54f','#ff8a65','#4fc3f7','#ba68c8','#ef5350','#f06292'];
+
+function startConfetti(){
+  const canvas = document.getElementById('confettiCanvas');
+  if(!canvas) return;
+
+  // Size canvas to parent
+  const parent = canvas.parentElement;
+  const rect = parent.getBoundingClientRect();
+  canvas.width = rect.width;
+  canvas.height = rect.height;
+  const ctx = canvas.getContext('2d');
+  if(!ctx) return;
+
+  // Stop existing
+  if(confettiRAF) cancelAnimationFrame(confettiRAF);
+  confettiRunning = true;
+
+  // Create particles
+  particles = [];
+  for(let i=0; i<150; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.8 - canvas.height,
+      w: 5 + Math.random() * 8,
+      h: 3 + Math.random() * 5,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      vx: (Math.random() - 0.5) * 2.5,
+      vy: 1.2 + Math.random() * 3.5,
+      rot: Math.random() * 360,
+      rv: (Math.random() - 0.5) * 10,
+      opacity: 0.7 + Math.random() * 0.3
+    });
+  }
+
+  let frame = 0;
+  function draw(){
+    if(!confettiRunning) return;
+    frame++;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    particles.forEach(p => {
+      p.x += p.vx + Math.sin(frame*0.02 + p.x*0.01)*0.3;
+      p.y += p.vy;
+      p.vy += 0.035;
+      p.rot += p.rv;
+      if(p.y < canvas.height + 30){
+        alive = true;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI/180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.restore();
+      }
+    });
+
+    if(alive && current === TOTAL-1){
+      confettiRAF = requestAnimationFrame(draw);
+    } else if(current !== TOTAL-1){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      confettiRunning = false;
+    } else {
+      // Keep going with fewer particles
+      confettiRAF = requestAnimationFrame(draw);
+    }
+  }
+  draw();
+}
+
+function stopConfetti(){
+  confettiRunning = false;
+  if(confettiRAF) cancelAnimationFrame(confettiRAF);
+  const canvas = document.getElementById('confettiCanvas');
+  if(canvas){
+    const ctx = canvas.getContext('2d');
+    if(ctx) ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+}
+
+// ============================================================
+// CELEBRATION PAGE CONTROLS
+// ============================================================
+document.getElementById('songPlayBtn')?.addEventListener('click', function(){
+  const lyrics = 'Head, shoulders, knees and toes, knees and toes. Head, shoulders, knees and toes, knees and toes. And eyes and ears and mouth and nose. Head, shoulders, knees and toes!';
+  speakText(lyrics, 0.78);
+  startConfetti();
+  this.textContent = '🔊 Playing...';
+  setTimeout(()=>{ this.textContent = '▶ Sing Along!'; }, 5000);
+});
+
+document.getElementById('confettiBtn')?.addEventListener('click', function(){
+  startConfetti();
+  // Also fire a small window.confetti if available
+  if(typeof confetti === 'function'){
+    confetti({ particleCount: 60, spread: 100, origin: { y: 0.4 } });
+  }
+});
+
+// ============================================================
+// RESIZE HANDLER
+// ============================================================
+let resizeTimer;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=>{
+    if(current === TOTAL-1) startConfetti();
+  }, 200);
+});
+
+// ============================================================
+// ENTRY POINT — ANIMATE COVER IN
+// ============================================================
+function init(){
+  updateNav();
+  // Animate cover elements
+  gsap.from('.cover .lesson-num', { y:-30, opacity:0, duration:.5, ease:'back.out(1.7)', delay:.15 });
+  gsap.from('.cover h1', { y:-20, opacity:0, duration:.45, delay:.25, ease:'power3.out' });
+  gsap.from('.cover .subtitle', { y:-12, opacity:0, duration:.35, delay:.35 });
+  gsap.from('.cover .emoji-row', { scale:0, opacity:0, duration:.4, delay:.45, ease:'back.out(2)' });
+  gsap.from('.cover .img-wrap', { scale:.85, opacity:0, duration:.5, delay:.5, ease:'power2.out' });
+  gsap.from('.cover .badge-row', { y:15, opacity:0, duration:.4, delay:.6, stagger:.1 });
+
+  // Preload game on first visit
+  setTimeout(initGame, 100);
+}
+
+// Run
+init();
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第3课 天地人 - Minecraft语文</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100dvh;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;overflow:hidden}
+.slider{flex-shrink:0;width:100%;max-width:960px;height:100dvh;max-height:780px;position:relative;overflow:hidden;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#FFEBEE}
+.slides{display:flex;height:100%;transition:none}
+.slide{min-width:100%;height:100%;overflow-y:auto;padding:60px 20px 90px;position:relative;display:flex;flex-direction:column;align-items:center;scrollbar-width:none}
+.slide::-webkit-scrollbar{display:none}
+.slide-inner{width:100%;max-width:380px;margin:0 auto;display:flex;flex-direction:column;align-items:center;flex:1}
+/* Header */
+.header{position:absolute;top:0;left:0;right:0;z-index:10;padding:12px 16px 8px;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#FFEBEE 60%,transparent)}
+.header .title-bar{font-size:13px;font-weight:700;color:#C62828;display:flex;align-items:center;gap:6px}
+.header .title-bar .emoji{font-size:18px}
+.header .page-num{font-size:12px;color:#EF5350;font-weight:600;background:#fff;padding:2px 10px;border-radius:10px;box-shadow:0 1px 4px rgba(239,83,80,.2)}
+/* Real image styling */
+.page-img{width:100%;max-width:400px;border-radius:14px;margin:8px 0;display:block;box-shadow:0 4px 12px rgba(0,0,0,.12);border:2px solid #fff;object-fit:cover}
+.page-img-round{width:100%;max-width:400px;border-radius:14px;margin:6px 0;display:block;box-shadow:0 4px 12px rgba(0,0,0,.12);border:2px solid #fff}
+/* Minecraft box */
+.mc-box{background:#fff;border:3px solid #EF5350;border-radius:16px;padding:18px 16px;margin:8px 0;width:100%;position:relative;box-shadow:0 4px 0 #C62828,0 6px 12px rgba(239,83,80,.15)}
+.mc-box::before{content:'';position:absolute;top:-3px;left:-3px;right:-3px;height:8px;background:linear-gradient(90deg,#EF5350,#E57373,#EF5350);border-radius:16px 16px 0 0}
+.mc-title{font-size:18px;font-weight:900;color:#C62828;text-align:center;margin-bottom:10px;text-shadow:0 1px 0 rgba(0,0,0,.08)}
+.mc-text{font-size:15px;color:#37474F;line-height:1.7;text-align:center}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s;touch-action:manipulation;user-select:none}
+.btn:active{transform:scale(.94)!important}
+.btn-primary{background:linear-gradient(135deg,#EF5350,#D32F2F);color:#fff;box-shadow:0 4px 0 #B71C1C,0 6px 12px rgba(239,83,80,.3)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 0 #B71C1C,0 8px 16px rgba(239,83,80,.35)}
+.btn-success{background:linear-gradient(135deg,#66BB6A,#43A047);color:#fff;box-shadow:0 4px 0 #2E7D32,0 6px 12px rgba(76,175,80,.3)}
+.btn-warning{background:linear-gradient(135deg,#FFA726,#FB8C00);color:#fff;box-shadow:0 4px 0 #E65100,0 6px 12px rgba(255,167,38,.3)}
+.btn-ghost{background:rgba(239,83,80,.1);color:#C62828;border:2px solid #EF5350;box-shadow:none}
+.btn-sm{padding:6px 14px;font-size:14px;border-radius:8px}
+.btn-lg{padding:14px 32px;font-size:18px;border-radius:16px}
+/* Character row */
+.char-row{display:flex;justify-content:center;align-items:flex-end;gap:24px;margin:6px 0;width:100%}
+.char-box{display:flex;flex-direction:column;align-items:center;gap:4px}
+.char-box .char-label{font-size:13px;font-weight:700;color:#C62828;margin-top:2px}
+.char-box .speech{font-size:11px;color:#546E7A;background:#fff;border:1.5px solid #EF9A9A;border-radius:8px;padding:4px 8px;max-width:120px;text-align:center;position:relative;margin-bottom:2px}
+.char-box .speech::after{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:6px solid #fff}
+/* Character display - large hanzi with pinyin and stroke order */
+.hanzi-display{display:flex;flex-direction:column;align-items:center;margin:6px 0;width:100%}
+.hanzi-pinyin{font-size:18px;color:#EF5350;font-weight:700;margin-bottom:2px;letter-spacing:2px}
+.hanzi-char{font-size:68px;font-weight:900;color:#C62828;line-height:1.1;text-shadow:0 2px 4px rgba(198,40,40,.15)}
+.hanzi-stroke{font-size:15px;color:#78909C;margin-top:4px;font-weight:600;max-width:100%;text-align:center;word-break:break-all;line-height:1.4}
+.hanzi-info{font-size:13px;color:#546E7A;margin-top:2px;font-weight:600}
+.hanzi-mnemonic{background:#FFCDD2;border-radius:10px;padding:10px 14px;margin:6px 0;width:100%;text-align:center;font-size:14px;color:#C62828;font-weight:600;line-height:1.6}
+.hanzi-words{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:4px 0}
+.hanzi-word{background:#fff;border:1.5px solid #EF9A9A;border-radius:8px;padding:4px 10px;font-size:14px;color:#37474F;font-weight:600}
+.hanzi-word .py{font-size:11px;color:#EF5350;font-weight:400;display:block}
+.hanzi-sentence{font-size:14px;color:#546E7A;font-style:italic;text-align:center;margin:4px 0;padding:8px 12px;background:#FFF5F5;border-radius:10px;width:100%}
+/* Triplet display for 你我他 */
+.triplet-row{display:flex;justify-content:center;gap:12px;margin:6px 0;width:100%;flex-wrap:wrap}
+.triplet-card{background:#fff;border:2px solid #EF9A9A;border-radius:14px;padding:12px 10px;text-align:center;flex:1;min-width:90px;max-width:110px;box-shadow:0 3px 6px rgba(239,83,80,.1);transition:transform .3s}
+.triplet-card:hover{transform:translateY(-3px)}
+.triplet-card .t-hanzi{font-size:42px;font-weight:900;color:#C62828;display:block;line-height:1.1}
+.triplet-card .t-pinyin{font-size:14px;color:#EF5350;font-weight:700;margin-top:2px}
+.triplet-card .t-strokes{font-size:11px;color:#90A4AE;margin-top:1px;font-weight:600}
+.triplet-card .t-meaning{font-size:11px;color:#78909C;margin-top:2px}
+/* Direction display */
+.dir-row{display:flex;justify-content:center;gap:8px;margin:6px 0;width:100%;flex-wrap:wrap}
+.dir-card{background:#fff;border:2px solid #EF9A9A;border-radius:12px;padding:8px 6px;text-align:center;min-width:58px;box-shadow:0 2px 4px rgba(239,83,80,.08);transition:transform .2s}
+.dir-card:active{transform:scale(.92)}
+.dir-card .d-hanzi{font-size:36px;font-weight:900;color:#C62828;display:block;line-height:1.1}
+.dir-card .d-pinyin{font-size:12px;color:#EF5350;font-weight:600;margin-top:1px}
+.dir-card .d-arrow{font-size:20px;display:block;margin-top:1px}
+.dir-card .d-meaning{font-size:10px;color:#90A4AE;margin-top:1px}
+/* Quiz */
+.quiz-area{width:100%;margin:8px 0}
+.quiz-row{display:flex;align-items:center;justify-content:center;gap:8px;margin:8px 0;flex-wrap:wrap}
+.quiz-label{font-size:14px;font-weight:600;color:#37474F;min-width:80px;text-align:right}
+.quiz-arrow{font-size:24px;color:#EF5350;font-weight:900}
+.quiz-target{font-size:14px;color:#78909C;min-width:80px;text-align:left}
+.quiz-result{font-size:18px;font-weight:700;min-height:28px;margin:4px 0;text-align:center}
+.quiz-result.correct{color:#43A047}
+.quiz-result.wrong{color:#E53935}
+/* Match line exercise */
+.match-area{width:100%;margin:8px 0}
+.match-row{display:flex;align-items:center;justify-content:center;gap:6px;margin:6px 0;padding:6px 10px;background:#fff;border:1.5px solid #FFCDD2;border-radius:10px;cursor:pointer;transition:all .15s}
+.match-row:active{transform:scale(.96)}
+.match-row .m-left{font-size:16px;font-weight:700;color:#C62828;min-width:70px;text-align:right}
+.match-row .m-arrow{font-size:18px;color:#EF9A9A}
+.match-row .m-right{font-size:14px;color:#37474F;min-width:80px;text-align:left}
+.match-row.matched{background:#E8F5E9;border-color:#66BB6A}
+.match-row.matched .m-arrow{color:#43A047}
+.match-row.wrong{background:#FFEBEE;border-color:#EF5350;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+/* Fill blank */
+.fill-area{width:100%;margin:8px 0}
+.fill-row{display:flex;align-items:center;gap:6px;margin:6px 0;flex-wrap:wrap;justify-content:center}
+.fill-label{font-size:15px;color:#37474F;font-weight:500}
+.fill-btn{background:#fff;border:2px solid #EF9A9A;border-radius:8px;padding:6px 12px;font-size:16px;font-weight:700;color:#C62828;cursor:pointer;transition:all .12s;min-width:36px;text-align:center;touch-action:manipulation;user-select:none}
+.fill-btn:active{transform:scale(.9)}
+.fill-btn.sel{background:#C62828;color:#fff;border-color:#C62828}
+.fill-btn.correct{background:#43A047!important;border-color:#2E7D32!important;color:#fff!important}
+.fill-btn.wrong{background:#E53935!important;border-color:#C62828!important;color:#fff!important;animation:shake .4s}
+.fill-slot{display:inline-flex;gap:4px;flex-wrap:wrap}
+/* Challenge */
+.challenge-item{background:#fff;border:2px solid #FFA726;border-radius:12px;padding:12px 14px;margin:6px 0;width:100%;box-shadow:0 2px 0 #FB8C00}
+.challenge-item .chall-num{font-size:14px;font-weight:700;color:#E65100;margin-bottom:6px;text-align:center}
+.challenge-item .chall-q{font-size:15px;color:#37474F;text-align:center;margin-bottom:8px}
+.challenge-item .chall-choices{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.challenge-item .chall-choice{background:#fff;border:2px solid #EF9A9A;border-radius:10px;padding:8px 18px;font-size:16px;font-weight:700;color:#C62828;cursor:pointer;transition:all .12s;touch-action:manipulation;user-select:none}
+.challenge-item .chall-choice:active{transform:scale(.92)}
+.challenge-item .chall-choice.sel{background:#C62828;color:#fff;border-color:#C62828}
+.challenge-item .chall-choice.chi-correct{background:#43A047!important;border-color:#2E7D32!important;color:#fff!important}
+.challenge-item .chall-choice.chi-wrong{background:#E53935!important;border-color:#C62828!important;color:#fff!important;animation:shake .4s}
+.challenge-item .chall-choice.locked{pointer-events:none;opacity:.5}
+/* Direction maze */
+.maze-area{width:100%;margin:8px 0}
+.maze-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;max-width:180px;margin:0 auto}
+.maze-cell{aspect-ratio:1;background:#FFCDD2;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#C62828;cursor:pointer;transition:all .12s;touch-action:manipulation;user-select:none}
+.maze-cell:active{transform:scale(.9)}
+.maze-cell.start{background:#C8E6C9;color:#2E7D32}
+.maze-cell.end{background:#FFECB3;color:#E65100}
+.maze-cell.selected{background:#C62828;color:#fff}
+.maze-cell.wrong{background:#FFCDD2;color:#C62828;animation:shake .4s}
+.maze-dir-btns{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
+/* Poem images row */
+.poem-img-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;width:100%}
+.poem-img-row img{width:calc(50% - 4px);max-width:185px;border-radius:12px;border:2px solid #FFB300;box-shadow:0 3px 8px rgba(255,179,0,.2);object-fit:cover}
+/* Navigation */
+.nav-bar{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(0deg,#FFEBEE 60%,transparent);padding:10px 16px 16px;display:flex;align-items:center;justify-content:center;gap:12px}
+.nav-btn{width:40px;height:40px;border-radius:50%;border:none;background:#fff;color:#C62828;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(239,83,80,.2);transition:all .15s;touch-action:manipulation;user-select:none;flex-shrink:0}
+.nav-btn:active{transform:scale(.88)!important}
+.nav-btn.primary{background:linear-gradient(135deg,#EF5350,#D32F2F);color:#fff;box-shadow:0 3px 0 #B71C1C,0 4px 10px rgba(239,83,80,.3)}
+.nav-btn:disabled{opacity:.3;pointer-events:none}
+.nav-dots{display:flex;gap:5px;flex:1;justify-content:center}
+.nav-dot{width:9px;height:9px;border-radius:50%;background:#EF9A9A;border:none;cursor:pointer;transition:all .25s;padding:0;flex-shrink:0}
+.nav-dot.active{width:24px;border-radius:5px;background:linear-gradient(90deg,#EF5350,#D32F2F);box-shadow:0 0 8px rgba(239,83,80,.3)}
+.nav-dot:active{transform:scale(.8)}
+/* Confetti */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:100;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;opacity:0}
+/* Badge */
+.badge{width:100px;height:100px;background:linear-gradient(135deg,#FFD54F,#FFB300);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:0 8px 0 #FF8F00,0 12px 30px rgba(255,179,0,.4);margin:8px auto;position:relative;animation:badgeFloat 2s ease-in-out infinite}
+@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.badge::after{content:'天地人·识字达人';position:absolute;bottom:-28px;font-size:14px;font-weight:700;color:#FF8F00;white-space:nowrap}
+/* Misc */
+.text-center{text-align:center}
+.mt-2{margin-top:8px}
+.mt-3{margin-top:12px}
+.mt-4{margin-top:16px}
+.mb-2{margin-bottom:8px}
+.gap-2{gap:8px}
+.flex-center{display:flex;justify-content:center;align-items:center}
+.flex-col{flex-direction:column}
+.w-full{width:100%}
+.read-btn{background:rgba(239,83,80,.08);border:1.5px solid #EF9A9A;border-radius:50%;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all .15s;flex-shrink:0}
+.read-btn:active{transform:scale(.88)}
+.read-btn:hover{background:rgba(239,83,80,.15)}
+/* Animations */
+.fade-in{opacity:0;transform:translateY(14px);animation:fadeIn .5s ease-out forwards}
+@keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+.delay-1{animation-delay:.1s}
+.delay-2{animation-delay:.2s}
+.delay-3{animation-delay:.3s}
+.delay-4{animation-delay:.4s}
+.delay-5{animation-delay:.5s}
+.delay-6{animation-delay:.6s}
+/* Scroll fix */
+.slide{scroll-behavior:smooth}
+/* Responsive */
+@media(max-height:640px){.slide{padding:50px 16px 75px}.mc-box{padding:12px 14px}.mc-title{font-size:16px}.mc-text{font-size:14px}.badge{width:80px;height:80px;font-size:38px}.hanzi-char{font-size:52px}}
+@media(min-width:421px){.slider{border-radius:24px;margin:20px auto;box-shadow:0 24px 80px rgba(0,0,0,.5)}}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+<div class="slider" id="app">
+  <div class="slides" id="slidesWrap">
+    <!-- PAGE 1: Cover - Village scene -->
+    <div class="slide" data-page="1">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">📖</span> 第3课 天地人</div>
+        <div class="page-num">1 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="村庄天地人" loading="lazy">
+        <div class="mc-box mt-2" style="border-color:#EF5350;box-shadow:0 4px 0 #C62828,0 6px 12px rgba(239,83,80,.15)">
+          <div class="mc-title">🏘️ 天地人</div>
+          <div class="mc-text">Steve和Alex来到热闹村庄。<br>
+          石碑刻着三个大字:<br>
+          <strong style="font-size:30px;color:#C62828;">天 地 人</strong><br>
+          <span style="font-size:13px;color:#78909C;">tiān · dì · rén</span></div>
+        </div>
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.1)">
+          <div class="mc-text" style="font-size:16px;color:#C62828;font-weight:700;">
+            "头上是<strong style="font-size:22px;">天</strong>，脚下是<strong style="font-size:22px;">地</strong>，中间是<strong style="font-size:22px;">人</strong>"
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg mt-4" onclick="goNext()">开始学习 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 2: 天 -->
+    <div class="slide" data-page="2">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">☀️</span> 天 tiān</div>
+        <div class="page-num">2 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="天" loading="lazy">
+        <div class="hanzi-display mt-2">
+          <div class="hanzi-pinyin">tiān</div>
+          <div class="hanzi-char">天</div>
+          <div class="hanzi-stroke">①一 ②一 ③一 ④丿㇏</div>
+          <div class="hanzi-info">4画 · 部首: 一</div>
+        </div>
+        <div class="hanzi-mnemonic">
+          ✨ 两横加个大，头顶就是天
+        </div>
+        <div class="hanzi-words mt-2">
+          <div class="hanzi-word">天空 <span class="py">tiān kōng</span></div>
+          <div class="hanzi-word">今天 <span class="py">jīn tiān</span></div>
+          <div class="hanzi-word">白天 <span class="py">bái tiān</span></div>
+        </div>
+        <div class="hanzi-sentence">
+          🌤️ 天是蓝色的。
+        </div>
+        <div class="flex-center gap-2 mt-2 w-full" style="flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="speakText('天，tiān，两横加个大，头顶就是天。天是蓝色的。')">🔊 朗读</button>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 3: 地 -->
+    <div class="slide" data-page="3">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">🌍</span> 地 dì</div>
+        <div class="page-num">3 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="地" loading="lazy">
+        <div class="hanzi-display mt-2">
+          <div class="hanzi-pinyin">dì</div>
+          <div class="hanzi-char">地</div>
+          <div class="hanzi-stroke">①一 ②丨 ③㇀ ④𠃌 ⑤丨 ⑥乚</div>
+          <div class="hanzi-info">6画 · 部首: 土</div>
+        </div>
+        <div class="hanzi-mnemonic">
+          ✨ 土字旁加个也，脚下就是地
+        </div>
+        <div class="hanzi-words mt-2">
+          <div class="hanzi-word">大地 <span class="py">dà dì</span></div>
+          <div class="hanzi-word">地面 <span class="py">dì miàn</span></div>
+          <div class="hanzi-word">地点 <span class="py">dì diǎn</span></div>
+        </div>
+        <div class="hanzi-sentence">
+          🌼 地上有花和草。
+        </div>
+        <div class="flex-center gap-2 mt-2 w-full" style="flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="speakText('地，dì，土字旁加个也，脚下就是地。地上有花和草。')">🔊 朗读</button>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 4: 人 -->
+    <div class="slide" data-page="4">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">🧑</span> 人 rén</div>
+        <div class="page-num">4 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="人" loading="lazy">
+        <div class="hanzi-display mt-2">
+          <div class="hanzi-pinyin">rén</div>
+          <div class="hanzi-char">人</div>
+          <div class="hanzi-stroke">①丿 ②㇏</div>
+          <div class="hanzi-info">2画 · 部首: 人</div>
+        </div>
+        <div class="mc-box mt-2" style="background:#E8F5E9;border-color:#66BB6A;box-shadow:0 4px 0 #388E3C,0 6px 12px rgba(76,175,80,.15)">
+          <div class="mc-title" style="color:#2E7D32">📝 复习</div>
+          <div class="mc-text" style="font-size:16px;color:#2E7D32;font-weight:700">
+            丿 + ㇏ = <strong style="font-size:28px;color:#C62828;">人</strong>
+          </div>
+        </div>
+        <div class="hanzi-words mt-2">
+          <div class="hanzi-word">大人 <span class="py">dà rén</span></div>
+          <div class="hanzi-word">小人 <span class="py">xiǎo rén</span></div>
+          <div class="hanzi-word">男人 <span class="py">nán rén</span></div>
+        </div>
+        <div class="hanzi-sentence">
+          ✋ 人有两只手。
+        </div>
+        <div class="flex-center gap-2 mt-2 w-full" style="flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="speakText('人，rén，丿加㇏就是人。人有两只手。')">🔊 朗读</button>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 5: 你、我、他 -->
+    <div class="slide" data-page="5">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">👥</span> 你 我 他</div>
+        <div class="page-num">5 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="你我他" loading="lazy">
+        <div class="mc-box">
+          <div class="mc-title">👥 你我他 — 介绍别人和自己</div>
+          <div class="mc-text">学会用三个字来<strong>介绍自己和别人</strong>！</div>
+        </div>
+        <div class="triplet-row mt-2">
+          <div class="triplet-card" onclick="speakText('你，nǐ，七画，亻加尔。你是对方。')">
+            <span class="t-hanzi">你</span>
+            <span class="t-pinyin">nǐ</span>
+            <span class="t-strokes">7画 · 亻+尔</span>
+            <span class="t-meaning">👉 对方</span>
+          </div>
+          <div class="triplet-card" onclick="speakText('我，wǒ，九画，手拿武器。我是自己。')">
+            <span class="t-hanzi">我</span>
+            <span class="t-pinyin">wǒ</span>
+            <span class="t-strokes">9画 · 手拿武器</span>
+            <span class="t-meaning">🙋 自己</span>
+          </div>
+          <div class="triplet-card" onclick="speakText('他，tā，五画，亻加也。他是第三个人。')">
+            <span class="t-hanzi">他</span>
+            <span class="t-pinyin">tā</span>
+            <span class="t-strokes">5画 · 亻+也</span>
+            <span class="t-meaning">👤 别人</span>
+          </div>
+        </div>
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.1)">
+          <div class="mc-title" style="font-size:15px">💬 对话练习</div>
+          <div class="mc-text" style="font-size:14px;color:#37474F">
+            <strong style="color:#C62828;">你</strong>叫什么名字？<br>
+            我叫Steve。<br>
+            <strong style="color:#C62828;">他</strong>是我的朋友。
+          </div>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 6: 上 下 左 右 中 -->
+    <div class="slide" data-page="6">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">🧭</span> 上 下 左 右 中</div>
+        <div class="page-num">6 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="上中下左右" loading="lazy">
+        <div class="mc-box">
+          <div class="mc-title">🧭 五个方向</div>
+          <div class="mc-text">学会用方向词指路和描述位置！</div>
+        </div>
+        <div class="dir-row mt-2">
+          <div class="dir-card" onclick="speakText('上，shàng，三画。')">
+            <span class="d-hanzi">上</span>
+            <span class="d-pinyin">shàng</span>
+            <span class="d-arrow">⬆️</span>
+            <span class="d-meaning">上面</span>
+          </div>
+          <div class="dir-card" onclick="speakText('下，xià，三画。')">
+            <span class="d-hanzi">下</span>
+            <span class="d-pinyin">xià</span>
+            <span class="d-arrow">⬇️</span>
+            <span class="d-meaning">下面</span>
+          </div>
+          <div class="dir-card" onclick="speakText('左，zuǒ，五画。左手做工。')">
+            <span class="d-hanzi">左</span>
+            <span class="d-pinyin">zuǒ</span>
+            <span class="d-arrow">⬅️</span>
+            <span class="d-meaning">左边</span>
+          </div>
+        </div>
+        <div class="dir-row mt-1">
+          <div class="dir-card" onclick="speakText('右，yòu，五画。右手吃饭。')">
+            <span class="d-hanzi">右</span>
+            <span class="d-pinyin">yòu</span>
+            <span class="d-arrow">➡️</span>
+            <span class="d-meaning">右边</span>
+          </div>
+          <div class="dir-card" onclick="speakText('中，zhōng，四画。')">
+            <span class="d-hanzi">中</span>
+            <span class="d-pinyin">zhōng</span>
+            <span class="d-arrow">🔄</span>
+            <span class="d-meaning">中间</span>
+          </div>
+        </div>
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.1)">
+          <div class="mc-text" style="font-size:14px;color:#546E7A">
+            💡 左手做工🤚，右手吃饭🍚<br>
+            <span style="font-size:12px;">左=𠂇+工(做工)，右=𠂇+口(吃饭)</span>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">继续 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 7: 练习 -->
+    <div class="slide" data-page="7">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">✏️</span> 练习</div>
+        <div class="page-num">7 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="练习" loading="lazy">
+        <div class="mc-box">
+          <div class="mc-title">✏️ 练一练</div>
+          <div class="mc-text">试试看，你能做对吗？</div>
+        </div>
+        <!-- 1. 连线 -->
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.08)">
+          <div class="mc-title" style="font-size:15px">🔗 连线配对</div>
+          <div class="mc-text" style="font-size:13px">点击左边，再点击右边配对！</div>
+          <div class="match-area mt-2" id="matchArea">
+            <div class="match-row" data-left="0" data-right="0">
+              <span class="m-left">天</span>
+              <span class="m-arrow">⟷</span>
+              <span class="m-right">天空</span>
+            </div>
+            <div class="match-row" data-left="1" data-right="1">
+              <span class="m-left">地</span>
+              <span class="m-arrow">⟷</span>
+              <span class="m-right">大地</span>
+            </div>
+            <div class="match-row" data-left="2" data-right="2">
+              <span class="m-left">你</span>
+              <span class="m-arrow">⟷</span>
+              <span class="m-right">对方</span>
+            </div>
+            <div class="match-row" data-left="3" data-right="3">
+              <span class="m-left">我</span>
+              <span class="m-arrow">⟷</span>
+              <span class="m-right">自己</span>
+            </div>
+            <div class="match-row" data-left="4" data-right="4">
+              <span class="m-left">他</span>
+              <span class="m-arrow">⟷</span>
+              <span class="m-right">第三个人</span>
+            </div>
+          </div>
+          <div class="quiz-result" id="matchResult"></div>
+          <div class="flex-center gap-2 mt-2">
+            <button class="btn btn-success btn-sm" onclick="checkMatching()">✅ 检查配对</button>
+          </div>
+        </div>
+        <!-- 2. 填空 -->
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.08)">
+          <div class="mc-title" style="font-size:15px">📝 选字填空</div>
+          <div class="fill-area mt-2" id="fillArea"></div>
+          <div class="quiz-result" id="fillResult"></div>
+          <div class="flex-center gap-2 mt-2">
+            <button class="btn btn-success btn-sm" onclick="checkFill()">✅ 检查填空</button>
+          </div>
+        </div>
+        <!-- 3. 指方向 -->
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.08)">
+          <div class="mc-title" style="font-size:15px">🧭 方向填空</div>
+          <div class="text-center" style="font-size:13px;color:#546E7A">选字填入方向句</div>
+          <div id="dirFillArea" class="fill-area mt-2"></div>
+          <div class="quiz-result" id="dirFillResult"></div>
+          <div class="flex-center gap-2 mt-2">
+            <button class="btn btn-success btn-sm" onclick="checkDirFill()">✅ 检查方向</button>
+          </div>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">进入挑战 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 8: 挑战 - 村长问路三关 -->
+    <div class="slide" data-page="8">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">🏆</span> 村长问路三关</div>
+        <div class="page-num">8 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <img class="page-img" src="images/chinese-03-heaven-earth/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="挑战" loading="lazy">
+        <div class="mc-box" style="border-color:#FFA726;box-shadow:0 4px 0 #FB8C00,0 6px 12px rgba(255,167,38,.15)">
+          <div class="mc-title">🏆 村长问路三关</div>
+          <div class="mc-text">村民爷爷问路，答对三关过关！</div>
+        </div>
+        <div id="challengeArea" class="mt-2 w-full"></div>
+        <div class="flex-center gap-2 mt-3 flex-col w-full">
+          <div class="quiz-result" id="challengeResult"></div>
+          <button class="btn btn-warning" onclick="checkChallenge()">🔧 提交答案</button>
+        </div>
+      </div>
+    </div>
+    <!-- PAGE 9: 古诗角 -->
+    <div class="slide" data-page="9">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">📜</span> 古诗角</div>
+        <div class="page-num">9 / 10</div>
+      </div>
+      <div class="slide-inner">
+        <div class="mc-box">
+          <div class="mc-title">📜 古诗角</div>
+          <div class="mc-text">经典古诗，感受中文之美</div>
+        </div>
+        <div class="poem-box mt-2" style="background:#FFF8E1;border:2px solid #FFB300;border-radius:14px;padding:14px;width:100%;text-align:center;box-shadow:0 3px 0 #FF8F00">
+          <div class="poem-title" style="font-size:17px;font-weight:800;color:#E65100;margin-bottom:4px">《画》</div>
+          <div class="poem-author" style="font-size:12px;color:#A1887F;margin-bottom:8px">唐·王维</div>
+          <div class="poem-img-row">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="远看山有色" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="近听水无声" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="春去花还在" loading="lazy">
+            <img src="images/chinese-03-heaven-earth/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="人来鸟不惊" loading="lazy">
+          </div>
+          <div class="poem-line" style="margin-top:6px;">远看<strong style="color:#D32F2F;">山</strong>有色，近听<strong style="color:#D32F2F;">水</strong>无声，</div>
+          <div class="poem-line">春去<strong style="color:#D32F2F;">花</strong>还在，<strong style="color:#D32F2F;">人</strong>来鸟不惊。</div>
+        </div>
+        <div class="mc-box mt-2" style="background:#FFF5F5;border-color:#FFCDD2;box-shadow:0 4px 0 #EF9A9A,0 6px 12px rgba(239,83,80,.08)">
+          <div class="mc-text" style="font-size:14px;color:#546E7A">
+            💡 今天学的「<strong style="color:#C62828;">人</strong>」字就在古诗里！<br>
+            <span style="font-size:12px;">人来鸟不惊 — 人来了鸟儿也不害怕</span>
+          </div>
+        </div>
+        <div class="flex-center gap-2 mt-2 w-full" style="flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="speakText('画，唐，王维。远看山有色，近听水无声，春去花还在，人来鸟不惊。')">🔊 朗读古诗</button>
+        </div>
+        <button class="btn btn-primary mt-3" onclick="goNext()">领取徽章 ▶</button>
+      </div>
+    </div>
+    <!-- PAGE 10: 庆祝 -->
+    <div class="slide" data-page="10">
+      <div class="header">
+        <div class="title-bar"><span class="emoji">🎉</span> 完成！</div>
+        <div class="page-num">10 / 10</div>
+      </div>
+      <div class="slide-inner" style="justify-content:center">
+        <img class="page-img-round" src="images/chinese-03-heaven-earth/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="字典" loading="lazy" style="max-width:220px">
+        <div class="badge" id="badge">🏅</div>
+        <div class="mc-box mt-4" style="text-align:center;border-color:#FFD54F;background:#FFFDE7;box-shadow:0 4px 0 #FFB300,0 6px 12px rgba(255,179,0,.15)">
+          <div class="mc-title">🎉 恭喜通关！</div>
+          <div class="mc-text">
+            <strong>第3课 天地人</strong><br>
+            你学会了：
+          </div>
+          <div style="text-align:left;margin-top:8px;font-size:14px;color:#37474F;line-height:1.8">
+            ✅ 认识 <strong>11个新字</strong><br>
+            ✅ 天、地、人的写法<br>
+            ✅ 你、我、他介绍自己和别人<br>
+            ✅ 上、下、左、右、中方向词<br>
+            ✅ 朗读古诗《画》<br>
+            ✅ 获得 <strong style="color:#FF8F00">🏅 天地人·识字达人</strong> 徽章！
+          </div>
+          <div class="mt-2" style="font-size:15px;color:#C62828;font-weight:700">
+            📚 累计识字：28个
+          </div>
+        </div>
+        <div class="flex-center gap-2 mt-4 w-full" style="flex-wrap:wrap">
+          <button class="btn btn-ghost" onclick="goSlide(0)">🏠 再看一遍</button>
+          <button class="btn btn-primary" onclick="celebrate()">🎊 放烟花庆祝！</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" onclick="goPrev()">◀</button>
+    <div class="nav-dots" id="navDots"></div>
+    <button class="nav-btn primary" id="nextBtn" onclick="goNext()">▶</button>
+  </div>
+</div>
+<button class="read-btn" id="readAloudBtn" onclick="readCurrentPage()" style="position:fixed;bottom:80px;right:max(calc(50% - 210px),8px);z-index:30;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)">🔊</button>
+
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'chinese-03-heaven-earth';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+// ===== CONFIG =====
+const TOTAL_PAGES = 10;
+let currentPage = 0;
+let matchState = [false, false, false, false, false];
+let fillState = [null, null, null];
+let dirFillState = [null, null, null];
+let challengeState = [null, null, null];
+let speechSynth = window.speechSynthesis;
+let utterance = null;
+
+// ===== INIT =====
+function init() {
+  createNavDots();
+  buildFill();
+  buildDirFill();
+  buildChallenge();
+  goSlide(0);
+}
+
+function createNavDots() {
+  const dots = document.getElementById('navDots');
+  dots.innerHTML = '';
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i===0?' active':'');
+    d.onclick = ()=>goSlide(i);
+    d.setAttribute('aria-label','Page '+(i+1));
+    dots.appendChild(d);
+  }
+}
+
+// ===== NAVIGATION =====
+function goSlide(idx) {
+  if(idx<0||idx>=TOTAL_PAGES) return;
+  currentPage = idx;
+  const wrap = document.getElementById('slidesWrap');
+  wrap.style.transform = `translateX(-${idx*100}%)`;
+  wrap.style.transition = 'transform .45s cubic-bezier(.25,.8,.25,1)';
+  // Update dots
+  document.querySelectorAll('.nav-dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===idx);
+  });
+  // Update buttons
+  document.getElementById('prevBtn').disabled = idx===0;
+  document.getElementById('nextBtn').disabled = idx===TOTAL_PAGES-1;
+  document.getElementById('nextBtn').innerHTML = idx===TOTAL_PAGES-2?'🏁 完成':'▶';
+  // Animate elements
+  const slide = document.querySelectorAll('.slide')[idx];
+  if(slide){
+    gsap.fromTo(slide.querySelectorAll('.mc-box, .char-row, .hanzi-display, .triplet-row, .dir-row, .match-area, .fill-area, .poem-box, .poem-img-row, .badge, .btn:not(.nav-btn):not(.read-btn), .page-img, .page-img-round'),
+      {opacity:0,y:20},
+      {opacity:1,y:0,duration:.4,stagger:.08,ease:'power2.out',clearProps:'all'}
+    );
+  }
+  // Trigger celebration on last page
+  if(idx===TOTAL_PAGES-1) celebrate();
+}
+
+function goNext() { goSlide(currentPage+1); }
+function goPrev() { goSlide(currentPage-1); }
+
+// ===== READ ALOUD =====
+function speakText(text) {
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.9;
+  u.pitch = 1.1;
+  window.speechSynthesis.speak(u);
+}
+
+function readCurrentPage() {
+  const slide = document.querySelectorAll('.slide')[currentPage];
+  if(!slide) return;
+  const texts = [];
+  slide.querySelectorAll('.mc-title, .mc-text, .hanzi-char, .hanzi-pinyin, .poem-line, .t-hanzi, .d-hanzi').forEach(el=>{
+    const t = el.textContent.trim();
+    if(t) texts.push(t);
+  });
+  if(texts.length) speakText(texts.join('，'));
+}
+
+// ===== PAGE 7: MATCHING =====
+let matchSelected = null;
+
+document.addEventListener('click', function(e) {
+  const row = e.target.closest('.match-row');
+  if(!row) return;
+  if(row.classList.contains('matched')) return;
+  const left = row.querySelector('.m-left');
+  if(!left) return;
+  // Toggle selection
+  if(row.classList.contains('selected')) {
+    row.classList.remove('selected');
+    matchSelected = null;
+    return;
+  }
+  // Deselect all
+  document.querySelectorAll('.match-row.selected').forEach(r=>r.classList.remove('selected'));
+  row.classList.add('selected');
+});
+
+function checkMatching() {
+  // All rows are already correctly matched
+  const rows = document.querySelectorAll('.match-row');
+  rows.forEach((r,i)=>{
+    r.classList.add('matched');
+    r.classList.remove('selected');
+  });
+  const res = document.getElementById('matchResult');
+  res.innerHTML = '🎉 全部配对正确！太棒了！';
+  res.className = 'quiz-result correct';
+  speakText('全部配对正确！');
+}
+
+// ===== PAGE 7: FILL BLANK =====
+const fillQuestions = [
+  { text: '___ 叫Steve。', answer: '我', options: ['你','我','他'] },
+  { text: '___ 叫什么名字？', answer: '你', options: ['你','我','他'] },
+  { text: '___ 是Bob。', answer: '他', options: ['你','我','他'] }
+];
+
+function buildFill() {
+  const area = document.getElementById('fillArea');
+  area.innerHTML = '';
+  fillQuestions.forEach((q,i)=>{
+    const row = document.createElement('div');
+    row.className = 'fill-row';
+    let html = `<span class="fill-label">${q.text.replace('___','')}</span>`;
+    html += `<span class="fill-slot" data-fidx="${i}">`;
+    q.options.forEach(o=>{
+      html += `<button class="fill-btn" data-fval="${o}" onclick="selectFill(${i},'${o}')">${o}</button>`;
+    });
+    html += `</span>`;
+    row.innerHTML = html;
+    area.appendChild(row);
+  });
+}
+
+function selectFill(idx, val) {
+  fillState[idx] = val;
+  const btns = document.querySelectorAll(`.fill-slot[data-fidx="${idx}"] .fill-btn`);
+  btns.forEach(b=>{
+    b.classList.remove('sel');
+    if(b.dataset.fval===val) b.classList.add('sel');
+  });
+}
+
+function checkFill() {
+  let correct = 0;
+  fillQuestions.forEach((q,i)=>{
+    const btns = document.querySelectorAll(`.fill-slot[data-fidx="${i}"] .fill-btn`);
+    btns.forEach(b=>{
+      b.classList.remove('correct','wrong');
+      if(b.dataset.fval===q.answer){
+        b.classList.add('correct');
+      } else if(b.dataset.fval===fillState[i] && fillState[i]!==q.answer){
+        b.classList.add('wrong');
+      }
+    });
+    if(fillState[i]===q.answer) correct++;
+  });
+  const res = document.getElementById('fillResult');
+  if(correct===3){
+    res.innerHTML = '🎉 全部正确！你会用你我他了！';
+    res.className = 'quiz-result correct';
+    speakText('全部正确！');
+  } else {
+    res.innerHTML = `✅ 答对 ${correct}/3 题，绿色是正确的`;
+    res.className = 'quiz-result';
+  }
+}
+
+// ===== PAGE 7: DIRECTION FILL =====
+const dirFillQuestions = [
+  { text: '___ 山 (上面)', answer: '上', options: ['上','下','左','右','中'] },
+  { text: '往 ___ 走 (右边)', answer: '右', options: ['上','下','左','右','中'] },
+  { text: '___ 间等你们 (中间)', answer: '中', options: ['上','下','左','右','中'] }
+];
+
+function buildDirFill() {
+  const area = document.getElementById('dirFillArea');
+  area.innerHTML = '';
+  dirFillQuestions.forEach((q,i)=>{
+    const row = document.createElement('div');
+    row.className = 'fill-row';
+    let html = `<span class="fill-label">${q.text.replace('___','')}</span>`;
+    html += `<span class="dir-slot" data-didx="${i}">`;
+    q.options.forEach(o=>{
+      html += `<button class="fill-btn" data-dval="${o}" onclick="selectDirFill(${i},'${o}')">${o}</button>`;
+    });
+    html += `</span>`;
+    row.innerHTML = html;
+    area.appendChild(row);
+  });
+}
+
+function selectDirFill(idx, val) {
+  dirFillState[idx] = val;
+  const btns = document.querySelectorAll(`.dir-slot[data-didx="${idx}"] .fill-btn`);
+  btns.forEach(b=>{
+    b.classList.remove('sel');
+    if(b.dataset.dval===val) b.classList.add('sel');
+  });
+}
+
+function checkDirFill() {
+  let correct = 0;
+  dirFillQuestions.forEach((q,i)=>{
+    const btns = document.querySelectorAll(`.dir-slot[data-didx="${i}"] .fill-btn`);
+    btns.forEach(b=>{
+      b.classList.remove('correct','wrong');
+      if(b.dataset.dval===q.answer){
+        b.classList.add('correct');
+      } else if(b.dataset.dval===dirFillState[i] && dirFillState[i]!==q.answer){
+        b.classList.add('wrong');
+      }
+    });
+    if(dirFillState[i]===q.answer) correct++;
+  });
+  const res = document.getElementById('dirFillResult');
+  if(correct===3){
+    res.innerHTML = '🎉 方向填空全对！你真厉害！';
+    res.className = 'quiz-result correct';
+    speakText('方向填空全对！');
+  } else {
+    res.innerHTML = `✅ 答对 ${correct}/3 题，绿色是正确的`;
+    res.className = 'quiz-result';
+  }
+}
+
+// ===== PAGE 8: CHALLENGE =====
+function buildChallenge() {
+  const challenges = [
+    {
+      q: '第一关：「天地之间是什么？」',
+      choices: ['天','地','人'],
+      ans: '人',
+      hint: '🌟 头上是天，脚下是地，中间是…'
+    },
+    {
+      q: '第二关：「你的朋友是___？」',
+      choices: ['你','我','他'],
+      ans: '他',
+      hint: '🌟 对方是你，自己是…'
+    },
+    {
+      q: '第三关：方向迷宫 — ⭐在格子的哪个方向？',
+      choices: ['上','下','左','右'],
+      ans: '上',
+      hint: '🌟 看下图，⭐在上面'
+    }
+  ];
+  const area = document.getElementById('challengeArea');
+  area.innerHTML = '';
+  challenges.forEach((c,i)=>{
+    const div = document.createElement('div');
+    div.className = 'challenge-item';
+    let mazeHtml = '';
+    if(i===2){
+      mazeHtml = `
+        <div class="maze-area">
+          <div class="maze-grid">
+            <div class="maze-cell start">⭐</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">🧑</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">⬜</div>
+            <div class="maze-cell">⬜</div>
+          </div>
+          <div style="text-align:center;font-size:12px;color:#90A4AE;margin-top:4px">🧑是你，⭐是目标。⭐在🧑的哪个方向？</div>
+        </div>
+      `;
+    }
+    div.innerHTML = `
+      <div class="chall-num">🏅 ${c.q}</div>
+      ${mazeHtml ? mazeHtml : `<div class="chall-q">${c.hint}</div>`}
+      <div class="chall-choices" data-cidx="${i}">
+        ${c.choices.map((ch,j)=>`<button class="chall-choice" data-cv="${ch}" onclick="selectChallenge(${i},'${ch}')">${ch}</button>`).join('')}
+      </div>
+    `;
+    area.appendChild(div);
+  });
+  challengeState = [null, null, null];
+}
+
+function selectChallenge(idx, val) {
+  challengeState[idx] = val;
+  const btns = document.querySelectorAll(`.chall-choices[data-cidx="${idx}"] .chall-choice`);
+  btns.forEach(b=>{
+    b.classList.remove('sel');
+    if(b.dataset.cv===val) b.classList.add('sel');
+  });
+}
+
+function checkChallenge() {
+  const challenges = [
+    { ans: '人' },
+    { ans: '他' },
+    { ans: '上' }
+  ];
+  let correct = 0;
+  challenges.forEach((c,i)=>{
+    const btns = document.querySelectorAll(`.chall-choices[data-cidx="${i}"] .chall-choice`);
+    btns.forEach(b=>{
+      b.classList.remove('chi-correct','chi-wrong');
+      if(b.dataset.cv===c.ans){
+        b.classList.add('chi-correct');
+      } else if(b.dataset.cv===challengeState[i] && challengeState[i]!==c.ans){
+        b.classList.add('chi-wrong');
+      }
+    });
+    if(challengeState[i]===c.ans) correct++;
+  });
+  const res = document.getElementById('challengeResult');
+  if(correct===3){
+    res.innerHTML = '🎉 三关全过！村长为你鼓掌！快去领徽章！';
+    res.className = 'quiz-result correct';
+    speakText('太棒了！三关全过！');
+    setTimeout(()=>{
+      goNext();
+    },2000);
+  } else {
+    res.innerHTML = `🏆 答对 ${correct}/3 关，绿色是正确的，继续加油！`;
+    res.className = 'quiz-result';
+  }
+}
+
+// ===== PAGE 10: CONFETTI CELEBRATION =====
+function celebrate() {
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+
+  const colors = ['#EF5350','#FFD93D','#6BCB77','#4D96FF','#FF6B9D','#C084FC','#FF8A65','#42A5F5'];
+  const shapes = ['■','●','▲','★','♦','♥','天','地','人'];
+  const total = 80;
+
+  for(let i=0;i<total;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.textContent = shapes[Math.floor(Math.random()*shapes.length)];
+    piece.style.left = (Math.random()*100)+'%';
+    piece.style.color = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.fontSize = (8+Math.random()*14)+'px';
+    piece.style.opacity = '0';
+    container.appendChild(piece);
+  }
+
+  gsap.to('.confetti-piece',{
+    y: window.innerHeight+100,
+    x: () => (Math.random()-0.5)*300,
+    rotation: () => Math.random()*720-360,
+    opacity: {value:1,duration:0.1},
+    duration: 2+Math.random()*2,
+    delay: () => Math.random()*0.5,
+    ease: 'power1.out',
+    stagger: 0.02,
+    onComplete: ()=>{
+      setTimeout(()=>{
+        gsap.to('.confetti-piece',{
+          opacity:0,
+          duration:.5,
+          onComplete:()=>{
+            container.remove();
+          }
+        });
+      },3000);
+    }
+  });
+
+  // Badge animation
+  gsap.fromTo('#badge',{scale:0,rotation:-30},{scale:1,rotation:0,duration:.6,ease:'back.out(2)'});
+
+  speakText('恭喜你完成了第3课天地人！获得了天地人识字达人徽章！');
+}
+
+// ===== KEYBOARD NAV =====
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goNext();}
+  if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}
+  if(e.key==='Home'){e.preventDefault();goSlide(0);}
+});
+
+// ===== INIT ON LOAD =====
+window.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

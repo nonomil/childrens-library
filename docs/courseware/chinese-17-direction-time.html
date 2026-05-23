@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第17课 方向与时间 🌀</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #ffebee;
+    color: #333;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  :root {
+    --primary: #EF5350;
+    --secondary: #C62828;
+    --bg: #ffebee;
+    --title: #B71C1C;
+    --card-bg: #fff;
+    --shadow: 0 4px 20px rgba(183,28,28,0.15);
+    --radius: 20px;
+  }
+  .app {
+    width: 100vw; height: 100vh;
+    min-width: 768px; max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  @media(max-width:767px){
+    .app { min-width: 100%; max-width: 100%; }
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 56px; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    background: linear-gradient(180deg, rgba(183,28,28,0.10) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .topbar > * { pointer-events: auto; }
+  .topbar a {
+    text-decoration: none;
+    font-size: 16px; font-weight: 700;
+    color: var(--secondary);
+    display: flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.85);
+    padding: 6px 14px; border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+  }
+  .topbar a:active { transform: scale(0.94); }
+  .topbar .next-link { color: var(--primary); }
+
+  /* PAGES */
+  .pages-container {
+    width: 100%; height: 100%;
+    position: relative;
+  }
+  .page {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 68px 20px 80px;
+    opacity: 0; visibility: hidden;
+    overflow-y: auto;
+    transition: none;
+    will-change: transform, opacity;
+  }
+  .page.active {
+    opacity: 1; visibility: visible;
+    z-index: 10;
+  }
+  .page-inner {
+    width: 100%; max-width: 860px;
+    margin: 0 auto;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16px;
+  }
+
+  /* NAV BOTTOM */
+  .nav-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 64px; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    gap: 20px;
+    padding: 0 20px;
+    background: linear-gradient(0deg, rgba(255,235,238,0.95) 0%, transparent 100%);
+  }
+  .nav-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: none; background: var(--card-bg);
+    box-shadow: var(--shadow);
+    font-size: 26px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .nav-btn:active { transform: scale(0.88); background: var(--primary); color: #fff; }
+  .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+  .speak-btn {
+    width: 52px; height: 52px; border-radius: 50%;
+    border: 2px solid var(--primary); background: var(--card-bg);
+    font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .speak-btn:active { background: #ffcdd2; transform: scale(0.9); }
+  .speak-btn.speaking { background: var(--primary); color: #fff; animation: pulse 1s infinite; }
+  @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+  .page-dots {
+    display: flex; gap: 8px;
+    align-items: center;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #e0e0e0; border: none; cursor: pointer;
+    transition: all 0.3s; padding: 0;
+    touch-action: manipulation;
+  }
+  .dot.active {
+    background: var(--primary);
+    width: 28px; border-radius: 6px;
+  }
+  .dot:hover { background: #ffcdd2; }
+
+  /* TYPOGRAPHY */
+  h1 {
+    font-size: 44px; font-weight: 900;
+    color: var(--title);
+    text-align: center;
+    line-height: 1.2;
+    text-shadow: 0 2px 8px rgba(183,28,28,0.15);
+  }
+  h2 {
+    font-size: 32px; font-weight: 800;
+    color: var(--secondary);
+    text-align: center;
+  }
+  h3 {
+    font-size: 24px; font-weight: 700;
+    color: var(--primary);
+  }
+  .subtitle {
+    font-size: 20px; font-weight: 600;
+    color: #666;
+    text-align: center;
+  }
+  .pinyin {
+    font-size: 18px; color: #999; font-weight: 600;
+    letter-spacing: 2px;
+  }
+  .story-text {
+    font-size: 20px; line-height: 1.8;
+    color: #444;
+    text-align: center;
+    max-width: 700px;
+  }
+  .story-text .highlight { color: var(--primary); font-weight: 700; }
+
+  /* CARDS */
+  .card-grid {
+    display: grid; gap: 16px;
+    width: 100%;
+  }
+  .card-grid-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card-grid-5 { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  .card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .card:active { transform: scale(0.96); }
+  .card .char {
+    font-size: 52px; font-weight: 900;
+    color: var(--title);
+    line-height: 1.2;
+  }
+  .card .char-pinyin {
+    font-size: 16px; color: var(--primary);
+    font-weight: 600;
+  }
+  .card .char-strokes {
+    font-size: 14px; color: #999;
+  }
+  .card .char-meaning {
+    font-size: 15px; color: #555;
+    margin-top: 6px;
+  }
+  .card .char-memory {
+    font-size: 14px; color: #888;
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .card .char-example {
+    font-size: 14px; color: var(--primary);
+    margin-top: 4px;
+  }
+
+  /* IMAGES */
+  .page-img {
+    width: 100%; max-width: 640px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    pointer-events: none;
+    margin: 8px 0;
+  }
+  .page-img-sm { max-width: 960px; }
+
+  /* COVER */
+  .cover-icon {
+    font-size: 80px;
+    line-height: 1;
+    animation: spin 8s linear infinite;
+    display: block;
+  }
+  @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+  .cover-badge {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-size: 18px; font-weight: 700;
+  }
+  .goal-list {
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center;
+  }
+  .goal-list li {
+    background: var(--card-bg);
+    padding: 8px 18px;
+    border-radius: 30px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    font-size: 16px; font-weight: 600;
+    border-left: 4px solid var(--primary);
+  }
+
+  /* PRACTICE */
+  .practice-section {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin: 8px 0;
+  }
+  .practice-section h3 {
+    margin-bottom: 12px;
+    font-size: 22px;
+  }
+  .practice-row {
+    display: flex; flex-wrap: wrap;
+    gap: 12px; align-items: center;
+    justify-content: center;
+    margin: 8px 0;
+  }
+  .practice-btn {
+    padding: 10px 24px;
+    border: 2px solid var(--primary);
+    background: #fff;
+    border-radius: 30px;
+    font-size: 20px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .practice-btn:active { transform: scale(0.92); }
+  .practice-btn.selected { background: var(--primary); color: #fff; }
+  .practice-btn.correct { background: #4CAF50; color: #fff; border-color: #4CAF50; }
+  .practice-btn.wrong { background: #f44336; color: #fff; border-color: #f44336; animation: shake 0.4s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+  .practice-fill {
+    display: inline-block;
+    min-width: 80px;
+    border-bottom: 3px dashed var(--primary);
+    text-align: center;
+    font-size: 22px; font-weight: 700;
+    color: var(--primary);
+    padding: 0 8px;
+  }
+  .practice-fill.filled { border-bottom-color: #4CAF50; color: #4CAF50; }
+
+  /* MATCH GAME */
+  .match-area {
+    display: flex; gap: 40px; justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .match-col {
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .match-card {
+    width: 90px; height: 90px;
+    border-radius: 16px;
+    background: var(--card-bg);
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; font-weight: 900;
+    color: var(--title);
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .match-card:active { transform: scale(0.9); }
+  .match-card.matched {
+    background: #4CAF50; color: #fff;
+    transform: scale(0.95);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .match-card.selected-match {
+    border: 4px solid var(--primary);
+    box-shadow: 0 0 0 4px rgba(239,83,80,0.3);
+  }
+  .match-line {
+    font-size: 28px; font-weight: 800;
+    color: var(--secondary);
+  }
+
+  /* CELEBRATION */
+  .confetti-canvas {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 200;
+  }
+  .celebration-msg {
+    font-size: 32px; font-weight: 900;
+    color: var(--title);
+    text-align: center;
+    animation: bounce 1s ease-in-out infinite alternate;
+  }
+  @keyframes bounce { 0%{transform:translateY(0)} 100%{transform:translateY(-12px)} }
+
+  /* STROKE DISPLAY */
+  .stroke-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 16px 12px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    min-width: 0;
+  }
+  .stroke-card .sc-char {
+    font-size: 48px; font-weight: 900;
+    color: var(--title);
+    line-height: 1.2;
+  }
+  .stroke-card .sc-pinyin {
+    font-size: 15px; color: var(--primary); font-weight: 600;
+  }
+  .stroke-card .sc-strokes {
+    font-size: 13px; color: #999;
+  }
+  .stroke-card .sc-stroke-list {
+    font-size: 14px; color: #666;
+    word-break: break-all;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .stroke-card .sc-examples {
+    font-size: 14px; color: var(--secondary);
+    font-weight: 600;
+    margin-top: 4px;
+  }
+  .stroke-card .sc-memory {
+    font-size: 13px; color: #888;
+    font-style: italic;
+    margin-top: 3px;
+  }
+
+  /* POEM */
+  .poem-img-row {
+    display: flex; flex-direction: column;
+    gap: 8px; align-items: center;
+    width: 100%;
+  }
+  .poem-img-row img {
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  }
+
+  /* SCROLLBAR */
+  .page::-webkit-scrollbar { width: 4px; }
+  .page::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+  /* Responsive font scaling */
+  @media(max-width:800px){
+    h1 { font-size: 34px; }
+    h2 { font-size: 26px; }
+    .card .char { font-size: 38px; }
+    .stroke-card .sc-char { font-size: 36px; }
+    .match-card { width: 70px; height: 70px; font-size: 32px; }
+  }
+
+  /* Time ring animation */
+  .time-ring {
+    display: flex; gap: 6px; align-items: center;
+    justify-content: center;
+    font-size: 28px; font-weight: 700;
+    color: var(--secondary);
+  }
+  .time-ring .arrow { color: var(--primary); font-size: 24px; }
+
+  /* Fill-in blanks area */
+  .fill-blank {
+    display: inline-block; min-width: 60px;
+    border-bottom: 3px dashed var(--primary);
+    text-align: center;
+    font-size: 24px; font-weight: 800;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0 6px;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .fill-blank.filled { border-color: #4CAF50; color: #4CAF50; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="../">🏠 首页</a>
+    <a href="../chinese-18-animals.html" class="next-link">▶ 下一个</a>
+  </div>
+
+  <!-- PAGES -->
+  <div class="pages-container" id="pagesContainer">
+    <!-- PAGE 0: COVER -->
+    <div class="page active" data-page="0">
+      <div class="page-inner">
+        <span class="cover-icon">🌀</span>
+        <h1>第17课<br>方向与时间</h1>
+        <p class="subtitle">📍 方向区 · ⏰ 时间区</p>
+        <div style="margin:8px 0">
+          <span class="cover-badge">累计识字：115字</span>
+        </div>
+        <ul class="goal-list">
+          <li>前 后 出 入</li>
+          <li>早 中 晚</li>
+          <li>今 明 昨</li>
+          <li>来/去对比</li>
+          <li>笔画+拼音</li>
+        </ul>
+        <p style="color:#999;font-size:15px;margin-top:12px">👆 点击箭头开始探索</p>
+      </div>
+    </div>
+
+    <!-- PAGE 1: 时空迷宫 -->
+    <div class="page" data-page="1">
+      <div class="page-inner">
+        <h2>🌀 时空迷宫</h2>
+        <p class="story-text">动作城堡顶层隐藏着一扇门，通往<b class="highlight">时空迷宫</b>！</p>
+        <img src="images/chinese-17/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="时空迷宫入口" class="page-img" loading="lazy">
+        <div class="card-grid card-grid-2" style="max-width:600px">
+          <div class="card" style="border-left:6px solid #42A5F5">
+            <div class="pinyin">方向区</div>
+            <div style="font-size:28px;font-weight:800;color:var(--title)">前 后 出 入 来 去</div>
+          </div>
+          <div class="card" style="border-left:6px solid #FFA726">
+            <div class="pinyin">时间区</div>
+            <div style="font-size:28px;font-weight:800;color:var(--title)">早 中 晚 今 明 昨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: 前后 -->
+    <div class="page" data-page="2">
+      <div class="page-inner">
+        <h2>📍 方向区 — 前后</h2>
+        <img src="images/chinese-17/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="前后方向墙" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-2" style="max-width:560px">
+          <div class="stroke-card">
+            <div class="sc-char">前</div>
+            <div class="sc-pinyin">qián (9画)</div>
+            <div class="sc-stroke-list">丶丿一丨𠃍一一丨亅</div>
+            <div class="sc-examples">前面 · 从前 · 前天</div>
+            <div class="sc-memory">"前是正前方"</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">后</div>
+            <div class="sc-pinyin">hòu (6画)</div>
+            <div class="sc-stroke-list">丿一丨𠃍一丶</div>
+            <div class="sc-examples">后面 · 后来 · 后天</div>
+            <div class="sc-memory">"后是背对的方向"</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          <span class="highlight">前</span>和<span class="highlight">后</span>还是时间词！<br>
+          前天 = 昨天的昨天 &nbsp;·&nbsp; 后天 = 明天的明天
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 3: 出入 -->
+    <div class="page" data-page="3">
+      <div class="page-inner">
+        <h2>🚪 方向区 — 出入</h2>
+        <img src="images/chinese-17/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="出入两扇门" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-2" style="max-width:560px">
+          <div class="stroke-card">
+            <div class="sc-char">出</div>
+            <div class="sc-pinyin">chū (5画)</div>
+            <div class="sc-stroke-list">㇗丨丨㇗丨</div>
+            <div class="sc-examples">出去 · 出门 · 日出</div>
+            <div class="sc-memory">⛰️ 两座山叠在一起！</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">入</div>
+            <div class="sc-pinyin">rù (2画)</div>
+            <div class="sc-stroke-list">丿㇏</div>
+            <div class="sc-examples">进入 · 入口 · 出入</div>
+            <div class="sc-memory">一撇一捺往内收</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          <span class="highlight">出</span>↔<span class="highlight">入</span> &nbsp;·&nbsp; <span class="highlight">来</span>↔<span class="highlight">去</span><br>
+          方向相反的一对好朋友
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 4: 早中晚 -->
+    <div class="page" data-page="4">
+      <div class="page-inner">
+        <h2>☀️ 时间区 — 早中晚</h2>
+        <img src="images/chinese-17/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="早中晚时间大厅" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-3" style="max-width:600px">
+          <div class="stroke-card">
+            <div class="sc-char">早</div>
+            <div class="sc-pinyin">zǎo (6画)</div>
+            <div class="sc-stroke-list">丨𠃍一一一丨</div>
+            <div class="sc-examples">早上 · 早饭 · 早睡</div>
+            <div class="sc-memory">☀️ 日刚升起</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">中</div>
+            <div class="sc-pinyin">zhōng (4画)</div>
+            <div class="sc-stroke-list">丨𠃍一丨</div>
+            <div class="sc-examples">中午 · 中间 · 心中</div>
+            <div class="sc-memory">口加一竖</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">晚</div>
+            <div class="sc-pinyin">wǎn (11画)</div>
+            <div class="sc-stroke-list">丨𠃍一一一丨丿㇕丨丿㇏</div>
+            <div class="sc-examples">晚上 · 晚饭 · 晚安</div>
+            <div class="sc-memory">🌅 太阳落山</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          三个字都跟 <span class="highlight">日</span> 有关 ——<br>
+          早上的日刚升起，中午的日在正中，晚上的日要落山
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 5: 今明昨 -->
+    <div class="page" data-page="5">
+      <div class="page-inner">
+        <h2>✨ 时间区 — 今明昨</h2>
+        <img src="images/chinese-17/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="今明昨闪光字" class="page-img page-img-sm" loading="lazy">
+        <div class="card-grid card-grid-3" style="max-width:600px">
+          <div class="stroke-card">
+            <div class="sc-char">今</div>
+            <div class="sc-pinyin">jīn (4画)</div>
+            <div class="sc-stroke-list">丿㇏㇕丨</div>
+            <div class="sc-examples">今天 · 今年 · 如今</div>
+            <div class="sc-memory">🔔 像一口钟</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">明</div>
+            <div class="sc-pinyin">míng (8画)</div>
+            <div class="sc-stroke-list">丨𠃍一一丿㇏一一</div>
+            <div class="sc-examples">明天 · 光明 · 明白</div>
+            <div class="sc-memory">☀️+🌙 = 明！</div>
+          </div>
+          <div class="stroke-card">
+            <div class="sc-char">昨</div>
+            <div class="sc-pinyin">zuó (9画)</div>
+            <div class="sc-stroke-list">丨𠃍一一丿一丨一丿</div>
+            <div class="sc-examples">昨天 · 昨日</div>
+            <div class="sc-memory">日字旁</div>
+          </div>
+        </div>
+        <p class="story-text" style="font-size:17px">
+          <span class="highlight">明</span>是最美的汉字之一 ——<br>
+          左边太阳 ☀️，右边月亮 🌙
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 6: 迷宫出口 -->
+    <div class="page" data-page="6">
+      <div class="page-inner">
+        <h2>🌀 迷宫出口 · 时空钟</h2>
+        <img src="images/chinese-17/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="迷宫出口时空钟" class="page-img page-img-sm" loading="lazy">
+        <div class="card" style="max-width:600px;width:100%">
+          <h3>🕒 时空钟</h3>
+          <div class="time-ring">
+            <span style="color:#42A5F5">前(12点)</span>
+            <span class="arrow">↕</span>
+            <span style="color:#EF5350">后(6点)</span>
+            <span style="margin:0 10px">|</span>
+            <span style="color:#66BB6A">出(3点)</span>
+            <span class="arrow">↔</span>
+            <span style="color:#FFA726">入(9点)</span>
+          </div>
+          <div class="time-ring" style="margin-top:10px">
+            <span>早</span><span class="arrow">→</span><span>中</span><span class="arrow">→</span><span>晚</span>
+          </div>
+          <div class="time-ring" style="margin-top:6px">
+            <span>昨</span><span class="arrow">→</span><span>今</span><span class="arrow">→</span><span>明</span>
+          </div>
+          <p style="color:#888;font-size:15px;margin-top:10px">
+            昨天的昨天 = <b style="color:var(--primary)">前天</b><br>
+            明天的明天 = <b style="color:var(--primary)">后天</b>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: Practice -->
+    <div class="page" data-page="7">
+      <div class="page-inner">
+        <h2>📝 练习乐园</h2>
+
+        <div class="practice-section">
+          <h3>🗂️ 方向配对</h3>
+          <p style="color:#888;margin-bottom:10px">点击一对相反的词：</p>
+          <div class="match-area" id="matchArea">
+            <div class="match-col" id="matchColA">
+              <div class="match-card" data-pair="front">前</div>
+              <div class="match-card" data-pair="out">出</div>
+              <div class="match-card" data-pair="come">来</div>
+            </div>
+            <div class="match-line">↔</div>
+            <div class="match-col" id="matchColB">
+              <div class="match-card" data-pair="back">后</div>
+              <div class="match-card" data-pair="in">入</div>
+              <div class="match-card" data-pair="go">去</div>
+            </div>
+          </div>
+          <p id="matchFeedback" style="font-size:16px;font-weight:600;color:#888;margin-top:8px">找到三对方向好朋友吧！</p>
+        </div>
+
+        <div class="practice-section">
+          <h3>⏰ 时间线排序</h3>
+          <p style="color:#888;margin-bottom:8px">从早到晚点击排列：</p>
+          <div class="practice-row" id="timeSortArea">
+            <div class="practice-btn" data-time="early">早</div>
+            <div class="practice-btn" data-time="mid">中</div>
+            <div class="practice-btn" data-time="late">晚</div>
+          </div>
+          <p id="timeSortFeedback" style="font-size:16px;font-weight:600;color:#888;margin-top:6px">点击三个时间词排序</p>
+        </div>
+
+        <div class="practice-section">
+          <h3>✏️ 填空小能手</h3>
+          <p style="font-size:18px;line-height:2.2;text-align:center">
+            我站在门<span class="fill-blank" data-answer="后" data-index="0">___</span>面。
+            &nbsp;&nbsp;
+            他从门里<span class="fill-blank" data-answer="出" data-index="1">___</span>来了。
+            &nbsp;&nbsp;
+            太阳升起来了是<span class="fill-blank" data-answer="早" data-index="2">___</span>上。
+          </p>
+          <div class="practice-row" id="fillOptions" style="margin-top:10px">
+            <div class="practice-btn" data-opt="后">后</div>
+            <div class="practice-btn" data-opt="前">前</div>
+            <div class="practice-btn" data-opt="出">出</div>
+            <div class="practice-btn" data-opt="入">入</div>
+            <div class="practice-btn" data-opt="早">早</div>
+            <div class="practice-btn" data-opt="晚">晚</div>
+          </div>
+          <p id="fillFeedback" style="font-size:16px;font-weight:600;color:#888;margin-top:6px">点击选项填入空白</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 8: 古诗角 -->
+    <div class="page" data-page="8">
+      <div class="page-inner">
+        <h2>📜 古诗角</h2>
+        <p class="subtitle" style="font-size:18px;margin-bottom:4px">回乡偶书 · 唐·贺知章</p>
+        <div class="poem-img-row">
+          <img src="images/chinese-17/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="回乡偶书1" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-17/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="回乡偶书2" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-17/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="回乡偶书3" loading="lazy" style="max-width:520px">
+          <img src="images/chinese-17/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="回乡偶书4" loading="lazy" style="max-width:520px">
+        </div>
+        <div class="card" style="max-width:560px;margin-top:8px;padding:14px 20px">
+          <p style="font-size:17px;line-height:1.8;color:#555">
+            <b>少小离家老大回，</b>乡音无改鬓毛衰。<br>
+            <b>儿童相见不相识，</b>笑问客从何处来。
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 9: 庆祝 -->
+    <div class="page" data-page="9">
+      <div class="page-inner">
+        <h2>🎉 太棒啦！</h2>
+        <div style="font-size:72px;line-height:1;text-align:center">🌟🏆🌟</div>
+        <p class="celebration-msg">你完成了第17课！</p>
+        <img src="images/chinese-17/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="12字全家福总结" class="page-img page-img-sm" loading="lazy">
+        <div class="card" style="max-width:500px;padding:16px">
+          <p style="font-size:28px;font-weight:900;color:var(--title);letter-spacing:6px">
+            前 后 出 入 早 中 晚 今 明 昨 来 去
+          </p>
+          <p style="color:#888;font-size:15px;margin-top:6px">12个字 · 累计识字115字 🎊</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV BOTTOM -->
+  <div class="nav-bottom">
+    <button class="nav-btn" id="prevBtn" aria-label="上一页">◀</button>
+    <div class="page-dots" id="pageDots"></div>
+    <button class="speak-btn" id="speakBtn" aria-label="朗读">🔊</button>
+    <button class="nav-btn" id="nextBtn" aria-label="下一页">▶</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const TOTAL_PAGES = 10; // 0-9
+  let currentPage = 0;
+  const pages = document.querySelectorAll('.page');
+  const dots = document.getElementById('pageDots');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const speakBtn = document.getElementById('speakBtn');
+
+  // Build dots
+  for(let i=0; i<TOTAL_PAGES; i++){
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i===0?' active':'');
+    dot.dataset.page = i;
+    dot.addEventListener('click',function(){ goTo(parseInt(this.dataset.page)); });
+    dots.appendChild(dot);
+  }
+
+  function goTo(idx){
+    if(idx<0 || idx>=TOTAL_PAGES) return;
+    currentPage = idx;
+    pages.forEach((p,i)=>{
+      p.classList.toggle('active',i===idx);
+    });
+    document.querySelectorAll('.dot').forEach((d,i)=>{
+      d.classList.toggle('active',i===idx);
+    });
+    prevBtn.disabled = (idx===0);
+    nextBtn.disabled = (idx===TOTAL_PAGES-1);
+    // Stop speaking on page change
+    if(window.speechSynthesis && window.speechSynthesis.speaking){
+      window.speechSynthesis.cancel();
+      speakBtn.classList.remove('speaking');
+    }
+    // GSAP animation
+    const activePage = pages[idx];
+    gsap.fromTo(activePage, {opacity:0, y:30}, {opacity:1, y:0, duration:0.5, ease:'power2.out'});
+  }
+
+  prevBtn.addEventListener('click',()=>{ goTo(currentPage-1); });
+  nextBtn.addEventListener('click',()=>{ goTo(currentPage+1); });
+
+  // Keyboard
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowLeft') goTo(currentPage-1);
+    if(e.key==='ArrowRight') goTo(currentPage+1);
+  });
+
+  // Touch swipe
+  let touchStartX=0, touchEndX=0;
+  document.addEventListener('touchstart',(e)=>{
+    touchStartX = e.changedTouches[0].screenX;
+  }, {passive:true});
+  document.addEventListener('touchend',(e)=>{
+    touchEndX = e.changedTouches[0].screenX;
+    const diff = touchStartX - touchEndX;
+    if(Math.abs(diff)>50){
+      if(diff>0) goTo(currentPage+1);
+      else goTo(currentPage-1);
+    }
+  }, {passive:true});
+
+  // ---- SPEAK ----
+  function speakPageContent(){
+    if(!window.speechSynthesis) return;
+    if(window.speechSynthesis.speaking){
+      window.speechSynthesis.cancel();
+      speakBtn.classList.remove('speaking');
+      return;
+    }
+    const activePage = pages[currentPage];
+    let text = '';
+    // Extract visible text
+    const walker = document.createTreeWalker(activePage, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while(node = walker.nextNode()){
+      const t = node.textContent.trim();
+      if(t) text += t + '。';
+    }
+    if(!text) text = '第17课，方向与时间';
+    // Limit length
+    if(text.length>300) text = text.slice(0,300);
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = 0.9;
+    utter.pitch = 1.1;
+    utter.onstart = ()=>{ speakBtn.classList.add('speaking'); };
+    utter.onend = ()=>{ speakBtn.classList.remove('speaking'); };
+    utter.onerror = ()=>{ speakBtn.classList.remove('speaking'); };
+    window.speechSynthesis.speak(utter);
+  }
+  speakBtn.addEventListener('click', speakPageContent);
+
+  // ---- MATCH GAME (Page 7) ----
+  const matchColA = document.getElementById('matchColA');
+  const matchColB = document.getElementById('matchColB');
+  const matchFeedback = document.getElementById('matchFeedback');
+  let selectedA = null;
+  let matchedPairs = new Set();
+  const pairMap = {
+    'front':'back',
+    'out':'in',
+    'come':'go'
+  };
+  const reverseMap = { 'back':'front', 'in':'out', 'go':'come' };
+
+  document.querySelectorAll('.match-card').forEach(card=>{
+    card.addEventListener('click', function(){
+      if(this.classList.contains('matched')) return;
+      const col = this.closest('.match-col');
+      if(col.id==='matchColA'){
+        // Select A
+        document.querySelectorAll('#matchColA .match-card').forEach(c=>c.classList.remove('selected-match'));
+        this.classList.add('selected-match');
+        selectedA = this;
+      } else {
+        // B clicked - try match
+        if(!selectedA){
+          matchFeedback.textContent = '👆 先在左边选一个字！';
+          matchFeedback.style.color = '#FFA726';
+          return;
+        }
+        const pairA = selectedA.dataset.pair;
+        const pairB = this.dataset.pair;
+        const expected = pairMap[pairA];
+        if(pairB === expected){
+          // Match!
+          selectedA.classList.add('matched');
+          this.classList.add('matched');
+          selectedA.classList.remove('selected-match');
+          matchedPairs.add(pairA);
+          matchFeedback.textContent = '✅ 配对成功！';
+          matchFeedback.style.color = '#4CAF50';
+          selectedA = null;
+          if(matchedPairs.size === 3){
+            matchFeedback.textContent = '🎉 太棒了！三对都找到了！';
+            setTimeout(()=>{
+              matchFeedback.textContent = '✅ 完美！';
+            },2000);
+          }
+        } else {
+          matchFeedback.textContent = '❌ 不对哦，再想想！';
+          matchFeedback.style.color = '#f44336';
+          this.classList.add('wrong');
+          setTimeout(()=>this.classList.remove('wrong'),400);
+          selectedA.classList.remove('selected-match');
+          selectedA = null;
+        }
+      }
+    });
+  });
+
+  // ---- TIME SORT (Page 7) ----
+  const timeBtns = document.querySelectorAll('#timeSortArea .practice-btn');
+  let timeSelected = [];
+  const timeOrder = ['早','中','晚'];
+  const timeFeedback = document.getElementById('timeSortFeedback');
+  timeBtns.forEach(btn=>{
+    btn.addEventListener('click', function(){
+      if(this.classList.contains('correct') || this.classList.contains('wrong')) return;
+      if(timeSelected.length>=3) {
+        // Reset
+        timeBtns.forEach(b=>{b.classList.remove('correct','wrong','selected');});
+        timeSelected = [];
+      }
+      this.classList.add('selected');
+      timeSelected.push(this.dataset.time);
+      if(timeSelected.length===3){
+        const correct = timeSelected[0]==='early' && timeSelected[1]==='mid' && timeSelected[2]==='late';
+        if(correct){
+          timeBtns.forEach(b=>b.classList.remove('selected'));
+          timeBtns.forEach(b=>b.classList.add('correct'));
+          timeFeedback.textContent = '🎉 正确！早 → 中 → 晚！';
+          timeFeedback.style.color = '#4CAF50';
+        } else {
+          timeBtns.forEach(b=>b.classList.remove('selected'));
+          timeBtns.forEach(b=>b.classList.add('wrong'));
+          timeFeedback.textContent = '❌ 再想想顺序哦！';
+          timeFeedback.style.color = '#f44336';
+          setTimeout(()=>{
+            timeBtns.forEach(b=>b.classList.remove('correct','wrong'));
+            timeSelected = [];
+            timeFeedback.textContent = '从早到晚点击排列：早 → 中 → 晚';
+            timeFeedback.style.color = '#888';
+          },1200);
+        }
+      } else {
+        timeFeedback.textContent = `已选 ${timeSelected.length}/3`;
+        timeFeedback.style.color = '#666';
+      }
+    });
+  });
+
+  // ---- FILL IN BLANKS (Page 7) ----
+  const blanks = document.querySelectorAll('.fill-blank');
+  const fillOptions = document.querySelectorAll('#fillOptions .practice-btn');
+  let currentFillIndex = 0;
+
+  blanks.forEach((blank,idx)=>{
+    blank.addEventListener('click',()=>{
+      currentFillIndex = idx;
+      fillOptions.forEach(b=>b.classList.remove('selected'));
+    });
+    blank.dataset.filled = 'false';
+  });
+
+  fillOptions.forEach(btn=>{
+    btn.addEventListener('click', function(){
+      const opt = this.dataset.opt;
+      // Find first unfilled blank
+      let targetIdx = -1;
+      for(let i=0; i<blanks.length; i++){
+        if(blanks[i].dataset.filled === 'false'){
+          targetIdx = i;
+          break;
+        }
+      }
+      if(targetIdx===-1){
+        document.getElementById('fillFeedback').textContent = '✅ 都填完啦！';
+        document.getElementById('fillFeedback').style.color = '#4CAF50';
+        return;
+      }
+      const blank = blanks[targetIdx];
+      const answer = blank.dataset.answer;
+      if(opt === answer){
+        blank.textContent = opt;
+        blank.classList.add('filled');
+        blank.dataset.filled = 'true';
+        document.getElementById('fillFeedback').textContent = `✅ "${opt}" 填对了！`;
+        document.getElementById('fillFeedback').style.color = '#4CAF50';
+        // Check all done
+        let allFilled = true;
+        blanks.forEach(b=>{ if(b.dataset.filled==='false') allFilled=false; });
+        if(allFilled){
+          setTimeout(()=>{
+            document.getElementById('fillFeedback').textContent = '🎉 全部正确！你太棒了！';
+          },600);
+        }
+      } else {
+        document.getElementById('fillFeedback').textContent = `❌ 再想想…`;
+        document.getElementById('fillFeedback').style.color = '#f44336';
+        this.classList.add('wrong');
+        setTimeout(()=>this.classList.remove('wrong'),500);
+      }
+    });
+  });
+
+  // ---- CONFETTI (Page 9) ----
+  function startConfetti(){
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const pieces = [];
+    const colors = ['#EF5350','#FFA726','#66BB6A','#42A5F5','#AB47BC','#FFEE58','#fff'];
+    for(let i=0;i<80;i++){
+      pieces.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height - canvas.height,
+        w: 6+Math.random()*6,
+        h: 4+Math.random()*4,
+        color: colors[Math.floor(Math.random()*colors.length)],
+        vx: -2+Math.random()*4,
+        vy: 2+Math.random()*4,
+        rot: Math.random()*360,
+        rv: -4+Math.random()*8,
+        opacity: 0.8+Math.random()*0.2
+      });
+    }
+    let frame = 0;
+    function animate(){
+      frame++;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      pieces.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rot += p.rv;
+        if(frame>30) p.vy += 0.05; // gravity
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.globalAlpha = p.opacity;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      });
+      // Remove off-screen bottom pieces
+      const active = pieces.filter(p=>p.y<canvas.height+50);
+      if(active.length>0 && frame<300){
+        requestAnimationFrame(animate);
+      } else {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+    }
+    animate();
+  }
+
+  // Watch for page 9 (celebration)
+  const pageObserver = new MutationObserver(()=>{
+    if(pages[9].classList.contains('active')){
+      startConfetti();
+    }
+  });
+  pages.forEach(p=>{
+    pageObserver.observe(p, {attributes:true, attributeFilter:['class']});
+  });
+
+  // Also check on goTo
+  const origGoTo = goTo;
+  window.goTo = function(idx){
+    origGoTo(idx);
+    if(idx===9) startConfetti();
+  };
+
+  // Window resize for confetti
+  window.addEventListener('resize',()=>{
+    const canvas = document.getElementById('confettiCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Init
+  goTo(0);
+
+  console.log('🐉 第17课 方向与时间 loaded');
+})();
+</script>
+</body>
+</html>

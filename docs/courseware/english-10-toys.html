@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Lesson 10: Toys 🧸 | 玩具</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET & BASE ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;touch-action:pan-y}
+body{
+  font-family:'Nunito',sans-serif;
+  background:#E8F5E9;
+  display:flex;justify-content:center;align-items:center;
+  min-height:100vh;min-height:100dvh;
+  margin:0;padding:0;
+  -webkit-user-select:none;user-select:none;
+}
+/* ─── SLIDER CONTAINER ─── */
+.slider-wrapper{flex-shrink:0;
+  width:100%;max-width:960px;height:100vh;height:100dvh;
+  position:relative;overflow:hidden;
+  background:#fff;box-shadow:0 0 40px rgba(102,187,106,.25);
+  display:flex;flex-direction:column;
+}
+.slides-container{
+  flex:1;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#F1F8E9 0%,#FFFFFF 100%);
+}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px 24px 60px;
+  opacity:0;visibility:hidden;transition:none;
+  text-align:center;
+}
+.slide.active{opacity:1;visibility:visible;z-index:2}
+/* ─── TOP BAR ─── */
+.top-bar{
+  position:absolute;top:0;left:0;right:0;z-index:10;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 16px;pointer-events:none;
+}
+.top-bar button{
+  pointer-events:auto;
+  background:rgba(255,255,255,.92);
+  border:2px solid #66BB6A;border-radius:50%;
+  width:44px;height:44px;
+  font-size:22px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  transition:transform .2s,box-shadow .2s;
+  color:#333;
+}
+.top-bar button:active{transform:scale(.92)}
+.top-bar button:hover{box-shadow:0 4px 14px rgba(102,187,106,.35)}
+/* ─── IMAGE ─── */
+.toy-image{
+  width:180px;height:180px;object-fit:contain;
+  margin-bottom:12px;border-radius:16px;
+  background:#F9FBE7;padding:12px;
+  box-shadow:0 4px 20px rgba(102,187,106,.2);
+  transition:transform .3s;
+}
+.toy-image.tap-bounce{animation:bounce .4s ease}
+@keyframes bounce{0%,100%{transform:scale(1)}40%{transform:scale(1.12)}70%{transform:scale(.95)}}
+/* ─── TEXT ─── */
+.english-word{
+  font-size:36px;font-weight:800;color:#2E7D32;
+  letter-spacing:-.5px;line-height:1.15;
+  margin-bottom:2px;
+}
+.chinese-word{
+  font-size:18px;font-weight:600;color:#66BB6A;
+  margin-bottom:6px;
+}
+.sight-phrase{
+  font-size:22px;font-weight:700;color:#558B2F;
+  margin-top:4px;padding:6px 18px;
+  background:#E8F5E9;border-radius:20px;
+  display:inline-block;
+}
+/* ─── COVER ─── */
+.cover-icon{font-size:72px;margin-bottom:12px}
+.cover-title{
+  font-size:40px;font-weight:900;color:#1B5E20;
+  line-height:1.1;margin-bottom:4px;
+}
+.cover-sub{
+  font-size:20px;font-weight:700;color:#66BB6A;
+  margin-bottom:16px;
+}
+.cover-badge{
+  display:inline-block;background:#66BB6A;color:#fff;
+  padding:10px 32px;border-radius:30px;
+  font-size:18px;font-weight:700;
+  box-shadow:0 4px 14px rgba(102,187,106,.35);
+  margin-bottom:6px;
+}
+.cover-info{
+  font-size:14px;color:#81C784;
+  font-weight:600;
+}
+.cover-start-btn{
+  margin-top:20px;
+  background:#66BB6A;color:#fff;border:none;
+  padding:14px 48px;border-radius:30px;
+  font-size:20px;font-weight:800;font-family:'Nunito',sans-serif;
+  cursor:pointer;box-shadow:0 4px 14px rgba(102,187,106,.35);
+  transition:transform .2s,box-shadow .2s;
+}
+.cover-start-btn:active{transform:scale(.95)}
+/* ─── PAGE 9 MATCH ─── */
+.match-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;
+  width:100%;max-width:340px;margin:10px auto;
+}
+.match-item{
+  background:#fff;border:3px solid #C8E6C9;
+  border-radius:14px;padding:10px 8px;
+  cursor:pointer;transition:all .2s;
+  font-weight:700;font-size:16px;color:#2E7D32;
+  text-align:center;
+  min-height:60px;display:flex;align-items:center;justify-content:center;
+}
+.match-item.selected{border-color:#66BB6A;background:#E8F5E9;box-shadow:0 0 0 3px rgba(102,187,106,.3)}
+.match-item.matched{
+  border-color:#43A047;background:#C8E6C9;color:#1B5E20;
+  cursor:default;opacity:.75;
+}
+.match-item.wrong{
+  border-color:#EF5350;background:#FFEBEE;
+  animation:shake .4s ease;
+}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)}}
+/* ─── CELEBRATION ─── */
+.celebrate-icon{font-size:80px;margin-bottom:8px}
+.celebrate-title{
+  font-size:38px;font-weight:900;color:#1B5E20;
+  margin-bottom:2px;
+}
+.celebrate-sub{
+  font-size:18px;color:#66BB6A;font-weight:700;
+  margin-bottom:10px;
+}
+.celebrate-btn{
+  background:#66BB6A;color:#fff;border:none;
+  padding:14px 40px;border-radius:30px;
+  font-size:18px;font-weight:800;font-family:'Nunito',sans-serif;
+  cursor:pointer;box-shadow:0 4px 14px rgba(102,187,106,.35);
+  margin-top:6px;transition:transform .2s;
+}
+.celebrate-btn:active{transform:scale(.95)}
+/* ─── PHONICS BOX ─── */
+.phonics-box{
+  background:#FFFDE7;border:2px dashed #C8E6C9;
+  border-radius:16px;padding:14px 20px;margin-top:8px;
+  max-width:300px;width:100%;
+}
+.phonics-box h3{
+  font-size:15px;color:#66BB6A;font-weight:800;
+  margin-bottom:6px;}
+.phonics-box p{
+  font-size:18px;color:#2E7D32;font-weight:700;
+  letter-spacing:1px;
+}
+.phonics-letter{color:#E65100;font-size:22px;font-weight:900}
+/* ─── NAV ─── */
+.nav-bar{
+  display:flex;align-items:center;justify-content:center;
+  gap:14px;padding:8px 16px 12px;
+  background:#fff;border-top:2px solid #E8F5E9;
+  flex-shrink:0;
+}
+.nav-btn{
+  background:#fff;border:2px solid #C8E6C9;border-radius:30px;
+  padding:8px 18px;font-size:14px;font-weight:700;
+  color:#2E7D32;cursor:pointer;font-family:'Nunito',sans-serif;
+  transition:all .2s;min-width:70px;
+}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-btn:not(:disabled):active{background:#E8F5E9;transform:scale(.95)}
+.dots{
+  display:flex;gap:6px;align-items:center;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  background:#C8E6C9;border:none;cursor:pointer;
+  transition:all .25s;padding:0;
+}
+.dot.active{background:#66BB6A;width:26px;border-radius:6px}
+/* ─── RESPONSIVE ─── */
+@media(max-width:960px){
+  .toy-image{width:150px;height:150px}
+  .english-word{font-size:30px}
+  .cover-title{font-size:34px}
+  .match-grid{gap:8px}
+  .match-item{font-size:14px;min-height:50px;padding:8px 6px}
+  .slide{padding:18px 16px 54px}
+}
+@media(min-width:421px){
+  .slider-wrapper{border-radius:24px;height:96vh;margin:2vh auto}
+  .slide{padding:24px 28px 64px}
+}
+/* Landscape phones - keep max-width constraint */
+@media(orientation:landscape) and (max-height:500px){
+  .slider-wrapper{max-width:360px}
+  .toy-image{width:100px;height:100px}
+  .english-word{font-size:26px}
+  .slide{padding:14px 12px 48px}
+  .phonics-box{padding:8px 12px}
+  .match-item{min-height:40px;font-size:12px}
+}
+/* ─── UTILS ─── */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="slider-wrapper" role="region" aria-label="English Lesson 10: Toys">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <button id="homeBtn" aria-label="Home" title="Home">🏠</button>
+    <button id="speakBtn" aria-label="Read aloud" title="Read aloud">▶</button>
+  </div>
+
+  <!-- SLIDES -->
+  <div class="slides-container" id="slidesContainer">
+
+    <!-- PAGE 1: COVER -->
+    <div class="slide active" data-page="1" data-words="Toys">
+      <div class="cover-icon">🧸</div>
+      <div class="cover-title">Toys</div>
+      <div class="cover-sub">玩 具</div>
+      <div class="cover-badge">Lesson 10</div>
+      <div class="cover-info" style="margin-top:8px">🔤 ball · car · doll · kite · robot · teddy bear · train</div>
+      <div class="cover-info" style="margin-top:2px">📖 here · is · my · play · this · with</div>
+      <button class="cover-start-btn" id="startBtn">Let's Learn! →</button>
+    </div>
+
+    <!-- PAGE 2: BALL -->
+    <div class="slide" data-page="2" data-words="ball">
+      <img class="toy-image" src="images/english-10/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="ball" loading="lazy">
+      <div class="english-word">ball</div>
+      <div class="chinese-word">球</div>
+      <div class="sight-phrase">my ball · 我的球</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">b</span>all — /b/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">B says /b/ like ball!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 3: CAR -->
+    <div class="slide" data-page="3" data-words="car">
+      <img class="toy-image" src="images/english-10/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="car" loading="lazy">
+      <div class="english-word">car</div>
+      <div class="chinese-word">车</div>
+      <div class="sight-phrase">this car · 这辆车</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">c</span>ar — /k/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">C says /k/ like car!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 4: DOLL -->
+    <div class="slide" data-page="4" data-words="doll">
+      <img class="toy-image" src="images/english-10/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="doll" loading="lazy">
+      <div class="english-word">doll</div>
+      <div class="chinese-word">娃娃</div>
+      <div class="sight-phrase">here is my doll · 这是我的娃娃</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">d</span>oll — /d/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">D says /d/ like doll!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 5: KITE -->
+    <div class="slide" data-page="5" data-words="kite">
+      <img class="toy-image" src="images/english-10/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="kite" loading="lazy">
+      <div class="english-word">kite</div>
+      <div class="chinese-word">风筝</div>
+      <div class="sight-phrase">play with kite · 玩风筝</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">k</span>ite — /k/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">K says /k/ like kite!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 6: ROBOT -->
+    <div class="slide" data-page="6" data-words="robot">
+      <img class="toy-image" src="images/english-10/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="robot" loading="lazy">
+      <div class="english-word">robot</div>
+      <div class="chinese-word">机器人</div>
+      <div class="sight-phrase">this robot · 这个机器人</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">r</span>obot — /r/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">R says /r/ like robot!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 7: TEDDY BEAR -->
+    <div class="slide" data-page="7" data-words="teddy bear">
+      <img class="toy-image" src="images/english-10/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="teddy bear" loading="lazy">
+      <div class="english-word">teddy bear</div>
+      <div class="chinese-word">泰迪熊</div>
+      <div class="sight-phrase">my teddy bear · 我的泰迪熊</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">t</span>eddy — /t/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">T says /t/ like teddy!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 8: TRAIN -->
+    <div class="slide" data-page="8" data-words="train">
+      <img class="toy-image" src="images/english-10/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="train" loading="lazy">
+      <div class="english-word">train</div>
+      <div class="chinese-word">火车</div>
+      <div class="sight-phrase">play with train · 玩火车</div>
+      <div class="phonics-box">
+        <h3>🔊 Phonics</h3>
+        <p><span class="phonics-letter">tr</span>ain — /tr/</p>
+        <p style="font-size:14px;color:#81C784;margin-top:2px">TR says /tr/ like train!</p>
+      </div>
+    </div>
+
+    <!-- PAGE 9: PRACTICE MATCHING -->
+    <div class="slide" data-page="9" data-words="practice matching">
+      <h2 style="font-size:24px;color:#1B5E20;font-weight:800;margin-bottom:2px">Match the Words!</h2>
+      <p style="font-size:14px;color:#81C784;font-weight:600;margin-bottom:6px">点击配对 · Match each toy to its name</p>
+      <div class="match-grid" id="matchGrid">
+        <div class="match-item" data-type="toy" data-id="ball">⚽ ball</div>
+        <div class="match-item" data-type="name" data-id="ball">球</div>
+        <div class="match-item" data-type="toy" data-id="car">🚗 car</div>
+        <div class="match-item" data-type="name" data-id="car">车</div>
+        <div class="match-item" data-type="toy" data-id="doll">🧍 doll</div>
+        <div class="match-item" data-type="name" data-id="doll">娃娃</div>
+        <div class="match-item" data-type="toy" data-id="kite">🪁 kite</div>
+        <div class="match-item" data-type="name" data-id="kite">风筝</div>
+        <div class="match-item" data-type="toy" data-id="robot">🤖 robot</div>
+        <div class="match-item" data-type="name" data-id="robot">机器人</div>
+        <div class="match-item" data-type="toy" data-id="bear">🧸 teddy bear</div>
+        <div class="match-item" data-type="name" data-id="bear">泰迪熊</div>
+        <div class="match-item" data-type="toy" data-id="train">🚂 train</div>
+        <div class="match-item" data-type="name" data-id="train">火车</div>
+      </div>
+      <p id="matchStatus" style="font-size:15px;font-weight:700;color:#66BB6A;margin-top:4px;min-height:22px">Tap a word, then tap its match!</p>
+      <!-- Sight Words Review -->
+      <div class="phonics-box" style="margin-top:8px;background:#E8F5E9;border-style:solid">
+        <h3>📖 Sight Words 视觉词</h3>
+        <p style="font-size:15px;color:#2E7D32;font-weight:700">
+          here · is · my · play · this · with
+        </p>
+        <p style="font-size:13px;color:#81C784;font-weight:600;margin-top:3px">
+          I play with my toys! · Here is my ball.
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 10: CELEBRATION -->
+    <div class="slide" data-page="10" data-words="celebration">
+      <div class="celebrate-icon">🎉</div>
+      <div class="celebrate-title">Great Job!</div>
+      <div class="celebrate-sub">太棒了！你学会了玩具！</div>
+      <div style="font-size:24px;margin:4px 0 2px;color:#2E7D32;font-weight:800">🧸 🚗 ⚽ 🤖 🪁 🧍 🚂</div>
+      <p style="font-size:15px;color:#81C784;font-weight:600;max-width:260px">
+        I can play with my toys!
+      </p>
+      <p style="font-size:14px;color:#A5D6A7;font-weight:600;margin-bottom:4px">
+        我可以玩我的玩具啦！
+      </p>
+      <!-- Phonics Review on Celebration -->
+      <div class="phonics-box" style="background:#F1F8E9;border-color:#66BB6A">
+        <h3>🔤 Phonics Review 复习</h3>
+        <p style="font-size:14px;color:#2E7D32;font-weight:700">
+          <span class="phonics-letter">b</span>all · <span class="phonics-letter">c</span>ar · <span class="phonics-letter">d</span>oll · <span class="phonics-letter">k</span>ite · <span class="phonics-letter">r</span>obot · <span class="phonics-letter">t</span>eddy · <span class="phonics-letter">tr</span>ain
+        </p>
+        <p style="font-size:12px;color:#81C784;font-weight:600;margin-top:2px">
+          Letters: B C D K R T TR | 字母复习
+        </p>
+      </div>
+      <button class="celebrate-btn" id="celebrateBtn">★ Again! ★</button>
+      <canvas id="confettiCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0"></canvas>
+    </div>
+
+  </div>
+
+  <!-- NAV BAR -->
+  <nav class="nav-bar" aria-label="Page navigation">
+    <button class="nav-btn" id="prevBtn" disabled>← Prev</button>
+    <div class="dots" id="dotsContainer">
+      <span class="dot active" data-index="0" aria-label="Page 1"></span>
+      <span class="dot" data-index="1" aria-label="Page 2"></span>
+      <span class="dot" data-index="2" aria-label="Page 3"></span>
+      <span class="dot" data-index="3" aria-label="Page 4"></span>
+      <span class="dot" data-index="4" aria-label="Page 5"></span>
+      <span class="dot" data-index="5" aria-label="Page 6"></span>
+      <span class="dot" data-index="6" aria-label="Page 7"></span>
+      <span class="dot" data-index="7" aria-label="Page 8"></span>
+      <span class="dot" data-index="8" aria-label="Page 9"></span>
+      <span class="dot" data-index="9" aria-label="Page 10"></span>
+    </div>
+    <button class="nav-btn" id="nextBtn">Next →</button>
+  </nav>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'english-10-toys';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+(function(){
+  'use strict';
+
+  // ─── STATE ───
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const homeBtn = document.getElementById('homeBtn');
+  const speakBtn = document.getElementById('speakBtn');
+  const startBtn = document.getElementById('startBtn');
+  const celebrateBtn = document.getElementById('celebrateBtn');
+  const matchItems = document.querySelectorAll('.match-item');
+  const matchStatus = document.getElementById('matchStatus');
+
+  let currentSlide = 0;
+  const totalSlides = slides.length;
+  let isAnimating = false;
+  let matchSelected = null;
+  let matchedPairs = new Set();
+  let matchScore = 0;
+  let matchAttempts = 0;
+  let speaking = false;
+
+  // ─── CANVAS CONFETTI ───
+  let confettiActive = false;
+  let confettiAnimId = null;
+
+  function initConfetti(){
+    const canvas = document.getElementById('confettiCanvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width; canvas.height = rect.height;
+    const particles = [];
+    const colors = ['#66BB6A','#FFD54F','#EF5350','#42A5F5','#AB47BC','#FF7043','#26C6DA','#FFEE58','#A1887F'];
+    const shapes = ['rect','circle','star'];
+    function createStar(ctx,x,y,size,color,rot){
+      ctx.save();ctx.translate(x,y);ctx.rotate(rot);
+      ctx.fillStyle=color;ctx.beginPath();
+      for(let i=0;i<5;i++){
+        const a=(i*4*Math.PI/5)-Math.PI/2;
+        const s=i===0?size:size;
+        ctx[i===0?'moveTo':'lineTo'](Math.cos(a)*s,Math.sin(a)*s);
+      }
+      ctx.closePath();ctx.fill();ctx.restore();
+    }
+    for(let i=0;i<120;i++){
+      const shape = shapes[Math.floor(Math.random()*shapes.length)];
+      particles.push({
+        x:Math.random()*canvas.width,
+        y:Math.random()*canvas.height-canvas.height,
+        w:4+Math.random()*10,
+        h:3+Math.random()*7,
+        color:colors[Math.floor(Math.random()*colors.length)],
+        vy:1+Math.random()*3.5,
+        vx:-1.5+Math.random()*3,
+        rot:Math.random()*360,
+        rv:-4+Math.random()*8,
+        opacity:0.7+Math.random()*0.3,
+        shape:shape,
+        swing:Math.random()*0.02,
+        phase:Math.random()*Math.PI*2
+      });
+    }
+    confettiActive = true;
+    let frame=0;
+    function draw(){
+      if(!confettiActive){ctx.clearRect(0,0,canvas.width,canvas.height);return}
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      frame++;
+      for(const p of particles){
+        p.x+=p.vx+Math.sin(frame*0.02+p.phase)*p.swing;
+        p.y+=p.vy;p.rot+=p.rv;
+        p.vy+=0.02;
+        if(p.y>canvas.height+25){p.y=-25;p.x=Math.random()*canvas.width;p.vy=1+Math.random()*3}
+        if(p.x<-25)p.x=canvas.width+25;
+        if(p.x>canvas.width+25)p.x=-25;
+        ctx.save();
+        ctx.translate(p.x,p.y);
+        ctx.rotate(p.rot*Math.PI/180);
+        ctx.globalAlpha=p.opacity;
+        ctx.fillStyle=p.color;
+        if(p.shape==='star'){
+          ctx.restore();
+          createStar(ctx,p.x,p.y,p.w/2,p.color,p.rot*Math.PI/180);
+          continue;
+        } else if(p.shape==='circle'){
+          ctx.beginPath();
+          ctx.arc(0,0,p.w/2,0,Math.PI*2);
+          ctx.fill();
+        } else {
+          ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        }
+        ctx.restore();
+      }
+      confettiAnimId = requestAnimationFrame(draw);
+    }
+    draw();
+    // Also trigger GSAP celebration pulse
+    if(typeof gsap !== 'undefined'){
+      gsap.from('.celebrate-icon',{scale:0,rotation:-20,duration:.5,ease:'back.out(2)'});
+      gsap.from('.celebrate-title',{y:-30,opacity:0,duration:.4,delay:.2,ease:'power2.out'});
+      gsap.from('.celebrate-sub',{y:20,opacity:0,duration:.3,delay:.35,ease:'power2.out'});
+    }
+  }
+
+  function stopConfetti(){
+    confettiActive = false;
+    if(confettiAnimId){cancelAnimationFrame(confettiAnimId);confettiAnimId=null}
+    const canvas = document.getElementById('confettiCanvas');
+    if(canvas){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height)}
+  }
+
+  // ─── GO TO SLIDE ───
+  function goToSlide(index, animate=true){
+    if(isAnimating || index<0 || index>=totalSlides) return;
+    if(index===currentSlide) return;
+    isAnimating = true;
+    const direction = index>currentSlide?1:-1;
+    const current = slides[currentSlide];
+    const next = slides[index];
+
+    if(animate && typeof gsap !== 'undefined'){
+      const xOffset = direction*60;
+      gsap.set(next,{x:xOffset,opacity:0,visibility:'visible',display:'flex'});
+      gsap.to(current,{
+        x:-xOffset,opacity:0,duration:.35,ease:'power2.inOut',
+        onComplete:()=>{
+          current.classList.remove('active');
+          gsap.set(current,{clearProps:'all'});
+        }
+      });
+      gsap.to(next,{
+        x:0,opacity:1,duration:.4,ease:'power2.out',
+        delay:.08,
+        onComplete:()=>{
+          next.classList.add('active');
+          gsap.set(next,{clearProps:'all'});
+          isAnimating=false;
+        }
+      });
+    } else {
+      current.classList.remove('active');
+      next.classList.add('active');
+      isAnimating = false;
+    }
+
+    currentSlide = index;
+    updateNav();
+    stopConfetti();
+
+    // auto-speak if on celebration page
+    if(index===totalSlides-1 && 'speechSynthesis' in window){
+      setTimeout(()=>{
+        speakPhrase('Great job! You did it!');
+      },600);
+    }
+  }
+
+  // ─── UPDATE NAV ───
+  function updateNav(){
+    dots.forEach((d,i)=>d.classList.toggle('active',i===currentSlide));
+    prevBtn.disabled = currentSlide===0;
+    nextBtn.disabled = currentSlide===totalSlides-1;
+  }
+
+  // ─── SPEECH ───
+  function speakPhrase(text){
+    if(!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = 0.85;
+    u.pitch = 1.05;
+    u.volume = 1;
+    window.speechSynthesis.speak(u);
+  }
+
+  function speakCurrentPage(){
+    if(speaking) return;
+    const slide = slides[currentSlide];
+    if(!slide) return;
+    const words = slide.dataset.words || '';
+    const englishWord = slide.querySelector('.english-word');
+    const sightPhrase = slide.querySelector('.sight-phrase');
+    let text = words;
+    if(englishWord) text = englishWord.textContent.trim();
+    if(sightPhrase){
+      const phrase = sightPhrase.textContent.trim().split('·')[0].trim();
+      if(phrase) text = phrase;
+    }
+    // Cover page
+    if(currentSlide===0) text = 'Toys Lesson 10';
+    // Celebration
+    if(currentSlide===totalSlides-1) text = 'Great job! You learned about toys!';
+    // Matching page
+    if(currentSlide===8) text = 'Match the words';
+    speakPhrase(text);
+  }
+
+  // ─── MATCHING GAME ───
+  function initMatching(){
+    const items = document.querySelectorAll('.match-item');
+    items.forEach(el=>{
+      el.addEventListener('click',function(e){
+        if(this.classList.contains('matched')) return;
+        const id = this.dataset.id;
+        const type = this.dataset.type;
+
+        // If something selected
+        if(matchSelected){
+          const selId = matchSelected.dataset.id;
+          const selType = matchSelected.dataset.type;
+          if(this===matchSelected){
+            this.classList.remove('selected');
+            matchSelected = null;
+            matchStatus.textContent = 'Tap a word, then tap its match!';
+            return;
+          }
+          // Same id, different types = match
+          if(selId===id && selType!==type){
+            matchSelected.classList.remove('selected');
+            matchSelected.classList.add('matched');
+            this.classList.add('matched');
+            matchedPairs.add(id);
+            matchSelected = null;
+            matchStatus.textContent = `✅ ${id} matched!`;
+            // Speak matched word
+            speakPhrase(id);
+            if(matchedPairs.size>=7){
+              setTimeout(()=>{
+                matchStatus.textContent = '🎉 All matched! Go to next page!';
+                // confetti burst
+                if(typeof gsap!=='undefined'){
+                  gsap.timeline()
+                    .to(matchStatus,{scale:1.15,duration:.2,yoyo:true,repeat:3});
+                }
+              },300);
+            }
+          } else {
+            // Wrong
+            this.classList.add('wrong');
+            matchStatus.textContent = '❌ Try again!';
+            matchSelected.classList.remove('selected');
+            matchSelected = null;
+            setTimeout(()=>{
+              this.classList.remove('wrong');
+              matchStatus.textContent = 'Tap a word, then tap its match!';
+            },600);
+          }
+        } else {
+          // Nothing selected
+          if(!this.classList.contains('matched')){
+            this.classList.add('selected');
+            matchSelected = this;
+            matchStatus.textContent = `Selected: ${this.textContent.trim()}`;
+          }
+        }
+      });
+    });
+  }
+
+  // ─── RESET MATCHING ───
+  function resetMatching(){
+    matchItems.forEach(el=>{
+      el.classList.remove('selected','matched','wrong');
+    });
+    matchSelected = null;
+    matchedPairs.clear();
+    matchStatus.textContent = 'Tap a word, then tap its match!';
+  }
+
+  // ─── EVENT LISTENERS ───
+  // Dots
+  dots.forEach((dot,i)=>{
+    dot.addEventListener('click',()=>goToSlide(i));
+  });
+
+  // Prev/Next
+  prevBtn.addEventListener('click',()=>goToSlide(currentSlide-1));
+  nextBtn.addEventListener('click',()=>goToSlide(currentSlide+1));
+
+  // Home
+  homeBtn.addEventListener('click',()=>{
+    resetMatching();
+    goToSlide(0);
+  });
+
+  // Speak
+  speakBtn.addEventListener('click',speakCurrentPage);
+
+  // Start
+  startBtn.addEventListener('click',()=>goToSlide(1));
+
+  // Celebrate Again
+  celebrateBtn.addEventListener('click',()=>{
+    resetMatching();
+    goToSlide(0);
+  });
+
+  // Keyboard
+  document.addEventListener('keydown',(e)=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();goToSlide(currentSlide+1)}
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();goToSlide(currentSlide-1)}
+    if(e.key==='Home'){e.preventDefault();goToSlide(0)}
+  });
+
+  // ─── SWIPE SUPPORT ───
+  let touchX=0,touchY=0;
+  const container = document.querySelector('.slides-container');
+  container.addEventListener('touchstart',(e)=>{
+    const t=e.touches[0];touchX=t.clientX;touchY=t.clientY;
+  },{passive:true});
+  container.addEventListener('touchend',(e)=>{
+    const t=e.changedTouches[0];
+    const dx=t.clientX-touchX,dy=t.clientY-touchY;
+    if(Math.abs(dx)>50 && Math.abs(dx)>Math.abs(dy)*1.5){
+      if(dx<0) goToSlide(currentSlide+1);
+      else goToSlide(currentSlide-1);
+    }
+  },{passive:true});
+
+  // ─── IMAGE TAP ANIMATION ───
+  document.querySelectorAll('.toy-image').forEach(img=>{
+    img.addEventListener('click',function(){
+      this.classList.remove('tap-bounce');
+      void this.offsetWidth;
+      this.classList.add('tap-bounce');
+      // speak the word
+      const slide = this.closest('.slide');
+      if(slide){
+        const word = slide.querySelector('.english-word');
+        if(word) speakPhrase(word.textContent.trim());
+      }
+    });
+  });
+
+  // ─── INIT ───
+  // Auto-transition to page 2 after cover if user doesn't click
+  // (Don't auto-advance — let user interact)
+
+  // Start confetti on celebration page if reached
+  // We'll detect via slide change observer
+  const origGoTo = goToSlide;
+  const observerCheck = function(index){
+    const slide = slides[index];
+    if(slide && index===totalSlides-1){
+      if(!confettiActive){
+        setTimeout(initConfetti,300);
+      }
+    }
+  };
+  // Patch goToSlide to watch for celebration
+  const _origGoTo = goToSlide;
+  goToSlide = function(index,animate){
+    _origGoTo(index,animate);
+    observerCheck(index);
+  };
+  // Also check on initial load
+  observerCheck(0);
+
+  // Init matching
+  initMatching();
+
+  // Ensure slide 0 is visible on load
+  updateNav();
+
+  // Preload images
+  document.querySelectorAll('.toy-image').forEach(img=>{
+    const src = img.getAttribute('src');
+    if(src && !img.complete){
+      const pre = new Image(); pre.src=src;
+    }
+  });
+
+  // Page transition animation for enter
+  function animateEnter(index){
+    const slide = slides[index];
+    if(!slide || index===0) return;
+    const img = slide.querySelector('.toy-image');
+    const word = slide.querySelector('.english-word');
+    const ch = slide.querySelector('.chinese-word');
+    const phrase = slide.querySelector('.sight-phrase');
+    if(typeof gsap !== 'undefined'){
+      const tl = gsap.timeline();
+      if(img){tl.from(img,{y:30,opacity:0,duration:.4,ease:'power2.out'},0)}
+      if(word){tl.from(word,{y:20,opacity:0,duration:.3,ease:'power2.out'},.1)}
+      if(ch){tl.from(ch,{y:15,opacity:0,duration:.25,ease:'power2.out'},.18)}
+      const pb = slide.querySelector('.phonics-box');
+      if(pb){tl.from(pb,{y:15,opacity:0,duration:.25,ease:'power2.out'},.25)}
+      if(phrase){tl.from(phrase,{scale:.8,opacity:0,duration:.25,ease:'back.out(1.7)'},.3)}
+    }
+  }
+
+  // Override goToSlide further to add enter animation
+  const __origGoTo = goToSlide;
+  goToSlide = function(index,animate){
+    __origGoTo(index,animate);
+    if(animate!==false) setTimeout(()=>animateEnter(index),50);
+  };
+
+  // Manually trigger enter on initial slide if not cover
+  // (cover handled by start button)
+  console.log('🧸 English Lesson 10: Toys loaded!');
+})();
+</script>
+</body>
+</html>

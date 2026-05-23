@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>数学课 16 · 认识钟表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
+.book{flex-shrink:0;position:relative;width:100%;max-width:960px;height:100dvh;max-height:90vh;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
+@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
+@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
+.top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
+.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer}
+.slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px}
+.slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
+.page-title{font-size:26px;font-weight:900;color:#fff;text-align:center}
+.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 12px;width:100%;max-width:380px}
+.card p{font-size:13px;color:#333;line-height:1.6}
+.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
+.feedback{font-size:13px;border-radius:8px;display:none;text-align:center;padding:4px}
+.feedback.show{display:block}
+.feedback.good{background:#E8F5E9;color:#2E7D32}
+.feedback.bad{background:#FFEBEE;color:#C62828}
+.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
+.nav-btn{background:rgba(255,255,255,.25);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.dots{display:flex;gap:4px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.3)}
+.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
+.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
+.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none;line-height:1.5}
+.goal-card li::before{content:'✅ '}
+@keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
+</style>
+</head>
+<body>
+<div class="book">
+<div class="top-bar"><a href="../">🏠</a><a href="../math-17-shapes.html">▶</a></div>
+<div class="slides" id="slides"></div>
+<div class="controls">
+<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+<div class="dots" id="dots"></div>
+<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
+</div>
+</div>
+<div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
+<script>
+const pages=[{
+cover:true,icon:'⏰',title:'认识钟表',subtitle:'数学课 第16课',goals:['认识钟面：时针和分针','会看整点和半点','知道早上、中午、晚上的时间','学会合理安排时间']
+},{
+title:'🕐 钟面',text:'钟面上有12个数字，从1到12。<br><br>⏱️ 时针(短) — 指向几点<br>⏱️ 分针(长) — 指向几分<br><br>整点：分针指向12，时针指向数字<br>例如：3点整 → 时针指向3，分针指向12！',
+svg:'<svg viewBox="0 0 200 200" style="width:80%;max-width:200px"><circle cx="100" cy="100" r="85" fill="none" stroke="#fff" stroke-width="3"/><circle cx="100" cy="100" r="82" fill="rgba(255,255,255,.08)"/>'+
+Array.from({length:12},(_,i)=>'<text x="'+(100+68*Math.sin((i+1)*30*Math.PI/180))+'" y="'+(100-68*Math.cos((i+1)*30*Math.PI/180))+'" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="central" font-weight="700">'+(i+1)+'</text>').join('')+
+'<line x1="100" y1="100" x2="100" y2="55" stroke="#FFD54F" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="100" r="4" fill="#fff"/><text x="100" y="185" font-size="10" fill="rgba(255,255,255,.6)" text-anchor="middle">3:00 整点</text></svg>'
+},{
+title:'🕐 半点',text:'半点：分针指向6，时针在两个数字中间<br><br>例如：3:30 → 分针指向6，时针在3和4之间<br>"三点半"！<br><br>分针走一圈=60分钟<br>分针走半圈=30分钟=半点',
+svg:'<svg viewBox="0 0 200 200" style="width:80%;max-width:200px"><circle cx="100" cy="100" r="85" fill="none" stroke="#fff" stroke-width="3"/><circle cx="100" cy="100" r="82" fill="rgba(255,255,255,.08)"/>'+
+Array.from({length:12},(_,i)=>'<text x="'+(100+68*Math.sin((i+1)*30*Math.PI/180))+'" y="'+(100-68*Math.cos((i+1)*30*Math.PI/180))+'" font-size="16" fill="#fff" text-anchor="middle" dominant-baseline="central" font-weight="700">'+(i+1)+'</text>').join('')+
+'<line x1="100" y1="100" x2="80" y2="55" stroke="#FFD54F" stroke-width="4" stroke-linecap="round"/><line x1="100" y1="100" x2="100" y2="30" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="100" r="4" fill="#fff"/><text x="100" y="185" font-size="10" fill="rgba(255,255,255,.6)" text-anchor="middle">3:30 半点</text></svg>'
+},{
+title:'🔄 一天的时间',text:'早上7点 — 起床🛌<br>早上8点 — 上学🏫<br>中午12点 — 午饭🍚<br>下午3点 — 上课📖<br>下午5点 — 放学回家🏠<br>晚上7点 — 晚饭🍽️<br>晚上9点 — 睡觉😴',
+svg:'<svg viewBox="0 0 280 100" style="width:90%;max-width:280px"><text x="10" y="15" font-size="11" fill="#FFD54F">🌅 早上</text><text x="10" y="35" font-size="11" fill="#fff">☀️ 中午</text><text x="10" y="55" font-size="11" fill="#FFD54F">🌆 下午</text><text x="10" y="75" font-size="11" fill="rgba(255,255,255,.6)">🌙 晚上</text><text x="100" y="15" font-size="11" fill="#fff">7:00 起床</text><text x="100" y="35" font-size="11" fill="#fff">12:00 午饭</text><text x="100" y="55" font-size="11" fill="#fff">15:00 上课</text><text x="100" y="75" font-size="11" fill="#fff">21:00 睡觉</text></svg>'
+},{
+title:'❌ 常见误解',items:[
+{title:'时针和分针弄反',w:'短针看分钟，长针看小时',r:'短针=时针→看小时，长针=分针→看分钟！'},
+{title:'半点读错',w:'3:30读成4:30',r:'3:30时针在3和4之间，分针指向6！'},
+{title:'整点读错',w:'12:00看成6:00',r:'12:00时针和分针都指向12！'}
+]
+},{
+title:'✏️ 选一选',interactive:true,type:'quiz',q:'分针指向12，时针指向7，是几点？',options:['7:00','7:30','12:00'],correct:0
+},{
+title:'✏️ 再选一选',interactive:true,type:'quiz2',q:'分针指向6，时针在5和6之间，是几点？',options:['5:00','5:30','6:00'],correct:1
+},{
+title:'🎉 太棒了！',final:true,msg:'你完成了认识钟表！🏅<br>获得「时间小管家」徽章！<br><br>记住：短针看小时，长针看分钟！<br>你会看时间了！'
+}];
+let cur=0,quizA={};
+function render(n){
+  const el=document.getElementById('slides');const p=pages[n];
+  if(!p)return;let h='';
+  if(p.cover){
+    h=`<div class="slide active"><div style="font-size:64px;margin:4px">${p.icon}</div><div class="page-title">${p.title}</div><p style="font-size:13px;color:rgba(255,255,255,.7);text-align:center">${p.subtitle}</p>`;
+    h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;p.goals.forEach(g=>h+=`<li>${g}</li>`);h+=`</ul></div></div>`;
+  }else if(p.final){
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:24px;color:#fff">${p.title}</h2><p style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    setTimeout(doConfetti,300);
+  }else if(p.interactive){
+    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff">${p.title}</h3><div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+    p.options.forEach((o,i)=>{h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;});
+    h+=`<div class="feedback" id="fb${n}"></div></div></div>`;
+  }else{
+    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
+    if(p.svg)h+=p.svg;if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
+    if(p.items){p.items.forEach(it=>{h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="font-size:13px;color:#1565C0">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;});}
+    h+=`</div>`;
+  }
+  el.innerHTML=h;
+  document.getElementById('prevBtn').disabled=n===0;document.getElementById('nextBtn').disabled=n===pages.length-1;
+  updateDots(n);
+  gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
+}
+function clickQuiz(n,i){const p=pages[n];if(quizA[n])return;quizA[n]=true;
+  document.querySelectorAll('.quiz-opt').forEach((el,j)=>{el.className='quiz-opt'+(j===p.correct?' correct':j===i?' wrong':'');});
+  const fb=document.getElementById('fb'+n);if(fb){fb.className='feedback show '+(i===p.correct?' good':' bad');fb.textContent=i===p.correct?'✅ 正确！':'❌ 再想想';}
+}
+function go(d){cur=Math.max(0,Math.min(pages.length-1,cur+d));render(cur);}
+function updateDots(n){const el=document.getElementById('dots');el.innerHTML='';for(let i=0;i<pages.length;i++){const d=document.createElement('button');d.className='dot'+(i===n?' active':'');d.onclick=()=>{cur=i;render(cur);};el.appendChild(d);}}
+function doConfetti(){const el=document.getElementById('confetti');const c=['#FF6B6B','#FFB347','#4ECDC4','#A78BFA','#FFD93D','#FF9FF3'];for(let i=0;i<50;i++){const p=document.createElement('div');p.style.cssText='position:absolute;left:'+(Math.random()*100)+'%;top:-10px;width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;background:'+c[Math.floor(Math.random()*6)]+';border-radius:'+(Math.random()>.5?'50%':'2px')+';animation:confetti-fall '+(2+Math.random()*2)+'s ease-in '+(Math.random()*2)+'s forwards;';el.appendChild(p);setTimeout(()=>p.remove(),4500);}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+render(0);
+</script>
+</body>
+</html>

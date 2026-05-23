@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第24课 · 大冒险 (Grand Adventure)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#EF5350;color:#fff;user-select:none;-webkit-font-smoothing:antialiased;touch-action:manipulation}
+/* ===== SLIDER ===== */
+.slider{position:fixed;top:0;left:0;width:100%;height:100%}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 16px 72px;overflow-y:auto;opacity:0;visibility:hidden;background-size:cover;background-position:center;background-blend-mode:overlay;will-change:opacity,transform}
+.slide.active{opacity:1;visibility:visible;z-index:2}
+.bg-c1{background-color:#EF5350}.bg-c2{background-color:#D32F2F}.bg-c3{background-color:#C62828}.bg-c4{background-color:#B71C1C}
+/* ===== TOP BAR ===== */
+.top-bar{position:fixed;top:0;left:0;width:100%;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,transparent 100%)}
+.top-bar button{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s,transform .15s}
+.top-bar button:active{background:rgba(255,255,255,.35);transform:scale(.92)}
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;padding:8px 16px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;background:linear-gradient(0deg,rgba(0,0,0,.2) 0%,transparent 100%)}
+.bottom-nav button{background:rgba(255,255,255,.22);border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:all .2s}
+.bottom-nav button:active{transform:scale(.88)}
+.bottom-nav button:disabled{opacity:.2;pointer-events:none}
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:170px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.28);border:none;cursor:pointer;padding:0;transition:all .3s}
+.dot.active{background:#fff;transform:scale(1.4);box-shadow:0 0 8px rgba(255,255,255,.5)}
+.progress-bar{position:fixed;top:52px;left:0;width:100%;height:3px;z-index:99;background:rgba(255,255,255,.1)}
+.progress-fill{height:100%;width:0%;background:#fff;transition:width .4s ease;border-radius:0 2px 2px 0}
+/* ===== TITLE SLIDE ===== */
+.title-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:20px 0;text-align:center}
+.title-wrap .badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 16px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:12px}
+.title-wrap h1{font-size:clamp(34px,9vw,54px);font-weight:900;text-shadow:0 4px 20px rgba(0,0,0,.2);line-height:1.15;letter-spacing:2px}
+.title-wrap .sub{font-size:clamp(16px,4.5vw,24px);font-weight:700;color:rgba(255,255,255,.8);margin-top:6px}
+.title-wrap .desc{font-size:clamp(13px,3.2vw,16px);color:rgba(255,255,255,.62);margin-top:14px;max-width:340px;line-height:1.6}
+.title-wrap .start-btn{background:#fff;color:#EF5350;border:none;border-radius:32px;padding:14px 48px;font-size:18px;font-weight:800;cursor:pointer;margin-top:24px;font-family:'Nunito',sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.15);transition:transform .2s,box-shadow .2s}
+.title-wrap .start-btn:active{transform:scale(.94);box-shadow:0 2px 12px rgba(0,0,0,.1)}
+/* ===== REVIEW SLIDE ===== */
+.review-wrap{width:100%;max-width:440px;margin:auto;text-align:center}
+.review-wrap .review-img{width:100%;max-width:380px;border-radius:12px;margin:4px auto;display:block}
+.review-header{font-size:clamp(20px,5.5vw,28px);font-weight:800;margin-bottom:2px;letter-spacing:3px}
+.review-sub{font-size:clamp(13px,3vw,15px);color:rgba(255,255,255,.55);font-weight:600;margin-bottom:6px}
+.review-grid{display:grid;gap:6px;margin:6px 0}
+.review-grid.cols-2{grid-template-columns:1fr 1fr}
+.review-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.review-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+.review-cell{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 4px;text-align:center;cursor:pointer;transition:background .2s,transform .15s}
+.review-cell:active{background:rgba(255,255,255,.16);transform:scale(.94)}
+.review-cell .rc-char{font-size:clamp(24px,6vw,36px);font-weight:800;display:block;line-height:1.2}
+.review-cell .rc-py{font-size:clamp(9px,2.5vw,12px);color:rgba(255,255,255,.5);font-weight:400;letter-spacing:.5px}
+.review-cell .rc-en{font-size:clamp(9px,2.5vw,11px);color:rgba(255,255,255,.38);font-weight:400}
+.review-note{font-size:clamp(12px,3vw,14px);color:rgba(255,255,255,.5);margin-top:6px;line-height:1.5}
+.review-speak-all{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:6px 18px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:6px;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:background .2s}
+.review-speak-all:active{background:rgba(255,255,255,.25)}
+/* ===== MATCHING GAME ===== */
+.match-wrap{width:100%;max-width:960px;margin:auto}
+.match-wrap h2{font-size:clamp(18px,5vw,22px);font-weight:800;text-align:center;margin-bottom:2px}
+.match-wrap .hint{text-align:center;font-size:11px;color:rgba(255,255,255,.52);margin-bottom:8px}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.match-btn{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:12px;padding:10px 6px;font-size:clamp(13px,3.5vw,16px);font-weight:700;cursor:pointer;transition:all .2s;color:#fff;font-family:'Nunito',sans-serif;text-align:center;touch-action:manipulation;line-height:1.3}
+.match-btn:active{transform:scale(.93)}
+.match-btn.sel{border-color:#fff;background:rgba(255,255,255,.22);box-shadow:0 0 14px rgba(255,255,255,.12)}
+.match-btn.matched{background:rgba(76,175,80,.3);border-color:#66BB6A;pointer-events:none;opacity:.7}
+.match-btn.wrong{background:rgba(244,67,54,.3);border-color:#EF5350;animation:shake .35s}
+.match-status{font-size:14px;font-weight:600;text-align:center;min-height:22px}
+.match-reset{background:rgba(255,255,255,.1);border:none;border-radius:18px;padding:7px 22px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin:5px auto 0;display:block;font-family:'Nunito',sans-serif;transition:background .2s}
+.match-reset:active{background:rgba(255,255,255,.2)}
+/* ===== SENTENCE BUILDER ===== */
+.sb-wrap{width:100%;max-width:440px;margin:auto}
+.sb-wrap h2{font-size:clamp(18px,5vw,22px);font-weight:800;text-align:center;margin-bottom:2px}
+.sb-wrap .hint{text-align:center;font-size:11px;color:rgba(255,255,255,.52);margin-bottom:8px}
+.sb-zone{min-height:50px;background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.25);border-radius:14px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-bottom:8px;transition:background .3s}
+.sb-zone .sb-word-in{background:rgba(76,175,80,.2);border:1px solid rgba(255,255,255,.3);border-radius:16px;padding:5px 14px;font-size:clamp(16px,4.5vw,22px);font-weight:700;color:#fff;cursor:pointer;transition:all .2s}
+.sb-zone .sb-word-in:active{background:rgba(244,67,54,.3);transform:scale(.92)}
+.sb-bank{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:4px;min-height:40px}
+.sb-word{display:inline-block;padding:6px 16px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:20px;font-size:clamp(16px,4.5vw,20px);color:#fff;font-weight:600;cursor:pointer;transition:all .2s;touch-action:manipulation}
+.sb-word:active{transform:scale(.92);background:rgba(255,255,255,.2)}
+.sb-word.used{opacity:.3;pointer-events:none}
+.sb-result{font-size:14px;font-weight:600;text-align:center;min-height:22px;margin-bottom:4px}
+.sb-progress{font-size:12px;color:rgba(255,255,255,.5);text-align:center}
+/* ===== QUIZ ===== */
+.quiz-wrap{width:100%;max-width:960px;margin:auto}
+.quiz-wrap h2{font-size:clamp(18px,5vw,22px);font-weight:800;text-align:center;margin-bottom:4px}
+.quiz-info{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.55);margin-bottom:8px;padding:0 4px}
+.quiz-q{font-size:clamp(17px,4.5vw,22px);font-weight:700;text-align:center;margin-bottom:10px;min-height:48px;line-height:1.4}
+.quiz-options{display:flex;flex-direction:column;gap:8px}
+.quiz-opt{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.18);border-radius:14px;padding:12px 14px;font-size:clamp(15px,4vw,19px);font-weight:600;cursor:pointer;transition:all .2s;color:#fff;font-family:'Nunito',sans-serif;text-align:left;touch-action:manipulation}
+.quiz-opt:active{transform:scale(.97)}
+.quiz-opt.sel{border-color:#fff;background:rgba(255,255,255,.18)}
+.quiz-opt.correct{border-color:#66BB6A;background:rgba(76,175,80,.25)}
+.quiz-opt.wrong{border-color:#EF5350;background:rgba(244,67,54,.25);animation:shake .35s}
+.quiz-opt.disabled{pointer-events:none;opacity:.6}
+.quiz-opt.show-correct{border-color:#66BB6A;background:rgba(76,175,80,.15)}
+.quiz-feedback{font-size:13px;text-align:center;margin-top:6px;min-height:20px;font-weight:600}
+.quiz-next{background:rgba(255,255,255,.12);border:none;border-radius:20px;padding:8px 28px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin:8px auto 0;display:block;font-family:'Nunito',sans-serif;transition:background .2s}
+.quiz-next:active{background:rgba(255,255,255,.25)}
+.quiz-next:disabled{opacity:.3;pointer-events:none}
+/* ===== CELEBRATION ===== */
+.cert-wrap{width:100%;max-width:960px;margin:auto;text-align:center}
+.cert-wrap h2{font-size:clamp(24px,6.5vw,36px);font-weight:900;margin-bottom:6px}
+.cert-badge{font-size:clamp(72px,20vw,120px);margin:6px 0}
+.cert-text{font-size:clamp(15px,4vw,19px);font-weight:600;color:rgba(255,255,255,.85);line-height:1.6;margin-bottom:8px}
+.cert-card{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:20px;padding:18px 12px;margin:8px auto;max-width:320px}
+.cert-card .cert-title{font-size:clamp(16px,4.5vw,22px);font-weight:800;margin-bottom:4px}
+.cert-card .cert-detail{font-size:clamp(12px,3vw,14px);color:rgba(255,255,255,.6);margin:2px 0}
+.cert-card .cert-seal{font-size:clamp(36px,10vw,56px);margin:6px 0}
+.cert-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.cert-actions button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:8px 22px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s}
+.cert-actions button:active{background:rgba(255,255,255,.25)}
+/* ===== CONFETTI ===== */
+#confetti-c{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+/* ===== KEYFRAMES ===== */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pop-in{animation:pop .4s cubic-bezier(.175,.885,.32,1.275) both}
+.pulse{animation:pulse 2s ease-in-out infinite}
+.float{animation:float 3s ease-in-out infinite}
+/* ===== SCROLLBAR ===== */
+.slide::-webkit-scrollbar{width:2px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:2px}
+/* ===== RESPONSIVE ===== */
+@media(max-width:360px){
+  .slide{padding:56px 10px 66px}
+  .review-grid.cols-4{grid-template-columns:repeat(3,1fr)}
+  .match-grid{grid-template-columns:1fr 1fr;gap:5px}
+  .match-btn{font-size:12px;padding:8px 4px}
+}
+@media(max-height:600px){
+  .top-bar{height:42px}.top-bar button{width:32px;height:32px;font-size:17px}
+  .slide{padding:50px 12px 62px}
+}
+@media(min-width:421px) and (max-width:767px){
+  .slide{padding:64px 24px 74px}
+}
+@media(min-width:768px){
+  .slide{padding:72px 48px 80px}
+  .review-grid.cols-4{grid-template-columns:repeat(4,1fr)}
+  .match-grid{grid-template-columns:1fr 1fr;gap:12px}
+}
+@media(orientation:landscape) and (max-height:500px){
+  .slide{padding:44px 24px 54px}
+  .dots{max-width:140px}
+  .review-grid.cols-4{grid-template-columns:repeat(6,1fr)}
+}
+/* Reduce motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+<!-- ===== SLIDE 0: Title ===== -->
+<div class="slide bg-c1 active" data-img="page-01">
+  <div class="title-wrap">
+    <div class="badge">ZHONGWEN 24</div>
+    <h1>大冒险</h1>
+    <div class="sub">Grand Adventure</div>
+    <div class="desc">
+      Final review of <strong>Lessons 17–23</strong>!<br>
+      方向时间 · 动物 · 复合词 · 连接词 · 反义词 · 疑问词 · 古诗
+    </div>
+    <div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;max-width:340px">
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">🧭</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">🐾</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">🧩</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">🔗</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">↔️</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">❓</span>
+      <span style="font-size:clamp(18px,4.5vw,26px);color:rgba(255,255,255,.3)">📜</span>
+    </div>
+    <button class="start-btn" onclick="goSlide(1)">开始冒险 ▶</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 1: Directions & Time ===== -->
+<div class="slide bg-c2" data-img="page-02">
+  <div class="review-wrap">
+    <img class="review-img" src="images/chinese-24/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="方向时间" loading="lazy" onerror="this.style.display='none'">
+    <div class="review-header">🧭 方向时间</div>
+    <div class="review-sub">Directions &amp; Time · L17</div>
+    <div class="review-grid cols-4" id="dirGrid"></div>
+    <div class="review-note">👆 Tap any character to hear it spoken</div>
+    <button class="review-speak-all" onclick="speakAll('方向时间','上','下','左','右','前','后','东','南','西','北')">🔊 朗读全部</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 2: Animals ===== -->
+<div class="slide bg-c3" data-img="page-03">
+  <div class="review-wrap">
+    <img class="review-img" src="images/chinese-24/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="动物" loading="lazy" onerror="this.style.display='none'">
+    <div class="review-header">🐾 动物世界</div>
+    <div class="review-sub">Animals · L18</div>
+    <div class="review-grid cols-4" id="animalGrid"></div>
+    <div class="review-note">👆 Tap any character to hear it spoken</div>
+    <button class="review-speak-all" onclick="speakAll('动物世界','猫','狗','鱼','鸟','马','牛','羊','鸡','虫')">🔊 朗读全部</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 3: Compound Words & Connectors ===== -->
+<div class="slide bg-c4" data-img="page-04">
+  <div class="review-wrap">
+    <img class="review-img" src="images/chinese-24/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="复合词+连接词" loading="lazy" onerror="this.style.display='none'">
+    <div class="review-header">🧩 复合词 &amp; 🔗 连接词</div>
+    <div class="review-sub">Compound Words · L19 &amp; Connectors · L20</div>
+    <div class="review-grid cols-3" id="compoundGrid"></div>
+    <div class="review-note" style="margin-top:10px">👆 Tap any word to hear it spoken</div>
+    <button class="review-speak-all" onclick="speakAll('复合词连接词','太阳','月亮','星星','花朵','树叶','朋友','和','因为','所以','而且')">🔊 朗读全部</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 4: Antonyms & Question Words ===== -->
+<div class="slide bg-c2" data-img="page-05">
+  <div class="review-wrap">
+    <img class="review-img" src="images/chinese-24/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="反义词+疑问词" loading="lazy" onerror="this.style.display='none'">
+    <div class="review-header">↔️ 反义词 &amp; ❓ 疑问词</div>
+    <div class="review-sub">Antonyms · L21 &amp; Question Words · L22</div>
+    <div class="review-grid cols-3" id="antQGrid"></div>
+    <div class="review-note" style="margin-top:10px">👆 Tap any word to hear it spoken</div>
+    <button class="review-speak-all" onclick="speakAll('反义词疑问词','大','小','多','少','高','矮','快','慢','谁','什么','哪里','为什么')">🔊 朗读全部</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 5: Poems ===== -->
+<div class="slide bg-c3" data-img="page-06">
+  <div class="review-wrap">
+    <img class="review-img" src="images/chinese-24/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="古诗" loading="lazy" onerror="this.style.display='none'">
+    <div class="review-header">📜 古诗回顾</div>
+    <div class="review-sub">Ancient Poems · L23</div>
+    <div class="poem-lines" style="background:rgba(255,255,255,.07);border-radius:14px;padding:10px 14px;margin:6px 0;max-width:380px;width:100%">
+      <div class="poem-line" onclick="speak('静夜思——床前明月光，疑是地上霜。举头望明月，低头思故乡。')">
+        🌙 静夜思
+        <span style="display:block;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.5);font-weight:400">李白 · 床前明月光，疑是地上霜。举头望明月，低头思故乡。</span>
+      </div>
+      <div class="poem-line" onclick="speak('春晓——春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。')" style="margin-top:6px">
+        🌸 春晓
+        <span style="display:block;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.5);font-weight:400">孟浩然 · 春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。</span>
+      </div>
+      <div class="poem-line" onclick="speak('登鹳雀楼——白日依山尽，黄河入海流。欲穷千里目，更上一层楼。')" style="margin-top:6px">
+        🏯 登鹳雀楼
+        <span style="display:block;font-size:clamp(10px,2.8vw,13px);color:rgba(255,255,255,.5);font-weight:400">王之涣 · 白日依山尽，黄河入海流。欲穷千里目，更上一层楼。</span>
+      </div>
+    </div>
+    <div class="review-note">👆 Tap a poem title to hear it</div>
+    <button class="review-speak-all" onclick="speakAll('古诗三首','静夜思——床前明月光，疑是地上霜。举头望明月，低头思故乡。','春晓——春眠不觉晓，处处闻啼鸟。夜来风雨声，花落知多少。','登鹳雀楼——白日依山尽，黄河入海流。欲穷千里目，更上一层楼。')">🔊 朗读全部古诗</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 6: Matching Game ===== -->
+<div class="slide bg-c4" data-img="">
+  <div class="match-wrap" id="matchWrap">
+    <h2>🔗 连一连 &nbsp;Match → Category</h2>
+    <div class="hint">👆 Tap a word → tap its category (方向时间 · 动物 · 复合词 · 连接词 · 反义词 · 疑问词 · 古诗)</div>
+    <div class="match-grid" id="matchGrid"></div>
+    <div class="match-status" id="matchStatus">Match all words to their categories!</div>
+    <button class="match-reset" onclick="resetMatch()">🔄 重新开始</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 7: Sentence Builder ===== -->
+<div class="slide bg-c1" data-img="">
+  <div class="sb-wrap" id="sbWrap">
+    <h2>✏️ 造句 &nbsp;Sentence Builder</h2>
+    <div class="hint">👆 Tap words in order to build a sentence</div>
+    <div class="sb-zone" id="sbZone"></div>
+    <div class="sb-result" id="sbResult"></div>
+    <div class="sb-bank" id="sbBank"></div>
+    <div class="sb-progress" id="sbProgress"></div>
+    <button class="match-reset" onclick="resetSB()" style="margin-top:6px">🔄 重新开始</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 8: Final Quiz ===== -->
+<div class="slide bg-c2" data-img="">
+  <div class="quiz-wrap" id="quizWrap">
+    <h2>🏆 终极挑战 &nbsp;Final Quiz</h2>
+    <div class="quiz-info">
+      <span id="quizProgress">第 1 / 10 题</span>
+      <span id="quizScore">✅ 0 / 10</span>
+    </div>
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-options" id="quizOpts"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <button class="quiz-next" id="quizNext" onclick="nextQuiz()">下一题 ▶</button>
+  </div>
+</div>
+
+<!-- ===== SLIDE 9: Celebration & Certificate ===== -->
+<div class="slide bg-c3" data-img="">
+  <div class="cert-wrap" id="certWrap">
+    <h2>🎉 恭喜你！</h2>
+    <div class="cert-badge">🏆</div>
+    <div class="cert-text">你完成了中文大冒险！<br>You completed the Grand Adventure!</div>
+    <div class="cert-card">
+      <div class="cert-title">📜 结业证书</div>
+      <div class="cert-detail">Certificate of Completion</div>
+      <div class="cert-detail" style="font-size:clamp(14px,3.5vw,18px);color:#FFE082;margin:6px 0">第24课 · 大冒险</div>
+      <div class="cert-detail">Lessons 17–23 Review</div>
+      <div class="cert-seal">⭐</div>
+      <div class="cert-detail" style="color:rgba(255,255,255,.45);font-size:11px">Chinese Children's Library</div>
+    </div>
+    <div class="cert-actions">
+      <button onclick="goSlide(0)">🏠 返回首页</button>
+      <button onclick="goSlide(6)">🔄 再练匹配</button>
+      <button onclick="goSlide(8)">🔄 再测一次</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /slider -->
+
+<!-- Progress bar -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <button onclick="window.location.href='../'" aria-label="Home" title="Home">🏠</button>
+  <div style="display:flex;gap:8px">
+    <button onclick="goSlide(9)" aria-label="Certificate" title="Certificate">🎓</button>
+    <button onclick="toggleAudio()" aria-label="Toggle Audio" title="Toggle sound" id="audioToggle">🔊</button>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <button onclick="prevSlide()" id="prevBtn" aria-label="Previous">◀</button>
+  <div class="dots" id="dots"></div>
+  <button onclick="nextSlide()" id="nextBtn" aria-label="Next">▶</button>
+</div>
+
+<canvas id="confetti-c"></canvas>
+
+<script>
+// ========================================================================
+// REVIEW DATA — L17-23
+// ========================================================================
+const DIRECTION_WORDS = [
+  {char:'上',py:'shàng',en:'up / on'},
+  {char:'下',py:'xià',en:'down / under'},
+  {char:'左',py:'zuǒ',en:'left'},
+  {char:'右',py:'yòu',en:'right'},
+  {char:'前',py:'qián',en:'front'},
+  {char:'后',py:'hòu',en:'back'},
+  {char:'东',py:'dōng',en:'east'},
+  {char:'南',py:'nán',en:'south'},
+  {char:'西',py:'xī',en:'west'},
+  {char:'北',py:'běi',en:'north'},
+  {char:'早上',py:'zǎo shang',en:'morning'},
+  {char:'下午',py:'xià wǔ',en:'afternoon'},
+  {char:'晚上',py:'wǎn shang',en:'evening'}
+];
+
+const ANIMAL_WORDS = [
+  {char:'猫',py:'māo',en:'cat'},
+  {char:'狗',py:'gǒu',en:'dog'},
+  {char:'鱼',py:'yú',en:'fish'},
+  {char:'鸟',py:'niǎo',en:'bird'},
+  {char:'马',py:'mǎ',en:'horse'},
+  {char:'牛',py:'niú',en:'cow'},
+  {char:'羊',py:'yáng',en:'sheep'},
+  {char:'鸡',py:'jī',en:'chicken'},
+  {char:'虫',py:'chóng',en:'insect / bug'}
+];
+
+const COMPOUND_WORDS = [
+  {char:'太阳',py:'tài yáng',en:'sun'},
+  {char:'月亮',py:'yuè liàng',en:'moon'},
+  {char:'星星',py:'xīng xīng',en:'star'},
+  {char:'花朵',py:'huā duǒ',en:'flower'},
+  {char:'树叶',py:'shù yè',en:'leaf'},
+  {char:'朋友',py:'péng yǒu',en:'friend'},
+  {char:'和',py:'hé',en:'and (connector)'},
+  {char:'因为',py:'yīn wèi',en:'because'},
+  {char:'所以',py:'suǒ yǐ',en:'so / therefore'},
+  {char:'而且',py:'ér qiě',en:'moreover / and also'}
+];
+
+const ANTONYM_Q_WORDS = [
+  {char:'大 ↔ 小',en:'big ↔ small'},
+  {char:'多 ↔ 少',en:'many ↔ few'},
+  {char:'高 ↔ 矮',en:'tall ↔ short'},
+  {char:'快 ↔ 慢',en:'fast ↔ slow'},
+  {char:'远 ↔ 近',en:'far ↔ near'},
+  {char:'热 ↔ 冷',en:'hot ↔ cold'},
+  {char:'谁',py:'shuí',en:'who'},
+  {char:'什么',py:'shén me',en:'what'},
+  {char:'哪里',py:'nǎ lǐ',en:'where'},
+  {char:'为什么',py:'wèi shén me',en:'why'},
+  {char:'怎么',py:'zěn me',en:'how'},
+  {char:'多少',py:'duō shǎo',en:'how many'}
+];
+
+// Matching game data: items with their categories
+const CATEGORIES = ['方向时间','动物','复合词','连接词','反义词','疑问词','古诗'];
+
+const MATCH_ITEMS = [
+  {id:'m1', text:'上', category:'方向时间'},
+  {id:'m2', text:'东', category:'方向时间'},
+  {id:'m3', text:'早上', category:'方向时间'},
+  {id:'m4', text:'猫', category:'动物'},
+  {id:'m5', text:'鸟', category:'动物'},
+  {id:'m6', text:'太阳', category:'复合词'},
+  {id:'m7', text:'朋友', category:'复合词'},
+  {id:'m8', text:'和', category:'连接词'},
+  {id:'m9', text:'因为', category:'连接词'},
+  {id:'m10',text:'大', category:'反义词'},
+  {id:'m11',text:'快', category:'反义词'},
+  {id:'m12',text:'谁', category:'疑问词'},
+  {id:'m13',text:'为什么', category:'疑问词'},
+  {id:'m14',text:'静夜思', category:'古诗'},
+  {id:'m15',text:'春晓', category:'古诗'}
+];
+
+// Sentence builder data
+const SENTENCES = [
+  {words:['猫','和','狗','是','朋友'], display:'猫 和 狗 是 朋友'},
+  {words:['太阳','从','东','方','升起'], display:'太阳 从 东方 升起'},
+  {words:['早上','我','去','学校'], display:'早上 我 去 学校'},
+  {words:['因为','下雨','所以','不','出去'], display:'因为 下雨 所以 不 出去'},
+  {words:['谁','在','前面','？'], display:'谁 在 前面 ？'},
+  {words:['鸟','在','天上','飞'], display:'鸟 在天上 飞'}
+];
+
+const TOTAL = 10;  // slides 0-9
+let cur = 0;
+let audioOn = true;
+
+// Match state
+let matchItems = [];
+let matchSel = null;
+let matchDone = 0;
+
+// Sentence builder state
+let sbQueue = [];
+let sbCur = 0;
+let sbPlaced = [];
+
+// Quiz state
+let quizQuestions = [];
+let quizIdx = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+// ========================================================================
+// NAVIGATION
+// ========================================================================
+function buildDots(){
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for(let i=0; i<TOTAL; i++){
+    const b = document.createElement('button');
+    b.className = 'dot'+(i===0?' active':'');
+    b.onclick = ()=>{ goSlide(i); };
+    b.setAttribute('aria-label', 'Page '+(i+1));
+    c.appendChild(b);
+  }
+}
+
+function goSlide(n){
+  if(n<0 || n>=TOTAL) return;
+  const slides = document.querySelectorAll('.slide');
+  if(cur !== n){
+    gsap.to(slides[cur], {opacity:0, duration:.25, ease:'power2.in', onComplete:()=>{
+      slides[cur].classList.remove('active');
+      slides[cur].style.visibility = 'hidden';
+    }});
+  }
+  cur = n;
+  slides[n].style.visibility = 'visible';
+  slides[n].classList.add('active');
+  gsap.fromTo(slides[n], {opacity:0, scale:.96}, {opacity:1, scale:1, duration:.35, ease:'power2.out'});
+  updateNav();
+  // Init games when reaching their slides
+  if(cur===6) initMatch();
+  if(cur===7) initSB();
+  if(cur===8) initQuiz();
+  if(cur===9) { launchConfetti(); buildCert(); }
+  slides[n].scrollTop = 0;
+  showMilestone(n);
+}
+
+function nextSlide(){ if(cur<TOTAL-1) goSlide(cur+1); }
+function prevSlide(){ if(cur>0) goSlide(cur-1); }
+
+function updateNav(){
+  document.querySelectorAll('.dot').forEach((d,i)=> d.classList.toggle('active', i===cur));
+  document.getElementById('prevBtn').disabled = (cur===0);
+  document.getElementById('nextBtn').disabled = (cur===TOTAL-1);
+  const pct = (cur / (TOTAL-1)) * 100;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+
+const MILESTONES = {
+  1:'🧭 方向时间 Direction & Time',
+  2:'🐾 动物世界 Animals',
+  3:'🧩 复合词 & 连接词 Compounds & Connectors',
+  4:'↔️ 反义词 & 疑问词 Antonyms & Questions',
+  5:'📜 古诗 Poems',
+  6:'🔗 匹配游戏 Matching Game',
+  7:'✏️ 造句 Sentence Builder',
+  8:'🏆 终极挑战 Final Quiz',
+  9:'🎉 恭喜完成！'
+};
+
+function showMilestone(n){
+  const msg = MILESTONES[n];
+  if(!msg) return;
+  if(document.querySelector('.milestone-toast')) return;
+  const toast = document.createElement('div');
+  toast.className = 'milestone-toast';
+  toast.textContent = msg;
+  Object.assign(toast.style, {
+    position:'fixed', bottom:'76px', left:'50%', transform:'translateX(-50%)',
+    background:'rgba(0,0,0,.45)', backdropFilter:'blur(8px)',
+    WebkitBackdropFilter:'blur(8px)', borderRadius:'20px',
+    padding:'8px 22px', fontSize:'14px', fontWeight:'600',
+    zIndex:'150', whiteSpace:'nowrap',
+    boxShadow:'0 4px 20px rgba(0,0,0,.2)'
+  });
+  document.body.appendChild(toast);
+  gsap.fromTo(toast, {y:20, opacity:0}, {y:0, opacity:1, duration:.4, ease:'power2.out'});
+  gsap.to(toast, {y:-10, opacity:0, duration:.4, delay:2.2, ease:'power2.in', onComplete:()=>toast.remove()});
+}
+
+// ========================================================================
+// TOUCH SWIPE
+// ========================================================================
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if(Math.abs(dx) < 50) return;
+  if(Math.abs(dx) < Math.abs(dy)*1.5) return;
+  if(dx > 0) prevSlide(); else nextSlide();
+}, {passive:true});
+
+// ========================================================================
+// SPEECH
+// ========================================================================
+function speak(...texts){
+  if(!audioOn || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const t = texts.join('，');
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = 'zh-CN';
+  u.rate = 0.85;
+  u.pitch = 1.05;
+  u.volume = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function speakAll(title, ...items){
+  if(!audioOn || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const fullText = title + '——' + items.join('，');
+  const u = new SpeechSynthesisUtterance(fullText);
+  u.lang = 'zh-CN';
+  u.rate = 0.8;
+  u.pitch = 1.05;
+  u.volume = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function toggleAudio(){
+  audioOn = !audioOn;
+  document.getElementById('audioToggle').textContent = audioOn ? '🔊' : '🔇';
+}
+
+// ========================================================================
+// BUILD REVIEW GRIDS
+// ========================================================================
+function buildReviewGrids(){
+  // Directions
+  const dg = document.getElementById('dirGrid');
+  if(dg) dg.innerHTML = DIRECTION_WORDS.map(w =>
+    `<div class="review-cell" onclick="speak('${w.char}')">
+      <span class="rc-char">${w.char}</span>
+      <span class="rc-py">${w.py}</span>
+      <span class="rc-en">${w.en}</span>
+    </div>`
+  ).join('');
+
+  // Animals
+  const ag = document.getElementById('animalGrid');
+  if(ag) ag.innerHTML = ANIMAL_WORDS.map(w =>
+    `<div class="review-cell" onclick="speak('${w.char}')">
+      <span class="rc-char">${w.char}</span>
+      <span class="rc-py">${w.py}</span>
+      <span class="rc-en">${w.en}</span>
+    </div>`
+  ).join('');
+
+  // Compound + Connectors
+  const cg = document.getElementById('compoundGrid');
+  if(cg) cg.innerHTML = COMPOUND_WORDS.map(w =>
+    `<div class="review-cell" onclick="speak('${w.char}')">
+      <span class="rc-char">${w.char}</span>
+      <span class="rc-py">${w.py}</span>
+      <span class="rc-en">${w.en}</span>
+    </div>`
+  ).join('');
+
+  // Antonyms + Question words
+  const aqg = document.getElementById('antQGrid');
+  if(aqg) aqg.innerHTML = ANTONYM_Q_WORDS.map(w =>
+    `<div class="review-cell" onclick="speak('${w.char}')">
+      <span class="rc-char">${w.char}</span>
+      <span class="rc-py">${w.py||''}</span>
+      <span class="rc-en">${w.en}</span>
+    </div>`
+  ).join('');
+}
+
+// ========================================================================
+// MATCHING GAME
+// ========================================================================
+function initMatch(){
+  if(matchItems.length > 0) return;
+  matchItems = MATCH_ITEMS.map(m => ({
+    id: m.id,
+    text: m.text,
+    category: m.category,
+    matched: false
+  }));
+  matchDone = 0;
+  matchSel = null;
+  renderMatch();
+  document.getElementById('matchStatus').textContent = 'Match all '+MATCH_ITEMS.length+' words to categories!';
+}
+
+function shuffle(a){
+  const b = [...a];
+  for(let i=b.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+
+function renderMatch(){
+  // Create items and category tags, shuffle separately
+  const items = matchItems.filter(m => !m.matched).map(m => ({
+    id: m.id,
+    text: m.text,
+    type: 'item',
+    category: m.category,
+    matched: false
+  }));
+  const cats = CATEGORIES.map(c => ({
+    id: 'cat_'+c,
+    text: c,
+    type: 'category',
+    category: c,
+    matched: false
+  }));
+
+  const allCards = shuffle([...items, ...cats]);
+  let html = '';
+  allCards.forEach(card => {
+    const matchedClass = card.matched ? ' matched' : '';
+    html += `<button class="match-btn${matchedClass}" data-id="${card.id}" data-type="${card.type}" data-cat="${card.category}" onclick="clickMatch(this)">${card.text}</button>`;
+  });
+  document.getElementById('matchGrid').innerHTML = html;
+}
+
+function clickMatch(el){
+  if(el.classList.contains('matched')) return;
+
+  if(!matchSel){
+    document.querySelectorAll('.match-btn.sel').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+    matchSel = el;
+    return;
+  }
+  if(el === matchSel){
+    el.classList.remove('sel');
+    matchSel = null;
+    return;
+  }
+
+  const a = matchSel;
+  const b = el;
+  a.classList.remove('sel');
+
+  const aType = a.dataset.type;
+  const bType = b.dataset.type;
+
+  // Must be one item + one category
+  if(aType === bType){
+    a.classList.add('wrong');
+    b.classList.add('wrong');
+    setTimeout(() => {
+      a.classList.remove('wrong');
+      b.classList.remove('wrong');
+    }, 350);
+    matchSel = null;
+    return;
+  }
+
+  // Determine which is item and which is category
+  const itemEl = aType === 'item' ? a : b;
+  const catEl = aType === 'category' ? a : b;
+  const itemId = itemEl.dataset.id;
+  const catName = catEl.dataset.cat;
+
+  const matchItem = matchItems.find(m => m.id === itemId);
+  if(matchItem && matchItem.category === catName){
+    // Correct!
+    itemEl.classList.add('matched');
+    catEl.classList.add('matched');
+    matchItem.matched = true;
+    matchDone++;
+    document.getElementById('matchStatus').textContent = '✅ '+matchDone+' / '+MATCH_ITEMS.length+' matched!';
+    if(matchDone === MATCH_ITEMS.length){
+      document.getElementById('matchStatus').textContent = '🎉 太棒了！ All words matched!';
+      launchConfetti();
+      gsap.to('.match-btn.matched', {scale:1.05, duration:.3, yoyo:true, repeat:1});
+    }
+  } else {
+    a.classList.add('wrong');
+    b.classList.add('wrong');
+    setTimeout(() => {
+      a.classList.remove('wrong');
+      b.classList.remove('wrong');
+    }, 350);
+  }
+  matchSel = null;
+}
+
+function resetMatch(){
+  matchItems.forEach(m => m.matched = false);
+  matchDone = 0;
+  matchSel = null;
+  renderMatch();
+  document.getElementById('matchStatus').textContent = 'Match all '+MATCH_ITEMS.length+' words to categories!';
+}
+
+// ========================================================================
+// SENTENCE BUILDER
+// ========================================================================
+function initSB(){
+  sbQueue = shuffle(SENTENCES);
+  sbCur = 0;
+  renderSB();
+  document.getElementById('sbResult').textContent = '';
+}
+
+function renderSB(){
+  if(sbCur >= sbQueue.length){
+    document.getElementById('sbResult').textContent = '🎉 全部完成！ Great job!';
+    document.getElementById('sbZone').innerHTML = '';
+    document.getElementById('sbBank').innerHTML = '';
+    document.getElementById('sbProgress').textContent = '✅ '+sbCur+' / '+sbQueue.length;
+    launchConfetti();
+    return;
+  }
+  const item = sbQueue[sbCur];
+  sbPlaced = [];
+  const shuffled = shuffle(item.words);
+
+  document.getElementById('sbResult').textContent = '📝 Build: "'+item.display+'"';
+  document.getElementById('sbProgress').textContent = 'Sentence '+(sbCur+1)+' / '+sbQueue.length;
+
+  const zone = document.getElementById('sbZone');
+  zone.innerHTML = '';
+
+  const bank = document.getElementById('sbBank');
+  bank.innerHTML = shuffled.map(w =>
+    `<span class="sb-word" data-word="${w}" onclick="clickSBWord(this)">${w}</span>`
+  ).join('');
+}
+
+function clickSBWord(el){
+  if(el.classList.contains('used')) return;
+  const word = el.dataset.word;
+  const item = sbQueue[sbCur];
+  const expected = item.words[sbPlaced.length];
+
+  if(word === expected){
+    // Correct!
+    el.classList.add('used');
+    sbPlaced.push(word);
+    const zone = document.getElementById('sbZone');
+    zone.innerHTML += `<span class="sb-word-in">${word}</span>`;
+    zone.scrollTop = zone.scrollHeight;
+
+    if(sbPlaced.length === item.words.length){
+      document.getElementById('sbResult').textContent = '✅ 正确！ "'+item.display+'"';
+      setTimeout(() => {
+        sbCur++;
+        renderSB();
+      }, 800);
+    }
+  } else {
+    // Wrong
+    el.classList.add('wrong');
+    document.getElementById('sbResult').textContent = '❌ 再试试！ Try again!';
+    setTimeout(() => {
+      el.classList.remove('wrong');
+    }, 350);
+  }
+}
+
+function resetSB(){
+  initSB();
+}
+
+// ========================================================================
+// FINAL QUIZ
+// ========================================================================
+const QUIZ_DATA = [
+  {q:'哪个词表示 "up" 的意思？', options:['上','下','左','右'], answer:0, cat:'方向时间'},
+  {q:'哪个是动物？', options:['太阳','猫','朋友','和'], answer:1, cat:'动物'},
+  {q:'"太阳" 是什么词？', options:['动物','方向词','复合词','疑问词'], answer:2, cat:'复合词'},
+  {q:'哪个是连接词 (connector)？', options:['大','所以','猫','东'], answer:1, cat:'连接词'},
+  {q:'"大" 的反义词是什么？', options:['快','多','高','小'], answer:3, cat:'反义词'},
+  {q:'哪个词是 "who" 的意思？', options:['什么','哪里','谁','为什么'], answer:2, cat:'疑问词'},
+  {q:'"白日依山尽" 是哪首诗？', options:['静夜思','春晓','登鹳雀楼','无题'], answer:2, cat:'古诗'},
+  {q:'哪个表示 "afternoon"？', options:['早上','下午','晚上','中午'], answer:1, cat:'方向时间'},
+  {q:'"因为" 和哪个词一起用？', options:['和','但是','所以','而且'], answer:2, cat:'连接词'},
+  {q:'"低头思故乡" 的上句是？', options:['床前明月光','疑是地上霜','举头望明月','夜来风雨声'], answer:2, cat:'古诗'}
+];
+
+function initQuiz(){
+  quizQuestions = shuffle(QUIZ_DATA);
+  quizIdx = 0;
+  quizScore = 0;
+  quizAnswered = false;
+  document.getElementById('quizScore').textContent = '✅ 0 / '+quizQuestions.length;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  if(quizIdx >= quizQuestions.length){
+    document.getElementById('quizQ').textContent = '🎉 测验完成！';
+    document.getElementById('quizOpts').innerHTML = '';
+    document.getElementById('quizFeedback').textContent = '你的分数：'+quizScore+' / '+quizQuestions.length;
+    document.getElementById('quizNext').disabled = true;
+    document.getElementById('quizNext').textContent = '🎉 完成！';
+    document.getElementById('quizProgress').textContent = '✅ 完成';
+    if(quizScore === quizQuestions.length){
+      document.getElementById('quizFeedback').textContent = '🎉 满分！ 太棒了！ Perfect score!';
+      launchConfetti();
+    }
+    return;
+  }
+
+  const q = quizQuestions[quizIdx];
+  document.getElementById('quizProgress').textContent = '第 '+(quizIdx+1)+' / '+quizQuestions.length+' 题';
+  document.getElementById('quizQ').textContent = q.cat+' · '+q.q;
+  document.getElementById('quizFeedback').textContent = '';
+  document.getElementById('quizNext').disabled = true;
+  document.getElementById('quizNext').textContent = '下一题 ▶';
+  quizAnswered = false;
+
+  const optsDiv = document.getElementById('quizOpts');
+  optsDiv.innerHTML = q.options.map((opt, i) =>
+    `<button class="quiz-opt" data-idx="${i}" onclick="clickQuiz(this, ${i})">${opt}</button>`
+  ).join('');
+
+  // Reset all option classes
+  document.querySelectorAll('.quiz-opt').forEach(b => {
+    b.className = 'quiz-opt';
+    b.disabled = false;
+  });
+}
+
+function clickQuiz(el, idx){
+  if(quizAnswered) return;
+  quizAnswered = true;
+
+  const q = quizQuestions[quizIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(b => b.classList.add('disabled'));
+
+  if(idx === q.answer){
+    // Correct
+    el.classList.add('correct');
+    document.getElementById('quizFeedback').textContent = '✅ 对了！ Correct!';
+    quizScore++;
+    document.getElementById('quizScore').textContent = '✅ '+quizScore+' / '+quizQuestions.length;
+  } else {
+    el.classList.add('wrong');
+    opts[q.answer].classList.add('show-correct');
+    document.getElementById('quizFeedback').textContent = '❌ 不对。正确答案是：'+q.options[q.answer];
+  }
+  document.getElementById('quizNext').disabled = false;
+}
+
+function nextQuiz(){
+  if(quizAnswered === false) return;
+  quizIdx++;
+  renderQuiz();
+}
+
+// ========================================================================
+// CELEBRATION / CERTIFICATE
+// ========================================================================
+function buildCert(){
+  const wrap = document.getElementById('certWrap');
+  if(!wrap) return;
+  // Certificate is already in the HTML, just trigger confetti
+  launchConfetti();
+}
+
+// ========================================================================
+// CONFETTI
+// ========================================================================
+const cvs = document.getElementById('confetti-c');
+const ctx = cvs.getContext('2d');
+let pieces = [];
+let animId = null;
+
+function resizeCvs(){
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCvs);
+resizeCvs();
+
+function launchConfetti(){
+  const colors = ['#FF6B6B','#FFE082','#81D4FA','#A5D6A7','#fff','#EF9A9A','#B39DDB','#FFAB91','#CE93D8','#FFCC80'];
+  pieces = [];
+  const count = Math.min(160, Math.floor(cvs.width*0.2));
+  for(let i=0; i<count; i++){
+    pieces.push({
+      x: Math.random()*cvs.width,
+      y: Math.random()*cvs.height - cvs.height,
+      w: Math.random()*10+5,
+      h: Math.random()*6+3,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vy: Math.random()*3+2,
+      vx: (Math.random()-0.5)*3,
+      rot: Math.random()*360,
+      vr: (Math.random()-0.5)*8,
+      op: 0.9 + Math.random()*0.1
+    });
+  }
+  if(animId) cancelAnimationFrame(animId);
+  drawConfetti();
+}
+
+function drawConfetti(){
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  let alive = false;
+  pieces.forEach(p => {
+    p.y += p.vy;
+    p.x += p.vx;
+    p.rot += p.vr;
+    if(p.y < cvs.height + 30) alive = true;
+    if(p.y < 0) return;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI/180);
+    ctx.globalAlpha = p.op;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  if(alive){
+    animId = requestAnimationFrame(drawConfetti);
+  } else {
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    animId = null;
+  }
+}
+
+// roundRect polyfill
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r){
+    if(r > w/2) r = w/2;
+    if(r > h/2) r = h/2;
+    this.moveTo(x+r, y);
+    this.lineTo(x+w-r, y);
+    this.quadraticCurveTo(x+w, y, x+w, y+r);
+    this.lineTo(x+w, y+h-r);
+    this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    this.lineTo(x+r, y+h);
+    this.quadraticCurveTo(x, y+h, x, y+h-r);
+    this.lineTo(x, y+r);
+    this.quadraticCurveTo(x, y, x+r, y);
+    this.closePath();
+  };
+}
+
+// ========================================================================
+// KEYBOARD
+// ========================================================================
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight')  { e.preventDefault(); nextSlide(); }
+  if(e.key === 'ArrowLeft')   { e.preventDefault(); prevSlide(); }
+  if(e.key === 'Home')        { e.preventDefault(); goSlide(0); }
+  if(e.key === 'End')         { e.preventDefault(); goSlide(TOTAL-1); }
+});
+
+// ========================================================================
+// BACKGROUND IMAGES
+// ========================================================================
+function setImages(){
+  document.querySelectorAll('.slide[data-img]').forEach(s => {
+    const img = s.dataset.img;
+    if(img) s.style.backgroundImage = 'url(images/chinese-24/webp/'+img+'.webp)';
+  });
+}
+
+// ========================================================================
+// INIT
+// ========================================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildDots();
+  buildReviewGrids();
+  updateNav();
+  setImages();
+
+  // Animate title page
+  const tl = gsap.timeline({defaults:{ease:'power3.out'}});
+  tl.from('.title-wrap .badge',   {y:-20, opacity:0, duration:.5})
+    .from('.title-wrap h1',       {y:30,  opacity:0, duration:.6}, '-=0.2')
+    .from('.title-wrap .sub',     {y:20,  opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap .desc',    {y:20,  opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap div[style*="margin-top:14px"]', {y:20, opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap .start-btn',    {y:20, opacity:0, scale:.9, duration:.5, ease:'back.out(1.7)'}, '-=0.2');
+
+  // Warm up speech
+  if('speechSynthesis' in window){
+    window.speechSynthesis.getVoices();
+    if(window.speechSynthesis.onvoiceschanged !== undefined){
+      window.speechSynthesis.onvoiceschanged = ()=>{
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }
+});
+</script>
+</body>
+</html>

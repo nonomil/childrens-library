@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>中文14 · 数字与颜色</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#EF5350;color:#fff;user-select:none;-webkit-font-smoothing:antialiased}
+/* ===== SLIDER ===== */
+.slider{position:fixed;top:0;left:0;width:100%;height:100%}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 16px 72px;overflow-y:auto;opacity:0;visibility:hidden;background-size:cover;background-position:center;background-blend-mode:overlay;will-change:opacity,transform}
+.slide.active{opacity:1;visibility:visible;z-index:2}
+/* Background color variants */
+.bg-c1{background-color:#EF5350}.bg-c2{background-color:#D32F2F}.bg-c3{background-color:#C62828}.bg-c4{background-color:#B71C1C}
+/* ===== TOP BAR ===== */
+.top-bar{position:fixed;top:0;left:0;width:100%;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:100;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,transparent 100%)}
+.top-bar button{background:rgba(255,255,255,.2);border:none;border-radius:50%;width:38px;height:38px;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background .2s,transform .15s}
+.top-bar button:active{background:rgba(255,255,255,.35);transform:scale(.92)}
+/* Reference overlay button */
+.top-bar .ref-btn{font-size:18px}
+/* ===== REFERENCE OVERLAY ===== */
+.ref-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+.ref-overlay.show{opacity:1;visibility:visible}
+.ref-panel{background:#EF5350;border-radius:20px;padding:20px 16px;max-width:400px;width:92%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.3)}
+.ref-panel h2{font-size:17px;font-weight:800;text-align:center;margin-bottom:10px}
+.ref-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.ref-cell{background:rgba(255,255,255,.1);border-radius:8px;padding:6px 2px;text-align:center;transition:background .2s;cursor:pointer}
+.ref-cell:active{background:rgba(255,255,255,.22)}
+.ref-cell .rc-char{font-size:clamp(22px,5.5vw,30px);font-weight:900;display:block}
+.ref-cell .rc-py{font-size:10px;color:rgba(255,255,255,.6);font-weight:600;display:block;margin-top:1px}
+.ref-cell .rc-en{font-size:9px;color:rgba(255,255,255,.42);display:block}
+.ref-close{display:block;margin:12px auto 0;background:rgba(255,255,255,.2);border:none;border-radius:24px;padding:8px 32px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s}
+.ref-close:active{background:rgba(255,255,255,.35)}
+@media(max-width:360px){.ref-grid{grid-template-columns:repeat(3,1fr)}}
+/* ===== BOTTOM NAV ===== */
+.bottom-nav{position:fixed;bottom:0;left:0;width:100%;padding:8px 16px 18px;display:flex;align-items:center;justify-content:space-between;z-index:100;background:linear-gradient(0deg,rgba(0,0,0,.2) 0%,transparent 100%)}
+.bottom-nav button{background:rgba(255,255,255,.22);border:none;border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:all .2s}
+.bottom-nav button:active{transform:scale(.88)}
+.bottom-nav button:disabled{opacity:.2;pointer-events:none}
+/* Page dots */
+.dots{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;max-width:170px}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.28);border:none;cursor:pointer;padding:0;transition:all .3s}
+.dot.active{background:#fff;transform:scale(1.4);box-shadow:0 0 8px rgba(255,255,255,.5)}
+/* Progress bar */
+.progress-bar{position:fixed;top:52px;left:0;width:100%;height:3px;z-index:99;background:rgba(255,255,255,.1)}
+.progress-fill{height:100%;width:0%;background:#fff;transition:width .4s ease;border-radius:0 2px 2px 0}
+/* ===== TITLE SLIDE ===== */
+.title-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:20px 0;text-align:center}
+.title-wrap .badge{display:inline-block;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 16px;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:12px}
+.title-wrap h1{font-size:clamp(34px,9vw,54px);font-weight:900;text-shadow:0 4px 20px rgba(0,0,0,.2);line-height:1.15;letter-spacing:2px}
+.title-wrap .sub{font-size:clamp(16px,4.5vw,24px);font-weight:700;color:rgba(255,255,255,.8);margin-top:6px}
+.title-wrap .desc{font-size:clamp(13px,3.2vw,16px);color:rgba(255,255,255,.62);margin-top:14px;max-width:320px;line-height:1.6}
+.title-wrap .start-btn{background:#fff;color:#EF5350;border:none;border-radius:32px;padding:14px 48px;font-size:18px;font-weight:800;cursor:pointer;margin-top:24px;font-family:'Nunito',sans-serif;box-shadow:0 4px 24px rgba(0,0,0,.15);transition:transform .2s,box-shadow .2s}
+.title-wrap .start-btn:active{transform:scale(.94);box-shadow:0 2px 12px rgba(0,0,0,.1)}
+.title-wrap .char-preview{margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:340px}
+.title-wrap .char-preview span{font-size:clamp(22px,5vw,30px);font-weight:700;color:rgba(255,255,255,.3);transition:color .3s;cursor:default}
+.title-wrap .char-preview span:hover{color:rgba(255,255,255,.7)}
+/* ===== CHARACTER CARD ===== */
+.char-card{width:100%;max-width:380px;margin:0 auto 4px}
+.char-row{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.char-item{display:flex;flex-direction:column;align-items:center;margin:3px 0;width:auto;min-width:100px;flex:1;max-width:180px}
+.char-item .pinyin{font-size:clamp(18px,5vw,28px);font-weight:700;color:rgba(255,255,255,.85);letter-spacing:1px;margin-bottom:-2px}
+.char-item .big{font-size:clamp(64px,18vw,110px);font-weight:900;line-height:1.1;text-shadow:0 4px 20px rgba(0,0,0,.12);cursor:pointer;transition:transform .15s}
+.char-item .big:active{transform:scale(.88)}
+.char-item .meaning{font-size:clamp(12px,3vw,15px);color:rgba(255,255,255,.62);font-weight:600;margin-top:0}
+.char-item .audio-mini{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin-top:4px;font-family:'Nunito',sans-serif;display:inline-flex;align-items:center;gap:5px;transition:background .2s,border-color .2s}
+.char-item .audio-mini:active{background:rgba(255,255,255,.28);border-color:rgba(255,255,255,.3)}
+/* ===== STROKE ORDER ===== */
+.stroke-box{background:rgba(255,255,255,.07);border-radius:14px;padding:12px 16px;margin:5px 0;width:100%;max-width:380px}
+.stroke-box .sb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.45);margin-bottom:7px}
+.stroke-box .sb-title .sb-char{font-size:15px;text-transform:none;letter-spacing:0;color:#fff}
+.stroke-grid{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.step{display:flex;flex-direction:column;align-items:center;gap:1px}
+.step svg{width:42px;height:42px;border-radius:6px;background:rgba(255,255,255,.05)}
+.step .num{font-size:9px;color:rgba(255,255,255,.38);font-weight:600}
+.scount{font-size:11px;color:rgba(255,255,255,.5);font-weight:600;margin-top:3px;text-align:center}
+.stroke-box .play-all{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.1);border:none;border-radius:14px;padding:4px 12px;color:#fff;font-size:11px;font-weight:600;cursor:pointer;margin-top:6px;font-family:'Nunito',sans-serif;transition:background .2s}
+.stroke-box .play-all:active{background:rgba(255,255,255,.2)}
+/* ===== WORDS ===== */
+.words-box{background:rgba(255,255,255,.07);border-radius:14px;padding:11px 16px;margin:5px 0;width:100%;max-width:380px}
+.words-box .wb-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:rgba(255,255,255,.45);margin-bottom:5px}
+.wc{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border-radius:18px;padding:4px 12px 4px 10px;margin:3px 3px;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,transform .15s}
+.wc:active{background:rgba(255,255,255,.22);transform:scale(.95)}
+.wc .wpin{font-size:10px;color:rgba(255,255,255,.5);font-weight:400}
+/* ===== SENTENCE ===== */
+.sent-box{background:rgba(255,255,255,.05);border-radius:12px;padding:10px 14px;margin:5px 0;width:100%;max-width:380px;cursor:pointer;text-align:center;font-size:clamp(14px,3.8vw,17px);line-height:1.55;transition:background .2s}
+.sent-box:active{background:rgba(255,255,255,.1)}
+.sent-box .sen-pin{font-size:12px;color:rgba(255,255,255,.48);display:block;margin-top:2px}
+.sent-box .sen-en{font-size:11px;color:rgba(255,255,255,.4);display:block;margin-top:1px}
+/* ===== MATCHING GAME ===== */
+.match-wrap{width:100%;max-width:380px;margin:auto}
+.match-wrap h2{font-size:17px;font-weight:800;text-align:center;margin-bottom:2px}
+.match-wrap .hint{text-align:center;font-size:11px;color:rgba(255,255,255,.52);margin-bottom:8px}
+.match-cols{display:flex;flex-direction:column;gap:6px}
+.match-row{display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.mb{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;color:#fff;font-family:'Nunito',sans-serif;min-width:50px;text-align:center}
+.mb:active{transform:scale(.93)}
+.mb.sel{border-color:#fff;background:rgba(255,255,255,.22);box-shadow:0 0 14px rgba(255,255,255,.12)}
+.mb.matched{background:rgba(76,175,80,.35);border-color:#66BB6A;pointer-events:none;opacity:.7}
+.mb.wrong{background:rgba(244,67,54,.35);border-color:#EF5350;animation:shake .35s}
+.mb.cbig{font-size:26px;font-weight:900;min-width:52px}
+.match-status{margin-top:5px;font-size:14px;font-weight:600;text-align:center;min-height:20px}
+.match-reset{background:rgba(255,255,255,.1);border:none;border-radius:18px;padding:7px 22px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin:5px auto 0;display:block;font-family:'Nunito',sans-serif;transition:background .2s}
+.match-reset:active{background:rgba(255,255,255,.2)}
+/* ===== QUIZ ===== */
+.quiz-wrap{width:100%;max-width:380px;margin:auto}
+.quiz-wrap h2{font-size:17px;font-weight:800;text-align:center;margin-bottom:3px}
+.quiz-q{font-size:clamp(16px,4.2vw,20px);font-weight:700;text-align:center;margin-bottom:8px;min-height:40px;line-height:1.4}
+.quiz-opts{display:flex;flex-direction:column;gap:6px}
+.qb{background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);border-radius:12px;padding:10px 16px;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;color:#fff;font-family:'Nunito',sans-serif;text-align:left}
+.qb:active{transform:scale(.96)}
+.qb.correct{background:rgba(76,175,80,.35);border-color:#66BB6A}
+.qb.wrong{background:rgba(244,67,54,.35);border-color:#EF5350}
+.qb.done{pointer-events:none;opacity:.55}
+.qscore{text-align:center;font-size:14px;font-weight:700;margin-top:5px}
+.qscore .sn{font-size:24px;display:block;margin-top:2px}
+.quiz-reset{background:rgba(255,255,255,.1);border:none;border-radius:18px;padding:7px 22px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;margin:5px auto 0;display:block;font-family:'Nunito',sans-serif;transition:background .2s}
+.quiz-reset:active{background:rgba(255,255,255,.2)}
+/* ===== SUMMARY TABLE ===== */
+.summary-wrap{width:100%;max-width:380px;margin:auto;text-align:center}
+.summary-wrap h2{font-size:17px;font-weight:800;margin-bottom:6px}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:6px}
+.summary-cell{background:rgba(255,255,255,.08);border-radius:8px;padding:6px 2px;text-align:center;transition:background .2s}
+.summary-cell .sc-char{font-size:clamp(20px,5vw,28px);font-weight:900}
+.summary-cell .sc-py{font-size:10px;color:rgba(255,255,255,.55);font-weight:600}
+.summary-cell .sc-en{font-size:9px;color:rgba(255,255,255,.4)}
+/* ===== CONFETTI ===== */
+#confetti-c{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+/* ===== KEYFRAMES ===== */
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes pop{0%{transform:scale(0);opacity:0}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pop-in{animation:pop .4s cubic-bezier(.175,.885,.32,1.275) both}
+.pulse{animation:pulse 2s ease-in-out infinite}
+.float{animation:float 3s ease-in-out infinite}
+/* ===== SCROLLBAR ===== */
+.slide::-webkit-scrollbar{width:2px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:2px}
+/* ===== RESPONSIVE ===== */
+@media(max-width:360px){
+  .slide{padding:56px 10px 66px}
+  .char-item{min-width:76px}
+  .char-item .big{font-size:clamp(50px,15vw,78px)}
+  .summary-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-height:600px){
+  .top-bar{height:42px}.top-bar button{width:32px;height:32px;font-size:17px}
+  .slide{padding:50px 12px 62px}
+  .char-item .big{font-size:clamp(48px,14vw,76px)}
+  .step svg{width:36px;height:36px}
+}
+@media(min-width:421px) and (max-width:767px){
+  .slide{padding:64px 24px 74px}
+  .char-item{max-width:200px}
+}
+@media(min-width:768px){
+  .slide{padding:72px 48px 80px}
+  .char-item{max-width:220px}
+  .char-item .big{font-size:clamp(80px,12vw,130px)}
+  .summary-grid{grid-template-columns:repeat(5,1fr)}
+}
+@media(orientation:landscape) and (max-height:500px){
+  .slide{padding:44px 24px 54px}
+  .char-item{max-width:140px;margin:2px}
+  .char-item .big{font-size:clamp(40px,10vw,60px)}
+  .step svg{width:32px;height:32px}
+  .dots{max-width:140px}
+}
+/* Accessibility: reduce motion */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="slider" id="slider">
+
+<!-- SLIDE 0: Title -->
+<div class="slide bg-c1 active" data-img="page-01">
+  <div class="title-wrap">
+    <div class="badge">ZHONGWEN 14</div>
+    <h1>数字与颜色</h1>
+    <div class="sub">Numbers &amp; Colors</div>
+    <div class="desc">Learn to count from <strong>1 to 10,000</strong> and name<br>all the colors of the rainbow — in Chinese!</div>
+    <div class="char-preview">
+      <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span>
+      <span>十</span><span>百</span><span>千</span><span>万</span>
+      <span>红</span><span>黄</span><span>蓝</span><span>绿</span><span>白</span><span>黑</span>
+    </div>
+    <button class="start-btn" onclick="goSlide(1)">开始学习 ▶</button>
+  </div>
+</div>
+
+<!-- SLIDES 1-7: Character pages (dynamically populated) -->
+<div class="slide bg-c2" id="slide1"><div class="char-card" id="sc1"></div></div>
+<div class="slide bg-c3" id="slide2"><div class="char-card" id="sc2"></div></div>
+<div class="slide bg-c4" id="slide3"><div class="char-card" id="sc3"></div></div>
+<div class="slide bg-c1" id="slide4"><div class="char-card" id="sc4"></div></div>
+<div class="slide bg-c2" id="slide5"><div class="char-card" id="sc5"></div></div>
+<div class="slide bg-c3" id="slide6"><div class="char-card" id="sc6"></div></div>
+<div class="slide bg-c4" id="slide7"><div class="char-card" id="sc7"></div></div>
+
+<!-- SLIDE 8: Matching Game -->
+<div class="slide bg-c1" data-img="page-09">
+  <div class="match-wrap" id="matchWrap">
+    <h2>🔗 连一连 &nbsp;Match</h2>
+    <div class="hint">👆 Tap a character → tap its pinyin</div>
+    <div class="match-cols">
+      <div class="match-row" id="mChars"></div>
+      <div style="text-align:center;font-size:10px;color:rgba(255,255,255,.28);padding:2px 0">⬇</div>
+      <div class="match-row" id="mPinyins"></div>
+    </div>
+    <div class="match-status" id="mStatus">Match all 6 color pairs!</div>
+    <button class="match-reset" onclick="resetMatch()">🔄 重新开始</button>
+  </div>
+</div>
+
+<!-- SLIDE 9: Quiz -->
+<div class="slide bg-c2" data-img="page-10">
+  <div class="quiz-wrap" id="quizWrap">
+    <h2>📝 小测验 &nbsp;Quiz</h2>
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div class="qscore">Score: <span class="sn" id="quizSn">0 / 0</span></div>
+    <button class="quiz-reset" onclick="resetQuiz()">🔄 重新开始</button>
+  </div>
+</div>
+
+</div><!-- /slider -->
+
+<!-- Progress bar -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- Top bar -->
+<div class="top-bar">
+  <button onclick="goSlide(0)" aria-label="Home" title="Home">🏠</button>
+  <div style="display:flex;gap:8px">
+    <button onclick="toggleRef()" aria-label="Reference" title="All characters" class="ref-btn">📖</button>
+    <button onclick="toggleAudio()" aria-label="Toggle Audio" title="Toggle sound" id="audioToggle">🔊</button>
+  </div>
+</div>
+
+<!-- Bottom nav -->
+<div class="bottom-nav">
+  <button onclick="prevSlide()" id="prevBtn" aria-label="Previous">◀</button>
+  <div class="dots" id="dots"></div>
+  <button onclick="nextSlide()" id="nextBtn" aria-label="Next">▶</button>
+</div>
+
+<canvas id="confetti-c"></canvas>
+
+<!-- Reference overlay -->
+<div class="ref-overlay" id="refOverlay" onclick="closeRef(event)">
+  <div class="ref-panel" onclick="event.stopPropagation()">
+    <h2>📖 全部字符 &nbsp;All Characters</h2>
+    <div class="ref-grid" id="refGrid"></div>
+    <button class="ref-close" onclick="toggleRef()">Close</button>
+  </div>
+</div>
+
+<script>
+// ========================================================================
+// CHARACTER DATA  —  15 characters: numbers + colors
+// ========================================================================
+const CHARS = [
+  // --- Numbers ---
+  {id:'yi',c:'一',py:'yī',en:'one',
+   words:[['一个','yī gè','one (of)'],['第一','dì-yī','first'],['一起','yīqǐ','together'],['一样','yīyàng','same']],
+   sent:['我有一本书。','Wǒ yǒu yī běn shū.','I have one book.'],
+   strokes:[[[15,50],[85,50]]]},
+
+  {id:'er',c:'二',py:'èr',en:'two',
+   words:[['二个','èr gè','two (of)'],['第二','dì-èr','second'],['二月','èryuè','February'],['二胡','èrhú','erhu fiddle']],
+   sent:['我有两个苹果。','Wǒ yǒu liǎng gè píngguǒ.','I have two apples.'],
+   strokes:[[[15,33],[85,33]],[[15,67],[85,67]]]},
+
+  {id:'san',c:'三',py:'sān',en:'three',
+   words:[['三个','sān gè','three (of)'],['第三','dì-sān','third'],['三月','sānyuè','March'],['三角','sānjiǎo','triangle']],
+   sent:['我们有三只猫。','Wǒmen yǒu sān zhī māo.','We have three cats.'],
+   strokes:[[[20,22],[80,22]],[[10,50],[90,50]],[[20,78],[80,78]]]},
+
+  {id:'si',c:'四',py:'sì',en:'four',
+   words:[['四个','sì gè','four (of)'],['第四','dì-sì','fourth'],['四月','sìyuè','April'],['四方','sìfāng','four sides/all around']],
+   sent:['一年有四季。','Yī nián yǒu sì jì.','A year has four seasons.'],
+   // 5 strokes: left vertical, top+right, inner left, inner right, bottom
+   strokes:[[[10,20],[10,80]],[[10,20],[90,20],[90,80]],[[30,35],[30,65]],[[70,35],[70,65]],[[10,80],[90,80]]]},
+
+  {id:'wu',c:'五',py:'wǔ',en:'five',
+   words:[['五个','wǔ gè','five (of)'],['第五','dì-wǔ','fifth'],['五月','wǔyuè','May'],['五星','wǔxīng','five stars']],
+   sent:['生日是五月五号。','Shēngrì shì wǔ yuè wǔ hào.','Birthday is May 5th.'],
+   strokes:[[[10,25],[70,25]],[[10,80],[60,80]],[[50,25],[10,75]],[[25,10],[25,90]],[[70,10],[85,50],[70,90]]]},
+
+  {id:'shi',c:'十',py:'shí',en:'ten',
+   words:[['十个','shí gè','ten (of)'],['第十','dì-shí','tenth'],['十分','shífēn','very'],['十月','shíyuè','October']],
+   sent:['我有十本书。','Wǒ yǒu shí běn shū.','I have ten books.'],
+   strokes:[[[10,50],[90,50]],[[50,5],[50,95]]]},
+
+  {id:'bai',c:'百',py:'bǎi',en:'hundred',
+   words:[['一百','yī bǎi','one hundred'],['三百','sān bǎi','three hundred'],['百姓','bǎixìng','common people'],['百分','bǎifēn','percent']],
+   sent:['这本书有一百页。','Zhè běn shū yǒu yī bǎi yè.','This book has 100 pages.'],
+   strokes:[[[10,18],[90,18]],[[10,18],[10,82]],[[50,18],[50,87]],[[20,40],[80,40]],[[20,62],[80,62]],[[28,82],[72,82]]]},
+
+  {id:'qian',c:'千',py:'qiān',en:'thousand',
+   words:[['一千','yī qiān','one thousand'],['千万','qiānwàn','ten million; must'],['千里','qiānlǐ','thousand miles'],['千克','qiānkè','kilogram']],
+   sent:['一千个星星。','Yī qiān gè xīngxing.','One thousand stars.'],
+   strokes:[[[20,15],[80,15]],[[10,50],[90,50]],[[50,15],[50,90]]]},
+
+  {id:'wan',c:'万',py:'wàn',en:'ten thousand',
+   words:[['一万','yī wàn','ten thousand'],['百万','bǎi wàn','million'],['万一','wànyī','just in case'],['万岁','wànsuì','long live']],
+   sent:['城市有一百万人。','Chéngshì yǒu yī bǎi wàn rén.','The city has 1M people.'],
+   strokes:[[[10,25],[90,25]],[[50,25],[15,80]],[[30,50],[85,80]]]},
+
+  // --- Colors ---
+  {id:'hong',c:'红',py:'hóng',en:'red',
+   words:[['红色','hóngsè','red color'],['红花','hónghuā','red flower'],['红包','hóngbāo','red envelope'],['红旗','hóngqí','red flag']],
+   sent:['我喜欢红色的花。','Wǒ xǐhuān hóngsè de huā.','I like red flowers.'],
+   strokes:[[[8,28],[42,28]],[[8,50],[42,50]],[[8,72],[42,72]],[[52,12],[52,88]],[[62,10],[90,10]],[[62,45],[90,45]],[[62,80],[90,80]]]},
+
+  {id:'huang',c:'黄',py:'huáng',en:'yellow',
+   words:[['黄色','huángsè','yellow'],['黄河','Huáng Hé','Yellow River'],['黄金','huángjīn','gold'],['黄叶','huángyè','yellow leaf']],
+   sent:['秋天叶子是黄色的。','Qiūtiān yèzi shì huángsè de.','Autumn leaves are yellow.'],
+   strokes:[[[10,12],[90,12]],[[10,12],[10,88]],[[90,12],[90,48]],[[25,30],[75,30]],[[25,30],[25,65]],[[75,30],[75,65]],[[20,52],[80,52]],[[20,72],[80,72]],[[50,12],[50,30]],[[35,72],[35,88]],[[65,72],[65,88]]]},
+
+  {id:'lan',c:'蓝',py:'lán',en:'blue',
+   words:[['蓝色','lánsè','blue'],['蓝天','lántiān','blue sky'],['蓝莓','lánméi','blueberry'],['蓝图','lántú','blueprint']],
+   sent:['天空是蓝色的。','Tiānkōng shì lánsè de.','The sky is blue.'],
+   strokes:[[[10,10],[90,10]],[[10,10],[10,90]],[[90,10],[90,90]],[[28,22],[72,22]],[[28,22],[28,52]],[[72,22],[72,52]],[[20,38],[80,38]],[[20,52],[80,52]],[[20,68],[80,68]],[[15,82],[45,82]],[[55,82],[85,82]],[[35,10],[35,22]],[[65,10],[65,22]]]},
+
+  {id:'lv',c:'绿',py:'lǜ',en:'green',
+   words:[['绿色','lǜsè','green'],['绿叶','lǜyè','green leaf'],['绿茶','lǜchá','green tea'],['绿灯','lǜdēng','green light']],
+   sent:['草地是绿色的。','Cǎodì shì lǜsè de.','The grass is green.'],
+   strokes:[[[8,28],[42,28]],[[8,50],[42,50]],[[8,72],[42,72]],[[52,12],[52,88]],[[62,10],[90,10]],[[62,32],[90,32]],[[62,52],[90,52]],[[62,72],[90,72]],[[72,10],[72,32]],[[78,52],[78,72]],[[68,88],[88,88]]]},
+
+  {id:'bai2',c:'白',py:'bái',en:'white',
+   words:[['白色','báisè','white'],['白天','báitiān','daytime'],['白云','báiyún','white cloud'],['白雪','báixuě','white snow']],
+   sent:['雪是白色的。','Xuě shì báisè de.','Snow is white.'],
+   strokes:[[[10,15],[90,15]],[[90,15],[90,58]],[[10,58],[90,58]],[[10,15],[10,58]],[[50,30],[50,82]],[[15,82],[85,82]]]},
+
+  {id:'hei',c:'黑',py:'hēi',en:'black',
+   words:[['黑色','hēisè','black'],['黑夜','hēiyè','night'],['黑板','hēibǎn','blackboard'],['黑狗','hēigǒu','black dog']],
+   sent:['夜晚天空是黑色的。','Yèwǎn tiānkōng shì hēisè de.','The night sky is black.'],
+   strokes:[[[15,8],[85,8]],[[15,8],[15,92]],[[85,8],[85,92]],[[50,8],[50,92]],[[20,28],[80,28]],[[35,28],[35,68]],[[65,28],[65,68]],[[20,68],[80,68]],[[25,48],[75,48]],[[38,12],[38,24]],[[62,12],[62,24]],[[50,82],[50,90]]]}
+];
+
+// Which characters appear on each slide (indices into CHARS)
+const SLIDE_CHARS = [
+  [0,1],    // Slide 1: 一 二
+  [2,3],    // Slide 2: 三 四
+  [4,5],    // Slide 3: 五 十
+  [6,7,8],  // Slide 4: 百 千 万
+  [9,10],   // Slide 5: 红 黄
+  [11,12],  // Slide 6: 蓝 绿
+  [13,14]   // Slide 7: 白 黑
+];
+
+const TOTAL = 10;           // total slides
+let cur = 0;                // current slide index
+let audioOn = true;         // speech enabled?
+
+// Matching game state
+let matchSel = null;
+let matchData = [];
+let matchDone = 0;
+
+// Quiz state
+let qi = 0;       // question index
+let qc = 0;       // correct count
+let qDone = false;
+
+// ========================================================================
+// QUIZ DATA  —  12 questions
+// ========================================================================
+const QUIZ = [
+  {q:'「一」的拼音是？',        o:['yī','yí','yì','yǐ'],      a:0},
+  {q:'「三」是数字几？',        o:['1','2','3','4'],            a:2},
+  {q:'「十」代表什么数字？',    o:['5','10','100','1000'],      a:1},
+  {q:'「百」的拼音是？',        o:['bái','bǎi','bài','bāi'],    a:1},
+  {q:'「千」= ?',               o:['10','100','1,000','10,000'], a:2},
+  {q:'「万」代表多少？',        o:['100','1,000','10,000','100,000'], a:2},
+  {q:'「红」是什么颜色？',      o:['red','yellow','blue','green'], a:0},
+  {q:'「黄」的拼音是？',        o:['háng','huáng','huǎng','huāng'], a:1},
+  {q:'「蓝」的拼音是什么？',    o:['lán','làn','lǎn','lān'],     a:0},
+  {q:'「绿」是什么颜色？',      o:['red','yellow','blue','green'], a:3},
+  {q:'「白」的拼音？',          o:['bái','bǎi','bài','bāi'],     a:0},
+  {q:'「黑」是什么颜色？',      o:['white','black','gray','brown'], a:1},
+  {q:'「五」是数字几？',        o:['4','5','6','7'],                a:1},
+  {q:'「白」的拼音是什么？',    o:['bái','bèi','bāi','běi'],       a:0},
+  {q:'「红」的拼音是？',        o:['hōng','hóng','hǒng','hòng'],   a:1}
+];
+
+// ========================================================================
+// BUILD SLIDES
+// ========================================================================
+function buildCharSlide(slideIdx, charIndices){
+  const cont = document.getElementById('sc'+(slideIdx+1));
+  if(!cont) return;
+
+  // ---- Character display row ----
+  let html = '<div class="char-row">';
+  charIndices.forEach(ci => {
+    const d = CHARS[ci];
+    html += `<div class="char-item">
+      <div class="pinyin">${d.py}</div>
+      <div class="big" onclick="speak('${d.c}')">${d.c}</div>
+      <div class="meaning">${d.en}</div>
+      <button class="audio-mini" onclick="speak('${d.c}')">🔊 ${d.py}</button>
+    </div>`;
+  });
+  html += '</div>';
+
+  // ---- Stroke order for each character ----
+  charIndices.forEach(ci => {
+    const d = CHARS[ci];
+    html += '<div class="stroke-box"><div class="sb-title">✍️ <span class="sb-char">'+d.c+'</span> STROKE ORDER</div><div class="stroke-grid">';
+
+    // All strokes combined
+    let allPaths = '';
+    d.strokes.forEach((s, si) => {
+      if(!s || !s.length) return;
+      const p = s.map((pt, pi) => (pi===0?'M'+pt[0]+','+pt[1]:'L'+pt[0]+','+pt[1])).join(' ');
+      allPaths += `<path d="${p}" stroke="rgba(255,255,255,.18)" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+    });
+    html += `<div class="step"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="rgba(255,255,255,.04)" rx="3"/>${allPaths}</svg><span class="num">ALL</span></div>`;
+
+    // Each stroke individually with distinct color
+    d.strokes.forEach((s, si) => {
+      if(!s || !s.length) return;
+      const hue = (si*47+180)%360;
+      const p = s.map((pt, pi) => (pi===0?'M'+pt[0]+','+pt[1]:'L'+pt[0]+','+pt[1])).join(' ');
+      html += `<div class="step"><svg viewBox="0 0 100 100"><rect width="100" height="100" fill="rgba(255,255,255,.04)" rx="3"/>`;
+      html += `<path d="${p}" stroke="hsl(${hue},75%,65%)" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+      html += `</svg><span class="num">#${si+1}</span></div>`;
+    });
+    html += '</div><div class="scount">'+d.strokes.length+' strokes</div></div>';
+  });
+
+  // ---- Words (combined from all characters on this slide) ----
+  let allWords = [];
+  charIndices.forEach(ci => { allWords = allWords.concat(CHARS[ci].words); });
+  html += '<div class="words-box"><div class="wb-title">📖 WORDS</div>';
+  allWords.forEach(w => {
+    html += `<span class="wc" onclick="speak('${w[0]}')">${w[0]} <span class="wpin">${w[1]}</span></span>`;
+  });
+  html += '</div>';
+
+  // ---- Sentence (from the first character) ----
+  const first = CHARS[charIndices[0]];
+  html += `<div class="sent-box" onclick="speak('${first.sent[0]}')">
+    ${first.sent[0]}
+    <span class="sen-pin">${first.sent[1]}</span>
+    <span class="sen-en">${first.sent[2]}</span>
+  </div>`;
+
+  cont.innerHTML = html;
+}
+
+function initSlides(){
+  SLIDE_CHARS.forEach((chars, i) => buildCharSlide(i, chars));
+}
+
+// ========================================================================
+// NAVIGATION
+// ========================================================================
+function buildDots(){
+  const c = document.getElementById('dots');
+  c.innerHTML = '';
+  for(let i=0; i<TOTAL; i++){
+    const b = document.createElement('button');
+    b.className = 'dot'+(i===0?' active':'');
+    b.onclick = ()=>{ goSlide(i); };
+    b.setAttribute('aria-label', 'Page '+(i+1));
+    c.appendChild(b);
+  }
+}
+
+function goSlide(n){
+  if(n<0 || n>=TOTAL) return;
+  const slides = document.querySelectorAll('.slide');
+  // Animate out current slide
+  if(cur !== n){
+    gsap.to(slides[cur], {opacity:0, duration:.25, ease:'power2.in', onComplete:()=>{
+      slides[cur].classList.remove('active');
+      slides[cur].style.visibility = 'hidden';
+    }});
+  }
+  // Set new slide
+  cur = n;
+  slides[n].style.visibility = 'visible';
+  slides[n].classList.add('active');
+  gsap.fromTo(slides[n], {opacity:0, scale:.96}, {opacity:1, scale:1, duration:.35, ease:'power2.out'});
+  updateNav();
+  // Init quiz when reaching slide 9
+  if(cur===9 && qi===0) loadQuiz();
+  // Init matching when reaching slide 8
+  if(cur===8) initMatch();
+  // Scroll to top
+  slides[n].scrollTop = 0;
+  // Show milestone messages at key points
+  showMilestone(n);
+}
+
+function nextSlide(){ if(cur<TOTAL-1) goSlide(cur+1); }
+function prevSlide(){ if(cur>0) goSlide(cur-1); }
+
+function updateNav(){
+  document.querySelectorAll('.dot').forEach((d,i)=> d.classList.toggle('active', i===cur));
+  document.getElementById('prevBtn').disabled = (cur===0);
+  document.getElementById('nextBtn').disabled = (cur===TOTAL-1);
+  // Update progress bar
+  const pct = ((cur) / (TOTAL-1)) * 100;
+  document.getElementById('progressFill').style.width = pct+'%';
+}
+
+// ===== MILESTONE MESSAGES =====
+const MILESTONES = {
+  1:'🔢 Let\'s start counting!',
+  2:'✨ Numbers 1-4 done!',
+  4:'🎯 You know numbers up to 10,000!',
+  5:'🌈 Now for the colors...',
+  8:'🎨 All colors learned! Try the match!',
+  9:'📝 Time for the quiz!'
+};
+
+function showMilestone(n){
+  const msg = MILESTONES[n];
+  if(!msg) return;
+  // Avoid duplicates
+  if(document.querySelector('.milestone-toast')) return;
+  const toast = document.createElement('div');
+  toast.className = 'milestone-toast';
+  toast.textContent = msg;
+  Object.assign(toast.style, {
+    position:'fixed', bottom:'76px', left:'50%', transform:'translateX(-50%)',
+    background:'rgba(0,0,0,.45)', backdropFilter:'blur(8px)',
+    WebkitBackdropFilter:'blur(8px)', borderRadius:'20px',
+    padding:'8px 22px', fontSize:'14px', fontWeight:'600',
+    zIndex:'150', whiteSpace:'nowrap',
+    boxShadow:'0 4px 20px rgba(0,0,0,.2)'
+  });
+  document.body.appendChild(toast);
+  gsap.fromTo(toast, {y:20, opacity:0}, {y:0, opacity:1, duration:.4, ease:'power2.out'});
+  gsap.to(toast, {y:-10, opacity:0, duration:.4, delay:2.2, ease:'power2.in', onComplete:()=>toast.remove()});
+}
+
+// ========================================================================
+// TOUCH SWIPE SUPPORT
+// ========================================================================
+let touchStartX = 0;
+let touchStartY = 0;
+let touchEndX = 0;
+let touchEndY = 0;
+
+document.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, {passive:true});
+
+document.addEventListener('touchend', e => {
+  touchEndX = e.changedTouches[0].screenX;
+  touchEndY = e.changedTouches[0].screenY;
+  handleSwipe();
+}, {passive:true});
+
+function handleSwipe(){
+  const dx = touchEndX - touchStartX;
+  const dy = touchEndY - touchStartY;
+  // Only trigger for horizontal swipes longer than 50px
+  if(Math.abs(dx) < 50) return;
+  // Only if horizontal swipe is dominant over vertical
+  if(Math.abs(dx) < Math.abs(dy)*1.5) return;
+  if(dx > 0) prevSlide();
+  else nextSlide();
+}
+
+// ========================================================================
+// SPEECH SYNTHESIS
+// ========================================================================
+function speak(t){
+  if(!audioOn || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(t);
+  u.lang = 'zh-CN';
+  u.rate = 0.85;
+  u.pitch = 1.05;
+  u.volume = 1;
+  window.speechSynthesis.speak(u);
+}
+
+function toggleAudio(){
+  audioOn = !audioOn;
+  document.getElementById('audioToggle').textContent = audioOn ? '🔊' : '🔇';
+}
+
+// ========================================================================
+// MATCHING GAME
+// ========================================================================
+function initMatch(){
+  if(matchData.length > 0) return;
+  const pairs = [
+    {c:'红', py:'hóng'},{c:'黄', py:'huáng'},{c:'蓝', py:'lán'},
+    {c:'绿', py:'lǜ'}, {c:'白', py:'bái'}, {c:'黑', py:'hēi'}
+  ];
+  matchData = pairs.map(p => ({...p, matched:false}));
+  matchDone = 0;
+  matchSel = null;
+  renderMatch();
+  document.getElementById('mStatus').textContent = 'Match 6 color pairs!';
+}
+
+function shuffle(a){
+  const b = [...a];
+  for(let i=b.length-1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+
+function renderMatch(){
+  const chars = shuffle(matchData);
+  const pys   = shuffle(matchData);
+  document.getElementById('mChars').innerHTML = chars.map(p =>
+    `<button class="mb cbig${p.matched?' matched':''}" data-c="${p.c}" data-py="${p.py}" onclick="clickM(this)">${p.c}</button>`
+  ).join('');
+  document.getElementById('mPinyins').innerHTML = pys.map(p =>
+    `<button class="mb${p.matched?' matched':''}" data-c="${p.c}" data-py="${p.py}" onclick="clickM(this)">${p.py}</button>`
+  ).join('');
+}
+
+function clickM(el){
+  if(el.classList.contains('matched')) return;
+
+  // First selection
+  if(!matchSel){
+    document.querySelectorAll('.mb.sel').forEach(b => b.classList.remove('sel'));
+    el.classList.add('sel');
+    matchSel = el;
+    return;
+  }
+  // Same element — deselect
+  if(el === matchSel){
+    el.classList.remove('sel');
+    matchSel = null;
+    return;
+  }
+
+  const a = matchSel;
+  const b = el;
+  a.classList.remove('sel');
+
+  const typeA = a.classList.contains('cbig') ? 'char' : 'py';
+  const typeB = b.classList.contains('cbig') ? 'char' : 'py';
+
+  // Correct match: same character data, different types
+  if(a.dataset.c === b.dataset.c && typeA !== typeB){
+    a.classList.add('matched');
+    b.classList.add('matched');
+    matchData.forEach(p => { if(p.c === a.dataset.c) p.matched = true; });
+    matchDone++;
+    document.getElementById('mStatus').textContent = '✅ '+matchDone+' / 6 matched!';
+    if(matchDone === 6){
+      document.getElementById('mStatus').textContent = '🎉 太棒了！ Perfect!';
+      launchConfetti();
+    }
+  } else {
+    // Wrong match — animate shake
+    a.classList.add('wrong');
+    b.classList.add('wrong');
+    setTimeout(() => {
+      a.classList.remove('wrong');
+      b.classList.remove('wrong');
+    }, 350);
+  }
+  matchSel = null;
+}
+
+function resetMatch(){
+  matchData.forEach(p => p.matched = false);
+  matchDone = 0;
+  matchSel = null;
+  renderMatch();
+  document.getElementById('mStatus').textContent = 'Match 6 color pairs!';
+}
+
+// ========================================================================
+// QUIZ
+// ========================================================================
+function loadQuiz(){
+  qi = 0;
+  qc = 0;
+  qDone = false;
+  showQ();
+}
+
+function showQ(){
+  if(qi >= QUIZ.length){
+    document.getElementById('quizQ').textContent = '🎉 测验完成！ Quiz Complete!';
+    document.getElementById('quizOpts').innerHTML = '';
+    document.getElementById('quizSn').innerHTML = qc+' / '+QUIZ.length;
+    launchConfetti();
+    return;
+  }
+  const q = QUIZ[qi];
+  document.getElementById('quizQ').textContent = q.q;
+  // Shuffle option order
+  const idxs = [0,1,2,3].sort(() => Math.random()-0.5);
+  document.getElementById('quizOpts').innerHTML = idxs.map(i =>
+    `<button class="qb" data-idx="${i}" onclick="ansQ(this,${i})">${q.o[i]}</button>`
+  ).join('');
+  document.getElementById('quizSn').innerHTML = qc+' / '+qi;
+  qDone = false;
+}
+
+function ansQ(el, idx){
+  if(qDone) return;
+  qDone = true;
+  const q = QUIZ[qi];
+  const correct = (idx === q.a);
+  if(correct) qc++;
+
+  document.querySelectorAll('.qb').forEach(b => {
+    b.classList.add('done');
+    if(parseInt(b.dataset.idx) === q.a) b.classList.add('correct');
+    else if(parseInt(b.dataset.idx) === idx && !correct) b.classList.add('wrong');
+  });
+
+  document.getElementById('quizSn').innerHTML = qc+' / '+(qi+1);
+  setTimeout(() => { qi++; showQ(); }, 1200);
+}
+
+function resetQuiz(){
+  qi = 0;
+  qc = 0;
+  qDone = false;
+  showQ();
+}
+
+// ========================================================================
+// CONFETTI  —  Canvas-based particle celebration effect
+// ========================================================================
+const cvs = document.getElementById('confetti-c');
+const ctx = cvs.getContext('2d');
+let pieces = [];
+let animId = null;
+
+function resizeCvs(){
+  cvs.width = window.innerWidth;
+  cvs.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCvs);
+resizeCvs();
+
+function launchConfetti(){
+  const colors = ['#FF6B6B','#FFE082','#81D4FA','#A5D6A7','#fff','#EF9A9A','#B39DDB','#FFAB91','#CE93D8','#FFCC80'];
+  pieces = [];
+  const count = Math.min(160, Math.floor(cvs.width*0.2));
+  for(let i=0; i<count; i++){
+    pieces.push({
+      x: Math.random()*cvs.width,
+      y: Math.random()*cvs.height - cvs.height,
+      w: Math.random()*10+5,
+      h: Math.random()*6+3,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vy: Math.random()*3+2,
+      vx: (Math.random()-0.5)*3,
+      rot: Math.random()*360,
+      vr: (Math.random()-0.5)*8,
+      op: 0.9 + Math.random()*0.1
+    });
+  }
+  if(animId) cancelAnimationFrame(animId);
+  drawConfetti();
+}
+
+function drawConfetti(){
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  let alive = false;
+  pieces.forEach(p => {
+    p.y += p.vy;
+    p.x += p.vx;
+    p.rot += p.vr;
+    if(p.y < cvs.height + 30) alive = true;
+    if(p.y < 0) return;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI/180);
+    ctx.globalAlpha = p.op;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 2);
+    ctx.fill();
+    ctx.restore();
+  });
+  if(alive){
+    animId = requestAnimationFrame(drawConfetti);
+  } else {
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    animId = null;
+  }
+}
+
+// roundRect polyfill for confetti
+if(!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r){
+    if(r > w/2) r = w/2;
+    if(r > h/2) r = h/2;
+    this.moveTo(x+r, y);
+    this.lineTo(x+w-r, y);
+    this.quadraticCurveTo(x+w, y, x+w, y+r);
+    this.lineTo(x+w, y+h-r);
+    this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    this.lineTo(x+r, y+h);
+    this.quadraticCurveTo(x, y+h, x, y+h-r);
+    this.lineTo(x, y+r);
+    this.quadraticCurveTo(x, y, x+r, y);
+    this.closePath();
+  };
+}
+
+// ========================================================================
+// REFERENCE OVERLAY  —  Show all characters in a grid
+// ========================================================================
+function toggleRef(){
+  const overlay = document.getElementById('refOverlay');
+  const isShowing = overlay.classList.contains('show');
+  if(!isShowing) buildRefGrid();
+  overlay.classList.toggle('show');
+}
+
+function closeRef(e){
+  if(e.target === e.currentTarget){
+    document.getElementById('refOverlay').classList.remove('show');
+  }
+}
+
+function buildRefGrid(){
+  const grid = document.getElementById('refGrid');
+  if(grid.children.length > 0) return;
+  grid.innerHTML = CHARS.map(d =>
+    `<div class="ref-cell" onclick="speak('${d.c}')">
+      <span class="rc-char">${d.c}</span>
+      <span class="rc-py">${d.py}</span>
+      <span class="rc-en">${d.en}</span>
+    </div>`
+  ).join('');
+}
+
+// ========================================================================
+// KEYBOARD NAVIGATION
+// ========================================================================
+document.addEventListener('keydown', e => {
+  if(e.key === 'ArrowRight')  { e.preventDefault(); nextSlide(); }
+  if(e.key === 'ArrowLeft')   { e.preventDefault(); prevSlide(); }
+  if(e.key === 'Home')        { e.preventDefault(); goSlide(0); }
+  if(e.key === 'End')         { e.preventDefault(); goSlide(TOTAL-1); }
+  if(e.key === ' ' || e.key === 'Space') {
+    e.preventDefault();
+    const active = document.querySelector('.slide.active');
+    if(active){
+      const audioBtns = active.querySelectorAll('.audio-mini, .wc, .sent-box, .big');
+      if(audioBtns.length > 0) audioBtns[0].click();
+    }
+  }
+});
+
+// ========================================================================
+// BACKGROUND IMAGES
+// ========================================================================
+function setImages(){
+  document.querySelectorAll('.slide[data-img]').forEach(s => {
+    const img = s.dataset.img;
+    s.style.backgroundImage = 'url(images/chinese-14/webp/'+img+'.webp)';
+  });
+}
+
+// ========================================================================
+// INIT
+// ========================================================================
+document.addEventListener('DOMContentLoaded', ()=>{
+  buildDots();
+  initSlides();
+  updateNav();
+  setImages();
+
+  // Animate title page elements with staggered entrance
+  const tl = gsap.timeline({defaults:{ease:'power3.out'}});
+  tl.from('.title-wrap .badge',   {y:-20, opacity:0, duration:.5})
+    .from('.title-wrap h1',       {y:30,  opacity:0, duration:.6}, '-=0.2')
+    .from('.title-wrap .sub',     {y:20,  opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap .desc',    {y:20,  opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap .char-preview', {y:20, opacity:0, duration:.5}, '-=0.3')
+    .from('.title-wrap .start-btn',    {y:20, opacity:0, scale:.9, duration:.5, ease:'back.out(1.7)'}, '-=0.2');
+
+  // Warm up speech synthesis
+  if('speechSynthesis' in window){
+    window.speechSynthesis.getVoices();
+    if(window.speechSynthesis.onvoiceschanged !== undefined){
+      window.speechSynthesis.onvoiceschanged = ()=>{
+        window.speechSynthesis.getVoices();
+      };
+    }
+  }
+});
+</script>
+</body>
+</html>

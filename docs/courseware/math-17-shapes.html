@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>数学第17课 - 图形拼搭</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+width:100%;height:100%;overflow:hidden;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;
+background:#e3f2fd;touch-action:manipulation
+}
+.courseware-container{
+width:100%;height:100vh;max-width:960px;margin:0 auto;position:relative;overflow:hidden;
+background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%)
+}
+/* Pages */
+.page{
+position:absolute;top:0;left:0;width:100%;height:100%;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+padding:20px 30px;opacity:0;visibility:hidden;transition:none;
+overflow-y:auto;overflow-x:hidden
+}
+.page.active{opacity:1;visibility:visible;z-index:10}
+/* Top bar */
+.top-bar{
+position:absolute;top:0;left:0;right:0;z-index:50;
+display:flex;justify-content:space-between;align-items:center;
+padding:12px 20px;background:rgba(255,255,255,0.85);backdrop-filter:blur(8px);
+border-bottom:2px solid #90caf9
+}
+.top-bar a{
+color:#1565C0;text-decoration:none;font-weight:700;font-size:16px;
+padding:6px 14px;border-radius:20px;background:#e3f2fd;transition:all .2s;
+display:inline-flex;align-items:center;gap:4px
+}
+.top-bar a:hover,.top-bar a:active{background:#bbdefb;transform:scale(0.96)}
+.top-bar .title{font-size:18px;font-weight:800;color:#1565C0}
+/* Navigation */
+.nav-bar{
+position:absolute;bottom:0;left:0;right:0;z-index:50;
+display:flex;justify-content:center;align-items:center;gap:16px;
+padding:14px 20px;background:rgba(255,255,255,0.9);backdrop-filter:blur(8px);
+border-top:2px solid #90caf9
+}
+.nav-btn{
+background:#42A5F5;color:#fff;border:none;border-radius:30px;
+padding:10px 22px;font-size:16px;font-weight:700;cursor:pointer;
+transition:all .2s;display:inline-flex;align-items:center;gap:6px;
+font-family:inherit;touch-action:manipulation
+}
+.nav-btn:active{transform:scale(0.94);background:#1E88E5}
+.nav-btn:disabled{opacity:0.4;pointer-events:none}
+.nav-dots{display:flex;gap:8px}
+.nav-dot{
+width:12px;height:12px;border-radius:50%;background:#bbdefb;
+border:2px solid #90caf9;cursor:pointer;transition:all .2s;padding:0
+}
+.nav-dot.active{background:#42A5F5;border-color:#1565C0;transform:scale(1.3)}
+.speak-btn{
+background:#fff;color:#1565C0;border:2px solid #90caf9;border-radius:50%;
+width:44px;height:44px;font-size:20px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;
+transition:all .2s;font-family:inherit;touch-action:manipulation
+}
+.speak-btn:active{background:#e3f2fd;transform:scale(0.92)}
+/* Page content styles */
+.page-content{width:100%;max-width:780px;text-align:center;padding-top:60px;padding-bottom:80px}
+h1{font-size:42px;color:#1565C0;margin-bottom:8px;text-shadow:0 2px 8px rgba(21,101,192,0.15)}
+h2{font-size:32px;color:#1565C0;margin-bottom:12px}
+h3{font-size:24px;color:#1E88E5;margin-bottom:10px}
+p{font-size:18px;color:#333;line-height:1.6;margin-bottom:10px}
+.subtitle{font-size:16px;color:#555;background:rgba(255,255,255,0.7);padding:6px 18px;border-radius:20px;display:inline-block;margin-bottom:6px}
+.goal-list{text-align:left;display:inline-block;margin:10px auto;padding:0 20px}
+.goal-list li{font-size:18px;color:#333;margin:6px 0;list-style:none;padding-left:28px;position:relative}
+.goal-list li::before{content:'🎯';position:absolute;left:0;top:0}
+/* Shape display */
+.shape-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:16px 0}
+.shape-card{
+background:#fff;border-radius:20px;padding:16px;width:150px;
+box-shadow:0 4px 16px rgba(0,0,0,0.08);text-align:center;
+border:3px solid transparent;transition:all .2s;cursor:pointer;touch-action:manipulation
+}
+.shape-card:hover,.shape-card:active{border-color:#42A5F5;transform:translateY(-3px)}
+.shape-card svg{display:block;margin:0 auto 8px;width:100px;height:90px}
+.shape-card .shape-name{font-size:18px;font-weight:700;color:#1565C0}
+.shape-card .shape-desc{font-size:13px;color:#666;margin-top:4px}
+.shape-card.clickable.selected{border-color:#FF7043;background:#fff3e0}
+.shape-card.clickable.correct{border-color:#66BB6A;background:#e8f5e9}
+.shape-card.clickable.wrong{border-color:#ef5350;background:#ffebee}
+/* Quiz / Matching */
+.match-area{
+display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin:16px 0;min-height:260px
+}
+.match-objects,.match-targets{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.match-item{
+background:#fff;border-radius:16px;padding:12px 16px;min-width:100px;
+box-shadow:0 3px 12px rgba(0,0,0,0.08);text-align:center;
+border:3px solid #e0e0e0;transition:all .2s;cursor:pointer;
+font-size:16px;font-weight:600;color:#333;touch-action:manipulation
+}
+.match-item svg{display:block;margin:0 auto 6px;width:60px;height:55px}
+.match-item.selected{border-color:#FF7043;background:#fff3e0;transform:scale(1.05)}
+.match-item.matched{border-color:#66BB6A;background:#e8f5e9;pointer-events:none;opacity:0.7}
+.match-item.wrong{border-color:#ef5350;background:#ffebee;animation:shake .3s}
+.target-zone{
+background:#e8eaf6;border:3px dashed #90caf9;border-radius:16px;
+padding:12px 16px;min-width:110px;text-align:center;
+transition:all .2s;color:#1565C0;font-weight:700;font-size:16px;
+min-height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center
+}
+.target-zone.drag-over{border-color:#42A5F5;background:#e3f2fd;transform:scale(1.03)}
+.target-zone.matched{border-style:solid;border-color:#66BB6A;background:#e8f5e9}
+.match-row{display:flex;align-items:center;gap:10px;margin:6px 0;flex-wrap:wrap;justify-content:center}
+/* Quiz options */
+.options-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
+.option-btn{
+background:#fff;border:3px solid #e0e0e0;border-radius:16px;
+padding:12px 24px;font-size:18px;font-weight:700;color:#333;
+cursor:pointer;transition:all .2s;font-family:inherit;touch-action:manipulation
+}
+.option-btn:active{transform:scale(0.95)}
+.option-btn.selected{background:#e3f2fd;border-color:#42A5F5}
+.option-btn.correct{border-color:#66BB6A;background:#e8f5e9}
+.option-btn.wrong{border-color:#ef5350;background:#ffebee}
+/* MC Challenge */
+.mc-stage{background:linear-gradient(180deg,#87CEEB 0%,#90EE90 60%,#8B4513 60%,#8B4513 100%);border-radius:20px;padding:20px;min-height:280px;position:relative;overflow:hidden;margin:10px 0}
+.mc-build-area{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-items:flex-end;min-height:180px;padding:10px}
+.mc-block{display:flex;flex-direction:column;align-items:center;gap:2px}
+.mc-block svg{width:50px;height:45px;display:block}
+.mc-block-label{font-size:11px;color:#333;background:rgba(255,255,255,0.75);padding:2px 6px;border-radius:8px;font-weight:600}
+.mc-question{background:rgba(255,255,255,0.9);border-radius:14px;padding:14px 18px;margin:8px 0;font-size:18px;font-weight:600;color:#1565C0}
+.mc-level-title{font-size:22px;font-weight:800;color:#1565C0;margin-bottom:6px}
+.mc-progress{display:flex;gap:6px;justify-content:center;margin:8px 0}
+.mc-star{font-size:20px;opacity:0.3;transition:all .3s}
+.mc-star.earned{opacity:1;transform:scale(1.2)}
+/* Confetti */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1000}
+.confetti-piece{position:absolute;width:12px;height:12px;border-radius:2px;top:-20px}
+/* Celebration */
+.celebration{text-align:center;padding:30px}
+.celebration .badge{font-size:80px;display:block;margin:10px auto;animation:badgePulse 1.5s infinite}
+@keyframes badgePulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+/* Feedback toast */
+.feedback{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100;
+background:rgba(0,0,0,0.8);color:#fff;padding:16px 32px;border-radius:16px;
+font-size:24px;font-weight:700;pointer-events:none;opacity:0;transition:opacity .3s}
+.feedback.show{opacity:1}
+/* Responsive */
+@media(min-width:768px){
+.page{padding:30px 40px}
+.shape-card{width:170px}
+.shape-card svg{width:110px;height:100px}
+}
+@media(max-width:500px){
+h1{font-size:30px}h2{font-size:24px}h3{font-size:20px}p{font-size:16px}
+.shape-card{width:130px;padding:12px}
+.shape-card svg{width:80px;height:72px}
+.option-btn{font-size:16px;padding:10px 18px}
+.match-item{padding:10px 12px;min-width:80px;font-size:14px}
+.top-bar{padding:8px 12px}
+.top-bar .title{font-size:14px}
+.top-bar a{font-size:13px;padding:4px 10px}
+.nav-btn{padding:8px 16px;font-size:14px}
+}
+/* Utility */
+.mt-10{margin-top:10px}.mb-10{margin-bottom:10px}.mt-16{margin-top:16px}.mb-16{margin-bottom:16px}
+.flex-center{display:flex;align-items:center;justify-content:center;gap:8px}
+.text-blue{color:#1565C0}.text-green{color:#66BB6A}.text-orange{color:#FF7043}
+.emoji-lg{font-size:40px}.emoji-xl{font-size:60px}
+/* Scene illustration */
+.scene-box{background:rgba(255,255,255,0.7);border-radius:20px;padding:20px;margin:10px 0;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
+.scene-characters{display:flex;gap:20px;justify-content:center;align-items:flex-end;flex-wrap:wrap}
+.scene-characters svg{width:90px;height:110px}
+/* Misconception cards */
+.miscon-card{background:#fff;border-radius:16px;padding:16px;margin:8px 0;box-shadow:0 2px 10px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;text-align:left;flex-wrap:wrap;justify-content:center}
+.miscon-card .wrong-icon{font-size:28px;color:#ef5350;flex-shrink:0}
+.miscon-card .right-icon{font-size:28px;color:#66BB6A;flex-shrink:0}
+.miscon-card .miscon-text{font-size:16px;color:#333;flex:1;min-width:150px}
+.miscon-card .miscon-text strong{color:#1565C0}
+/* Practice items */
+.practice-grid{display:flex;flex-wrap:wrap;gap:16px;justify-content:center}
+.practice-item{background:#fff;border-radius:16px;padding:16px;width:160px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,0.07);border:3px solid #e0e0e0;transition:all .2s;cursor:pointer;touch-action:manipulation}
+.practice-item:active{transform:scale(0.95)}
+.practice-item .prac-icon{font-size:44px;display:block;margin-bottom:4px}
+.practice-item .prac-label{font-size:15px;color:#666;margin-top:4px}
+.practice-item.correct{border-color:#66BB6A;background:#e8f5e9}
+.practice-item.wrong{border-color:#ef5350;background:#ffebee}
+.practice-item.selected{border-color:#FF7043;background:#fff3e0}
+/* Scrollable page support */
+.page-scrollable{justify-content:flex-start;padding-top:70px;padding-bottom:80px}
+</style>
+</head>
+<body>
+<div class="courseware-container" id="app">
+
+<!-- Top Bar -->
+<div class="top-bar">
+<a href="../">🏠 首页</a>
+<span class="title">🏗️ 第17课 · 图形拼搭</span>
+<a href="../math-18-sorting.html">▶ 下一个</a>
+</div>
+
+<!-- Pages -->
+
+<!-- ===== PAGE 0: COVER ===== -->
+<div class="page active" data-page="0">
+<div class="page-content">
+<div class="emoji-xl mb-10">🏗️</div>
+<h1>图形拼搭</h1>
+<p class="subtitle">立体图形 · 3D Shapes</p>
+<div style="margin:12px auto;max-width:400px">
+<svg viewBox="0 0 400 120" style="width:100%;height:auto" role="img" aria-label="4种立体图形">
+<!-- Cube -->
+<g transform="translate(30,10)">
+<polygon points="40,0 80,20 40,40 0,20" fill="#42A5F5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="40,40 80,20 80,60 40,80" fill="#1E88E5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="0,20 40,0 40,40 0,60" fill="#64B5F6" stroke="#1565C0" stroke-width="2"/>
+<text x="40" y="95" text-anchor="middle" font-size="13" fill="#1565C0" font-weight="700">正方体</text>
+</g>
+<!-- Cuboid -->
+<g transform="translate(130,15)">
+<polygon points="50,0 90,15 50,30 10,15" fill="#FF7043" stroke="#E65100" stroke-width="2"/>
+<polygon points="50,30 90,15 90,55 50,70" fill="#FF8A65" stroke="#E65100" stroke-width="2"/>
+<polygon points="10,15 50,0 50,30 10,45" fill="#FFAB91" stroke="#E65100" stroke-width="2"/>
+<text x="50" y="90" text-anchor="middle" font-size="13" fill="#E65100" font-weight="700">长方体</text>
+</g>
+<!-- Cylinder -->
+<g transform="translate(230,10)">
+<ellipse cx="35" cy="10" rx="30" ry="12" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+<rect x="5" y="10" width="60" height="50" fill="#81C784" stroke="#2E7D32" stroke-width="2"/>
+<ellipse cx="35" cy="60" rx="30" ry="12" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+<text x="35" y="90" text-anchor="middle" font-size="13" fill="#2E7D32" font-weight="700">圆柱</text>
+</g>
+<!-- Sphere -->
+<g transform="translate(330,15)">
+<circle cx="35" cy="35" r="28" fill="#AB47BC" stroke="#6A1B9A" stroke-width="2"/>
+<ellipse cx="28" cy="28" rx="10" ry="14" fill="rgba(255,255,255,0.25)" transform="rotate(-20,28,28)"/>
+<text x="35" y="85" text-anchor="middle" font-size="13" fill="#6A1B9A" font-weight="700">球</text>
+</g>
+</svg>
+</div>
+<ul class="goal-list">
+<li>认识4种立体图形：正方体、长方体、圆柱、球</li>
+<li>观察它们的样子，能用不同立体图形拼搭新形状</li>
+</ul>
+<p style="font-size:16px;color:#666;margin-top:12px">适合 5-6 岁小朋友 🧒👧</p>
+</div>
+</div>
+
+<!-- ===== PAGE 1: MINECRAFT STORY ===== -->
+<div class="page" data-page="1">
+<div class="page-content">
+<h2>📖 Minecraft 故事</h2>
+<div class="scene-box">
+<div class="scene-characters">
+<!-- Steve -->
+<svg viewBox="0 0 80 100" style="width:70px;height:88px">
+<rect x="20" y="5" width="40" height="35" rx="4" fill="#8D6E63"/>
+<rect x="25" y="10" width="12" height="12" fill="#fff"/>
+<rect x="43" y="10" width="12" height="12" fill="#fff"/>
+<rect x="30" y="26" width="20" height="8" fill="#5D4037"/>
+<rect x="15" y="40" width="50" height="30" rx="4" fill="#42A5F5"/>
+<rect x="10" y="40" width="10" height="30" fill="#5D4037"/>
+<rect x="60" y="40" width="10" height="30" fill="#5D4037"/>
+<rect x="20" y="70" width="16" height="25" rx="3" fill="#37474F"/>
+<rect x="44" y="70" width="16" height="25" rx="3" fill="#37474F"/>
+<text x="40" y="15" text-anchor="middle" font-size="9" fill="#5D4037" font-weight="800">Steve</text>
+</svg>
+<!-- Alex -->
+<svg viewBox="0 0 80 100" style="width:70px;height:88px">
+<rect x="20" y="5" width="40" height="35" rx="4" fill="#FFCC80"/>
+<rect x="25" y="10" width="12" height="12" fill="#fff"/>
+<rect x="43" y="10" width="12" height="12" fill="#fff"/>
+<rect x="30" y="26" width="20" height="8" fill="#FF7043"/>
+<rect x="15" y="40" width="50" height="30" rx="4" fill="#66BB6A"/>
+<rect x="10" y="40" width="10" height="30" fill="#FFCC80"/>
+<rect x="60" y="40" width="10" height="30" fill="#FFCC80"/>
+<rect x="20" y="70" width="16" height="25" rx="3" fill="#4E342E"/>
+<rect x="44" y="70" width="16" height="25" rx="3" fill="#4E342E"/>
+<text x="40" y="15" text-anchor="middle" font-size="9" fill="#E65100" font-weight="800">Alex</text>
+</svg>
+</div>
+<p style="margin-top:12px;font-size:20px">Steve 和 Alex 准备建一座<b>瞭望塔</b>！</p>
+<p>他们有各种形状的材料：<b class="text-blue">方块</b>、<b class="text-orange">木板</b>和<b class="text-green">柱子</b></p>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:10px 0">
+<svg width="70" height="70" viewBox="0 0 70 70">
+<polygon points="35,5 65,22 35,39 5,22" fill="#42A5F5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="35,39 65,22 65,55 35,72" fill="#1E88E5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="5,22 35,5 35,39 5,56" fill="#64B5F6" stroke="#1565C0" stroke-width="2"/>
+<text x="35" y="85" text-anchor="middle" font-size="11" fill="#1565C0" font-weight="600">方块</text>
+</svg>
+<svg width="70" height="70" viewBox="0 0 70 70">
+<polygon points="35,8 62,22 35,36 8,22" fill="#FF7043" stroke="#E65100" stroke-width="2"/>
+<polygon points="35,36 62,22 62,52 35,66" fill="#FF8A65" stroke="#E65100" stroke-width="2"/>
+<polygon points="8,22 35,8 35,36 8,50" fill="#FFAB91" stroke="#E65100" stroke-width="2"/>
+<text x="35" y="82" text-anchor="middle" font-size="11" fill="#E65100" font-weight="600">木板</text>
+</svg>
+<svg width="70" height="70" viewBox="0 0 70 70">
+<ellipse cx="35" cy="12" rx="22" ry="9" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+<rect x="13" y="12" width="44" height="36" fill="#81C784" stroke="#2E7D32" stroke-width="2"/>
+<ellipse cx="35" cy="48" rx="22" ry="9" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+<text x="35" y="72" text-anchor="middle" font-size="11" fill="#2E7D32" font-weight="600">柱子</text>
+</svg>
+</div>
+</div>
+
+<!-- ===== PAGE 2: SHAPE INTRO ===== -->
+<div class="page" data-page="2">
+<div class="page-content">
+<h2>🔍 认识4种立体图形</h2>
+<div class="shape-grid" id="shapeGrid">
+<div class="shape-card clickable" data-shape="cube" onclick="handleShapeClick(this)">
+<svg viewBox="0 0 100 90">
+<polygon points="50,5 88,28 50,51 12,28" fill="#42A5F5" stroke="#1565C0" stroke-width="2.5"/>
+<polygon points="50,51 88,28 88,72 50,95" fill="#1E88E5" stroke="#1565C0" stroke-width="2.5"/>
+<polygon points="12,28 50,5 50,51 12,74" fill="#64B5F6" stroke="#1565C0" stroke-width="2.5"/>
+</svg>
+<div class="shape-name">正方体</div>
+<div class="shape-desc">方方的，边一样长 📏</div>
+</div>
+<div class="shape-card clickable" data-shape="cuboid" onclick="handleShapeClick(this)">
+<svg viewBox="0 0 100 90">
+<polygon points="50,8 88,22 50,36 12,22" fill="#FF7043" stroke="#E65100" stroke-width="2.5"/>
+<polygon points="50,36 88,22 88,66 50,80" fill="#FF8A65" stroke="#E65100" stroke-width="2.5"/>
+<polygon points="12,22 50,8 50,36 12,50" fill="#FFAB91" stroke="#E65100" stroke-width="2.5"/>
+</svg>
+<div class="shape-name">长方体</div>
+<div class="shape-desc">长长方的盒子 📦</div>
+</div>
+<div class="shape-card clickable" data-shape="cylinder" onclick="handleShapeClick(this)">
+<svg viewBox="0 0 100 90">
+<ellipse cx="50" cy="12" rx="34" ry="11" fill="#66BB6A" stroke="#2E7D32" stroke-width="2.5"/>
+<rect x="16" y="12" width="68" height="56" fill="#81C784" stroke="#2E7D32" stroke-width="2.5"/>
+<ellipse cx="50" cy="68" rx="34" ry="11" fill="#66BB6A" stroke="#2E7D32" stroke-width="2.5"/>
+</svg>
+<div class="shape-name">圆柱</div>
+<div class="shape-desc">上下都是圆的 🔵</div>
+</div>
+<div class="shape-card clickable" data-shape="sphere" onclick="handleShapeClick(this)">
+<svg viewBox="0 0 100 90">
+<circle cx="50" cy="42" r="36" fill="#AB47BC" stroke="#6A1B9A" stroke-width="2.5"/>
+<ellipse cx="38" cy="34" rx="12" ry="18" fill="rgba(255,255,255,0.22)" transform="rotate(-20,38,34)"/>
+</svg>
+<div class="shape-name">球</div>
+<div class="shape-desc">圆圆的能滚 ⚽</div>
+</div>
+</div>
+<p style="font-size:15px;color:#888">👆 点一点图形，听介绍</p>
+</div>
+</div>
+
+<!-- ===== PAGE 3: BUILDING ===== -->
+<div class="page" data-page="3">
+<div class="page-content">
+<h2>🛠️ 动手拼搭</h2>
+<p>用不同的立体图形搭出新形状！</p>
+<div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;margin:12px 0">
+<!-- Mini Tower -->
+<div class="shape-card" style="width:140px;padding:12px;cursor:default">
+<svg viewBox="0 0 100 100" style="width:90px;height:90px">
+<polygon points="50,5 75,18 50,31 25,18" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/>
+<polygon points="50,31 75,18 75,44 50,57" fill="#1E88E5" stroke="#1565C0" stroke-width="1.5"/>
+<polygon points="25,18 50,5 50,31 25,44" fill="#64B5F6" stroke="#1565C0" stroke-width="1.5"/>
+<polygon points="50,57 72,69 50,81 28,69" fill="#FF7043" stroke="#E65100" stroke-width="1.5"/>
+<polygon points="50,81 72,69 72,90 50,100" fill="#FF8A65" stroke="#E65100" stroke-width="1.5"/>
+<polygon points="28,69 50,57 50,81 28,94" fill="#FFAB91" stroke="#E65100" stroke-width="1.5"/>
+<circle cx="50" cy="96" r="6" fill="#AB47BC" stroke="#6A1B9A" stroke-width="1.5"/>
+</svg>
+<div style="font-weight:700;color:#1565C0;font-size:15px;margin-top:4px">小塔 🗼</div>
+</div>
+<!-- Small Car -->
+<div class="shape-card" style="width:140px;padding:12px;cursor:default">
+<svg viewBox="0 0 100 80" style="width:90px;height:72px">
+<rect x="15" y="25" width="70" height="25" rx="4" fill="#FF7043" stroke="#E65100" stroke-width="1.5"/>
+<rect x="25" y="5" width="50" height="22" rx="3" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/>
+<circle cx="30" cy="55" r="10" fill="#333" stroke="#222" stroke-width="1.5"/>
+<circle cx="70" cy="55" r="10" fill="#333" stroke="#222" stroke-width="1.5"/>
+<circle cx="30" cy="55" r="4" fill="#666"/>
+<circle cx="70" cy="55" r="4" fill="#666"/>
+</svg>
+<div style="font-weight:700;color:#E65100;font-size:15px;margin-top:4px">小车 🚗</div>
+</div>
+<!-- Small Bridge -->
+<div class="shape-card" style="width:140px;padding:12px;cursor:default">
+<svg viewBox="0 0 100 70" style="width:90px;height:63px">
+<rect x="10" y="30" width="80" height="14" rx="2" fill="#FF7043" stroke="#E65100" stroke-width="1.5"/>
+<rect x="10" y="44" width="14" height="20" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/>
+<rect x="76" y="44" width="14" height="20" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/>
+<ellipse cx="50" cy="18" rx="30" ry="10" fill="none" stroke="#66BB6A" stroke-width="3"/>
+</svg>
+<div style="font-weight:700;color:#2E7D32;font-size:15px;margin-top:4px">小桥 🌉</div>
+</div>
+<!-- Small Robot -->
+<div class="shape-card" style="width:140px;padding:12px;cursor:default">
+<svg viewBox="0 0 100 100" style="width:90px;height:90px">
+<rect x="30" y="5" width="40" height="35" rx="5" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/>
+<circle cx="40" cy="18" r="4" fill="#fff"/>
+<circle cx="60" cy="18" r="4" fill="#fff"/>
+<rect x="38" y="28" width="24" height="5" fill="#fff" rx="2"/>
+<rect x="20" y="40" width="60" height="25" rx="4" fill="#FF7043" stroke="#E65100" stroke-width="1.5"/>
+<rect x="5" y="40" width="18" height="35" rx="3" fill="#FF8A65" stroke="#E65100" stroke-width="1.5"/>
+<rect x="77" y="40" width="18" height="35" rx="3" fill="#FF8A65" stroke="#E65100" stroke-width="1.5"/>
+<circle cx="50" cy="95" r="10" fill="#AB47BC" stroke="#6A1B9A" stroke-width="1.5"/>
+</svg>
+<div style="font-weight:700;color:#6A1B9A;font-size:15px;margin-top:4px">小机器人 🤖</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== PAGE 4: MISCONCEPTIONS ===== -->
+<div class="page" data-page="4">
+<div class="page-content">
+<h2>🤔 常见误解</h2>
+<div class="miscon-card">
+<div class="wrong-icon">❌</div>
+<div class="miscon-text"><strong>"方方都是正方体"</strong> — 不一定！长方体的面也是方的，<strong>边一样长才是正方体</strong> ✓</div>
+<div class="right-icon">✅</div>
+</div>
+<div class="miscon-card">
+<div class="wrong-icon">❌</div>
+<div class="miscon-text"><strong>"会滚的都是球"</strong> — 圆柱也能滚！球是<span style="color:#6A1B9A;font-weight:700">圆立体</span>，到处都能滚 ✓</div>
+<div class="right-icon">✅</div>
+</div>
+<div class="miscon-card">
+<div class="wrong-icon">❌</div>
+<div class="miscon-text"><strong>"球和圆一样"</strong> — 圆是<b>平面图形</b>，球是<b>立体图形</b>，一个扁的一个胖的 ✓</div>
+<div class="right-icon">✅</div>
+</div>
+<div class="mt-10" style="display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+<svg width="80" height="70" viewBox="0 0 80 70">
+<polygon points="40,5 68,22 40,39 12,22" fill="#FFCC02" stroke="#F9A825" stroke-width="2"/>
+<polygon points="40,39 68,22 68,55 40,72" fill="#FFD54F" stroke="#F9A825" stroke-width="2"/>
+<polygon points="12,22 40,5 40,39 12,56" fill="#FFE082" stroke="#F9A825" stroke-width="2"/>
+<text x="40" y="64" text-anchor="middle" font-size="9" fill="#F57F17" font-weight="700">6个正方形</text>
+</svg>
+<svg width="80" height="70" viewBox="0 0 80 70">
+<polygon points="40,8 66,20 40,32 14,20" fill="#FF7043" stroke="#E65100" stroke-width="2"/>
+<polygon points="40,32 66,20 66,48 40,60" fill="#FF8A65" stroke="#E65100" stroke-width="2"/>
+<polygon points="14,20 40,8 40,32 14,44" fill="#FFAB91" stroke="#E65100" stroke-width="2"/>
+<text x="40" y="64" text-anchor="middle" font-size="9" fill="#BF360C" font-weight="700">长方形+正方形</text>
+</svg>
+</div>
+</div>
+</div>
+
+<!-- ===== PAGE 5: PRACTICE 1 - Identify Shapes ===== -->
+<div class="page" data-page="5">
+<div class="page-content">
+<h2>🎯 练习：认一认</h2>
+<p>点一点，这是什么立体图形？</p>
+<div class="practice-grid" id="practiceGrid">
+<div class="practice-item" data-answer="cube" onclick="checkPractice(this,'cube')">
+<div class="prac-icon">🎲</div>
+<div style="font-size:20px;font-weight:700;color:#333">骰子</div>
+<div class="prac-label">点我选形状 →</div>
+</div>
+<div class="practice-item" data-answer="cuboid" onclick="checkPractice(this,'cuboid')">
+<div class="prac-icon">👟</div>
+<div style="font-size:20px;font-weight:700;color:#333">鞋盒</div>
+<div class="prac-label">点我选形状 →</div>
+</div>
+<div class="practice-item" data-answer="cylinder" onclick="checkPractice(this,'cylinder')">
+<div class="prac-icon">🥫</div>
+<div style="font-size:20px;font-weight:700;color:#333">饮料罐</div>
+<div class="prac-label">点我选形状 →</div>
+</div>
+<div class="practice-item" data-answer="sphere" onclick="checkPractice(this,'sphere')">
+<div class="prac-icon">⚽</div>
+<div style="font-size:20px;font-weight:700;color:#333">足球</div>
+<div class="prac-label">点我选形状 →</div>
+</div>
+</div>
+<div class="options-grid" id="practiceOptions">
+<button class="option-btn" data-shape="cube" onclick="selectPracticeOption(this,'cube')">正方体</button>
+<button class="option-btn" data-shape="cuboid" onclick="selectPracticeOption(this,'cuboid')">长方体</button>
+<button class="option-btn" data-shape="cylinder" onclick="selectPracticeOption(this,'cylinder')">圆柱</button>
+<button class="option-btn" data-shape="sphere" onclick="selectPracticeOption(this,'sphere')">球</button>
+</div>
+<p style="font-size:14px;color:#888;margin-top:8px" id="practiceHint">先点一个物品，再点形状名称</p>
+</div>
+</div>
+
+<!-- ===== PAGE 6: DRAG-TO-MATCH ===== -->
+<div class="page" data-page="6">
+<div class="page-content">
+<h2>🧩 连连看</h2>
+<p>点击物品，再点对应的立体图形名称</p>
+<div class="match-area" id="matchArea">
+<div class="match-column">
+<div class="match-objects" id="matchObjects">
+<div class="match-item" data-match="cube" onclick="selectMatch(this)">
+<div style="font-size:32px">🎲</div>
+<div>骰子</div>
+</div>
+<div class="match-item" data-match="cuboid" onclick="selectMatch(this)">
+<div style="font-size:32px">📦</div>
+<div>鞋盒</div>
+</div>
+<div class="match-item" data-match="cylinder" onclick="selectMatch(this)">
+<div style="font-size:32px">🥫</div>
+<div>饮料罐</div>
+</div>
+<div class="match-item" data-match="sphere" onclick="selectMatch(this)">
+<div style="font-size:32px">⚽</div>
+<div>足球</div>
+</div>
+</div>
+</div>
+<div class="match-column">
+<div class="match-targets" id="matchTargets">
+<div class="target-zone" data-target="cube" onclick="tryMatch(this,'cube')">
+<svg viewBox="0 0 60 50" width="40" height="35">
+<polygon points="30,3 53,18 30,33 7,18" fill="#42A5F5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="30,33 53,18 53,38 30,53" fill="#1E88E5" stroke="#1565C0" stroke-width="2"/>
+<polygon points="7,18 30,3 30,33 7,48" fill="#64B5F6" stroke="#1565C0" stroke-width="2"/>
+</svg>
+<div>正方体</div>
+</div>
+<div class="target-zone" data-target="cuboid" onclick="tryMatch(this,'cuboid')">
+<svg viewBox="0 0 60 50" width="40" height="35">
+<polygon points="30,5 52,16 30,27 8,16" fill="#FF7043" stroke="#E65100" stroke-width="2"/>
+<polygon points="30,27 52,16 52,36 30,47" fill="#FF8A65" stroke="#E65100" stroke-width="2"/>
+<polygon points="8,16 30,5 30,27 8,38" fill="#FFAB91" stroke="#E65100" stroke-width="2"/>
+</svg>
+<div>长方体</div>
+</div>
+<div class="target-zone" data-target="cylinder" onclick="tryMatch(this,'cylinder')">
+<svg viewBox="0 0 60 50" width="40" height="35">
+<ellipse cx="30" cy="8" rx="22" ry="7" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+<rect x="8" y="8" width="44" height="28" fill="#81C784" stroke="#2E7D32" stroke-width="2"/>
+<ellipse cx="30" cy="36" rx="22" ry="7" fill="#66BB6A" stroke="#2E7D32" stroke-width="2"/>
+</svg>
+<div>圆柱</div>
+</div>
+<div class="target-zone" data-target="sphere" onclick="tryMatch(this,'sphere')">
+<svg viewBox="0 0 60 50" width="40" height="35">
+<circle cx="30" cy="24" r="22" fill="#AB47BC" stroke="#6A1B9A" stroke-width="2"/>
+<ellipse cx="22" cy="18" rx="8" ry="11" fill="rgba(255,255,255,0.22)" transform="rotate(-20,22,18)"/>
+</svg>
+<div>球</div>
+</div>
+</div>
+</div>
+</div>
+<p style="font-size:14px;color:#888" id="matchHint">先点物品，再点对应的形状格子</p>
+</div>
+</div>
+
+<!-- ===== PAGE 7: MINECRAFT CHALLENGE ===== -->
+<div class="page page-scrollable" data-page="7">
+<div class="page-content">
+<h2>⚔️ Minecraft 闯关挑战</h2>
+<p>帮助 Steve 和 Alex 建造瞭望塔！</p>
+<div class="mc-stage" id="mcStage">
+<div class="mc-level-title" id="mcLevelTitle">🏰 第 1 关</div>
+<div class="mc-progress" id="mcProgress">
+<span class="mc-star" data-star="0">⭐</span>
+<span class="mc-star" data-star="1">⭐</span>
+<span class="mc-star" data-star="2">⭐</span>
+<span class="mc-star" data-star="3">⭐</span>
+</div>
+<div class="mc-build-area" id="mcBuildArea">
+<!-- Dynamic build area -->
+</div>
+<div class="mc-question" id="mcQuestion">点击选择正确的形状</div>
+<div class="options-grid" id="mcOptions"></div>
+</div>
+<p style="font-size:14px;color:#888" id="mcHint">答对4关获得所有星星 ⭐</p>
+</div>
+</div>
+
+<!-- ===== PAGE 8: CELEBRATION ===== -->
+<div class="page" data-page="8">
+<div class="page-content">
+<div class="celebration">
+<div class="badge">🏅</div>
+<h2 style="font-size:36px">🎉 恭喜你，小建筑师！</h2>
+<p style="font-size:22px;color:#1565C0;font-weight:700">图形拼搭小建筑师</p>
+<div style="margin:16px 0;display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
+<div style="background:#fff;border-radius:16px;padding:16px;width:130px;box-shadow:0 3px 12px rgba(0,0,0,0.08)">
+<div style="font-size:40px">🧊</div>
+<div style="font-weight:700;color:#1565C0">正方体</div>
+</div>
+<div style="background:#fff;border-radius:16px;padding:16px;width:130px;box-shadow:0 3px 12px rgba(0,0,0,0.08)">
+<div style="font-size:40px">📦</div>
+<div style="font-weight:700;color:#E65100">长方体</div>
+</div>
+<div style="background:#fff;border-radius:16px;padding:16px;width:130px;box-shadow:0 3px 12px rgba(0,0,0,0.08)">
+<div style="font-size:40px">🥫</div>
+<div style="font-weight:700;color:#2E7D32">圆柱</div>
+</div>
+<div style="background:#fff;border-radius:16px;padding:16px;width:130px;box-shadow:0 3px 12px rgba(0,0,0,0.08)">
+<div style="font-size:40px">⚽</div>
+<div style="font-weight:700;color:#6A1B9A">球</div>
+</div>
+</div>
+<p style="font-size:18px;color:#555">今天你学会了用正方体、长方体、圆柱和球搭建新形状！</p>
+<p style="font-size:16px;color:#888">继续加油，小小建筑师！👷</p>
+</div>
+</div>
+</div>
+
+<!-- Navigation -->
+<div class="nav-bar">
+<button class="nav-btn" id="prevBtn" onclick="prevPage()">◀ 上一页</button>
+<div class="nav-dots" id="navDots"></div>
+<button class="speak-btn" onclick="speakPage()" title="朗读本页">🔊</button>
+<button class="nav-btn" id="nextBtn" onclick="nextPage()">下一页 ▶</button>
+</div>
+
+<!-- Feedback toast -->
+<div class="feedback" id="feedback"></div>
+<!-- Confetti container -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+</div>
+
+<script>
+// ===== STATE =====
+const TOTAL_PAGES = 9; // 0..8
+let currentPage = 0;
+let isAnimating = false;
+
+// Practice state
+let practiceSelected = null;
+
+// Match state
+let matchSelected = null;
+let matchCount = 0;
+
+// MC Challenge state
+let mcLevel = 0;
+let mcStars = [false,false,false,false];
+const mcLevels = [
+{
+title:'第1关：选底座',
+question:'底座要结实，选什么形状做底座？',
+tower:['cube'], // shapes to show as options (keys)
+correct:'cube',
+hint:'正方体稳稳的！✓'
+},
+{
+title:'第2关：选塔身',
+question:'塔身高高的，选什么形状做塔身？',
+tower:['cylinder'],
+correct:'cylinder',
+hint:'圆柱子高又圆！✓'
+},
+{
+title:'第3关：选平台',
+question:'塔顶需要平台，选什么形状？',
+tower:['cuboid'],
+correct:'cuboid',
+hint:'长方体是平的，好站！✓'
+},
+{
+title:'第4关：选塔顶',
+question:'塔顶要装饰，选什么形状？',
+tower:['sphere'],
+correct:'sphere',
+hint:'球球装饰最漂亮！✓'
+}
+];
+
+const shapeNames = {
+cube:'正方体',
+cuboid:'长方体',
+cylinder:'圆柱',
+sphere:'球'
+};
+
+// ===== INIT =====
+function init(){
+// Navigation dots
+const dotsContainer = document.getElementById('navDots');
+for(let i=0;i<TOTAL_PAGES;i++){
+const dot = document.createElement('button');
+dot.className = 'nav-dot' + (i===0?' active':'');
+dot.setAttribute('data-page',i);
+dot.onclick = function(){goToPage(parseInt(this.getAttribute('data-page')));};
+dotsContainer.appendChild(dot);
+}
+updateNavButtons();
+initMC();
+}
+
+// ===== PAGE NAVIGATION =====
+function goToPage(idx,dir){
+if(isAnimating || idx<0 || idx>=TOTAL_PAGES) return;
+if(idx===currentPage) return;
+isAnimating = true;
+
+const pages = document.querySelectorAll('.page');
+const oldPage = pages[currentPage];
+const newPage = pages[idx];
+const dirClass = idx>currentPage ? 'next' : 'prev';
+
+// GSAP: fade out old
+gsap.to(oldPage,{
+opacity:0,duration:0.25,
+onComplete:function(){
+oldPage.classList.remove('active');
+oldPage.style.visibility='hidden';
+newPage.style.visibility='visible';
+newPage.classList.add('active');
+gsap.fromTo(newPage,{opacity:0,scale:0.96},{opacity:1,scale:1,duration:0.35,ease:'power2.out',onComplete:function(){isAnimating=false;}});
+}
+});
+
+currentPage = idx;
+updateNavButtons();
+updateDots();
+
+// Auto-speak if on shape intro page
+if(idx===2) setTimeout(speakPage,600);
+
+// Trigger confetti on last page
+if(idx===8) fireConfetti();
+}
+
+function prevPage(){goToPage(currentPage-1,'prev');}
+function nextPage(){goToPage(currentPage+1,'next');}
+
+function updateNavButtons(){
+document.getElementById('prevBtn').disabled = (currentPage===0);
+document.getElementById('nextBtn').disabled = (currentPage===TOTAL_PAGES-1);
+}
+
+function updateDots(){
+document.querySelectorAll('.nav-dot').forEach((d,i)=>{
+d.classList.toggle('active',i===currentPage);
+});
+}
+
+// ===== SPEECH =====
+function speakPage(){
+const texts = [
+'欢迎来到图形拼搭！今天我们来认识正方体、长方体、圆柱和球。',
+'Steve和Alex准备建一座瞭望塔，他们有方块、木板和柱子。',
+'4种立体图形：正方体，方方的边一样长；长方体，长长方盒子；圆柱，柱子上下圆；球，圆圆的能滚。',
+'动手拼搭！用小正方体、长方体、圆柱和球搭成小塔、小车、小桥和小机器人。',
+'常见误解：方方都是正方体？不对，边一样长才是。会滚的都是球？不对，球是圆立体。球和圆一样？不对，一个是立体一个是平面。',
+'练习：骰子是正方体，鞋盒是长方体，饮料罐是圆柱，足球是球。',
+'连连看：把物品和对应的立体图形连起来。',
+'Minecraft闯关挑战，帮Steve和Alex建造瞭望塔！',
+'恭喜你完成了图形拼搭学习，你是小建筑师！'
+];
+const idx = Math.min(currentPage, texts.length-1);
+const text = texts[idx];
+if(!window.speechSynthesis) return;
+window.speechSynthesis.cancel();
+const utter = new SpeechSynthesisUtterance(text);
+utter.lang = 'zh-CN';
+utter.rate = 0.8;
+utter.pitch = 1.1;
+window.speechSynthesis.speak(utter);
+}
+
+// ===== SHAPE INTRO CLICK =====
+function handleShapeClick(el){
+document.querySelectorAll('.shape-card.clickable').forEach(c=>c.classList.remove('selected'));
+el.classList.add('selected');
+const shape = el.getAttribute('data-shape');
+const texts = {
+cube:'正方体，方方正正，6个面都是正方形，每条边一样长。',
+cuboid:'长方体，像鞋盒一样，有长有宽有高，6个面中有长方形。',
+cylinder:'圆柱，像柱子一样，上下两个面是圆形，能滚来滚去。',
+sphere:'球，圆圆的，没有平平的面，到处都能滚。'
+};
+const text = texts[shape] || shapeNames[shape];
+if(window.speechSynthesis){
+window.speechSynthesis.cancel();
+const utter = new SpeechSynthesisUtterance(text);
+utter.lang='zh-CN';utter.rate=0.8;utter.pitch=1.1;
+window.speechSynthesis.speak(utter);
+}
+showFeedback('🔊 ' + shapeNames[shape],1500);
+}
+
+// ===== PRACTICE 1 =====
+function selectPracticeOption(btn,shape){
+document.querySelectorAll('#practiceOptions .option-btn').forEach(b=>b.classList.remove('selected'));
+btn.classList.add('selected');
+practiceSelected = shape;
+// Check if any practice item is selected
+const activeItem = document.querySelector('#practiceGrid .practice-item.selected');
+if(activeItem){
+const answer = activeItem.getAttribute('data-answer');
+if(shape===answer){
+activeItem.classList.remove('selected');
+activeItem.classList.add('correct');
+document.querySelectorAll('#practiceOptions .option-btn').forEach(b=>b.classList.remove('selected'));
+document.getElementById('practiceHint').textContent = '✅ 答对了！太棒了！';
+showFeedback('✅ 答对了！','1200');
+speakSimple('答对了！'+shapeNames[shape]);
+// Check if all done
+const allCorrect = document.querySelectorAll('#practiceGrid .practice-item.correct').length;
+if(allCorrect===4){
+document.getElementById('practiceHint').textContent = '🎉 全部答对！真厉害！';
+}
+}else{
+btn.classList.add('wrong');
+document.getElementById('practiceHint').textContent = '❌ 不对哦，再想想！';
+showFeedback('❌ 再试试','800');
+setTimeout(()=>{btn.classList.remove('wrong');},500);
+}
+}
+}
+
+function checkPractice(item,answer){
+document.querySelectorAll('#practiceGrid .practice-item').forEach(i=>i.classList.remove('selected'));
+item.classList.add('selected');
+document.getElementById('practiceHint').textContent = '现在点下面的形状名称 →';
+// Auto check if option already selected
+const selectedOption = document.querySelector('#practiceOptions .option-btn.selected');
+if(selectedOption){
+const shape = selectedOption.getAttribute('data-shape');
+if(shape===answer){
+item.classList.remove('selected');
+item.classList.add('correct');
+selectedOption.classList.remove('selected');
+document.getElementById('practiceHint').textContent = '✅ 答对了！太棒了！';
+showFeedback('✅ 答对了！','1200');
+speakSimple('答对了！'+shapeNames[shape]);
+const allCorrect = document.querySelectorAll('#practiceGrid .practice-item.correct').length;
+if(allCorrect===4) document.getElementById('practiceHint').textContent = '🎉 全部答对！真厉害！';
+}else{
+selectedOption.classList.add('wrong');
+document.getElementById('practiceHint').textContent = '❌ 不对哦，再想想！';
+showFeedback('❌ 再试试','800');
+setTimeout(()=>{selectedOption.classList.remove('wrong');},500);
+}
+}
+}
+
+// ===== MATCH =====
+function selectMatch(el){
+if(el.classList.contains('matched')) return;
+document.querySelectorAll('.match-item').forEach(i=>i.classList.remove('selected'));
+el.classList.add('selected');
+matchSelected = el.getAttribute('data-match');
+document.getElementById('matchHint').textContent = '现在点右边对应的形状 →';
+}
+
+function tryMatch(el,target){
+if(el.classList.contains('matched')) return;
+if(!matchSelected){
+document.getElementById('matchHint').textContent = '👆 先点左边的物品！';
+showFeedback('先点物品哦','1000');
+return;
+}
+const sourceObj = document.querySelector('.match-item[data-match="'+matchSelected+'"]');
+if(matchSelected===target){
+// Correct!
+el.classList.add('matched');
+sourceObj.classList.remove('selected');
+sourceObj.classList.add('matched');
+matchCount++;
+document.getElementById('matchHint').textContent = '✅ 配对成功！('+matchCount+'/4)';
+showFeedback('✅ 配对成功！','1000');
+speakSimple('配对成功！');
+if(matchCount===4){
+document.getElementById('matchHint').textContent = '🎉 全部配对完成！太棒啦！';
+showFeedback('🎉 全部完成！','1500');
+}
+}else{
+document.getElementById('matchHint').textContent = '❌ 不对，再试试！';
+showFeedback('❌ 再想想','800');
+}
+matchSelected = null;
+document.querySelectorAll('.match-item').forEach(i=>i.classList.remove('selected'));
+}
+
+// ===== MC CHALLENGE =====
+function initMC(){
+mcLevel = 0;
+mcStars = [false,false,false,false];
+renderMC();
+}
+
+function renderMC(){
+const level = mcLevels[mcLevel];
+document.getElementById('mcLevelTitle').textContent = '🏰 ' + level.title;
+// Update stars
+document.querySelectorAll('.mc-star').forEach((s,i)=>{
+s.classList.toggle('earned',mcStars[i]);
+});
+// Build area
+const area = document.getElementById('mcBuildArea');
+area.innerHTML = '';
+// Show tower base shapes
+level.tower.forEach(sh=>{
+const div = document.createElement('div');
+div.className = 'mc-block';
+div.innerHTML = getMCSVG(sh) + '<div class="mc-block-label">'+shapeNames[sh]+'</div>';
+area.appendChild(div);
+});
+// Question
+document.getElementById('mcQuestion').textContent = level.question;
+// Options
+const opts = document.getElementById('mcOptions');
+opts.innerHTML = '';
+const allShapes = ['cube','cuboid','cylinder','sphere'];
+allShapes.forEach(sh=>{
+const btn = document.createElement('button');
+btn.className = 'option-btn';
+btn.textContent = shapeNames[sh];
+btn.onclick = function(){mcAnswer(sh);};
+opts.appendChild(btn);
+});
+document.getElementById('mcHint').textContent = '选择正确的形状';
+}
+
+function mcAnswer(chosen){
+const level = mcLevels[mcLevel];
+const btns = document.querySelectorAll('#mcOptions .option-btn');
+if(chosen===level.correct){
+mcStars[mcLevel]=true;
+btns.forEach(b=>{
+b.disabled=true;
+if(b.textContent===shapeNames[chosen]) b.className='option-btn correct';
+});
+showFeedback('✅ '+level.hint,'1200');
+speakSimple('答对了！');
+document.getElementById('mcHint').textContent = '✅ 正确！' + level.hint;
+// Next level after delay
+setTimeout(()=>{
+if(mcLevel<3){
+mcLevel++;
+renderMC();
+}else{
+// All done!
+document.getElementById('mcLevelTitle').textContent = '🎉 闯关成功！';
+document.getElementById('mcQuestion').textContent = '瞭望塔建成啦！Steve和Alex谢谢你！🏗️';
+document.getElementById('mcOptions').innerHTML = '<div style="font-size:24px;font-weight:700;color:#1565C0">全部通关！ ⭐⭐⭐⭐</div>';
+document.getElementById('mcHint').textContent = '🏅 你获得了所有星星！';
+showFeedback('🎉 闯关成功！','2000');
+fireConfetti();
+}
+},1200);
+}else{
+btns.forEach(b=>{
+if(b.textContent===shapeNames[chosen]) b.className='option-btn wrong';
+});
+showFeedback('❌ 不对，再想想！','800');
+setTimeout(()=>{
+btns.forEach(b=>{b.className='option-btn';b.disabled=false;});
+},600);
+}
+}
+
+function getMCSVG(sh){
+const svgs = {
+cube:'<svg viewBox="0 0 50 50" width="50" height="45"><polygon points="25,3 45,16 25,29 5,16" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5"/><polygon points="25,29 45,16 45,38 25,51" fill="#1E88E5" stroke="#1565C0" stroke-width="1.5"/><polygon points="5,16 25,3 25,29 5,42" fill="#64B5F6" stroke="#1565C0" stroke-width="1.5"/></svg>',
+cuboid:'<svg viewBox="0 0 50 50" width="50" height="45"><polygon points="25,5 43,16 25,27 7,16" fill="#FF7043" stroke="#E65100" stroke-width="1.5"/><polygon points="25,27 43,16 43,36 25,47" fill="#FF8A65" stroke="#E65100" stroke-width="1.5"/><polygon points="7,16 25,5 25,27 7,38" fill="#FFAB91" stroke="#E65100" stroke-width="1.5"/></svg>',
+cylinder:'<svg viewBox="0 0 50 50" width="50" height="45"><ellipse cx="25" cy="8" rx="18" ry="6" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.5"/><rect x="7" y="8" width="36" height="28" fill="#81C784" stroke="#2E7D32" stroke-width="1.5"/><ellipse cx="25" cy="36" rx="18" ry="6" fill="#66BB6A" stroke="#2E7D32" stroke-width="1.5"/></svg>',
+sphere:'<svg viewBox="0 0 50 50" width="50" height="45"><circle cx="25" cy="24" r="20" fill="#AB47BC" stroke="#6A1B9A" stroke-width="1.5"/><ellipse cx="18" cy="18" rx="7" ry="10" fill="rgba(255,255,255,0.22)" transform="rotate(-20,18,18)"/></svg>'
+};
+return svgs[sh]||'';
+}
+
+// ===== CONFETTI =====
+function fireConfetti(){
+const container = document.getElementById('confettiContainer');
+container.innerHTML = '';
+const colors = ['#42A5F5','#FF7043','#66BB6A','#AB47BC','#FFC107','#ef5350','#26C6DA','#FF80AB'];
+for(let i=0;i<80;i++){
+const piece = document.createElement('div');
+piece.className = 'confetti-piece';
+piece.style.left = Math.random()*100+'%';
+piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+piece.style.width = (6+Math.random()*8)+'px';
+piece.style.height = (6+Math.random()*8)+'px';
+piece.style.borderRadius = Math.random()>0.5?'50%':'2px';
+piece.style.transform = 'rotate('+Math.random()*360+'deg)';
+container.appendChild(piece);
+gsap.to(piece,{
+y:window.innerHeight+50,
+x:(-200+Math.random()*400),
+rotation:720+Math.random()*720,
+duration:2+Math.random()*2,
+delay:Math.random()*0.8,
+ease:'power2.out',
+opacity:0,
+onComplete:function(){if(piece.parentNode) piece.remove();}
+});
+}
+}
+
+// ===== FEEDBACK =====
+function showFeedback(text, dur){
+const el = document.getElementById('feedback');
+el.textContent = text;
+el.classList.add('show');
+clearTimeout(el._timeout);
+el._timeout = setTimeout(()=>el.classList.remove('show'), dur||1200);
+}
+
+function speakSimple(text){
+if(!window.speechSynthesis) return;
+window.speechSynthesis.cancel();
+const utter = new SpeechSynthesisUtterance(text);
+utter.lang='zh-CN';utter.rate=0.8;utter.pitch=1.1;
+window.speechSynthesis.speak(utter);
+}
+
+// ===== KEYBOARD NAV =====
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowRight'||e.key===' ') nextPage();
+if(e.key==='ArrowLeft') prevPage();
+});
+
+// ===== START =====
+init();
+
+// GSAP entrance animation for cover
+gsap.from('.page.active .page-content',{opacity:0,y:40,duration:0.6,ease:'power2.out',delay:0.2});
+
+// Touch support
+document.addEventListener('touchstart',function(){},{passive:true});
+</script>
+</body>
+</html>

@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Lesson 9: Food 🍎 | English for Kids</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/*
+ * ============================================================
+ *  ENGLISH LESSON 9: FOOD 🍎
+ *  Theme: GREEN #66BB6A | Font: Nunito
+ *  Mobile-first: max-width 420px
+ * ============================================================
+ */
+
+/* --- RESET & BASE --- */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif;-webkit-tap-highlight-color:transparent}
+body{background:#e8f5e9;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* --- SLIDER --- */
+.slider{flex-shrink:0;position:relative;width:100%;max-width:960px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(0,0,0,.12);margin:auto}
+.slides{display:flex;height:100%;transition:transform .5s cubic-bezier(.25,.46,.45,.94)}
+.slide{min-width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:20px 24px 100px;position:relative;background:#fff;-webkit-overflow-scrolling:touch}
+
+/* --- IMAGES --- */
+.slide-img{width:100%;max-width:280px;height:auto;display:block;margin:6px auto;border-radius:18px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.slide-img-half{max-width:180px}
+
+/* --- TYPOGRAPHY --- */
+h1{font-size:32px;font-weight:800;color:#2e7d32;text-align:center;margin-top:20px;line-height:1.2}
+h2{font-size:26px;font-weight:700;color:#388e3c;text-align:center;margin-bottom:4px}
+h3{font-size:20px;font-weight:700;color:#43a047;text-align:center;margin:6px 0 2px}
+.sub{font-size:14px;color:#888;text-align:center;margin-bottom:8px}
+
+/* --- WORD CARD (clickable vocabulary tile) --- */
+.word-card{background:#f1f8e9;border:2px solid #c8e6c9;border-radius:16px;padding:12px 16px;margin:6px auto;max-width:320px;text-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.word-card:active{transform:scale(.96)}
+.word-card .en{font-size:28px;font-weight:800;color:#2e7d32}
+.word-card .zh{font-size:18px;color:#666;margin-top:2px}
+.word-card .pho{font-size:15px;color:#999;margin-top:1px}
+
+/* --- PHONICS BOX (yellow dashed) --- */
+.phonics-box{background:#fffde7;border:2px dashed #fdd835;border-radius:16px;padding:14px;margin:10px auto;max-width:320px;text-align:center}
+.phonics-box .sound{font-size:32px;font-weight:800;color:#e65100}
+.phonics-box .example{font-size:20px;font-weight:700;color:#333;margin:4px 0}
+.phonics-box .items{font-size:18px;color:#666}
+
+/* --- SIGHT WORD PILLS --- */
+.sight-word{display:inline-block;background:#e8eaf6;border:2px solid #9fa8da;border-radius:12px;padding:8px 18px;margin:4px;font-size:24px;font-weight:700;color:#283593;cursor:pointer;transition:transform .2s,background .2s}
+.sight-word:active{transform:scale(.92);background:#c5cae9}
+
+/* --- MATCHING GAME --- */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:0 auto}
+.match-item{background:#f1f8e9;border:2px solid #c8e6c9;border-radius:14px;padding:10px;text-align:center;cursor:pointer;transition:transform .2s,border-color .2s,background .2s;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column;user-select:none}
+.match-item:active{transform:scale(.95)}
+.match-item.selected{border-color:#66bb6a;background:#e8f5e9;box-shadow:0 0 0 3px #66bb6a;transform:scale(1.03)}
+.match-item.matched{opacity:.5;pointer-events:none;background:#c8e6c9;border-color:#81c784}
+.match-item.wrong{animation:shake .4s ease;border-color:#e53935;background:#ffebee}
+.match-item .en{font-size:22px;font-weight:800;color:#2e7d32}
+.match-item .zh{font-size:16px;color:#666}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* --- CELEBRATION --- */
+.celebration-icon{font-size:80px;text-align:center;margin:20px 0 10px}
+.celebration-title{font-size:36px;font-weight:800;color:#2e7d32;text-align:center}
+.celebration-sub{font-size:18px;color:#666;text-align:center;margin:6px 0 20px}
+
+/* --- TOP BAR (Home + Speak) --- */
+.top-bar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:10px 14px;pointer-events:none}
+.top-bar>*{pointer-events:auto;width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.92);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.1);font-size:22px;cursor:pointer;border:none;transition:transform .2s;text-decoration:none;color:#333}
+.top-bar>*:active{transform:scale(.88)}
+
+/* --- BOTTOM NAV (prev / dots / next) --- */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:center;gap:16px;padding:12px 16px 20px;background:linear-gradient(transparent,rgba(255,255,255,.95) 40%)}
+.nav-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:#fff;border:2px solid #c8e6c9;border-radius:50%;font-size:20px;cursor:pointer;transition:transform .2s,background .2s;color:#2e7d32}
+.nav-btn:active{transform:scale(.88);background:#e8f5e9}
+.nav-btn:disabled{opacity:.3;pointer-events:none}
+
+/* --- PAGE DOTS + PROGRESS --- */
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:#e0e0e0;border:none;padding:0;cursor:pointer;transition:width .3s,background .3s,border-radius .3s}
+.dot.active{background:#66bb6a;width:28px;border-radius:5px}
+.dot.done{background:#a5d6a7}
+.progress{position:absolute;top:0;left:0;right:0;height:4px;z-index:25;background:#e0e0e0}
+.progress-fill{height:100%;background:#66bb6a;transition:width .4s ease;width:0%}
+
+/* --- UTILITIES --- */
+.center{text-align:center}
+.flex-center{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
+.sentence{font-size:16px;color:#555;text-align:center;margin:4px auto;max-width:300px;background:#f9fbe7;border-radius:10px;padding:6px 12px}
+.sentence .en{font-weight:700;color:#2e7d32}
+.sentence .zh{color:#888}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="slider" id="app">
+  <!-- Progress bar -->
+  <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <a href="../" id="homeBtn" title="Home 🏠">🏠</a>
+    <button id="speakBtn" title="Read Aloud ▶">▶</button>
+  </div>
+
+  <!-- Slides container -->
+  <div class="slides" id="slides">
+
+    <!-- ============================================================
+         PAGE 01 — COVER
+         ============================================================ -->
+    <div class="slide" data-page="1">
+      <div class="center" style="margin-top:10px">
+        <div style="font-size:72px;margin-bottom:4px">🍎</div>
+        <h1>Lesson 9<br>Food 🍎</h1>
+        <p class="sub" style="margin-top:2px">食物 · shíwù</p>
+        <img class="slide-img" src="images/english-09/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Food collage" loading="lazy" style="max-width:260px">
+
+        <!-- Lesson overview -->
+        <div style="margin-top:10px;font-size:13px;color:#999">
+          Learn 9 food words · 学习9个食物单词
+        </div>
+
+        <!-- Sight words preview -->
+        <div style="margin-top:4px;font-size:13px;color:#999">
+          Sight Words Preview · 视觉词预览
+        </div>
+        <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+          <span class="sight-word" style="font-size:18px;padding:4px 14px" onclick="speak('eat')">eat 吃</span>
+          <span class="sight-word" style="font-size:18px;padding:4px 14px" onclick="speak('good')">good 好</span>
+          <span class="sight-word" style="font-size:18px;padding:4px 14px" onclick="speak('have')">have 有</span>
+          <span class="sight-word" style="font-size:18px;padding:4px 14px" onclick="speak('like')">like 喜欢</span>
+          <span class="sight-word" style="font-size:18px;padding:4px 14px" onclick="speak('some')">some 一些</span>
+        </div>
+
+        <!-- Phonics preview -->
+        <div style="margin-top:8px;font-size:13px;color:#999">
+          🔤 Phonics: a = /æ/ (apple, cat, hat, man, rat)
+        </div>
+
+        <!-- Hint -->
+        <p style="margin-top:14px;font-size:14px;color:#aaa">
+          👆 Tap any word to hear it! · 点击单词听发音
+        </p>
+        <p style="font-size:13px;color:#bbb">
+          ← swipe or use arrows to navigate
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 02 — APPLE 🍎
+         ============================================================ -->
+    <div class="slide" data-page="2">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🍎</div>
+        <h2>Apple</h2>
+        <p class="sub">苹果 · píngguǒ</p>
+        <img class="slide-img" src="images/english-09/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="Apple" loading="lazy">
+
+        <!-- Vocabulary card -->
+        <div class="word-card" onclick="speak('apple')">
+          <div class="en">apple</div>
+          <div class="pho">/ˈæp.əl/</div>
+          <div class="zh">苹果 — A sweet red or green fruit 🍎</div>
+        </div>
+
+        <!-- Phonics focus -->
+        <div class="phonics-box" style="margin-top:4px">
+          <div class="sound">a = /æ/</div>
+          <div class="example">a·pple</div>
+          <div class="items">首字母 a 发 /æ/ 音 — 嘴巴张大，短音"啊"</div>
+        </div>
+
+        <!-- Example sentence -->
+        <div class="sentence"><span class="en">I like apples.</span><br><span class="zh">我喜欢苹果。</span></div>
+        <div class="sentence"><span class="en">I eat an apple.</span><br><span class="zh">我吃一个苹果。</span></div>
+
+        <!-- Fun fact -->
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 "An apple a day keeps the doctor away!" 🍏
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 03 — BREAD 🍞
+         ============================================================ -->
+    <div class="slide" data-page="3">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🍞</div>
+        <h2>Bread</h2>
+        <p class="sub">面包 · miànbāo</p>
+        <img class="slide-img" src="images/english-09/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Bread" loading="lazy">
+
+        <div class="word-card" onclick="speak('bread')">
+          <div class="en">bread</div>
+          <div class="pho">/brɛd/</div>
+          <div class="zh">面包 — Baked food made from flour 🍞</div>
+        </div>
+
+        <div class="phonics-box" style="margin-top:4px">
+          <div class="sound">ea = /ɛ/</div>
+          <div class="example">br-ea-d</div>
+          <div class="items">字母组合 ea 发 /ɛ/ 音 — 短音"哎"</div>
+        </div>
+
+        <div class="sentence"><span class="en">Bread is good.</span><br><span class="zh">面包很好吃。</span></div>
+        <div class="sentence"><span class="en">I have some bread.</span><br><span class="zh">我有一些面包。</span></div>
+
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 Bread is made from flour, water, and yeast.
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 04 — CHEESE 🧀
+         ============================================================ -->
+    <div class="slide" data-page="4">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🧀</div>
+        <h2>Cheese</h2>
+        <p class="sub">奶酪 · nǎilào</p>
+        <img class="slide-img" src="images/english-09/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Cheese" loading="lazy">
+
+        <div class="word-card" onclick="speak('cheese')">
+          <div class="en">cheese</div>
+          <div class="pho">/tʃiːz/</div>
+          <div class="zh">奶酪 — Yellow food made from milk 🧀</div>
+        </div>
+
+        <div class="phonics-box" style="margin-top:4px">
+          <div class="sound">ch = /tʃ/</div>
+          <div class="example">ch-ee-se</div>
+          <div class="items">ch 发 /tʃ/ 音，像中文"吃"的开头</div>
+        </div>
+
+        <div class="sentence"><span class="en">I like cheese.</span><br><span class="zh">我喜欢奶酪。</span></div>
+        <div class="sentence"><span class="en">I eat cheese.</span><br><span class="zh">我吃奶酪。</span></div>
+
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 Cheese is made from milk! 🥛 Mice love cheese! 🐭
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 05 — EGG 🥚
+         ============================================================ -->
+    <div class="slide" data-page="5">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🥚</div>
+        <h2>Egg</h2>
+        <p class="sub">鸡蛋 · jīdàn</p>
+        <img class="slide-img" src="images/english-09/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="Egg" loading="lazy">
+
+        <div class="word-card" onclick="speak('egg')">
+          <div class="en">egg</div>
+          <div class="pho">/ɛɡ/</div>
+          <div class="zh">鸡蛋 — Oval food that comes from chickens 🥚</div>
+        </div>
+
+        <div class="phonics-box" style="margin-top:4px">
+          <div class="sound">e = /ɛ/</div>
+          <div class="example">e-gg</div>
+          <div class="items">首字母 e 发 /ɛ/ 音，和 apple 的 a 发音不同哦</div>
+        </div>
+
+        <div class="sentence"><span class="en">I have an egg.</span><br><span class="zh">我有一个鸡蛋。</span></div>
+        <div class="sentence"><span class="en">The egg is good.</span><br><span class="zh">这个鸡蛋很好吃。</span></div>
+
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 Eggs can be boiled, fried, or scrambled! 🍳
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 06 — FISH 🐟
+         ============================================================ -->
+    <div class="slide" data-page="6">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🐟</div>
+        <h2>Fish</h2>
+        <p class="sub">鱼 · yú</p>
+        <img class="slide-img" src="images/english-09/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="Fish" loading="lazy">
+
+        <div class="word-card" onclick="speak('fish')">
+          <div class="en">fish</div>
+          <div class="pho">/fɪʃ/</div>
+          <div class="zh">鱼 — An animal that swims in water 🐟</div>
+        </div>
+
+        <div class="phonics-box" style="margin-top:4px">
+          <div class="sound">sh = /ʃ/</div>
+          <div class="example">fi-sh</div>
+          <div class="items">sh 发 /ʃ/ 音，像"嘘"——让手指放在嘴边！🤫</div>
+        </div>
+
+        <div class="sentence"><span class="en">Fish is good.</span><br><span class="zh">鱼很好吃。</span></div>
+        <div class="sentence"><span class="en">I like fish.</span><br><span class="zh">我喜欢鱼。</span></div>
+
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 Fish live in oceans, rivers, and lakes! 🌊🐠
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 07 — JUICE / MILK / RICE
+         ============================================================ -->
+    <div class="slide" data-page="7">
+      <div class="center">
+        <div style="font-size:64px;margin-top:8px">🧃🥛🍚</div>
+        <h2>Drinks &amp; Grains</h2>
+        <p class="sub">饮料和谷物 · yǐnliào hé gǔwù</p>
+        <img class="slide-img" src="images/english-09/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="Juice Milk Rice" loading="lazy" style="max-width:260px">
+
+        <!-- Juice -->
+        <div class="word-card" onclick="speak('juice')">
+          <div class="en">juice 🧃</div>
+          <div class="pho">/dʒuːs/</div>
+          <div class="zh">果汁 — Liquid made from fruits</div>
+        </div>
+
+        <!-- Milk -->
+        <div class="word-card" onclick="speak('milk')">
+          <div class="en">milk 🥛</div>
+          <div class="pho">/mɪlk/</div>
+          <div class="zh">牛奶 — White drink that comes from cows</div>
+        </div>
+
+        <!-- Rice -->
+        <div class="word-card" onclick="speak('rice')">
+          <div class="en">rice 🍚</div>
+          <div class="pho">/raɪs/</div>
+          <div class="zh">米饭 — Small white grains we eat every day</div>
+        </div>
+
+        <div class="sentence"><span class="en">I like juice. I drink milk. I eat rice.</span><br><span class="zh">我喜欢果汁。我喝牛奶。我吃米饭。</span></div>
+
+        <p style="font-size:13px;color:#aaa;margin-top:4px">
+          💡 Rice is a staple food for many people around the world! 🌏
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 08 — WATER + PHONICS REVIEW + SIGHT WORDS
+         ============================================================ -->
+    <div class="slide" data-page="8">
+      <div class="center">
+        <div style="font-size:56px;margin-top:8px">💧</div>
+        <h2>Water</h2>
+        <p class="sub">水 · shuǐ</p>
+        <img class="slide-img slide-img-half" src="images/english-09/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="Water" loading="lazy">
+
+        <div class="word-card" onclick="speak('water')">
+          <div class="en">water 💧</div>
+          <div class="pho">/ˈwɔː.tər/</div>
+          <div class="zh">水 — Clear liquid we drink every day</div>
+        </div>
+
+        <div class="sentence"><span class="en">I drink water.</span><br><span class="zh">我喝水。</span></div>
+
+        <!-- PHONICS REVIEW: a = /æ/ -->
+        <div class="phonics-box">
+          <div class="sound">🔊 Phonics Review: a = /æ/</div>
+          <div class="example">apple · cat · hat · man · rat</div>
+          <div class="items">
+            <span onclick="speak('apple')" style="cursor:pointer">🍎 apple</span> ·
+            <span onclick="speak('cat')" style="cursor:pointer">🐱 cat</span> ·
+            <span onclick="speak('hat')" style="cursor:pointer">🎩 hat</span> ·
+            <span onclick="speak('man')" style="cursor:pointer">👨 man</span> ·
+            <span onclick="speak('rat')" style="cursor:pointer">🐀 rat</span>
+          </div>
+          <p style="font-size:14px;color:#888;margin-top:6px">
+            All five words have the /æ/ sound! · 都含有 /æ/ 音
+          </p>
+          <p style="font-size:13px;color:#aaa;margin-top:2px">
+            👆 Tap each word to hear it pronounced
+          </p>
+        </div>
+
+        <!-- SIGHT WORDS -->
+        <div style="margin-top:8px">
+          <p style="font-size:14px;color:#888;margin-bottom:4px">
+            Sight Words · 视觉词
+          </p>
+          <div class="flex-center">
+            <span class="sight-word" onclick="speak('eat')">eat 吃</span>
+            <span class="sight-word" onclick="speak('good')">good 好</span>
+            <span class="sight-word" onclick="speak('have')">have 有</span>
+            <span class="sight-word" onclick="speak('like')">like 喜欢</span>
+            <span class="sight-word" onclick="speak('some')">some 一些</span>
+          </div>
+        </div>
+
+        <!-- Sight word practice sentences -->
+        <div style="margin-top:8px">
+          <p style="font-size:12px;color:#999;margin-bottom:2px">
+            Practice reading these sentences:
+          </p>
+          <div class="sentence"><span class="en">I eat some rice.</span><br><span class="zh">我吃一些米饭。</span></div>
+          <div class="sentence"><span class="en">I have good food.</span><br><span class="zh">我有好食物。</span></div>
+          <div class="sentence"><span class="en">I like water.</span><br><span class="zh">我喜欢水。</span></div>
+          <div class="sentence"><span class="en">I have some milk.</span><br><span class="zh">我有一些牛奶。</span></div>
+          <div class="sentence"><span class="en">Good food is good.</span><br><span class="zh">好食物很好吃。</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 09 — MATCHING GAME
+         ============================================================ -->
+    <div class="slide" data-page="9">
+      <div class="center">
+        <div style="font-size:40px;margin-top:8px">🧩</div>
+        <h2 style="font-size:22px">Match the Words!</h2>
+        <p class="sub" style="margin-bottom:6px">
+          配对游戏 · Instructions:
+        </p>
+        <p style="font-size:14px;color:#888;margin-bottom:8px;max-width:320px;margin-left:auto;margin-right:auto">
+          1️⃣ Tap an English word (e.g. "apple")<br>
+          2️⃣ Then tap its Chinese translation (e.g. "苹果")<br>
+          3️⃣ Match all 9 pairs to win! 🏆
+        </p>
+
+        <!-- Game grid (populated by JavaScript) -->
+        <div class="match-grid" id="matchGrid"></div>
+
+        <!-- Status and score -->
+        <div style="margin-top:10px;font-size:16px;color:#666;min-height:24px" id="matchStatus">
+          👆 Start matching!
+        </div>
+        <div style="margin-top:4px;font-size:14px;color:#999" id="matchScore">Score: 0 / 9</div>
+
+        <!-- Buttons -->
+        <div style="margin-top:8px;display:flex;gap:10px;justify-content:center">
+          <button onclick="resetMatch()" style="padding:8px 24px;border:none;border-radius:12px;background:#66bb6a;color:#fff;font-size:16px;font-weight:700;cursor:pointer">🔄 Try Again</button>
+          <button onclick="revealMatch()" style="padding:8px 24px;border:2px solid #66bb6a;border-radius:12px;background:#fff;color:#66bb6a;font-size:16px;font-weight:700;cursor:pointer">👀 Show Answers</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PAGE 10 — CELEBRATION
+         ============================================================ -->
+    <div class="slide" data-page="10">
+      <div class="center" style="margin-top:20px">
+        <div class="celebration-icon">🎉</div>
+        <div class="celebration-title">Great Job!</div>
+        <div class="celebration-sub">太棒了！🎊 你做到了！</div>
+        <img class="slide-img" src="images/english-09/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="Celebration" loading="lazy" style="max-width:200px">
+
+        <!-- What you learned -->
+        <div style="margin-top:12px;font-size:18px;color:#555;line-height:1.8">
+          <p>✅ You learned <strong>9</strong> food words!</p>
+          <p>✅ You learned <strong>5</strong> sight words!</p>
+          <p>✅ You learned the <strong>/æ/</strong> phonics sound!</p>
+          <p>✅ You can talk about food in English!</p>
+        </div>
+
+        <!-- All food emoji row -->
+        <div style="font-size:42px;margin-top:12px;letter-spacing:8px;line-height:1.4">
+          🍎 🍞 🧀 🥚 🐟 🧃 🥛 🍚 💧
+        </div>
+
+        <!-- Encouragement -->
+        <p style="margin-top:12px;font-size:18px;color:#2e7d32;font-weight:700">
+          See you next lesson! 👋
+        </p>
+        <p style="font-size:14px;color:#888;margin-top:4px">
+          下节课见！Keep up the amazing work! 🌟
+        </p>
+        <p style="font-size:13px;color:#aaa;margin-top:8px">
+          Lesson 9 Complete · 第9课完成 ✅
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()" disabled>◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">▶</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'english-09-food';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+/* ============================================================
+ * ENGLISH LESSON 9: FOOD 🍎
+ *
+ * Features:
+ * - 10 pages with images at images/english-09/webp/page-XX.webp
+ * - GREEN #66BB6A theme, Nunito font
+ * - Mobile-first at 420px max-width
+ * - Page dots + prev/next navigation
+ * - 🏠 Home top-left | ▶ Speak top-right
+ * - Speech Synthesis (en-US)
+ * - Matching game with score tracking
+ * - Confetti celebration
+ * - Bilingual: English + Chinese
+ * - Powered by GSAP 3.12.2
+ * ============================================================ */
+
+// --- Configuration ---
+var TOTAL = 10;          // Total number of slides
+var current = 0;         // Current slide index (0-based)
+var isSpeaking = false;  // Prevents overlapping speech
+
+// --- Match game state ---
+var matchState = {
+  selected: null,   // Currently selected DOM element
+  pairs: [],        // Array of matched pair IDs
+  done: false       // True when all 9 pairs are matched
+};
+
+// --- DOM references ---
+var slidesEl     = document.getElementById('slides');
+var dotsEl       = document.getElementById('dots');
+var progressFill = document.getElementById('progressFill');
+var prevBtn      = document.getElementById('prevBtn');
+var nextBtn      = document.getElementById('nextBtn');
+var homeBtn      = document.getElementById('homeBtn');
+var speakBtn     = document.getElementById('speakBtn');
+var matchGrid    = document.getElementById('matchGrid');
+var matchStatus  = document.getElementById('matchStatus');
+var matchScore   = document.getElementById('matchScore');
+
+/* ============================================================
+ * BUILD PAGE DOTS
+ * ============================================================ */
+for (var i = 0; i < TOTAL; i++) {
+  (function(idx) {
+    var dot = document.createElement('button');
+    dot.className = 'dot' + (idx === 0 ? ' active' : '');
+    dot.setAttribute('data-index', idx);
+    dot.setAttribute('aria-label', 'Go to page ' + (idx + 1));
+    dot.addEventListener('click', function() { goTo(idx); });
+    dotsEl.appendChild(dot);
+  })(i);
+}
+
+/* ============================================================
+ * NAVIGATION
+ * ============================================================ */
+
+/**
+ * Navigate to a specific slide.
+ * @param {number} n - Slide index (0-based).
+ */
+function goTo(n) {
+  if (n < 0 || n >= TOTAL) return;
+  current = n;
+
+  // Move the slides track
+  slidesEl.style.transform = 'translateX(-' + (current * 100) + '%)';
+
+  // Update dot states
+  document.querySelectorAll('.dot').forEach(function(d, i) {
+    var cls = 'dot';
+    if (i === current) cls += ' active';
+    if (i < current)   cls += ' done';
+    d.className = cls;
+  });
+
+  // Update progress bar
+  progressFill.style.width = ((current + 1) / TOTAL * 100) + '%';
+
+  // Toggle nav buttons
+  prevBtn.disabled = (current === 0);
+  nextBtn.disabled = (current === TOTAL - 1);
+
+  // Animate new slide contents
+  animateIn(current);
+
+  // Fire confetti on celebration page
+  if (current === TOTAL - 1) {
+    fireConfetti();
+  }
+}
+
+function nextSlide() { goTo(current + 1); }
+function prevSlide() { goTo(current - 1); }
+
+// Home button
+homeBtn.addEventListener('click', function() {
+  if (current !== 0) goTo(0);
+});
+
+// Keyboard arrow keys
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowRight') nextSlide();
+  if (e.key === 'ArrowLeft')  prevSlide();
+});
+
+/* ============================================================
+ * SPEECH SYNTHESIS
+ * ============================================================ */
+
+/**
+ * Speak text using the Web Speech API (en-US).
+ * Rate is slowed to 0.85 for young learners.
+ * @param {string} text - Text to read aloud.
+ */
+function speak(text) {
+  if (isSpeaking) return;
+  if (!window.speechSynthesis) {
+    alert('Speech synthesis is not supported in this browser ☹️');
+    return;
+  }
+  isSpeaking = true;
+
+  var utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang  = 'en-US';
+  utterance.rate  = 0.85;  // Slightly slower
+  utterance.pitch = 1.0;
+
+  utterance.onend   = function() { isSpeaking = false; };
+  utterance.onerror = function() { isSpeaking = false; };
+
+  // Cancel any ongoing speech
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
+}
+
+// Speak button — reads key content from the current slide
+speakBtn.addEventListener('click', function() {
+  var slide = document.querySelectorAll('.slide')[current];
+  var texts = [];
+
+  slide.querySelectorAll(
+    'h1, h2, h3, ' +
+    '.word-card .en, ' +
+    '.phonics-box .example, ' +
+    '.sight-word, ' +
+    '.celebration-title'
+  ).forEach(function(el) {
+    var t = el.textContent.trim();
+    if (t) texts.push(t);
+  });
+
+  if (texts.length > 0) {
+    speak(texts.join('. '));
+  } else {
+    speak('Lesson 9, Food.');
+  }
+});
+
+/* ============================================================
+ * GSAP ANIMATIONS
+ * ============================================================ */
+
+/**
+ * Animate elements into view on a given slide using GSAP.
+ * Elements fade in and slide up with a staggered back-out ease.
+ * Images scale in from 80% to 100%.
+ * @param {number} n - Slide index.
+ */
+function animateIn(n) {
+  var slide = document.querySelectorAll('.slide')[n];
+  if (!slide) return;
+
+  // Reset all animatable elements to hidden state
+  gsap.set(slide.querySelectorAll(
+    '.word-card, .phonics-box, .sight-word, ' +
+    '.match-grid, .celebration-icon, ' +
+    '.celebration-title, .celebration-sub, .slide-img'
+  ), { opacity: 0, y: 20 });
+
+  // Stagger in text/card elements
+  var textEls = slide.querySelectorAll(
+    '.word-card, .phonics-box, .sight-word, ' +
+    '.match-grid, .celebration-icon, ' +
+    '.celebration-title, .celebration-sub'
+  );
+  if (textEls.length > 0) {
+    gsap.to(textEls, {
+      opacity: 1,
+      y: 0,
+      duration: 0.4,
+      stagger: 0.08,
+      ease: 'back.out(1.4)'
+    });
+  }
+
+  // Scale in images
+  var imgs = slide.querySelectorAll('.slide-img');
+  if (imgs.length > 0) {
+    gsap.fromTo(imgs,
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' }
+    );
+  }
+}
+
+/* ============================================================
+ * MATCHING GAME DATA
+ * ============================================================ */
+
+/** 9 food vocabulary pairs for the matching game */
+var matchWords = [
+  { en: 'apple',  zh: '苹果' },
+  { en: 'bread',  zh: '面包' },
+  { en: 'cheese', zh: '奶酪' },
+  { en: 'egg',    zh: '鸡蛋' },
+  { en: 'fish',   zh: '鱼' },
+  { en: 'juice',  zh: '果汁' },
+  { en: 'milk',   zh: '牛奶' },
+  { en: 'rice',   zh: '米饭' },
+  { en: 'water',  zh: '水' }
+];
+
+/** Current shuffled items (18 tiles: 9 en + 9 zh) */
+var matchItems = [];
+
+/* ============================================================
+ * MATCHING GAME LOGIC
+ * ============================================================ */
+
+/**
+ * Fisher-Yates shuffle. Returns a new shuffled array.
+ * @param {Array} arr - Input array.
+ * @returns {Array} Shuffled copy.
+ */
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+/**
+ * Initialize (or re-initialize) the matching game grid.
+ * Creates 18 shuffled tiles: 9 English + 9 Chinese.
+ */
+function initMatch() {
+  matchGrid.innerHTML = '';
+  matchState.selected = null;
+  matchState.pairs    = [];
+  matchState.done     = false;
+
+  matchStatus.textContent = '👆 Start matching!';
+  matchScore.textContent  = 'Score: 0 / 9';
+
+  // Build English tiles
+  var enItems = matchWords.map(function(w, i) {
+    return { type: 'en', id: i, text: w.en, zh: w.zh };
+  });
+
+  // Build Chinese tiles
+  var zhItems = matchWords.map(function(w, i) {
+    return { type: 'zh', id: i, text: w.zh, en: w.en };
+  });
+
+  // Shuffle all 18 tiles together
+  matchItems = shuffle(enItems.concat(zhItems));
+
+  // Render tiles
+  matchItems.forEach(function(item, idx) {
+    var div = document.createElement('div');
+    div.className = 'match-item';
+    div.dataset.idx    = idx;
+    div.dataset.type   = item.type;
+    div.dataset.pairId = item.id;
+
+    if (item.type === 'en') {
+      // English tile: shows the word + Chinese hint below
+      div.innerHTML =
+        '<div class="en">' + item.text + '</div>' +
+        '<div class="zh">' + item.zh + '</div>';
+    } else {
+      // Chinese tile: shows just Chinese text
+      div.innerHTML =
+        '<div class="en" style="font-size:20px">' + item.text + '</div>';
+    }
+
+    div.addEventListener('click', function() { handleMatch(div); });
+    matchGrid.appendChild(div);
+  });
+}
+
+/**
+ * Handle a click on a matching game tile.
+ * First click selects; second click attempts to match.
+ * @param {HTMLElement} el - The clicked tile.
+ */
+function handleMatch(el) {
+  if (matchState.done) return;
+  if (el.classList.contains('matched')) return;
+
+  // --- First selection ---
+  if (!matchState.selected) {
+    document.querySelectorAll('.match-item').forEach(function(m) {
+      m.classList.remove('selected', 'wrong');
+    });
+    el.classList.add('selected');
+    matchState.selected = el;
+    return;
+  }
+
+  var first  = matchState.selected;
+  var second = el;
+
+  // Clicking the same tile = deselect
+  if (first === second) {
+    first.classList.remove('selected');
+    matchState.selected = null;
+    return;
+  }
+
+  // --- Check for a correct match ---
+  var aId   = parseInt(first.dataset.pairId, 10);
+  var bId   = parseInt(second.dataset.pairId, 10);
+  var aType = first.dataset.type;
+  var bType = second.dataset.type;
+
+  // Correct: same pairId AND different types (en ↔ zh)
+  if (aId === bId && aType !== bType) {
+    // Mark both as matched
+    first.classList.remove('selected');
+    first.classList.add('matched');
+    second.classList.add('matched');
+    matchState.selected = null;
+
+    // Record the match
+    matchState.pairs.push(aId);
+    matchScore.textContent = 'Score: ' + matchState.pairs.length + ' / 9';
+
+    // Speak the matched English word
+    var matchedWord = matchWords.find(function(w) {
+      return w.en === first.textContent.trim() ||
+             w.en === second.textContent.trim();
+    });
+    if (matchedWord) speak(matchedWord.en);
+
+    // Check if all pairs are matched
+    if (matchState.pairs.length === matchWords.length) {
+      matchState.done = true;
+      matchStatus.textContent = '🎉 All 9 matched! Excellent work!';
+      setTimeout(function() { fireConfetti(); }, 600);
+    } else {
+      var remaining = matchWords.length - matchState.pairs.length;
+      matchStatus.textContent =
+        '✅ Good! ' + remaining + ' more pair' +
+        (remaining > 1 ? 's' : '') + ' to go!';
+    }
+
+  } else {
+    // Wrong match — shake animation
+    first.classList.add('wrong');
+    second.classList.add('wrong');
+    first.classList.remove('selected');
+    matchStatus.textContent = '❌ Not a match! Try again!';
+    matchState.selected = null;
+
+    // Clear error state after delay
+    setTimeout(function() {
+      first.classList.remove('wrong');
+      second.classList.remove('wrong');
+      if (!matchState.done) {
+        matchStatus.textContent = '👆 Start matching!';
+      }
+    }, 700);
+  }
+}
+
+/** Shuffle and reset the matching game. */
+function resetMatch() {
+  initMatch();
+  matchStatus.textContent = '🔄 Shuffled! Give it another try!';
+}
+
+/** Reveal all answers by auto-matching every tile. */
+function revealMatch() {
+  if (matchState.done) return;
+
+  document.querySelectorAll('.match-item:not(.matched)').forEach(function(t) {
+    t.classList.add('matched');
+  });
+
+  matchState.pairs = matchWords.map(function(_, i) { return i; });
+  matchState.done  = true;
+  matchState.selected = null;
+
+  matchScore.textContent  = 'Score: 9 / 9';
+  matchStatus.textContent = '👀 Answers shown! Try the game again!';
+
+  setTimeout(function() { fireConfetti(); }, 400);
+}
+
+/* ============================================================
+ * CONFETTI 🎊
+ * ============================================================ */
+
+/**
+ * Create a burst of 60 colorful confetti particles using GSAP.
+ * Particles fall from the top of the screen with random
+ * colors, sizes, rotations, and horizontal drift.
+ */
+function fireConfetti() {
+  var colors = [
+    '#66BB6A', '#43A047', '#FDD835', '#E53935',
+    '#1E88E5', '#8E24AA', '#FF6F00', '#00BCD4'
+  ];
+
+  for (var i = 0; i < 60; i++) {
+    (function() {
+      var el      = document.createElement('div');
+      var size    = 5 + Math.random() * 7;
+      var color   = colors[Math.floor(Math.random() * colors.length)];
+      var isRound = Math.random() > 0.5;
+
+      el.style.cssText = [
+        'position:fixed; z-index:9999;',
+        'width:' + size + 'px; height:' + size + 'px;',
+        'background:' + color + ';',
+        'border-radius:' + (isRound ? '50%' : '2px') + ';',
+        'left:' + (Math.random() * 100) + '%; top:-10px;',
+        'pointer-events:none; will-change:transform;'
+      ].join('');
+
+      document.body.appendChild(el);
+
+      gsap.to(el, {
+        y: window.innerHeight + 20,
+        x: -100 + Math.random() * 200,
+        rotation: Math.random() * 720 - 360,
+        duration: 1.5 + Math.random() * 2,
+        delay: Math.random() * 0.8,
+        ease: 'power2.out',
+        onComplete: function() {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }
+      });
+    })();
+  }
+}
+
+/* ============================================================
+ * WRAP goTo FOR SPECIAL PAGE HANDLING
+ * ============================================================ */
+
+// Preserve original goTo
+var _origGoTo = goTo;
+
+// Override with special handling
+goTo = function(n) {
+  _origGoTo(n);
+
+  // Page 9 (index 8): re-init match game if not completed
+  if (n === 8 && !matchState.done && matchState.pairs.length === 0) {
+    initMatch();
+  }
+
+  // Page 10 (index 9): fire confetti every time
+  if (n === 9) {
+    fireConfetti();
+  }
+};
+
+/* ============================================================
+ * INITIALIZATION
+ * ============================================================ */
+
+// Start on the cover page
+goTo(0);
+
+// Initialize the matching game
+initMatch();
+
+// Console greeting
+console.log('%c🍎 Lesson 9: Food','font-size:24px;font-weight:bold;color:#66BB6A');
+console.log('%cBuilt with 💚 using GSAP 3.12.2 + Web Speech API','color:#888');
+</script>
+</body>
+</html>

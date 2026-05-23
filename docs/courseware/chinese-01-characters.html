@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>神奇汉字 · 第1课</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito','PingFang SC','Microsoft YaHei','Noto Sans SC',sans-serif;background:#fce4ec;overflow:hidden;height:100dvh;width:100vw;user-select:none;touch-action:manipulation}
+.book-wrapper{width:100%;height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;position:relative}
+.book-card{width:100%;max-width:440px;height:calc(100dvh - 90px);max-height:780px;background:#fff;border-radius:24px;box-shadow:0 8px 40px rgba(207,37,46,.18);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.pages-container{flex:1;position:relative;overflow:hidden}
+.page{position:absolute;top:0;left:0;width:100%;height:100%;padding:20px 22px;overflow-y:auto;opacity:0;visibility:hidden;transition:none;-webkit-overflow-scrolling:touch}
+.page.active{opacity:1;visibility:visible;z-index:2}
+.page.exit{opacity:0;z-index:1}
+
+/* Scrollbar */
+.page::-webkit-scrollbar{width:3px}
+.page::-webkit-scrollbar-thumb{background:#ef5350;border-radius:3px}
+
+/* NAV */
+.nav-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 12px;gap:6px;flex-shrink:0}
+.nav-btn{width:42px;height:42px;border-radius:50%;border:none;background:#fce4ec;color:#c62828;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.nav-btn:active{background:#ef5350;color:#fff;transform:scale(.92)}
+.nav-btn:disabled{opacity:.25;pointer-events:none}
+.dots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;flex:1}
+.dot{width:10px;height:10px;border-radius:50%;background:#f8bbd0;border:none;cursor:pointer;transition:.25s;padding:0;flex-shrink:0}
+.dot.active{background:#ef5350;transform:scale(1.25)}
+.speak-btn{width:42px;height:42px;border-radius:50%;border:2px solid #ef5350;background:#fff;color:#ef5350;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+.speak-btn:active{background:#ef5350;color:#fff;transform:scale(.92)}
+.speak-btn.speaking{background:#ef5350;color:#fff;animation:pulse 1s infinite}
+
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(239,83,80,.5)}50%{box-shadow:0 0 0 8px rgba(239,83,80,0)}}
+
+/* === PAGE STYLES === */
+
+/* Cover */
+.cover-bg{background:linear-gradient(135deg,#fff5f5,#fce4ec,#f8bbd0);border-radius:0;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.cover-badge{background:#ef5350;color:#fff;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:2px;margin-bottom:14px}
+.cover-title{font-size:46px;font-weight:900;color:#c62828;line-height:1.1;margin-bottom:6px;text-shadow:2px 2px 0 #f8bbd0}
+.cover-sub{font-size:18px;color:#e53935;font-weight:600;margin-bottom:20px}
+.cover-characters{font-size:36px;margin-bottom:16px;letter-spacing:8px}
+.objectives{background:#fff;border-radius:16px;padding:16px 20px;text-align:left;box-shadow:0 2px 12px rgba(207,37,46,.1);width:100%;max-width:320px}
+.objectives h3{color:#c62828;font-size:14px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.objectives li{color:#555;font-size:13px;line-height:1.8;list-style:none;padding-left:22px;position:relative}
+.objectives li::before{content:"✓";position:absolute;left:0;color:#ef5350;font-weight:700}
+.steve-alex{display:flex;gap:24px;margin:16px 0;font-size:44px}
+
+/* Story */
+.story-scene{min-height:100%;display:flex;flex-direction:column;gap:10px}
+.story-title{color:#c62828;font-size:20px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.story-cave{background:linear-gradient(135deg,#3e2723,#4e342e,#5d4037);border-radius:16px;padding:18px;color:#efebe9;position:relative;overflow:hidden;min-height:140px;display:flex;flex-direction:column;justify-content:center}
+.story-cave::before{content:"🪨";position:absolute;font-size:60px;right:10px;bottom:-6px;opacity:.3}
+.story-runes{font-size:32px;letter-spacing:10px;text-align:center;margin:8px 0;color:#ffcc80}
+.story-dialogue{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.dialogue{background:#f3e5f5;border-radius:12px 12px 12px 4px;padding:10px 14px;font-size:14px;color:#333;line-height:1.6;max-width:90%;position:relative}
+.dialogue.steve{border-left:3px solid #42a5f5;background:#e3f2fd;align-self:flex-start}
+.dialogue.alex{border-right:3px solid #ef5350;background:#fce4ec;align-self:flex-end;border-radius:12px 12px 4px 12px}
+.dialogue .name{font-weight:700;font-size:12px;margin-bottom:2px}
+
+/* Character Page */
+.char-page{min-height:100%;display:flex;flex-direction:column}
+.char-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.char-header .emoji{font-size:36px}
+.char-header .char-name{font-size:28px;font-weight:800;color:#c62828}
+.char-pinyin{color:#ef5350;font-size:16px;font-weight:600;background:#fce4ec;padding:2px 12px;border-radius:10px}
+.char-evolution{display:flex;align-items:center;justify-content:center;gap:6px;margin:6px 0 10px;padding:10px;background:#fff8e1;border-radius:12px;flex-wrap:wrap}
+.evo-stage{display:flex;flex-direction:column;align-items:center;gap:2px}
+.evo-stage .icon{font-size:30px}
+.evo-stage .label{font-size:10px;color:#999}
+.evo-arrow{color:#ef5350;font-size:18px;font-weight:700}
+.tianzi-wrapper{display:flex;justify-content:center;margin:4px 0 8px}
+.tianzi-grid{width:140px;height:140px;position:relative;cursor:pointer;border:2px solid #ddd;border-radius:4px;transition:.2s}
+.tianzi-grid:active{transform:scale(.96)}
+.tianzi-grid svg{width:100%;height:100%;display:block}
+.tianzi-grid .grid-lines{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.char-strokes{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 8px;justify-content:center}
+.stroke-badge{background:#ef5350;color:#fff;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600}
+.char-words{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:4px}
+.word-chip{background:#fff3e0;color:#e65100;padding:4px 12px;border-radius:14px;font-size:14px;font-weight:600;border:1px solid #ffcc02}
+.char-desc{text-align:center;color:#666;font-size:13px;line-height:1.5;margin:4px 0;padding:8px 12px;background:#f5f5f5;border-radius:10px}
+
+/* Practice */
+.practice-page{min-height:100%;display:flex;flex-direction:column;gap:12px}
+.practice-section{border-radius:14px;padding:14px;background:#fafafa;border:1px solid #f0f0f0}
+.practice-section h3{font-size:15px;color:#c62828;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.match-game{display:flex;gap:12px;justify-content:center}
+.match-col{display:flex;flex-direction:column;gap:8px;align-items:center}
+.match-col-title{font-size:12px;color:#999;font-weight:600}
+.match-card{width:68px;height:68px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:28px;background:#fff;border:2px solid #e0e0e0;cursor:pointer;transition:.2s;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+.match-card:active{transform:scale(.92)}
+.match-card.selected{border-color:#ef5350;box-shadow:0 0 0 3px rgba(239,83,80,.2);transform:scale(1.05)}
+.match-card.matched{background:#c8e6c9;border-color:#4caf50;pointer-events:none;opacity:.7}
+.match-card.wrong{animation:shake .35s;border-color:#f44336}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.trace-area{position:relative;border-radius:10px;overflow:hidden;background:#fff;border:1px solid #eee}
+.trace-area canvas{width:100%;height:180px;display:block;touch-action:none}
+.trace-tools{display:flex;gap:8px;margin-top:6px;justify-content:center;flex-wrap:wrap}
+.trace-btn{padding:5px 14px;border-radius:16px;border:1px solid #ef5350;background:#fff;color:#ef5350;font-size:12px;font-weight:600;cursor:pointer;transition:.2s}
+.trace-btn:active{background:#ef5350;color:#fff}
+.trace-btn.active{background:#ef5350;color:#fff}
+.color-dot{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:.2s}
+.color-dot.active{border-color:#c62828;transform:scale(1.15)}
+.trace-char-select{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+.trace-char-btn{padding:4px 12px;border-radius:10px;border:1px solid #ddd;background:#fff;font-size:18px;cursor:pointer;transition:.2s;font-weight:600}
+.trace-char-btn.active{background:#ef5350;color:#fff;border-color:#ef5350}
+
+/* Challenge */
+.challenge-page{min-height:100%;display:flex;flex-direction:column;gap:10px}
+.challenge-title{font-size:18px;font-weight:800;color:#c62828;display:flex;align-items:center;gap:8px}
+.challenge-progress{height:6px;background:#f8bbd0;border-radius:3px;overflow:hidden}
+.challenge-progress-bar{height:100%;background:linear-gradient(90deg,#ef5350,#c62828);border-radius:3px;transition:width .4s}
+.question-card{background:#fff;border-radius:14px;padding:16px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid #f0f0f0}
+.question-text{font-size:16px;font-weight:700;color:#333;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.option-btn{padding:12px 8px;border-radius:12px;border:2px solid #e0e0e0;background:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.option-btn:active{transform:scale(.96)}
+.option-btn.selected{border-color:#ef5350;background:#fce4ec}
+.option-btn.correct{border-color:#4caf50;background:#c8e6c9}
+.option-btn.wrong{border-color:#f44336;background:#ffcdd2}
+.challenge-feedback{text-align:center;font-size:14px;font-weight:600;padding:6px;border-radius:8px;margin-top:6px;min-height:28px}
+.challenge-score{text-align:center;font-size:13px;color:#999;margin-top:4px}
+
+/* Poetry */
+.poetry-page{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
+.poetry-title{font-size:18px;font-weight:800;color:#c62828}
+.poetry-sub{font-size:13px;color:#999;margin-bottom:10px}
+.poetry-content{background:#fff8e1;border-radius:16px;padding:20px 24px;border-left:4px solid #ef5350;width:100%;max-width:340px}
+.poetry-line{font-size:20px;line-height:2;color:#4e342e;font-family:'STKaiti','KaiTi','Noto Serif SC',serif;font-weight:600}
+.poetry-line.highlight{color:#c62828}
+.poetry-btn{margin-top:12px;padding:8px 24px;border-radius:20px;border:none;background:#ef5350;color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:.2s}
+.poetry-btn:active{transform:scale(.94)}
+
+/* Celebration */
+.celebration-page{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;position:relative;background:linear-gradient(180deg,#fff8e1,#fff3e0,#fff)}
+.celebration-page .badge{font-size:72px;animation:float 2s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.celebration-title{font-size:26px;font-weight:900;color:#c62828}
+.celebration-sub{font-size:16px;color:#e53935;font-weight:600}
+.celebration-summary{background:#fff;border-radius:14px;padding:12px 18px;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:left;width:100%;max-width:300px}
+.celebration-summary li{font-size:13px;color:#555;line-height:1.8;list-style:none;padding-left:22px;position:relative}
+.celebration-summary li::before{content:"✅";position:absolute;left:0}
+.celebration-summary h3{color:#c62828;font-size:14px;margin-bottom:6px;text-align:center}
+
+/* Confetti Canvas */
+#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999}
+
+/* Story characters illustration */
+.char-illustration{display:flex;justify-content:center;align-items:center;gap:12px;margin:6px 0}
+.char-ill-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.char-ill-item .big{font-size:48px}
+.char-ill-item .small{font-size:12px;color:#999;font-weight:600}
+
+/* Dialogue box for story page */
+.story-box{margin-top:6px}
+.story-box p{font-size:14px;line-height:1.6;color:#555}
+
+/* Responsive */
+@media(max-width:480px){
+  .book-card{max-width:100%;height:calc(100dvh - 80px);border-radius:18px}
+  .page{padding:16px 16px}
+  .cover-title{font-size:38px}
+  .tianzi-grid{width:120px;height:120px}
+  .match-card{width:58px;height:58px;font-size:24px}
+  .options{grid-template-columns:1fr 1fr;gap:6px}
+  .option-btn{padding:10px 6px;font-size:14px}
+  .nav-btn{width:38px;height:38px;font-size:17px}
+  .speak-btn{width:38px;height:38px;font-size:16px}
+  .dot{width:8px;height:8px}
+}
+@media(max-height:700px){
+  .book-card{height:calc(100dvh - 70px);max-height:none}
+  .page{padding:12px 14px}
+  .cover-title{font-size:32px}
+  .tianzi-grid{width:100px;height:100px}
+  .nav-bar{padding:4px 12px 8px}
+}
+@media(min-width:600px){
+  .book-card{max-width:480px}
+}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="book-wrapper">
+<div class="book-card">
+
+<div class="pages-container">
+
+<!-- PAGE 0: COVER -->
+<div class="page active" data-page="0">
+<div class="cover-bg">
+  <div class="cover-badge">📖 语文 · 第1课</div>
+  <div class="cover-title">神奇汉字</div>
+  <div class="cover-sub">从图画变成文字</div>
+  <div class="steve-alex">⛏️ 🏹</div>
+  <div class="cover-characters">☀️ 🌙 ⛰️ 💧 🔥</div>
+  <div class="objectives">
+    <h3>📋 学习目标</h3>
+    <ul>
+      <li>了解汉字是从图画变来的</li>
+      <li>认识 5 个象形字：<strong>日 ☀️ 月 🌙 山 🏔️ 水 💧 火 🔥</strong></li>
+      <li>能用手指跟着描画字形</li>
+    </ul>
+  </div>
+  <div style="margin-top:14px;font-size:12px;color:#aaa">👆 点击翻页开始学习</div>
+</div>
+</div>
+
+<!-- PAGE 1: STORY -->
+<div class="page" data-page="1">
+<div class="story-scene">
+  <div class="story-title">⛰️ 方块世界的符文</div>
+  <div class="story-cave">
+    <div style="font-size:13px;color:#ffcc80;font-weight:600;margin-bottom:6px">🪨 山洞石壁上刻着奇怪的符号……</div>
+    <div class="story-runes">☀️ ⊙ ⛰️ 〰️ 🔥</div>
+  </div>
+  <div class="story-dialogue">
+    <div class="dialogue steve">
+      <div class="name">🧑 Steve</div>
+      "Alex，这些是什么？是画还是字？"
+    </div>
+    <div class="dialogue alex">
+      <div class="name">👩 Alex</div>
+      "都是！很久很久以前，人们把看到的东西画下来，慢慢地，这些画就变成了<strong>汉字</strong>。"
+    </div>
+  </div>
+  <div style="margin-top:8px;padding:10px 14px;background:#fce4ec;border-radius:10px;font-size:13px;color:#c62828;text-align:center">
+    💡 每一个汉字，都是一幅画！
+  </div>
+</div>
+</div>
+
+<!-- PAGE 2: 日 -->
+<div class="page" data-page="2">
+<div class="char-page">
+  <div class="char-header">
+    <span class="emoji">☀️</span>
+    <span class="char-name">日</span>
+    <span class="char-pinyin">rì</span>
+  </div>
+  <div class="char-evolution">
+    <div class="evo-stage"><span class="icon">○</span><span class="label">太阳</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon">⊙</span><span class="label">简化</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon" style="font-size:30px;font-weight:900;font-family:STKaiti,KaiTi,serif">日</span><span class="label">现代字</span></div>
+  </div>
+  <div class="tianzi-wrapper">
+    <div class="tianzi-grid" onclick="app.speak('日')">
+      <svg viewBox="0 0 200 200" style="position:absolute;top:0;left:0;width:100%;height:100%">
+        <rect x="10" y="10" width="180" height="180" fill="none" stroke="#ddd" stroke-width="2"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="100" y="148" text-anchor="middle" font-size="140" font-family="STKaiti,KaiTi,serif" fill="#333" font-weight="600">日</text>
+      </svg>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-bottom:6px">👆 点击汉字发音</div>
+  <div class="char-strokes">
+    <span class="stroke-badge">1. 竖</span>
+    <span class="stroke-badge">2. 横折</span>
+    <span class="stroke-badge">3. 横</span>
+    <span class="stroke-badge">4. 横</span>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#999;margin-bottom:6px">共 <strong>4</strong> 画</div>
+  <div class="char-words">
+    <span class="word-chip">🌅 日出</span>
+    <span class="word-chip">📅 日子</span>
+    <span class="word-chip">☀️ 太阳</span>
+  </div>
+  <div class="char-desc">
+    <strong>日</strong> — 太阳公公在天上，圆圆亮亮发着光。<br>
+    "每天早上太阳升起来，就是'日'。" —— Alex
+  </div>
+</div>
+</div>
+
+<!-- PAGE 3: 月 -->
+<div class="page" data-page="3">
+<div class="char-page">
+  <div class="char-header">
+    <span class="emoji">🌙</span>
+    <span class="char-name">月</span>
+    <span class="char-pinyin">yuè</span>
+  </div>
+  <div class="char-evolution">
+    <div class="evo-stage"><span class="icon">🌙</span><span class="label">月亮</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon">☽</span><span class="label">简化</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon" style="font-size:30px;font-weight:900;font-family:STKaiti,KaiTi,serif">月</span><span class="label">现代字</span></div>
+  </div>
+  <div class="tianzi-wrapper">
+    <div class="tianzi-grid" onclick="app.speak('月')">
+      <svg viewBox="0 0 200 200" style="position:absolute;top:0;left:0;width:100%;height:100%">
+        <rect x="10" y="10" width="180" height="180" fill="none" stroke="#ddd" stroke-width="2"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="100" y="148" text-anchor="middle" font-size="140" font-family="STKaiti,KaiTi,serif" fill="#333" font-weight="600">月</text>
+      </svg>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-bottom:6px">👆 点击汉字发音</div>
+  <div class="char-strokes">
+    <span class="stroke-badge">1. 撇</span>
+    <span class="stroke-badge">2. 横折钩</span>
+    <span class="stroke-badge">3. 横</span>
+    <span class="stroke-badge">4. 横</span>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#999;margin-bottom:6px">共 <strong>4</strong> 画</div>
+  <div class="char-words">
+    <span class="word-chip">🌕 月亮</span>
+    <span class="word-chip">💡 月光</span>
+    <span class="word-chip">🌍 月球</span>
+  </div>
+  <div class="char-desc">
+    <strong>月</strong> — 弯弯像小船，挂在夜空中。<br>
+    "等天黑了，月亮婆婆就出来了。" —— Steve
+  </div>
+</div>
+</div>
+
+<!-- PAGE 4: 山 -->
+<div class="page" data-page="4">
+<div class="char-page">
+  <div class="char-header">
+    <span class="emoji">🏔️</span>
+    <span class="char-name">山</span>
+    <span class="char-pinyin">shān</span>
+  </div>
+  <div class="char-evolution">
+    <div class="evo-stage"><span class="icon">⛰️</span><span class="label">山峰</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon">⛰</span><span class="label">简化</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon" style="font-size:30px;font-weight:900;font-family:STKaiti,KaiTi,serif">山</span><span class="label">现代字</span></div>
+  </div>
+  <div class="tianzi-wrapper">
+    <div class="tianzi-grid" onclick="app.speak('山')">
+      <svg viewBox="0 0 200 200" style="position:absolute;top:0;left:0;width:100%;height:100%">
+        <rect x="10" y="10" width="180" height="180" fill="none" stroke="#ddd" stroke-width="2"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="100" y="148" text-anchor="middle" font-size="140" font-family="STKaiti,KaiTi,serif" fill="#333" font-weight="600">山</text>
+      </svg>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-bottom:6px">👆 点击汉字发音</div>
+  <div class="char-strokes">
+    <span class="stroke-badge">1. 竖</span>
+    <span class="stroke-badge">2. 竖折</span>
+    <span class="stroke-badge">3. 竖</span>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#999;margin-bottom:6px">共 <strong>3</strong> 画</div>
+  <div class="char-words">
+    <span class="word-chip">🏔️ 山峰</span>
+    <span class="word-chip">🌊 山水</span>
+    <span class="word-chip">🌋 火山</span>
+  </div>
+  <div class="char-desc">
+    <strong>山</strong> — 三座山峰连一起，高高大大真美丽。<br>
+    "外面的世界有好多的山！" —— Steve 兴奋地说。
+  </div>
+</div>
+</div>
+
+<!-- PAGE 5: 水 -->
+<div class="page" data-page="5">
+<div class="char-page">
+  <div class="char-header">
+    <span class="emoji">💧</span>
+    <span class="char-name">水</span>
+    <span class="char-pinyin">shuǐ</span>
+  </div>
+  <div class="char-evolution">
+    <div class="evo-stage"><span class="icon">〰️</span><span class="label">流水</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon">💧</span><span class="label">简化</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon" style="font-size:30px;font-weight:900;font-family:STKaiti,KaiTi,serif">水</span><span class="label">现代字</span></div>
+  </div>
+  <div class="tianzi-wrapper">
+    <div class="tianzi-grid" onclick="app.speak('水')">
+      <svg viewBox="0 0 200 200" style="position:absolute;top:0;left:0;width:100%;height:100%">
+        <rect x="10" y="10" width="180" height="180" fill="none" stroke="#ddd" stroke-width="2"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="100" y="148" text-anchor="middle" font-size="140" font-family="STKaiti,KaiTi,serif" fill="#333" font-weight="600">水</text>
+      </svg>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-bottom:6px">👆 点击汉字发音</div>
+  <div class="char-strokes">
+    <span class="stroke-badge">1. 竖钩</span>
+    <span class="stroke-badge">2. 横撇</span>
+    <span class="stroke-badge">3. 撇</span>
+    <span class="stroke-badge">4. 捺</span>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#999;margin-bottom:6px">共 <strong>4</strong> 画</div>
+  <div class="char-words">
+    <span class="word-chip">🍎 水果</span>
+    <span class="word-chip">📏 水平</span>
+    <span class="word-chip">🌊 河水</span>
+  </div>
+  <div class="char-desc">
+    <strong>水</strong> — 哗啦哗啦流不停，清凉又解渴。<br>
+    "那边有条河，河里有水！" —— Alex 指了指洞外。
+  </div>
+</div>
+</div>
+
+<!-- PAGE 6: 火 -->
+<div class="page" data-page="6">
+<div class="char-page">
+  <div class="char-header">
+    <span class="emoji">🔥</span>
+    <span class="char-name">火</span>
+    <span class="char-pinyin">huǒ</span>
+  </div>
+  <div class="char-evolution">
+    <div class="evo-stage"><span class="icon">🔥</span><span class="label">火焰</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon">🜂</span><span class="label">简化</span></div>
+    <span class="evo-arrow">→</span>
+    <div class="evo-stage"><span class="icon" style="font-size:30px;font-weight:900;font-family:STKaiti,KaiTi,serif">火</span><span class="label">现代字</span></div>
+  </div>
+  <div class="tianzi-wrapper">
+    <div class="tianzi-grid" onclick="app.speak('火')">
+      <svg viewBox="0 0 200 200" style="position:absolute;top:0;left:0;width:100%;height:100%">
+        <rect x="10" y="10" width="180" height="180" fill="none" stroke="#ddd" stroke-width="2"/>
+        <line x1="100" y1="10" x2="100" y2="190" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <line x1="10" y1="100" x2="190" y2="100" stroke="#ddd" stroke-width="1" stroke-dasharray="4,4"/>
+        <text x="100" y="148" text-anchor="middle" font-size="140" font-family="STKaiti,KaiTi,serif" fill="#333" font-weight="600">火</text>
+      </svg>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:#aaa;margin-bottom:6px">👆 点击汉字发音</div>
+  <div class="char-strokes">
+    <span class="stroke-badge">1. 点</span>
+    <span class="stroke-badge">2. 撇</span>
+    <span class="stroke-badge">3. 撇</span>
+    <span class="stroke-badge">4. 捺</span>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#999;margin-bottom:6px">共 <strong>4</strong> 画</div>
+  <div class="char-words">
+    <span class="word-chip">🌋 火山</span>
+    <span class="word-chip">🚂 火车</span>
+    <span class="word-chip">🔥 大火</span>
+  </div>
+  <div class="char-desc">
+    <strong>火</strong> — 红红火焰跳起舞，温暖又明亮。<br>
+    "天快黑了，我们需要生火来取暖。" —— Steve 捡起树枝。
+  </div>
+</div>
+</div>
+
+<!-- PAGE 7: PRACTICE -->
+<div class="page" data-page="7">
+<div class="practice-page">
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+    <span style="font-size:22px">✏️</span>
+    <span style="font-size:18px;font-weight:800;color:#c62828">练一练</span>
+  </div>
+
+  <div class="practice-section">
+    <h3>🔗 练习1：连一连</h3>
+    <p style="font-size:12px;color:#999;margin-bottom:8px">点击左边的象形图，再点击右边的汉字</p>
+    <div class="match-game" id="matchGame">
+      <div class="match-col">
+        <div class="match-col-title">象形</div>
+        <div class="match-card" data-side="left" data-id="0">☀️</div>
+        <div class="match-card" data-side="left" data-id="1">🌙</div>
+        <div class="match-card" data-side="left" data-id="2">⛰️</div>
+        <div class="match-card" data-side="left" data-id="3">💧</div>
+        <div class="match-card" data-side="left" data-id="4">🔥</div>
+      </div>
+      <div style="display:flex;align-items:center;font-size:24px;color:#ddd">↔</div>
+      <div class="match-col">
+        <div class="match-col-title">汉字</div>
+        <div class="match-card" data-side="right" data-id="0">日</div>
+        <div class="match-card" data-side="right" data-id="1">月</div>
+        <div class="match-card" data-side="right" data-id="2">山</div>
+        <div class="match-card" data-side="right" data-id="3">水</div>
+        <div class="match-card" data-side="right" data-id="4">火</div>
+      </div>
+    </div>
+    <div id="matchFeedback" style="text-align:center;font-size:13px;font-weight:600;margin-top:6px;min-height:20px;color:#999">等待配对…</div>
+  </div>
+
+  <div class="practice-section">
+    <h3>🖊️ 练习2：描一描</h3>
+    <p style="font-size:12px;color:#999;margin-bottom:6px">选一个字，用手指在方格内描画</p>
+    <div class="trace-char-select" id="traceSelect">
+      <button class="trace-char-btn active" data-char="日">日</button>
+      <button class="trace-char-btn" data-char="月">月</button>
+      <button class="trace-char-btn" data-char="山">山</button>
+      <button class="trace-char-btn" data-char="水">水</button>
+      <button class="trace-char-btn" data-char="火">火</button>
+    </div>
+    <div class="trace-area">
+      <canvas id="traceCanvas"></canvas>
+    </div>
+    <div class="trace-tools">
+      <button class="trace-btn active" data-color="#ef5350">🔴 红</button>
+      <button class="trace-btn" data-color="#333">⚫ 黑</button>
+      <button class="trace-btn" data-color="#4caf50">🟢 绿</button>
+      <button class="trace-btn" id="clearTrace">🗑️ 清空</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE 8: CHALLENGE -->
+<div class="page" data-page="8">
+<div class="challenge-page">
+  <div class="challenge-title">🎯 闯关挑战 — 符文密室</div>
+  <div class="challenge-progress">
+    <div class="challenge-progress-bar" id="challengeProgress" style="width:0%"></div>
+  </div>
+  <div class="question-card" id="questionCard">
+    <div class="question-text" id="questionText">🌞 第一关：把"日"字放进太阳形状的凹槽</div>
+    <div class="options" id="optionsContainer">
+      <button class="option-btn" data-idx="0">日</button>
+      <button class="option-btn" data-idx="1">月</button>
+      <button class="option-btn" data-idx="2">山</button>
+      <button class="option-btn" data-idx="3">火</button>
+    </div>
+    <div class="challenge-feedback" id="challengeFeedback"></div>
+    <div class="challenge-score" id="challengeScore">得分：0 / 3</div>
+  </div>
+  <div style="font-size:13px;color:#888;text-align:center;padding:8px;background:#fce4ec;border-radius:10px;margin-top:auto">
+    💪 "加油，Steve！你一定能打开这扇门！"
+  </div>
+</div>
+</div>
+
+<!-- PAGE 9: POETRY -->
+<div class="page" data-page="9">
+<div class="poetry-page">
+  <div class="poetry-title">📜 古诗角</div>
+  <div class="poetry-sub">《古朗月行（节选）》唐·李白</div>
+  <div class="poetry-content">
+    <div class="poetry-line">小时不识月</div>
+    <div class="poetry-line">呼作白玉盘</div>
+    <div class="poetry-line">又疑瑶台镜</div>
+    <div class="poetry-line">飞在青云端</div>
+  </div>
+  <button class="poetry-btn" onclick="app.speak('小时不识月，呼作白玉盘。又疑瑶台镜，飞在青云端。')">🔊 听古诗朗诵</button>
+  <div style="margin-top:8px;font-size:12px;color:#bbb">🌟 这首古诗里藏着"月"字哦！</div>
+</div>
+</div>
+
+<!-- PAGE 10: CELEBRATION -->
+<div class="page" data-page="10">
+<div class="celebration-page">
+  <div class="badge">🏆</div>
+  <div class="celebration-title">🎉 恭喜通关！</div>
+  <div class="celebration-sub">获得「汉字探险家」徽章！</div>
+  <div style="font-size:14px;color:#888;margin:4px 0;padding:0 10px">
+    "原来汉字这么有趣！每一个字都像一幅画！"
+  </div>
+  <div class="celebration-summary">
+    <h3>✨ 本课小结</h3>
+    <ul>
+      <li>认识了 5 个象形字：<strong>日、月、山、水、火</strong></li>
+      <li>学会了用手指描画字形</li>
+      <li>知道了汉字是从图画变来的</li>
+    </ul>
+  </div>
+  <div style="font-size:12px;color:#ccc;margin-top:6px">🎊 准备好了吗？下一课见！</div>
+</div>
+</div>
+
+</div><!-- /pages-container -->
+
+<!-- NAV BAR -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="app.prev()">◀</button>
+  <div class="dots" id="dotsContainer"></div>
+  <button class="speak-btn" id="speakBtn" onclick="app.speakCurrentPage()" title="朗读本页">🔊</button>
+  <button class="nav-btn" id="nextBtn" onclick="app.next()">▶</button>
+</div>
+
+</div><!-- /book-card -->
+</div><!-- /book-wrapper -->
+
+<canvas id="confetti-canvas"></canvas>
+
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'chinese-01-characters';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+const DATA = {
+  characters: {
+    '日': { pinyin: 'rì', strokes: 4 },
+    '月': { pinyin: 'yuè', strokes: 4 },
+    '山': { pinyin: 'shān', strokes: 3 },
+    '水': { pinyin: 'shuǐ', strokes: 4 },
+    '火': { pinyin: 'huǒ', strokes: 4 }
+  },
+  matchPairs: [
+    { left: '☀️', right: '日', id: 0 },
+    { left: '🌙', right: '月', id: 1 },
+    { left: '⛰️', right: '山', id: 2 },
+    { left: '💧', right: '水', id: 3 },
+    { left: '🔥', right: '火', id: 4 }
+  ],
+  questions: [
+    { text: '🌞 第一关：把"日"字放进太阳形状的凹槽', options: ['日','月','山','火'], correct: 0 },
+    { text: '⛰️ 第二关：把"山"字放进山峰形状的凹槽', options: ['水','山','日','月'], correct: 1 },
+    { text: '💧 第三关：把"水"字放进河流形状的凹槽', options: ['火','山','水','日'], correct: 2 }
+  ],
+  pageContent: [
+    '', // cover - handled specially
+    '第一页：方块世界的符文。Steve 和 Alex 走进一个山洞，发现墙壁上刻着奇怪的符号。这些画慢慢变成了汉字。',
+    '日 — 太阳公公在天上，圆圆亮亮发着光。每天早上太阳升起来，就是日。',
+    '月 — 弯弯像小船，挂在夜空中。等天黑了，月亮婆婆就出来了。',
+    '山 — 三座山峰连一起，高高大大真美丽。外面的世界有好多的山。',
+    '水 — 哗啦哗啦流不停，清凉又解渴。那边有条河，河里有水。',
+    '火 — 红红火焰跳起舞，温暖又明亮。天快黑了，我们需要生火来取暖。',
+    '练一练：连一连和描一描，复习日、月、山、水、火五个象形字。',
+    '闯关挑战 — 符文密室。加油，Steve！你一定能打开这扇门！',
+    '古诗《古朗月行》，唐·李白。小时不识月，呼作白玉盘。又疑瑶台镜，飞在青云端。',
+    '恭喜通关！获得汉字探险家徽章！每一个字都像一幅画！'
+  ]
+};
+
+const app = {
+  currentPage: 0,
+  totalPages: 11,
+  isSpeaking: false,
+  matchSelected: null,
+  matchSolved: new Set(),
+  challengeQ: 0,
+  challengeScore: 0,
+  challengeDone: false,
+  traceChar: '日',
+  traceColor: '#ef5350',
+  isDrawing: false,
+  animating: false,
+
+  init() {
+    this.renderDots();
+    this.showPage(0, false);
+    this.initMatchGame();
+    this.initTrace();
+    this.initChallenge();
+    this.initConfetti();
+    this.initSwipe();
+    this.resizeCanvas();
+    window.addEventListener('resize', () => this.resizeCanvas());
+  },
+
+  renderDots() {
+    const c = document.getElementById('dotsContainer');
+    c.innerHTML = '';
+    for (let i = 0; i < this.totalPages; i++) {
+      const d = document.createElement('button');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.setAttribute('data-index', i);
+      d.onclick = () => this.goToPage(i);
+      c.appendChild(d);
+    }
+  },
+
+  showPage(n, animate = true) {
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(p => p.classList.remove('active', 'exit'));
+    const target = document.querySelector(`.page[data-page="${n}"]`);
+    if (!target) return;
+    
+    if (animate) {
+      target.classList.add('active');
+      gsap.fromTo(target, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' });
+    } else {
+      target.classList.add('active');
+    }
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n));
+    
+    // Update nav buttons
+    document.getElementById('prevBtn').disabled = n === 0;
+    document.getElementById('nextBtn').disabled = n === this.totalPages - 1;
+    
+    this.currentPage = n;
+  },
+
+  goToPage(n) {
+    if (this.animating) return;
+    if (n < 0 || n >= this.totalPages) return;
+    this.animating = true;
+    this.showPage(n);
+    setTimeout(() => { this.animating = false; }, 400);
+  },
+
+  next() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.goToPage(this.currentPage + 1);
+    }
+  },
+
+  prev() {
+    if (this.currentPage > 0) {
+      this.goToPage(this.currentPage - 1);
+    }
+  },
+
+  speak(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN';
+    u.rate = 0.85;
+    u.pitch = 1.1;
+    u.volume = 1;
+    this.isSpeaking = true;
+    document.getElementById('speakBtn').classList.add('speaking');
+    u.onend = () => {
+      this.isSpeaking = false;
+      document.getElementById('speakBtn').classList.remove('speaking');
+    };
+    u.onerror = () => {
+      this.isSpeaking = false;
+      document.getElementById('speakBtn').classList.remove('speaking');
+    };
+    window.speechSynthesis.speak(u);
+  },
+
+  speakCurrentPage() {
+    if (this.isSpeaking) {
+      window.speechSynthesis.cancel();
+      this.isSpeaking = false;
+      document.getElementById('speakBtn').classList.remove('speaking');
+      return;
+    }
+    const idx = this.currentPage;
+    if (idx === 0) {
+      this.speak('神奇汉字。第一课。了解汉字是从图画变来的。认识五个象形字。日、月、山、水、火。');
+    } else if (idx >= 1 && idx <= 10) {
+      this.speak(DATA.pageContent[idx]);
+    }
+  },
+
+  /* ---- MATCHING GAME ---- */
+  initMatchGame() {
+    const cards = document.querySelectorAll('.match-card');
+    cards.forEach(c => c.addEventListener('click', () => this.handleMatchClick(c)));
+  },
+
+  handleMatchClick(card) {
+    if (card.classList.contains('matched')) return;
+    const side = card.dataset.side;
+    const id = parseInt(card.dataset.id);
+
+    if (side === 'left') {
+      // Select left card
+      document.querySelectorAll('.match-card[data-side="left"]').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      this.matchSelected = { side: 'left', id, el: card };
+    } else {
+      // Right card selected - check if any left is selected
+      const leftSelected = document.querySelector('.match-card[data-side="left"].selected');
+      if (!leftSelected) {
+        document.getElementById('matchFeedback').textContent = '👆 先点左边的象形图！';
+        return;
+      }
+      const leftId = parseInt(leftSelected.dataset.id);
+      if (leftId === id) {
+        // Correct!
+        leftSelected.classList.remove('selected');
+        leftSelected.classList.add('matched');
+        card.classList.add('matched');
+        this.matchSolved.add(id);
+        document.getElementById('matchFeedback').textContent = '✅ 配对成功！';
+        if (this.matchSolved.size === 5) {
+          document.getElementById('matchFeedback').textContent = '🎉 太棒啦！全部配对完成！';
+          gsap.fromTo('.match-card.matched', { scale: 1 }, { scale: 1.08, duration: 0.3, yoyo: true, repeat: 1 });
+        }
+      } else {
+        // Wrong
+        leftSelected.classList.remove('selected');
+        card.classList.add('wrong');
+        document.getElementById('matchFeedback').textContent = '❌ 再试试～';
+        setTimeout(() => card.classList.remove('wrong'), 400);
+      }
+    }
+  },
+
+  /* ---- TRACING ---- */
+  initTrace() {
+    const canvas = document.getElementById('traceCanvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let lastX, lastY;
+
+    const getPos = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      let clientX, clientY;
+      if (e.touches) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+        e.preventDefault();
+      } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+      }
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    };
+
+    const startDraw = (e) => {
+      e.preventDefault();
+      drawing = true;
+      const pos = getPos(e);
+      lastX = pos.x;
+      lastY = pos.y;
+    };
+
+    const draw = (e) => {
+      e.preventDefault();
+      if (!drawing) return;
+      const pos = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.strokeStyle = this.traceColor;
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.stroke();
+      lastX = pos.x;
+      lastY = pos.y;
+    };
+
+    const endDraw = (e) => {
+      e.preventDefault();
+      drawing = false;
+    };
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseleave', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', endDraw, { passive: false });
+
+    // Char select
+    document.querySelectorAll('.trace-char-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.trace-char-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.traceChar = btn.dataset.char;
+        this.redrawTraceGuide();
+      });
+    });
+
+    // Color select
+    document.querySelectorAll('.trace-btn[data-color]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.trace-btn[data-color]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.traceColor = btn.dataset.color;
+        ctx.strokeStyle = this.traceColor;
+      });
+    });
+
+    // Clear
+    document.getElementById('clearTrace').addEventListener('click', () => this.clearTraceCanvas());
+
+    this.traceCtx = ctx;
+    this.redrawTraceGuide();
+  },
+
+  resizeCanvas() {
+    const canvas = document.getElementById('traceCanvas');
+    if (!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const w = rect.width - 2;
+    const h = 180;
+    canvas.width = w * (window.devicePixelRatio || 1);
+    canvas.height = h * (window.devicePixelRatio || 1);
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    if (this.traceCtx) {
+      this.traceCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+      this.redrawTraceGuide();
+    }
+  },
+
+  redrawTraceGuide() {
+    const canvas = document.getElementById('traceCanvas');
+    if (!canvas) return;
+    const ctx = this.traceCtx;
+    const w = canvas.width / (window.devicePixelRatio || 1);
+    const h = canvas.height / (window.devicePixelRatio || 1);
+    
+    // Clear
+    ctx.clearRect(0, 0, w, h);
+    
+    // Draw tianzi grid
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 1;
+    const margin = 40;
+    const gw = w - margin * 2;
+    const gh = h - margin * 2;
+    const cx = w / 2;
+    const cy = h / 2;
+    
+    // Outer border
+    ctx.strokeRect(margin, margin, gw, gh);
+    // Dashes
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(cx, margin);
+    ctx.lineTo(cx, margin + gh);
+    ctx.moveTo(margin, cy);
+    ctx.lineTo(margin + gw, cy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw guide character in light gray
+    ctx.font = `${gh * 0.7}px STKaiti, KaiTi, serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(239, 83, 80, 0.15)';
+    ctx.fillText(this.traceChar, cx, cy + 4);
+  },
+
+  clearTraceCanvas() {
+    this.redrawTraceGuide();
+  },
+
+  /* ---- CHALLENGE ---- */
+  initChallenge() {
+    this.challengeQ = 0;
+    this.challengeScore = 0;
+    this.challengeDone = false;
+    this.renderQuestion();
+  },
+
+  renderQuestion() {
+    if (this.challengeDone) return;
+    const q = DATA.questions[this.challengeQ];
+    document.getElementById('questionText').textContent = q.text;
+    document.getElementById('challengeFeedback').textContent = '';
+    document.getElementById('challengeScore').textContent = `得分：${this.challengeScore} / 3`;
+    document.getElementById('challengeProgress').style.width = `${(this.challengeQ / 3) * 100}%`;
+
+    const container = document.getElementById('optionsContainer');
+    container.innerHTML = '';
+    q.options.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.dataset.idx = idx;
+      btn.addEventListener('click', () => this.handleAnswer(idx));
+      container.appendChild(btn);
+    });
+  },
+
+  handleAnswer(idx) {
+    if (this.challengeDone) return;
+    const q = DATA.questions[this.challengeQ];
+    const btns = document.querySelectorAll('.option-btn');
+    btns.forEach(b => b.style.pointerEvents = 'none');
+
+    if (idx === q.correct) {
+      btns[idx].classList.add('correct');
+      this.challengeScore++;
+      document.getElementById('challengeFeedback').textContent = '✅ 正确！太棒了！';
+      document.getElementById('challengeFeedback').style.color = '#4caf50';
+      gsap.fromTo(btns[idx], { scale: 1 }, { scale: 1.1, duration: 0.3, yoyo: true, repeat: 1 });
+    } else {
+      btns[idx].classList.add('wrong');
+      btns[q.correct].classList.add('correct');
+      document.getElementById('challengeFeedback').textContent = `❌ 再想想～正确答案是 "${q.options[q.correct]}"`;
+      document.getElementById('challengeFeedback').style.color = '#f44336';
+    }
+
+    document.getElementById('challengeScore').textContent = `得分：${this.challengeScore} / 3`;
+
+    this.challengeQ++;
+    if (this.challengeQ >= 3) {
+      this.challengeDone = true;
+      document.getElementById('challengeProgress').style.width = '100%';
+      setTimeout(() => {
+        const allCorrect = this.challengeScore === 3;
+        document.getElementById('challengeFeedback').textContent = allCorrect ? '🎉 满分通关！石门打开了！' : `🏆 通关！获得了 ${this.challengeScore}/3 分！`;
+        document.getElementById('challengeFeedback').style.color = '#c62828';
+      }, 800);
+    } else {
+      setTimeout(() => this.renderQuestion(), 1200);
+    }
+  },
+
+  /* ---- CONFETTI ---- */
+  initConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animId = null;
+    let running = false;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const colors = ['#ef5350','#f44336','#e91e63','#ff9800','#ffeb3b','#4caf50','#2196f3','#9c27b0','#ff5722'];
+
+    this.startConfetti = () => {
+      if (running) return;
+      running = true;
+      particles = [];
+      for (let i = 0; i < 120; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          w: Math.random() * 10 + 5,
+          h: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 3,
+          vy: Math.random() * 3 + 2,
+          rotation: Math.random() * 360,
+          rotSpeed: (Math.random() - 0.5) * 8,
+          opacity: 1
+        });
+      }
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let alive = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.04;
+          p.rotation += p.rotSpeed;
+          p.opacity -= 0.0015;
+          if (p.opacity > 0 && p.y < canvas.height + 20) {
+            alive = true;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate(p.rotation * Math.PI / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+            ctx.restore();
+          }
+        });
+        if (alive) {
+          animId = requestAnimationFrame(animate);
+        } else {
+          running = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      };
+      animate();
+    };
+
+    // Auto trigger on celebration page
+    const observer = new MutationObserver(() => {
+      const activePage = document.querySelector('.page.active[data-page="10"]');
+      if (activePage) {
+        setTimeout(() => this.startConfetti(), 500);
+      }
+    });
+    observer.observe(document.querySelector('.pages-container'), { childList: true, subtree: true, attributeFilter: ['class'] });
+  },
+
+  /* ---- SWIPE ---- */
+  initSwipe() {
+    const container = document.querySelector('.pages-container');
+    let startX = 0, startY = 0, isSwiping = false;
+
+    container.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isSwiping = true;
+    }, { passive: true });
+
+    container.addEventListener('touchmove', (e) => {
+      if (!isSwiping) return;
+      e.preventDefault();
+    }, { passive: false });
+
+    container.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      const endX = e.changedTouches[0].clientX;
+      const endY = e.changedTouches[0].clientY;
+      const dx = endX - startX;
+      const dy = endY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+        if (dx > 0) this.prev();
+        else this.next();
+      }
+    }, { passive: true });
+  }
+};
+
+// Keyboard support
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); app.next(); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); app.prev(); }
+});
+
+app.init();
+</script>
+<a href="../" style="position:fixed;top:8px;left:8px;z-index:9999;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s" onmouseover="this.style.transform=\'scale(1.1)\''" onmouseout="this.style.transform=\'scale(1)\''">🏠</a>
+</body>
+</html>

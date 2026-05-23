@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>数学第9课 — 20以内的退位减法</title>
+<meta name="description" content="儿童数学课程：20以内的退位减法，包含8页互动课件">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+<style>
+  /* ── reset & base ── */
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;background:#e8f4fd}
+  body{display:flex;justify-content:center;align-items:flex-start}
+
+  /* ── app container (mobile-first 420px) ── */
+  .app{flex-shrink:0;width:100%;max-width:960px;min-height:100vh;background:#fff;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(66,165,245,.15);margin:0 auto}
+
+  /* ── top bar (fixed) ── */
+  .top-bar{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:960px;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;background:linear-gradient(135deg,#42A5F5 0%,#1e88e5 100%);z-index:100;box-shadow:0 2px 10px rgba(0,0,0,.14)}
+  .top-bar .home-btn{font-size:26px;cursor:pointer;transition:transform .2s ease,opacity .2s;line-height:1;-webkit-user-select:none;user-select:none;text-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .top-bar .home-btn:active{transform:scale(.85);opacity:.85}
+  .top-bar .speak-btn{font-size:24px;cursor:pointer;transition:transform .2s ease,background .3s;line-height:1;background:rgba(255,255,255,.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;-webkit-user-select:none;user-select:none;border:2px solid rgba(255,255,255,.15)}
+  .top-bar .speak-btn:active{transform:scale(.88)}
+  .top-bar .speak-btn.speaking{background:rgba(255,255,255,.4);animation:speakPulse 1s ease-in-out infinite}
+  @keyframes speakPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.5);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0);transform:scale(1.08)}}
+
+  /* ── pages container ── */
+  .pages{position:relative;width:100%;padding-top:52px;min-height:100vh}
+
+  /* ── individual page ── */
+  .page{display:none;flex-direction:column;align-items:center;justify-content:flex-start;width:100%;min-height:calc(100vh - 52px);padding:18px 18px 80px;animation:fadeIn .35s ease}
+  .page.active{display:flex}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ── page image ── */
+  .page-img{width:100%;max-width:384px;border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(66,165,245,.2);margin-bottom:14px;background:#f0f8ff;flex-shrink:0;transition:box-shadow .3s}
+  .page-img img{width:100%;height:auto;display:block;object-fit:contain}
+  .page-img .img-placeholder{width:100%;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#90caf9;font-size:15px;font-weight:700;gap:10px;background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-radius:18px}
+  .page-img .img-placeholder svg{width:52px;height:52px;fill:#90caf9}
+  .page-img .img-placeholder span{opacity:.8}
+
+  /* ── typography ── */
+  .page-title{font-size:23px;font-weight:900;color:#1565c0;text-align:center;margin-bottom:5px;line-height:1.35;letter-spacing:-.3px}
+  .page-subtitle{font-size:13px;color:#64b5f6;text-align:center;margin-bottom:12px;font-weight:600;letter-spacing:.5px}
+  .page-text{font-size:15px;color:#37474f;text-align:center;line-height:1.8;padding:0 4px;max-width:380px}
+  .page-text .highlight{color:#1565c0;font-weight:700}
+  .page-text.highlight-box{background:#e3f2fd;border-radius:14px;padding:12px 18px;font-weight:700;color:#1565c0;border-left:4px solid #42A5F5}
+
+  /* ── example boxes ── */
+  .example-box{background:#f8fbff;border:2px solid #bbdefb;border-radius:16px;padding:14px 18px;margin:5px 0 10px;width:100%;max-width:380px;transition:border-color .2s}
+  .example-box:hover{border-color:#90caf9}
+  .example-box .ex-title{font-weight:800;color:#42A5F5;font-size:15px;margin-bottom:8px}
+  .example-box .ex-row{display:flex;align-items:center;justify-content:center;gap:12px;font-size:22px;font-weight:700;color:#1565c0;padding:6px 0;flex-wrap:wrap}
+  .example-box .ex-row .num{background:#e3f2fd;border-radius:10px;padding:4px 14px;min-width:42px;text-align:center;font-size:22px;box-shadow:inset 0 1px 3px rgba(0,0,0,.04)}
+  .example-box .ex-row .arrow{color:#90caf9;font-size:24px;font-weight:400}
+  .example-box .ex-note{font-size:13px;color:#78909c;text-align:center;margin-top:7px;font-weight:600;line-height:1.5}
+  .example-box .ex-note .em{color:#1565c0;font-weight:800}
+
+  /* ── mnemonic (口诀) ── */
+  .mnemonic-box{background:linear-gradient(135deg,#e3f2fd,#f5faff);border:2px dashed #90caf9;border-radius:14px;padding:14px 18px;width:100%;max-width:380px;margin:8px 0;text-align:center}
+  .mnemonic-box .mn-title{font-size:14px;font-weight:800;color:#42A5F5;margin-bottom:6px}
+  .mnemonic-box .mn-line{font-size:16px;color:#1565c0;font-weight:700;line-height:1.8}
+
+  /* ── practice grid ── */
+  .practice-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:380px;margin:10px 0}
+  .practice-item{background:#f5faff;border:2px solid #e3f2fd;border-radius:14px;padding:14px 8px;text-align:center;font-size:22px;font-weight:800;color:#1565c0;cursor:pointer;transition:all .25s ease;-webkit-user-select:none;user-select:none;position:relative}
+  .practice-item:active{transform:scale(.94);background:#e3f2fd;border-color:#42A5F5}
+  .practice-item .p-item{font-size:17px;font-weight:700;color:#37474f;display:block;margin-bottom:4px}
+  .practice-item .answer{display:none;margin-top:5px;font-size:20px;color:#2e7d32;font-weight:900}
+  .practice-item .answer.show{display:block;animation:popIn .25s ease}
+  @keyframes popIn{0%{transform:scale(0);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+  .practice-item.correct{border-color:#66bb6a;background:#e8f5e9;box-shadow:0 0 0 2px rgba(102,187,106,.2)}
+
+  /* ── challenge box ── */
+  .challenge-box{background:linear-gradient(135deg,#fff8e1,#fff3e0);border:2px solid #ffe082;border-radius:18px;padding:18px;width:100%;max-width:380px;text-align:center;margin:10px 0;box-shadow:0 2px 12px rgba(255,224,130,.15)}
+  .challenge-box .ch-q{font-size:30px;font-weight:900;color:#e65100;margin:10px 0 4px}
+  .challenge-box .ch-hint{font-size:14px;color:#8d6e63;margin-bottom:10px}
+  .challenge-box .ch-input{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .challenge-box .ch-label{font-size:22px;font-weight:800;color:#1565c0}
+  .challenge-box input[type=number]{width:76px;height:46px;font-size:24px;font-weight:800;text-align:center;border:3px solid #ffe082;border-radius:12px;outline:none;font-family:'Nunito',sans-serif;color:#1565c0;background:#fff;transition:border-color .2s}
+  .challenge-box input[type=number]:focus{border-color:#42A5F5;box-shadow:0 0 0 3px rgba(66,165,245,.15)}
+  .challenge-box .ch-btn{background:#42A5F5;color:#fff;border:none;border-radius:12px;padding:11px 28px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;transition:background .2s,transform .15s;box-shadow:0 3px 8px rgba(66,165,245,.25)}
+  .challenge-box .ch-btn:active{background:#1e88e5;transform:scale(.95)}
+  .challenge-box .ch-feedback{font-size:16px;font-weight:700;margin-top:10px;min-height:26px;line-height:1.5;transition:all .2s}
+  .challenge-box .ch-feedback.correct{color:#2e7d32}
+  .challenge-box .ch-feedback.wrong{color:#ef5350}
+
+  /* ── celebration page ── */
+  .celebration-page{justify-content:center!important;align-items:center!important;background:linear-gradient(180deg,#e3f2fd 0%,#f5faff 40%,#fff 100%)}
+  .celebration-page .big-star{font-size:84px;margin-bottom:12px;display:block;text-align:center;animation:starBounce 1.2s ease infinite}
+  @keyframes starBounce{0%,100%{transform:scale(1) rotate(0deg)}25%{transform:scale(1.1) rotate(-5deg)}75%{transform:scale(1.1) rotate(5deg)}}
+  .celebration-page .congrats-text{font-size:30px;font-weight:900;color:#1565c0;text-align:center}
+  .celebration-page .sub-text{font-size:16px;color:#64b5f6;text-align:center;margin-top:8px;font-weight:600}
+  .celebration-page .reward{font-size:17px;color:#37474f;text-align:center;margin-top:18px;font-weight:700;background:#fff8e1;border-radius:14px;padding:14px 24px;max-width:320px;border:2px solid #ffe082;line-height:1.6}
+  .celebration-page .reward .medal{font-size:28px}
+
+  /* ── nav dots ── */
+  .nav-dots{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:6px;z-index:100;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:7px 18px;border-radius:28px;box-shadow:0 2px 16px rgba(0,0,0,.1)}
+  .nav-dots .dot{width:10px;height:10px;border-radius:50%;background:#bbdefb;cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);border:none;padding:0;-webkit-user-select:none;user-select:none;flex-shrink:0}
+  .nav-dots .dot.active{background:#42A5F5;width:26px;border-radius:6px}
+  .nav-dots .nav-btn{font-size:20px;cursor:pointer;background:none;border:none;color:#42A5F5;padding:4px 6px;transition:color .2s,opacity .2s;-webkit-user-select:none;user-select:none;line-height:1;font-weight:700}
+  .nav-dots .nav-btn:active{color:#1565c0}
+  .nav-dots .nav-btn.disabled{color:#cfd8dc;pointer-events:none;opacity:.4}
+
+  /* ── confetti canvas ── */
+  #confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:200}
+
+  /* ── responsive fine-tuning ── */
+  @media(max-width:960px){
+    .page{padding:14px 12px 76px}
+    .page-title{font-size:21px}
+    .practice-grid{gap:8px}
+    .practice-item{padding:12px 6px;font-size:20px}
+    .example-box{padding:12px 14px}
+    .top-bar{padding:0 10px}
+  }
+  @media(min-width:421px){
+    .app{border-radius:24px;margin:12px auto}
+    .top-bar{border-radius:24px 24px 0 0}
+    .nav-dots{border-radius:28px}
+  }
+  @media(min-width:600px){
+    .app{max-width:960px}
+  }
+  @media(max-height:640px){
+    .page{padding-top:10px;padding-bottom:72px}
+    .page-img{max-width:320px;margin-bottom:8px}
+    .page-title{font-size:18px;margin-bottom:2px}
+  }
+
+  /* ── utilities ── */
+  .hidden{display:none!important}
+  .mt-4{margin-top:4px}
+  .mt-6{margin-top:6px}
+  .mt-8{margin-top:8px}
+  .mt-10{margin-top:10px}
+  .mt-12{margin-top:12px}
+  .w-full{width:100%}
+  .flex-center{display:flex;align-items:center;justify-content:center}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ════════════════════════════════════════════════════
+       TOP BAR (fixed)
+       ════════════════════════════════════════════════════ -->
+  <div class="top-bar" role="toolbar" aria-label="顶部工具栏">
+    <span class="home-btn" id="homeBtn" title="回到首页" role="button" tabindex="0" aria-label="首页">🏠</span>
+    <span class="speak-btn" id="speakBtn" title="朗读本页内容" role="button" tabindex="0" aria-label="朗读">▶</span>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       PAGES
+       ════════════════════════════════════════════════════ -->
+  <div class="pages" id="pagesContainer">
+
+    <!-- ──── PAGE 1 ──── 封面 Cover ──── -->
+    <div class="page active" data-page="0" data-title="20以内的退位减法" data-img="page-01">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="第9课封面：20以内的退位减法" loading="eager">
+      </div>
+      <div class="page-title">📖 第9课</div>
+      <div class="page-title" style="font-size:21px;margin-top:-3px;margin-bottom:4px">20以内的退位减法</div>
+      <div class="page-subtitle">Subtraction within 20 with borrowing</div>
+      <div class="page-text" style="margin-top:8px">
+        小朋友，今天我们来学习<b>退位减法</b>！<br>
+        当个位不够减时，我们要向十位<br>
+        <b style="color:#42A5F5;font-size:18px">"借一当十"</b> 🎯
+      </div>
+    </div>
+
+    <!-- ──── PAGE 2 ──── 概念 Concept ──── -->
+    <div class="page" data-page="1" data-title="什么是退位减法" data-img="page-02">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="退位减法概念图解" loading="lazy">
+      </div>
+      <div class="page-title">🧠 什么是退位减法？</div>
+      <div class="page-text" style="margin-bottom:4px">
+        退位减法就是当<b>个位数字不够减</b>时，<br>
+        从十位<b>"借"</b>1个十当作10个一来计算。
+      </div>
+      <div class="mnemonic-box">
+        <div class="mn-title">⭐ 退位减法口诀</div>
+        <div class="mn-line">
+          个位不够减&nbsp;&nbsp;→&nbsp;&nbsp;十位借一<br>
+          借一当作十&nbsp;&nbsp;→&nbsp;&nbsp;个位加十再减
+        </div>
+      </div>
+      <div class="page-text" style="margin-top:4px">
+        <span class="highlight-box" style="display:inline-block;padding:8px 16px;border-radius:10px;background:#e3f2fd;font-weight:700;color:#1565c0;font-size:14px">
+          📌 <b>退位</b> = 从高位借1，到低位当10
+        </span>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 3 ──── 范例 Examples ──── -->
+    <div class="page" data-page="2" data-title="范例讲解" data-img="page-04">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="退位减法范例" loading="lazy">
+      </div>
+      <div class="page-title">✏️ 范例讲解</div>
+      <div class="page-text" style="font-size:14px;color:#78909c;margin-bottom:4px">仔细看每一步的计算过程 👇</div>
+
+      <div class="example-box">
+        <div class="ex-title">📐 例1：15 − 7 = ？</div>
+        <div class="ex-row">
+          <span class="num">15</span>
+          <span class="arrow">−</span>
+          <span class="num">7</span>
+          <span class="arrow">=</span>
+          <span class="num" style="background:#c8e6c9;color:#2e7d32">8</span>
+        </div>
+        <div class="ex-note">
+          5 − 7 不够减 → 从十位借1 → <span class="em">15 − 7 = 8</span> ✅
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-title">📐 例2：13 − 6 = ？</div>
+        <div class="ex-row">
+          <span class="num">13</span>
+          <span class="arrow">−</span>
+          <span class="num">6</span>
+          <span class="arrow">=</span>
+          <span class="num" style="background:#c8e6c9;color:#2e7d32">7</span>
+        </div>
+        <div class="ex-note">
+          3 − 6 不够减 → 从十位借1 → <span class="em">13 − 6 = 7</span> ✅
+        </div>
+      </div>
+
+      <div class="example-box">
+        <div class="ex-title">📐 例3：12 − 9 = ？</div>
+        <div class="ex-row">
+          <span class="num">12</span>
+          <span class="arrow">−</span>
+          <span class="num">9</span>
+          <span class="arrow">=</span>
+          <span class="num" style="background:#c8e6c9;color:#2e7d32">3</span>
+        </div>
+        <div class="ex-note">
+          2 − 9 不够减 → 从十位借1 → <span class="em">12 − 9 = 3</span> ✅
+        </div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 4 ──── 练习① Practice 1 ──── -->
+    <div class="page" data-page="3" data-title="练一练①" data-img="page-05">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="练习题第一组" loading="lazy">
+      </div>
+      <div class="page-title">✍️ 练一练 ①</div>
+      <div class="page-subtitle">👆 点算式看答案 &nbsp;·&nbsp; 再点隐藏</div>
+      <div class="practice-grid">
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">11 − 4</span> = <span class="answer">7</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">12 − 5</span> = <span class="answer">7</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">13 − 8</span> = <span class="answer">5</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">14 − 6</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">15 − 9</span> = <span class="answer">6</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">16 − 7</span> = <span class="answer">9</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">17 − 8</span> = <span class="answer">9</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">18 − 9</span> = <span class="answer">9</span></div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 5 ──── 练习② Practice 2 ──── -->
+    <div class="page" data-page="4" data-title="练一练②" data-img="page-06">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="练习题第二组" loading="lazy">
+      </div>
+      <div class="page-title">✍️ 练一练 ②</div>
+      <div class="page-subtitle">👆 点算式看答案 &nbsp;·&nbsp; 再点隐藏</div>
+      <div class="practice-grid">
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">12 − 3</span> = <span class="answer">9</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">11 − 2</span> = <span class="answer">9</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">14 − 8</span> = <span class="answer">6</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">15 − 6</span> = <span class="answer">9</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">13 − 5</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">16 − 8</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">17 − 9</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">11 − 6</span> = <span class="answer">5</span></div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 6 ──── 挑战 Challenge ──── -->
+    <div class="page" data-page="5" data-title="挑战题" data-img="page-07">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="挑战题" loading="lazy">
+      </div>
+      <div class="page-title">🏆 挑战题</div>
+      <div class="page-subtitle">动动脑，试一试！🧩</div>
+      <div class="challenge-box">
+        <div class="ex-title" style="color:#e65100">🔥 思考题</div>
+        <div class="ch-q">1? − 8 = 9</div>
+        <div class="ch-hint">问号处应该填什么数字？</div>
+        <div class="ch-input">
+          <span class="ch-label">1</span>
+          <input type="number" id="challengeInput" placeholder="?" min="0" max="9" step="1" aria-label="填入问号处的数字">
+          <button class="ch-btn" id="challengeBtn" aria-label="检查答案">✓ 检查</button>
+        </div>
+        <div class="ch-feedback" id="chFeedback"></div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 7 ──── 再来练练 More Practice ──── -->
+    <div class="page" data-page="6" data-title="再来练练" data-img="page-08">
+      <div class="page-img">
+        <img src="images/math-09/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="更多练习题" loading="lazy">
+      </div>
+      <div class="page-title">📝 再来练练</div>
+      <div class="page-subtitle">继续巩固退位减法 💪</div>
+      <div class="practice-grid">
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">11 − 3</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">12 − 4</span> = <span class="answer">8</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">14 − 7</span> = <span class="answer">7</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">15 − 8</span> = <span class="answer">7</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">13 − 9</span> = <span class="answer">4</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">16 − 9</span> = <span class="answer">7</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">11 − 7</span> = <span class="answer">4</span></div>
+        <div class="practice-item" onclick="toggleAnswer(this)"><span class="p-item">12 − 8</span> = <span class="answer">4</span></div>
+      </div>
+    </div>
+
+    <!-- ──── PAGE 8 ──── 庆祝 Celebration ──── -->
+    <div class="page celebration-page" data-page="7" data-title="太棒了！" data-img="celebration">
+      <span class="big-star">🌟</span>
+      <div class="congrats-text">🎉 太棒了！</div>
+      <div class="sub-text">你已经学会了20以内的退位减法！</div>
+      <div class="reward">
+        <span class="medal">🏅</span> 数学小达人 <span class="medal">🏅</span><br>
+        <span style="font-size:14px;color:#78909c;font-weight:600">继续加油，你是最棒的！</span>
+      </div>
+    </div>
+
+  </div><!-- /pages -->
+
+  <!-- ════════════════════════════════════════════════════
+       NAVIGATION DOTS + PREV/NEXT
+       ════════════════════════════════════════════════════ -->
+  <div class="nav-dots" id="navDots" role="navigation" aria-label="页面导航">
+    <button class="nav-btn" id="prevBtn" title="上一页" aria-label="上一页">‹</button>
+    <div id="dotsContainer" style="display:flex;align-items:center;gap:6px" role="tablist" aria-label="页码"></div>
+    <button class="nav-btn" id="nextBtn" title="下一页" aria-label="下一页">›</button>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       CONFETTI CANVAS (overlay)
+       ════════════════════════════════════════════════════ -->
+  <canvas id="confetti-canvas"></canvas>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     JAVASCRIPT — all logic inline, standalone
+     ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'math-09-subtraction20';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
+(function(){
+  'use strict';
+
+  /* ================================================================
+     CONSTANTS & STATE
+     ================================================================ */
+  const TOTAL_PAGES = 8;
+  let currentPage = 0;
+  let isSpeaking = false;
+  let confettiAnimId = null;
+
+  /* ================================================================
+     DOM REFERENCES
+     ================================================================ */
+  const pages        = document.querySelectorAll('.page');
+  const dotsContainer = document.getElementById('dotsContainer');
+  const prevBtn      = document.getElementById('prevBtn');
+  const nextBtn      = document.getElementById('nextBtn');
+  const homeBtn      = document.getElementById('homeBtn');
+  const speakBtn     = document.getElementById('speakBtn');
+  const challengeInput = document.getElementById('challengeInput');
+  const challengeBtn   = document.getElementById('challengeBtn');
+  const chFeedback     = document.getElementById('chFeedback');
+
+  /* ================================================================
+     BUILD NAVIGATION DOTS
+     ================================================================ */
+  for (let i = 0; i < TOTAL_PAGES; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', '第' + (i + 1) + '页');
+    dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    dot.addEventListener('click', function() {
+      goTo(i);
+    });
+    dotsContainer.appendChild(dot);
+  }
+
+  /* ================================================================
+     NAVIGATION LOGIC
+     ================================================================ */
+  function goTo(idx) {
+    // clamp
+    if (idx < 0) idx = 0;
+    if (idx >= TOTAL_PAGES) idx = TOTAL_PAGES - 1;
+    if (idx === currentPage) return;
+
+    const prev = currentPage;
+    currentPage = idx;
+
+    // show/hide pages
+    pages.forEach(function(p, i) {
+      p.classList.toggle('active', i === idx);
+    });
+
+    // update dots
+    var dots = dotsContainer.querySelectorAll('.dot');
+    dots.forEach(function(d, i) {
+      var active = i === idx;
+      d.classList.toggle('active', active);
+      d.setAttribute('aria-selected', active ? 'true' : 'false');
+      d.style.width = active ? '26px' : '10px';
+    });
+
+    // update prev/next buttons
+    prevBtn.classList.toggle('disabled', idx === 0);
+    nextBtn.classList.toggle('disabled', idx === TOTAL_PAGES - 1);
+
+    // GSAP entrance animation
+    if (window.gsap) {
+      gsap.fromTo(pages[idx], { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.32, ease: 'power2.out', overwrite: 'auto' });
+    }
+
+    // stop any ongoing speech
+    if (isSpeaking) {
+      stopSpeaking();
+    }
+
+    // launch confetti if celebration page reached
+    if (idx === TOTAL_PAGES - 1) {
+      launchConfetti();
+    }
+  }
+
+  function nextPage() { goTo(currentPage + 1); }
+  function prevPage() { goTo(currentPage - 1); }
+
+  /* ── event listeners ── */
+  prevBtn.addEventListener('click', prevPage);
+  nextBtn.addEventListener('click', nextPage);
+
+  homeBtn.addEventListener('click', function() {
+    goTo(0);
+  });
+
+  /* ================================================================
+     KEYBOARD NAVIGATION
+     ================================================================ */
+  document.addEventListener('keydown', function(e) {
+    switch (e.key) {
+      case 'ArrowRight': e.preventDefault(); nextPage(); break;
+      case 'ArrowLeft':  e.preventDefault(); prevPage(); break;
+      case 'Home':       e.preventDefault(); goTo(0); break;
+      case 'End':        e.preventDefault(); goTo(TOTAL_PAGES - 1); break;
+    }
+  });
+
+  /* ================================================================
+     TOUCH SWIPE SUPPORT
+     ================================================================ */
+  (function() {
+    var sx = 0, sy = 0, dx = 0, dy = 0, swiping = false;
+    var container = document.getElementById('pagesContainer');
+
+    container.addEventListener('touchstart', function(e) {
+      var t = e.changedTouches[0];
+      sx = t.clientX; sy = t.clientY;
+      dx = 0; dy = 0;
+      swiping = true;
+    }, { passive: true });
+
+    container.addEventListener('touchmove', function(e) {
+      if (!swiping) return;
+      var t = e.changedTouches[0];
+      dx = t.clientX - sx;
+      dy = t.clientY - sy;
+    }, { passive: true });
+
+    container.addEventListener('touchend', function(e) {
+      if (!swiping) return;
+      swiping = false;
+      // swipe must be horizontal enough and longer than vertical
+      if (Math.abs(dx) < 30) return;
+      if (Math.abs(dy) > Math.abs(dx) * 1.2) return;
+      if (dx > 0) { prevPage(); } else { nextPage(); }
+    }, { passive: true });
+  })();
+
+  /* ================================================================
+     SPEECH SYNTHESIS (zh-CN)
+     ================================================================ */
+  function buildPageSpeech(idx) {
+    var map = {
+      0: '第9课，20以内的退位减法。小朋友，今天我们来学习退位减法，当个位不够减时，向十位借一当十。',
+      1: '什么是退位减法。个位数字不够减的时候，从十位借一个十，当作十个一来计算。口诀：个位不够减，十位借一；借一当作十，个位加十再减。',
+      2: '范例讲解。例1：15减7等于8。例2：13减6等于7。例3：12减9等于3。退位减法，个位不够减就从十位借一。',
+      3: '练一练，第一组退位减法练习。点击算式可以查看答案。',
+      4: '练一练，第二组退位减法练习。点击算式可以查看答案。',
+      5: '挑战题。想一想，问号处应该填什么数字？17减8等于9。',
+      6: '再来练练。继续巩固退位减法，加油！',
+      7: '太棒了！你已经学会了20以内的退位减法！你是数学小达人！'
+    };
+    return map[idx] || '第' + (idx + 1) + '页';
+  }
+
+  function speakText(text) {
+    if (!window.speechSynthesis) {
+      console.warn('speechSynthesis not supported');
+      return;
+    }
+    // cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    var utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang    = 'zh-CN';
+    utterance.rate    = 0.82;
+    utterance.pitch   = 1.12;
+    utterance.volume  = 1;
+
+    utterance.onstart = function() {
+      isSpeaking = true;
+      speakBtn.classList.add('speaking');
+      speakBtn.textContent = '⏹';
+    };
+
+    utterance.onend = function() {
+      isSpeaking = false;
+      speakBtn.classList.remove('speaking');
+      speakBtn.textContent = '▶';
+    };
+
+    utterance.onerror = function() {
+      isSpeaking = false;
+      speakBtn.classList.remove('speaking');
+      speakBtn.textContent = '▶';
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function stopSpeaking() {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+    isSpeaking = false;
+    speakBtn.classList.remove('speaking');
+    speakBtn.textContent = '▶';
+  }
+
+  /* ── speak button toggle ── */
+  speakBtn.addEventListener('click', function() {
+    if (isSpeaking) {
+      stopSpeaking();
+      return;
+    }
+    var text = buildPageSpeech(currentPage);
+    speakText(text);
+  });
+
+  /* ================================================================
+     PRACTICE TOGGLE (tap to reveal answer)
+     ================================================================ */
+  window.toggleAnswer = function(el) {
+    var ans = el.querySelector('.answer');
+    if (!ans) return;
+    var show = ans.classList.toggle('show');
+    el.classList.toggle('correct', show);
+    // GSAP subtle effect if available
+    if (window.gsap && show) {
+      gsap.fromTo(ans, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.25, ease: 'back.out(2)' });
+    }
+  };
+
+  /* ================================================================
+     CHALLENGE — 1? − 8 = 9  =>  ? = 7
+     ================================================================ */
+  window.checkChallenge = function() {
+    if (!challengeInput || !chFeedback) return;
+    var rawValue = challengeInput.value.trim();
+    if (rawValue === '') {
+      chFeedback.textContent = '🤔 请输入一个数字（0~9）';
+      chFeedback.className = 'ch-feedback wrong';
+      return;
+    }
+    var val = parseInt(rawValue, 10);
+    if (isNaN(val) || val < 0 || val > 9) {
+      chFeedback.textContent = '🤔 请输入0~9之间的数字';
+      chFeedback.className = 'ch-feedback wrong';
+      return;
+    }
+
+    if (val === 7) {
+      chFeedback.textContent = '✅ 完全正确！17 − 8 = 9 ！你太棒啦！🎉';
+      chFeedback.className = 'ch-feedback correct';
+      challengeInput.style.borderColor = '#66bb6a';
+      launchConfetti();
+    } else {
+      chFeedback.textContent = '❌ 再想想哦～ 提示：1? − 8 = 9，? 是几呢？';
+      chFeedback.className = 'ch-feedback wrong';
+      challengeInput.style.borderColor = '#ef5350';
+      // shake animation via GSAP
+      if (window.gsap) {
+        gsap.fromTo(challengeInput, { x: -6 }, { x: 6, duration: 0.08, repeat: 3, yoyo: true, ease: 'power1.inOut', overwrite: 'auto' });
+      }
+    }
+  };
+
+  /* ── challenge event listeners ── */
+  if (challengeBtn) {
+    challengeBtn.addEventListener('click', window.checkChallenge);
+  }
+  if (challengeInput) {
+    challengeInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        window.checkChallenge();
+      }
+    });
+    // reset border color on focus
+    challengeInput.addEventListener('focus', function() {
+      this.style.borderColor = '#ffe082';
+      if (chFeedback) {
+        chFeedback.textContent = '';
+        chFeedback.className = 'ch-feedback';
+      }
+    });
+  }
+
+  /* ================================================================
+     CONFETTI — Canvas-based particle system
+     ================================================================ */
+  function launchConfetti() {
+    // prevent stacking multiple confetti runs
+    if (confettiAnimId) return;
+
+    var canvas = document.getElementById('confetti-canvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+
+    /* ── properties ── */
+    var COLORS = ['#42A5F5','#66BB6A','#FFCA28','#EF5350','#AB47BC','#FF7043','#26C6DA','#EC407A','#8D6E63','#FFD54F'];
+    var COUNT  = 180;
+    var pieces = [];
+
+    for (var i = 0; i < COUNT; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * -1 - 50,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 7 + 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        vx: (Math.random() - 0.5) * 3.5,
+        vy: Math.random() * 3.5 + 2,
+        rot: Math.random() * 360,
+        rv: (Math.random() - 0.5) * 10,
+        opacity: 1
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      var alive = 0;
+
+      for (var i = 0; i < pieces.length; i++) {
+        var p = pieces[i];
+        if (p.opacity <= 0) continue;
+        alive++;
+
+        // physics
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.07;            // gravity
+        p.vx *= 0.99;            // drag
+        p.rot += p.rv;
+
+        // fade when off-screen
+        if (p.y > canvas.height + 20) {
+          p.opacity -= 0.025;
+        }
+
+        // draw
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate((p.rot * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, p.opacity);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+
+      if (alive > 0) {
+        confettiAnimId = requestAnimationFrame(draw);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        confettiAnimId = null;
+      }
+    }
+
+    draw();
+
+    // handle resize during confetti
+    window.addEventListener('resize', function onConfettiResize() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }, { once: false });  // will stay until confetti ends, fine for short burst
+  }
+
+  /* ================================================================
+     IMAGE FALLBACK — show placeholder on error
+     ================================================================ */
+  document.querySelectorAll('.page-img img').forEach(function(img) {
+    img.addEventListener('error', function() {
+      var parent = this.parentElement;
+      if (parent.querySelector('.img-placeholder')) return; // already shown
+      var ph = document.createElement('div');
+      ph.className = 'img-placeholder';
+      ph.innerHTML =
+        '<svg viewBox="0 0 24 24" width="52" height="52">' +
+          '<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>' +
+        '</svg>' +
+        '<span>图片加载中…</span>';
+      parent.appendChild(ph);
+    });
+  });
+
+  /* ================================================================
+     INIT
+     ================================================================ */
+  // start with prev disabled
+  prevBtn.classList.add('disabled');
+
+  // GSAP entry animation for cover
+  if (window.gsap) {
+    gsap.fromTo(pages[0], { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out', delay: 0.08 });
+  }
+
+  // expose goTo for devtools debugging
+  window.goToPage = goTo;
+
+  // log startup
+  console.log('📘 数学第9课 — 20以内的退位减法 loaded');
+
+})();
+</script>
+</body>
+</html>

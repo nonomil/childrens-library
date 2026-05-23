@@ -8,7 +8,7 @@
 <div id="pigeon-reader" style="max-width: 800px; margin: 0 auto; text-align: center;">
   <!-- 封面显示 -->
   <div id="page-display" style="position: relative;">
-    <img id="page-img" src="../../images/pigeon_bus/page_01.png" 
+    <img id="page-img" src="../../images/pigeon_bus/page_01.webp" 
          style="width: 100%; max-width: 700px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); cursor: pointer;"
          onclick="nextPage()" alt="Page">
     
@@ -65,7 +65,7 @@ function loadPage(n) {
   const input = document.getElementById('page-input');
   
   // 预加载当前页（如果还没缓存）
-  const src = `../../images/pigeon_bus/page_${String(n).padStart(2, '0')}.png`;
+  const src = `../../images/pigeon_bus/page_${String(n).padStart(2, '0')}.webp`;
   
   if (!imgCache[n]) {
     const preload = new Image();
@@ -82,7 +82,7 @@ function loadPage(n) {
   for (let i = n - 1; i <= n + 1; i++) {
     if (i >= 1 && i <= totalPages && !imgCache[i]) {
       const pre = new Image();
-      pre.src = `../../images/pigeon_bus/page_${String(i).padStart(2, '0')}.png`;
+      pre.src = `../../images/pigeon_bus/page_${String(i).padStart(2, '0')}.webp`;
       imgCache[i] = pre;
     }
   }

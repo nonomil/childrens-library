@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>中文 13: 我的身体</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js">
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#EF5350;
+  --red-light:#FF8A80;
+  --red-dark:#C62828;
+  --red-bg:#FFF0F0;
+  --red-pale:#FFE7E7;
+  --white:#FFFFFF;
+  --gray-50:#FAFAFA;
+  --gray-100:#F5F5F5;
+  --gray-300:#E0E0E0;
+  --gray-500:#9E9E9E;
+  --gray-700:#616161;
+  --gray-900:#212121;
+  --shadow:0 4px 24px rgba(239,83,80,0.18);
+  --radius:20px;
+  --radius-sm:12px;
+  --radius-xs:8px;
+  --nav-h:72px;
+  --font:'Nunito',sans-serif;
+}
+html,body{height:100%;overflow:hidden;font-family:var(--font);background:var(--red-bg);color:var(--gray-900);-webkit-tap-highlight-color:transparent;user-select:none}
+#app{position:relative;width:100%;max-width:960px;height:100dvh;margin:0 auto;overflow:hidden;background:var(--red-bg);display:flex;flex-direction:column}
+
+/* HEADER */
+.header{position:absolute;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:12px 16px;pointer-events:none}
+.header button{pointer-events:auto;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,0.92);backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.08);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s,background 0.2s;color:var(--red);line-height:1}
+.header button:active{transform:scale(0.9);background:var(--white)}
+.header button.home{font-size:20px}
+.header button.speak{font-size:20px}
+.header button.speak.speaking{background:var(--red);color:#fff;animation:pulse-btn 0.6s ease infinite}
+@keyframes pulse-btn{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+/* SLIDES CONTAINER */
+.slides{flex:1;position:relative;overflow:hidden;width:100%;height:100%}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:72px 16px 76px;opacity:0;visibility:hidden;transition:opacity 0.45s ease,transform 0.45s ease;transform:translateX(40px);-webkit-overflow-scrolling:touch}
+.slide.active{opacity:1;visibility:visible;transform:translateX(0);position:relative;z-index:10}
+.slide.exit-left{opacity:0;transform:translateX(-60px)}
+.slide.exit-right{opacity:0;transform:translateX(60px)}
+.slide::-webkit-scrollbar{width:3px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:var(--gray-300);border-radius:10px}
+
+/* PAGE DOTS + NAV BAR */
+.bottom-nav{position:absolute;bottom:0;left:0;right:0;z-index:50;height:var(--nav-h);display:flex;align-items:center;justify-content:center;gap:16px;padding:0 16px 8px;background:linear-gradient(to top,rgba(255,240,240,0.98) 60%,transparent)}
+.dots{display:flex;gap:6px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--gray-300);border:0;cursor:pointer;transition:all 0.3s ease;padding:0;flex-shrink:0}
+.dot.active{background:var(--red);width:28px;border-radius:5px}
+.dot:active{transform:scale(0.8)}
+.nav-btn{width:44px;height:44px;border:0;border-radius:50%;background:var(--white);box-shadow:0 2px 12px rgba(239,83,80,0.14);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;color:var(--red);flex-shrink:0}
+.nav-btn:active{transform:scale(0.9);background:var(--red);color:#fff}
+.nav-btn:disabled{opacity:0.3;pointer-events:none}
+
+/* TYPOGRAPHY */
+h1{font-size:28px;font-weight:900;color:var(--red-dark);text-align:center;margin-bottom:6px;letter-spacing:1px}
+h2{font-size:22px;font-weight:800;color:var(--red-dark);text-align:center;margin-bottom:4px}
+h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
+.subtitle{font-size:15px;font-weight:600;color:var(--gray-500);text-align:center;margin-bottom:16px}
+
+/* COVER PAGE */
+.cover-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;padding:20px 0;text-align:center}
+.cover-icon{font-size:72px;line-height:1;margin-bottom:8px;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.cover-title{font-size:36px;font-weight:900;color:var(--red-dark);line-height:1.2;margin-bottom:4px}
+.cover-sub{font-size:18px;font-weight:700;color:var(--red);margin-bottom:20px}
+.cover-badge{display:inline-block;background:var(--red);color:#fff;padding:8px 28px;border-radius:30px;font-size:15px;font-weight:700;letter-spacing:1px;box-shadow:0 4px 16px rgba(239,83,80,0.3);margin-bottom:18px}
+.cover-char-list{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:8px}
+.cover-char-list span{background:var(--white);color:var(--red-dark);padding:6px 14px;border-radius:20px;font-size:15px;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.cover-img{width:200px;height:auto;margin-bottom:12px;border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* CHARACTER PAGE */
+.char-card{background:var(--white);border-radius:var(--radius);padding:20px 18px;margin-bottom:14px;box-shadow:0 2px 16px rgba(239,83,80,0.08);text-align:center}
+.char-display{font-size:96px;font-weight:900;color:var(--red-dark);line-height:1.1;margin-bottom:2px;letter-spacing:2px}
+.char-pinyin{font-size:20px;font-weight:700;color:var(--red);margin-bottom:2px}
+.char-strokes{font-size:14px;color:var(--gray-500);font-weight:600;margin-bottom:10px}
+.char-stroke-img{width:100%;max-width:320px;height:auto;border-radius:var(--radius-sm);margin:0 auto 10px;display:block;background:var(--gray-50);padding:8px;border:1px solid var(--gray-300)}
+.char-words{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0 4px}
+.char-words .word{padding:6px 16px;border-radius:20px;font-size:16px;font-weight:700;cursor:pointer;transition:all 0.2s;background:var(--red-pale);color:var(--red-dark);border:1px solid transparent}
+.char-words .word:active{transform:scale(0.93);background:var(--red);color:#fff;border-color:var(--red)}
+.char-sentences{text-align:left;margin-top:8px}
+.char-sentences .sent{padding:8px 12px;margin-bottom:6px;border-radius:var(--radius-xs);background:var(--gray-50);font-size:15px;line-height:1.5;cursor:pointer;transition:all 0.2s;border-left:3px solid var(--red-light)}
+.char-sentences .sent:active{background:var(--red-pale);transform:scale(0.98)}
+.char-sentences .sent .zh{font-weight:700;color:var(--gray-900)}
+.char-sentences .sent .py{font-size:13px;color:var(--gray-500);margin-left:6px}
+
+/* MATCHING PAGE */
+.match-wrap{display:flex;flex-direction:column;gap:16px;padding:4px 0}
+.match-col{flex:1;min-width:0}
+.match-col h3{text-align:center;margin-bottom:8px;font-size:16px}
+.match-item{display:flex;align-items:center;justify-content:center;padding:14px 10px;margin-bottom:8px;border-radius:var(--radius-sm);font-size:20px;font-weight:800;cursor:pointer;transition:all 0.25s;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.06);border:2px solid transparent;min-height:52px;text-align:center}
+.match-item.left{color:var(--red-dark);font-size:28px}
+.match-item.right{font-size:16px;font-weight:700;color:var(--gray-700)}
+.match-item.selected{border-color:var(--red);background:var(--red-pale);transform:scale(0.98)}
+.match-item.matched{opacity:0.5;pointer-events:none;border-color:var(--gray-300);background:var(--gray-50)}
+.match-item.correct{border-color:#4CAF50;background:#E8F5E9!important;opacity:1!important;pointer-events:none}
+.match-item.wrong{border-color:var(--red);background:var(--red-pale);animation:shake 0.4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* REVIEW SECTION */
+.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.review-card{background:var(--white);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);cursor:pointer;transition:all 0.2s;border:2px solid transparent}
+.review-card:active{transform:scale(0.95);border-color:var(--red-light)}
+.review-card .r-char{font-size:42px;font-weight:900;color:var(--red-dark);line-height:1.1}
+.review-card .r-pinyin{font-size:14px;font-weight:700;color:var(--red);margin-top:2px}
+.review-card .r-meaning{font-size:13px;font-weight:600;color:var(--gray-500);margin-top:1px}
+
+/* QUIZ */
+.quiz-wrap{padding:4px 0}
+.quiz-q{text-align:center;font-size:18px;font-weight:700;color:var(--gray-900);margin-bottom:14px;background:var(--white);padding:14px;border-radius:var(--radius-sm);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quiz-opt{padding:16px;border-radius:var(--radius-sm);font-size:18px;font-weight:700;text-align:center;cursor:pointer;transition:all 0.25s;background:var(--white);box-shadow:0 2px 8px rgba(0,0,0,0.06);border:2px solid transparent}
+.quiz-opt:active{transform:scale(0.95)}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9}
+.quiz-opt.wrong{border-color:var(--red);background:var(--red-pale)}
+.quiz-score{text-align:center;font-size:20px;font-weight:800;color:var(--red);margin-top:16px}
+
+/* CONFETTI */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confetti-fall linear forwards}
+@keyframes confetti-fall{0%{opacity:1;transform:translateY(-20px) rotate(0deg) scale(1)}100%{opacity:0;transform:translateY(100vh) rotate(720deg) scale(0.5)}}
+
+/* BODY DIAGRAM */
+.body-diagram{position:relative;width:100%;max-width:200px;margin:0 auto 12px}
+.body-diagram img{width:100%;height:auto;border-radius:var(--radius-sm)}
+.body-label{position:absolute;font-size:11px;font-weight:800;color:var(--red-dark);background:rgba(255,255,255,0.92);padding:2px 8px;border-radius:10px;pointer-events:none;white-space:nowrap;box-shadow:0 1px 4px rgba(0,0,0,0.08)}
+
+/* UTILITY */
+.text-center{text-align:center}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.gap-8{gap:8px}
+.gap-12{gap:12px}
+
+/* Song / chant section */
+.chant-box{background:var(--white);border-radius:var(--radius);padding:18px;box-shadow:0 2px 16px rgba(239,83,80,0.08);margin-bottom:14px;text-align:center}
+.chant-box .line{font-size:16px;font-weight:700;line-height:1.8;color:var(--gray-900)}
+.chant-box .line .highlight{color:var(--red);font-weight:900}
+.chant-box .py-line{font-size:13px;color:var(--gray-500);margin-bottom:6px}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <button class="home" onclick="goHome()" aria-label="Home">🏠</button>
+    <button class="speak" id="speakBtn" onclick="speakAll()" aria-label="Read aloud">▶</button>
+  </header>
+
+  <!-- SLIDES -->
+  <div class="slides" id="slides">
+
+    <!-- SLIDE 0: COVER -->
+    <div class="slide active" data-page="0">
+      <div class="cover-wrap">
+        <div class="cover-icon">🧒</div>
+        <div class="cover-title">我的身体</div>
+        <div class="cover-sub">Wǒ de shēntǐ</div>
+        <div class="cover-badge">第13课</div>
+        <img class="cover-img" src="images/chinese-13/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="我的身体" loading="lazy" onerror="this.style.display='none'">
+        <div class="cover-char-list">
+          <span>口 kǒu</span>
+          <span>耳 ěr</span>
+          <span>目 mù</span>
+          <span>手 shǒu</span>
+          <span>足 zú</span>
+          <span>头 tóu</span>
+          <span>牙 yá</span>
+          <span>心 xīn</span>
+        </div>
+        <p style="margin-top:16px;font-size:15px;color:var(--gray-700);max-width:300px;line-height:1.5">
+          学习身体部位的中文名称。一起认识我们的身体！
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 1: 口 -->
+    <div class="slide" data-page="1">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">口</div>
+          <div class="char-pinyin">kǒu</div>
+          <div class="char-strokes">3 画 · 笔画: 丨𠃍一</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="口 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('嘴巴')">嘴巴 zuǐba</span>
+            <span class="word" onclick="speakText('入口')">入口 rùkǒu</span>
+            <span class="word" onclick="speakText('开口')">开口 kāikǒu</span>
+            <span class="word" onclick="speakText('门口')">门口 ménkǒu</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('张大你的嘴巴。')"><span class="zh">张大你的嘴巴。</span><span class="py">Zhāng dà nǐ de zuǐba.</span></div>
+            <div class="sent" onclick="speakText('门口有一个人。')"><span class="zh">门口有一个人。</span><span class="py">Ménkǒu yǒu yí gè rén.</span></div>
+            <div class="sent" onclick="speakText('请开口说话。')"><span class="zh">请开口说话。</span><span class="py">Qǐng kāikǒu shuōhuà.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Kǒu kǒu kǒu</div>
+          <div class="line">张张<span class="highlight">口</span>，<span class="highlight">口</span>里说。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: 耳 -->
+    <div class="slide" data-page="2">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">耳</div>
+          <div class="char-pinyin">ěr</div>
+          <div class="char-strokes">6 画 · 笔画: 一丨丨一一一</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="耳 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('耳朵')">耳朵 ěrduo</span>
+            <span class="word" onclick="speakText('耳机')">耳机 ěrjī</span>
+            <span class="word" onclick="speakText('耳光')">耳光 ěrguāng</span>
+            <span class="word" onclick="speakText('木耳')">木耳 mù'ěr</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('我的耳朵很大。')"><span class="zh">我的耳朵很大。</span><span class="py">Wǒ de ěrduo hěn dà.</span></div>
+            <div class="sent" onclick="speakText('他用耳机听音乐。')"><span class="zh">他用耳机听音乐。</span><span class="py">Tā yòng ěrjī tīng yīnyuè.</span></div>
+            <div class="sent" onclick="speakText('木耳是一种食物。')"><span class="zh">木耳是一种食物。</span><span class="py">Mù'ěr shì yì zhǒng shíwù.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Ěr ěr ěr</div>
+          <div class="line">两只<span class="highlight">耳</span>，听八方。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: 目 -->
+    <div class="slide" data-page="3">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">目</div>
+          <div class="char-pinyin">mù</div>
+          <div class="char-strokes">5 画 · 笔画: 丨𠃍一一一</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="目 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('目光')">目光 mùguāng</span>
+            <span class="word" onclick="speakText('目前')">目前 mùqián</span>
+            <span class="word" onclick="speakText('节目')">节目 jiémù</span>
+            <span class="word" onclick="speakText('目标')">目标 mùbiāo</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('她的目光很温柔。')"><span class="zh">她的目光很温柔。</span><span class="py">Tā de mùguāng hěn wēnróu.</span></div>
+            <div class="sent" onclick="speakText('我目前在北京。')"><span class="zh">我目前在北京。</span><span class="py">Wǒ mùqián zài Běijīng.</span></div>
+            <div class="sent" onclick="speakText('我看了一个有趣的节目。')"><span class="zh">我看了一个有趣的节目。</span><span class="py">Wǒ kàn le yí gè yǒuqù de jiémù.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Mù mù mù</div>
+          <div class="line">两只<span class="highlight">目</span>，看世界。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: 手 -->
+    <div class="slide" data-page="4">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">手</div>
+          <div class="char-pinyin">shǒu</div>
+          <div class="char-strokes">4 画 · 笔画: 一一𠃌丿</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="手 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('小手')">小手 xiǎoshǒu</span>
+            <span class="word" onclick="speakText('手机')">手机 shǒujī</span>
+            <span class="word" onclick="speakText('洗手')">洗手 xǐshǒu</span>
+            <span class="word" onclick="speakText('手指')">手指 shǒuzhǐ</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('宝宝的小手很白。')"><span class="zh">宝宝的小手很白。</span><span class="py">Bǎobao de xiǎoshǒu hěn bái.</span></div>
+            <div class="sent" onclick="speakText('妈妈在用手机。')"><span class="zh">妈妈在用手机。</span><span class="py">Māma zài yòng shǒujī.</span></div>
+            <div class="sent" onclick="speakText('吃饭前要洗手。')"><span class="zh">吃饭前要洗手。</span><span class="py">Chīfàn qián yào xǐshǒu.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Shǒu shǒu shǒu</div>
+          <div class="line">两只<span class="highlight">手</span>，拍一拍。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: 足 -->
+    <div class="slide" data-page="5">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">足</div>
+          <div class="char-pinyin">zú</div>
+          <div class="char-strokes">7 画 · 笔画: 丨𠃍一丨一丿㇏</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="足 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('足球')">足球 zúqiú</span>
+            <span class="word" onclick="speakText('足够')">足够 zúgòu</span>
+            <span class="word" onclick="speakText('十足')">十足 shízú</span>
+            <span class="word" onclick="speakText('足迹')">足迹 zújì</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('我喜欢踢足球。')"><span class="zh">我喜欢踢足球。</span><span class="py">Wǒ xǐhuan tī zúqiú.</span></div>
+            <div class="sent" onclick="speakText('我们有足够的时间。')"><span class="zh">我们有足够的时间。</span><span class="py">Wǒmen yǒu zúgòu de shíjiān.</span></div>
+            <div class="sent" onclick="speakText('他信心十足。')"><span class="zh">他信心十足。</span><span class="py">Tā xìnxīn shízú.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Zú zú zú</div>
+          <div class="line">两只<span class="highlight">足</span>，走天下。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: 头 -->
+    <div class="slide" data-page="6">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">头</div>
+          <div class="char-pinyin">tóu</div>
+          <div class="char-strokes">5 画 · 笔画: 丶丶一丿丶</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="头 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('头发')">头发 tóufa</span>
+            <span class="word" onclick="speakText('石头')">石头 shítou</span>
+            <span class="word" onclick="speakText('开头')">开头 kāitóu</span>
+            <span class="word" onclick="speakText('抬头')">抬头 táitóu</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('她的头发很长。')"><span class="zh">她的头发很长。</span><span class="py">Tā de tóufa hěn cháng.</span></div>
+            <div class="sent" onclick="speakText('路上有一块石头。')"><span class="zh">路上有一块石头。</span><span class="py">Lù shàng yǒu yí kuài shítou.</span></div>
+            <div class="sent" onclick="speakText('故事的开头很有趣。')"><span class="zh">故事的开头很有趣。</span><span class="py">Gùshi de kāitóu hěn yǒuqù.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Tóu tóu tóu</div>
+          <div class="line">圆圆的<span class="highlight">头</span>，想问题。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: 牙 -->
+    <div class="slide" data-page="7">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">牙</div>
+          <div class="char-pinyin">yá</div>
+          <div class="char-strokes">4 画 · 笔画: 一𠃌丿丿</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="牙 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('牙齿')">牙齿 yáchǐ</span>
+            <span class="word" onclick="speakText('牙膏')">牙膏 yágāo</span>
+            <span class="word" onclick="speakText('牙刷')">牙刷 yáshuā</span>
+            <span class="word" onclick="speakText('象牙')">象牙 xiàngyá</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('每天要刷牙。')"><span class="zh">每天要刷牙。</span><span class="py">Měitiān yào shuā yá.</span></div>
+            <div class="sent" onclick="speakText('牙膏是薄荷味的。')"><span class="zh">牙膏是薄荷味的。</span><span class="py">Yágāo shì bòhe wèi de.</span></div>
+            <div class="sent" onclick="speakText('大象有长长的象牙。')"><span class="zh">大象有长长的象牙。</span><span class="py">Dàxiàng yǒu chángcháng de xiàngyá.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Yá yá yá</div>
+          <div class="line">白白的<span class="highlight">牙</span>，笑一笑。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: 心 -->
+    <div class="slide" data-page="8">
+      <div style="padding-top:8px">
+        <div class="char-card">
+          <div class="char-display">心</div>
+          <div class="char-pinyin">xīn</div>
+          <div class="char-strokes">4 画 · 笔画: 丶𠃌丶丶</div>
+          <img class="char-stroke-img" src="images/chinese-13/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="心 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <div class="char-words">
+            <span class="word" onclick="speakText('开心')">开心 kāixīn</span>
+            <span class="word" onclick="speakText('心里')">心里 xīnli</span>
+            <span class="word" onclick="speakText('关心')">关心 guānxīn</span>
+            <span class="word" onclick="speakText('小心')">小心 xiǎoxīn</span>
+          </div>
+          <div class="char-sentences">
+            <div class="sent" onclick="speakText('我今天很开心。')"><span class="zh">我今天很开心。</span><span class="py">Wǒ jīntiān hěn kāixīn.</span></div>
+            <div class="sent" onclick="speakText('老师很关心学生。')"><span class="zh">老师很关心学生。</span><span class="py">Lǎoshī hěn guānxīn xuéshēng.</span></div>
+            <div class="sent" onclick="speakText('过马路要小心。')"><span class="zh">过马路要小心。</span><span class="py">Guò mǎlù yào xiǎoxīn.</span></div>
+          </div>
+        </div>
+        <div class="chant-box">
+          <div class="py-line">Xīn xīn xīn</div>
+          <div class="line">一颗<span class="highlight">心</span>，咚咚跳。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: MATCHING + QUIZ -->
+    <div class="slide" data-page="9">
+      <div style="padding-top:8px;padding-bottom:12px">
+        <h2 style="font-size:20px">✏️ 练一练</h2>
+        <p class="subtitle" style="margin-bottom:10px">把汉字和拼音连起来</p>
+
+        <div id="matchArea" class="match-wrap">
+          <div class="match-col" id="matchLeft"></div>
+          <div style="text-align:center;font-size:24px;color:var(--gray-300);font-weight:700;line-height:1">⟷</div>
+          <div class="match-col" id="matchRight"></div>
+        </div>
+
+        <div style="text-align:center;margin-top:8px">
+          <button onclick="checkMatch()" style="padding:10px 32px;border:0;border-radius:30px;background:var(--red);color:#fff;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 4px 14px rgba(239,83,80,0.3);transition:all 0.2s;font-family:var(--font)" onmouseover="this.style.transform='scale(1.04)'" onmouseout="this.style.transform='scale(1)'" onmousedown="this.style.transform='scale(0.96)'">✓ 检查答案</button>
+          <button onclick="resetMatch()" style="margin-left:8px;padding:10px 20px;border:2px solid var(--gray-300);border-radius:30px;background:var(--white);color:var(--gray-700);font-weight:700;font-size:14px;cursor:pointer;transition:all 0.2s;font-family:var(--font)" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--gray-300)'">🔄 重来</button>
+        </div>
+
+        <h2 style="font-size:20px;margin-top:18px;margin-bottom:8px">🧠 小测验</h2>
+        <div id="quizArea" class="quiz-wrap">
+          <div class="quiz-q" id="quizQ">"口" 的拼音是什么？</div>
+          <div class="quiz-options" id="quizOpts"></div>
+          <div class="quiz-score" id="quizScore">0 / 0</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slides -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-btn" id="prevBtn" onclick="goPage(-1)" aria-label="Previous">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="nextBtn" onclick="goPage(1)" aria-label="Next">▶</button>
+  </nav>
+
+</div><!-- /app -->
+
+<script>
+// ======================== STATE ========================
+const TOTAL = 10;
+let current = 0;
+let isTransitioning = false;
+let matchSelected = null; // { side, index }
+let matchData = [
+  { char:'口', pinyin:'kǒu' },
+  { char:'耳', pinyin:'ěr' },
+  { char:'目', pinyin:'mù' },
+  { char:'手', pinyin:'shǒu' },
+  { char:'足', pinyin:'zú' },
+  { char:'头', pinyin:'tóu' },
+  { char:'牙', pinyin:'yá' },
+  { char:'心', pinyin:'xīn' }
+];
+let matchPairs = []; // [{char, pinyin, leftEl, rightEl, correct, matched}]
+let quizIndex = 0;
+let quizCorrect = 0;
+let quizTotal = 0;
+let quizAnswered = false;
+
+// ======================== DOM REFS ========================
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('dots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const speakBtn = document.getElementById('speakBtn');
+
+// ======================== INIT DOTS ========================
+for(let i=0;i<TOTAL;i++){
+  const dot = document.createElement('button');
+  dot.className = 'dot'+(i===0?' active':'');
+  dot.setAttribute('data-index',i);
+  dot.addEventListener('click',()=>goTo(i));
+  dotsContainer.appendChild(dot);
+}
+
+// ======================== NAVIGATION ========================
+function updateNav(){
+  const dots = document.querySelectorAll('.dot');
+  dots.forEach((d,i)=>d.classList.toggle('active',i===current));
+  prevBtn.disabled = current===0;
+  nextBtn.disabled = current===TOTAL-1;
+}
+
+function goTo(idx){
+  if(isTransitioning || idx===current || idx<0 || idx>=TOTAL) return;
+  isTransitioning = true;
+  const dir = idx>current ? 1 : -1;
+  const outClass = dir===1 ? 'exit-left' : 'exit-right';
+  const inFrom = dir===1 ? 'translateX(40px)' : 'translateX(-40px)';
+
+  const outSlide = slides[current];
+  const inSlide = slides[idx];
+
+  outSlide.classList.remove('active');
+  outSlide.classList.add(outClass);
+  inSlide.style.transform = inFrom;
+
+  requestAnimationFrame(()=>{
+    inSlide.classList.add('active');
+    inSlide.style.transform = 'translateX(0)';
+    inSlide.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+    inSlide.style.opacity = '1';
+
+    setTimeout(()=>{
+      outSlide.classList.remove(outClass);
+      outSlide.style.transform = '';
+      outSlide.style.transition = '';
+      inSlide.style.transform = '';
+      inSlide.style.transition = '';
+      isTransitioning = false;
+    },420);
+  });
+
+  current = idx;
+  updateNav();
+  stopSpeaking();
+  if(current===9){ initMatch(); initQuiz(); }
+}
+
+function goPage(dir){
+  goTo(current+dir);
+}
+
+function goHome(){
+  goTo(0);
+}
+
+// ======================== SPEECH ========================
+let synth = window.speechSynthesis;
+let speaking = false;
+let currentUtter = null;
+
+function speakText(text){
+  if(!synth) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.9;
+  u.pitch = 1.05;
+  u.volume = 1;
+  u.onstart = ()=>{ speaking=true; speakBtn.classList.add('speaking'); };
+  u.onend = ()=>{ speaking=false; speakBtn.classList.remove('speaking'); };
+  u.onerror = ()=>{ speaking=false; speakBtn.classList.remove('speaking'); };
+  currentUtter = u;
+  synth.speak(u);
+}
+
+function speakAll(){
+  if(speaking){ stopSpeaking(); return; }
+  const slide = slides[current];
+  let texts = [];
+  // Collect visible text content
+  const charDisplay = slide.querySelector('.char-display');
+  if(charDisplay) texts.push(charDisplay.textContent.trim());
+  const pinyin = slide.querySelector('.char-pinyin');
+  if(pinyin) texts.push(pinyin.textContent.trim());
+  const words = slide.querySelectorAll('.word');
+  if(words.length){
+    let wTexts = [];
+    words.forEach(w=>{
+      const m = w.textContent.match(/[^\s]+/);
+      if(m) wTexts.push(m[0]);
+    });
+    if(wTexts.length) texts.push(wTexts.join('，'));
+  }
+  const sents = slide.querySelectorAll('.sent .zh');
+  sents.forEach(s=>texts.push(s.textContent.trim()));
+  // Cover special
+  if(current===0){
+    texts = ['我的身体','第13课','口','耳','目','手','足','头','牙','心'];
+  }
+  const fullText = texts.join('。');
+  if(!fullText) return;
+  speakText(fullText);
+}
+
+function stopSpeaking(){
+  if(synth){
+    synth.cancel();
+    speaking=false;
+    speakBtn.classList.remove('speaking');
+  }
+}
+
+// ======================== MATCHING ========================
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function initMatch(){
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+  if(!leftCol || !rightCol) return;
+  if(leftCol.children.length>0) return; // already initialized
+
+  const chars = shuffle([...matchData]);
+  const pinyins = shuffle([...matchData]);
+  matchPairs = [];
+
+  leftCol.innerHTML = '';
+  rightCol.innerHTML = '';
+
+  chars.forEach((item,i)=>{
+    const el = document.createElement('div');
+    el.className = 'match-item left';
+    el.textContent = item.char;
+    el.dataset.index = i;
+    el.dataset.side = 'left';
+    el.dataset.key = item.char;
+    el.addEventListener('click',()=>selectMatch('left',i));
+    leftCol.appendChild(el);
+
+    matchPairs.push({
+      char: item.char,
+      pinyin: item.pinyin,
+      leftEl: el,
+      rightEl: null,
+      correct: false,
+      matched: false
+    });
+  });
+
+  pinyins.forEach((item,i)=>{
+    const el = document.createElement('div');
+    el.className = 'match-item right';
+    el.textContent = item.pinyin;
+    el.dataset.index = i;
+    el.dataset.side = 'right';
+    el.dataset.key = item.pinyin;
+    el.addEventListener('click',()=>selectMatch('right',i));
+    rightCol.appendChild(el);
+
+    // Find matching pair
+    const pair = matchPairs.find(p=>p.pinyin===item.pinyin && !p.rightEl);
+    if(pair) pair.rightEl = el;
+  });
+}
+
+function selectMatch(side, idx){
+  if(matchSelected){
+    const {side:sSide, index:sIdx} = matchSelected;
+    if(side===sSide){
+      // Deselect
+      const el = side==='left' ? matchPairs[sIdx].leftEl : matchPairs[sIdx].rightEl;
+      if(el) el.classList.remove('selected');
+      matchSelected = null;
+      return;
+    }
+    // Two different sides selected — check
+    const leftIdx = side==='left' ? idx : sIdx;
+    const rightIdx = side==='right' ? idx : sIdx;
+    const leftPair = matchPairs.find(p=>p.leftEl===matchPairs[leftIdx]?.leftEl);
+    // Actually let's find by character
+    const leftChar = side==='left' ? matchPairs[idx].char : matchPairs[sIdx].char;
+    const rightPinyin = side==='right' ? matchPairs[idx].pinyin : matchPairs[sIdx].pinyin;
+
+    const lPair = matchPairs.find(p=>p.char===leftChar);
+    const rPair = matchPairs.find(p=>p.pinyin===rightPinyin);
+
+    // Clear selection
+    matchPairs.forEach(p=>{
+      p.leftEl?.classList.remove('selected');
+      p.rightEl?.classList.remove('selected');
+    });
+
+    if(lPair && rPair && lPair.char===rPair.char){
+      // Correct
+      lPair.leftEl.classList.remove('selected');
+      lPair.rightEl.classList.remove('selected');
+      lPair.leftEl.classList.add('correct');
+      lPair.rightEl.classList.add('correct');
+      lPair.correct = true;
+      lPair.matched = true;
+      rPair.correct = true;
+      rPair.matched = true;
+      // Check win
+      if(matchPairs.every(p=>p.correct)){
+        setTimeout(()=>{
+          launchConfetti();
+        },300);
+      }
+    } else {
+      // Wrong
+      if(lPair){
+        lPair.leftEl.classList.add('wrong');
+        lPair.rightEl?.classList.add('wrong');
+        setTimeout(()=>{
+          lPair.leftEl?.classList.remove('wrong');
+          lPair.rightEl?.classList.remove('wrong');
+        },500);
+      }
+      if(rPair && rPair!==lPair){
+        rPair.leftEl?.classList.add('wrong');
+        rPair.rightEl?.classList.add('wrong');
+        setTimeout(()=>{
+          rPair.leftEl?.classList.remove('wrong');
+          rPair.rightEl?.classList.remove('wrong');
+        },500);
+      }
+    }
+    matchSelected = null;
+    return;
+  }
+
+  // No current selection
+  const pair = matchPairs[idx];
+  if(!pair) return;
+  if(side==='left' && pair.correct) return;
+  if(side==='right' && pair.correct) return;
+
+  const el = side==='left' ? pair.leftEl : pair.rightEl;
+  if(!el) return;
+  el.classList.add('selected');
+  matchSelected = {side, index: idx};
+}
+
+function checkMatch(){
+  // Auto-match: for any unpaired, show correct/wrong
+  matchPairs.forEach(p=>{
+    if(p.correct) return;
+    // Find right that matches
+    const rightMatch = matchPairs.find(r=>r.char===p.char && r.rightEl);
+    if(rightMatch && rightMatch.rightEl){
+      p.leftEl.classList.add('wrong');
+      rightMatch.rightEl.classList.add('wrong');
+      setTimeout(()=>{
+        p.leftEl.classList.remove('wrong');
+        rightMatch.rightEl.classList.remove('wrong');
+      },500);
+    }
+  });
+}
+
+function resetMatch(){
+  document.getElementById('matchLeft').innerHTML = '';
+  document.getElementById('matchRight').innerHTML = '';
+  matchSelected = null;
+  initMatch();
+}
+
+// ======================== QUIZ ========================
+const quizData = [
+  { q:'"口" 的拼音是什么？', opts:['kǒu','kòu','kōu','kǒ'], ans:0 },
+  { q:'"耳" 的拼音是什么？', opts:['ěr','ér','èr','ě'], ans:0 },
+  { q:'"目" 的拼音是什么？', opts:['mù','mú','mū','mǔ'], ans:0 },
+  { q:'"手" 的拼音是什么？', opts:['shǒu','shōu','shòu','shóu'], ans:0 },
+  { q:'"足" 的拼音是什么？', opts:['zú','zū','zǔ','zù'], ans:0 },
+  { q:'"头" 的拼音是什么？', opts:['tóu','tōu','tòu','tǒu'], ans:0 },
+  { q:'"牙" 的拼音是什么？', opts:['yá','yā','yà','yǎ'], ans:0 },
+  { q:'"心" 的拼音是什么？', opts:['xīn','xín','xǐn','xìn'], ans:0 },
+  { q:'"嘴巴" 是什么意思？', opts:['Mouth','Ear','Eye','Hand'], ans:0 },
+  { q:'"足球" 的第一个字是？', opts:['足','手','头','口'], ans:0 },
+  { q:'"牙齿" 的第二个字是？', opts:['齿','牙','巴','朵'], ans:0 },
+  { q:'"开心" 的意思是？', opts:['Happy','Sad','Big','Small'], ans:0 }
+];
+
+function initQuiz(){
+  if(quizTotal>0) return;
+  quizIndex = 0;
+  quizCorrect = 0;
+  quizTotal = quizData.length;
+  quizAnswered = false;
+  showQuizQ();
+}
+
+function showQuizQ(){
+  if(quizIndex>=quizData.length){
+    document.getElementById('quizQ').textContent = '🎉 全部完成！';
+    document.getElementById('quizOpts').innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:20px;font-size:18px;font-weight:700;color:var(--red)">
+      得分: ${quizCorrect}/${quizTotal}
+    </div>`;
+    document.getElementById('quizScore').textContent = `${quizCorrect} / ${quizTotal}`;
+    if(quizCorrect===quizTotal) launchConfetti();
+    return;
+  }
+  const item = quizData[quizIndex];
+  document.getElementById('quizQ').textContent = item.q;
+  const container = document.getElementById('quizOpts');
+  container.innerHTML = '';
+  quizAnswered = false;
+  item.opts.forEach((opt,i)=>{
+    const btn = document.createElement('div');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.addEventListener('click',()=>answerQuiz(i,item.ans));
+    container.appendChild(btn);
+  });
+  document.getElementById('quizScore').textContent = `${quizCorrect} / ${quizIndex}`;
+}
+
+function answerQuiz(selected, correct){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach((btn,i)=>{
+    btn.style.pointerEvents = 'none';
+    if(i===correct) btn.classList.add('correct');
+    else if(i===selected) btn.classList.add('wrong');
+  });
+  if(selected===correct) quizCorrect++;
+  quizIndex++;
+  document.getElementById('quizScore').textContent = `${quizCorrect} / ${quizIndex}`;
+  setTimeout(showQuizQ, 900);
+}
+
+// ======================== CONFETTI ========================
+function launchConfetti(){
+  const container = document.createElement('div');
+  container.className = 'confetti-container';
+  document.body.appendChild(container);
+  const colors = ['#EF5350','#FF8A80','#FFCDD2','#C62828','#FFB74D','#81C784','#64B5F6','#CE93D8'];
+  for(let i=0;i<80;i++){
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = Math.random()*100+'%';
+    piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+    piece.style.width = (6+Math.random()*8)+'px';
+    piece.style.height = (6+Math.random()*8)+'px';
+    piece.style.borderRadius = Math.random()>0.5?'50%':'2px';
+    piece.style.animationDuration = (2+Math.random()*2)+'s';
+    piece.style.animationDelay = Math.random()*0.8+'s';
+    container.appendChild(piece);
+  }
+  setTimeout(()=>{
+    if(container.parentNode) container.parentNode.removeChild(container);
+  },4000);
+}
+
+// ======================== KEYBOARD ========================
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft') goPage(-1);
+  else if(e.key==='ArrowRight') goPage(1);
+  else if(e.key==='Home') goHome();
+  else if(e.key===' ') { e.preventDefault(); speakAll(); }
+});
+
+// ======================== TOUCH SWIPE ========================
+(function(){
+  let startX=0, startY=0, distX=0, distY=0;
+  const slideArea = document.getElementById('slides');
+  slideArea.addEventListener('touchstart',e=>{
+    const t = e.touches[0];
+    startX = t.clientX; startY = t.clientY;
+    distX=0; distY=0;
+  }, {passive:true});
+  slideArea.addEventListener('touchmove',e=>{
+    if(!startX) return;
+    const t = e.touches[0];
+    distX = t.clientX - startX;
+    distY = t.clientY - startY;
+  }, {passive:true});
+  slideArea.addEventListener('touchend',()=>{
+    if(Math.abs(distX) > 50 && Math.abs(distX) > Math.abs(distY)*1.5){
+      if(distX<0) goPage(1);
+      else goPage(-1);
+    }
+    startX=0; startY=0; distX=0; distY=0;
+  }, {passive:true});
+})();
+
+// ======================== GSAP ANIMATIONS ========================
+function animateSlideIn(slideEl){
+  const items = slideEl.querySelectorAll('.char-card, .chant-box, .cover-wrap, h2, .match-wrap, .quiz-wrap');
+  if(!items.length) return;
+  gsap.fromTo(items,
+    {y:24,opacity:0},
+    {y:0,opacity:1,duration:0.5,stagger:0.08,ease:'power2.out'}
+  );
+}
+
+// Observe slide change for GSAP
+const observer = new MutationObserver(()=>{
+  const active = document.querySelector('.slide.active');
+  if(active && active.dataset.page!=='0' && active.dataset.page!=='9'){
+    animateSlideIn(active);
+  }
+});
+observer.observe(document.getElementById('slides'),{attributes:true,attributeFilter:['class'],subtree:true});
+
+// Also trigger on load
+window.addEventListener('load',()=>{
+  const active = document.querySelector('.slide.active');
+  if(active && active.dataset.page==='0'){
+    gsap.fromTo(active.querySelector('.cover-wrap'),
+      {y:30,opacity:0},{y:0,opacity:1,duration:0.6,ease:'power3.out'}
+    );
+  }
+});
+
+// ======================== START ========================
+updateNav();
+</script>
+</body>
+</html>

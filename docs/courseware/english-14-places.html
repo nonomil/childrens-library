@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>English Lesson 14 — Places 🏘️🏫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  font-family: 'Nunito', sans-serif;
+  background: #e8f5e9;
+  overflow: hidden;
+  -webkit-user-select: none; user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== LAYOUT CONTAINER ===== */
+.app {
+  position: relative;
+  width: 100%; max-width: 960px;
+  height: 100vh; max-height: 780px;
+  margin: 0 auto;
+  background: linear-gradient(145deg, #ffffff 0%, #f1f8e9 100%);
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(67,160,71,0.15);
+}
+@media(min-width:421px){
+  .app { border-radius: 28px; height: 94vh; margin-top: 3vh; }
+}
+
+/* ===== PROGRESS BAR ===== */
+.progress-wrap {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 25;
+  height: 4px;
+  background: rgba(200,230,200,0.4);
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #81c784, #43A047, #2e7d32);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ===== HEADER ===== */
+.header {
+  position: absolute; top: 4px; left: 0; right: 0;
+  z-index: 20;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95) 60%, transparent);
+}
+.header a, .header button {
+  background: none; border: none; cursor: pointer;
+  font-size: 26px; line-height: 1;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  transition: background 0.2s, transform 0.2s;
+  text-decoration: none;
+}
+.header a:hover, .header button:hover { background: rgba(67,160,71,0.15); transform: scale(1.08); }
+.header a:active, .header button:active { transform: scale(0.92); }
+#speakBtn { color: #43A047; }
+#speakBtn.speaking { animation: pulse-speak 0.8s ease-in-out infinite; }
+@keyframes pulse-speak {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.18); color: #2e7d32; }
+}
+
+/* ===== SLIDES ===== */
+.slides {
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px 100px;
+  opacity: 0; visibility: hidden;
+  transition: none;
+  will-change: transform, opacity;
+}
+.slide.active {
+  opacity: 1; visibility: visible;
+  z-index: 10;
+}
+.slide.exit {
+  z-index: 5;
+}
+
+/* ===== SLIDE CONTENTS ===== */
+.slide-icon { font-size: 72px; margin-bottom: 10px; line-height: 1.2; }
+.slide-img {
+  width: 200px; height: 200px;
+  object-fit: contain;
+  border-radius: 20px;
+  background: #f0faf0;
+  box-shadow: 0 4px 20px rgba(67,160,71,0.20);
+  margin-bottom: 16px;
+  padding: 12px;
+}
+.slide-word {
+  font-size: 42px; font-weight: 800;
+  color: #1b5e20;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(67,160,71,0.15);
+}
+.slide-chinese {
+  font-size: 20px; font-weight: 600;
+  color: #43A047;
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+.slide-hint {
+  font-size: 14px; font-weight: 600;
+  color: #a5d6a7;
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+.slide-sentence {
+  font-size: 17px; font-weight: 600;
+  color: #2e7d32;
+  margin-top: 8px;
+  padding: 6px 16px;
+  background: #f1f8e9;
+  border-radius: 12px;
+  line-height: 1.3;
+  text-align: center;
+  max-width: 280px;
+}
+.phonics-desc {
+  font-size: 14px; font-weight: 600;
+  color: #66BB6A;
+  margin-bottom: 12px;
+  text-align: center;
+  padding: 0 20px;
+  line-height: 1.4;
+}
+
+/* Title slide */
+.slide-title .title-main {
+  font-size: 34px; font-weight: 900;
+  color: #1b5e20;
+  text-align: center;
+  line-height: 1.3;
+}
+.slide-title .title-sub {
+  font-size: 28px; font-weight: 700;
+  color: #43A047;
+  margin-top: 4px;
+}
+.slide-title .title-icons {
+  font-size: 60px;
+  margin-top: 18px;
+  letter-spacing: 10px;
+  animation: float-icons 3s ease-in-out infinite;
+}
+@keyframes float-icons {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.slide-title .lesson-num {
+  font-size: 14px; font-weight: 700;
+  color: #a5d6a7;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+
+/* Phonics slide */
+.phonics-rule {
+  display: inline-block;
+  background: #e8f5e9;
+  border: 3px solid #43A047;
+  border-radius: 16px;
+  padding: 8px 22px;
+  font-size: 28px; font-weight: 800;
+  color: #1b5e20;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.18);
+}
+.phonics-words {
+  display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+}
+.phonics-word {
+  display: flex; flex-direction: column; align-items: center;
+  background: #f9fbe7;
+  border-radius: 16px;
+  padding: 14px 18px 10px;
+  box-shadow: 0 3px 12px rgba(67,160,71,0.12);
+  min-width: 90px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.phonics-word:active { transform: scale(0.92); }
+.phonics-word .pw-emoji {
+  font-size: 48px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.phonics-word .pw-text {
+  font-size: 22px; font-weight: 700;
+  color: #1b5e20;
+}
+.phonics-word .pw-phone {
+  font-size: 14px; font-weight: 600;
+  color: #66BB6A;
+}
+
+/* Review slide */
+.review-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  max-width: 350px;
+  margin-top: 8px;
+}
+.review-card {
+  display: flex; flex-direction: column; align-items: center;
+  background: #f9fbe7;
+  border-radius: 14px;
+  padding: 12px 8px 8px;
+  box-shadow: 0 3px 10px rgba(67,160,71,0.10);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.review-card:active { transform: scale(0.94); }
+.review-card .rc-emoji {
+  font-size: 40px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+.review-card .rc-en {
+  font-size: 18px; font-weight: 700;
+  color: #1b5e20;
+}
+.review-card .rc-zh {
+  font-size: 13px; font-weight: 600;
+  color: #66BB6A;
+}
+.review-card.tapped { background: #c8e6c9; transform: scale(0.96); }
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px;
+  padding: 10px 18px 18px;
+  background: linear-gradient(0deg, rgba(255,255,255,0.98) 60%, transparent);
+}
+.nav button {
+  background: #43A047; border: none; cursor: pointer;
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  font-size: 20px; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, transform 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.30);
+}
+.nav button:active { transform: scale(0.88); }
+.nav button:disabled { opacity: 0.35; box-shadow: none; background: #bdbdbd; pointer-events: none; }
+.nav button:hover:not(:disabled) { background: #2e7d32; }
+
+.dots {
+  display: flex; gap: 8px; align-items: center;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #c8e6c9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none; padding: 0;
+}
+.dot.active {
+  width: 28px; border-radius: 6px;
+  background: #43A047;
+}
+.dot:hover:not(.active) { background: #a5d6a7; }
+
+/* ===== PAGE COUNTER ===== */
+.page-num {
+  position: absolute; bottom: 80px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  font-size: 12px; font-weight: 700;
+  color: #a5d6a7;
+  background: rgba(255,255,255,0.85);
+  padding: 4px 14px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+/* ===== CELEBRATION OVERLAY ===== */
+.celebration {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 50;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.0);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.celebration.show {
+  opacity: 1;
+  pointer-events: auto;
+  background: rgba(255,255,255,0.70);
+}
+.celeb-inner {
+  text-align: center;
+  background: #fff;
+  border-radius: 24px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 8px 40px rgba(67,160,71,0.25);
+  max-width: 300px;
+  transform: scale(0.85);
+  transition: transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.celebration.show .celeb-inner {
+  transform: scale(1);
+}
+.celeb-icon { font-size: 56px; margin-bottom: 8px; }
+.celeb-title { font-size: 28px; font-weight: 900; color: #1b5e20; }
+.celeb-sub { font-size: 18px; font-weight: 700; color: #43A047; margin-top: 2px; }
+.celeb-text { font-size: 14px; font-weight: 600; color: #66BB6A; margin-top: 10px; line-height: 1.4; }
+.celeb-btn {
+  margin-top: 18px;
+  background: #43A047;
+  border: none;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 700;
+  padding: 10px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 4px 12px rgba(67,160,71,0.30);
+}
+.celeb-btn:hover { background: #2e7d32; }
+.celeb-btn:active { transform: scale(0.92); }
+
+/* ===== CONFETTI CANVAS ===== */
+#confettiCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  .app { max-width: 100%; max-height: 100vh; border-radius: 0; margin-top: 0; }
+  .slide-word { font-size: 36px; }
+  .slide-img { width: 160px; height: 160px; }
+  .slide-icon { font-size: 60px; }
+  .slide-title .title-main { font-size: 28px; }
+  .slide-title .title-sub { font-size: 24px; }
+  .slide-title .title-icons { font-size: 48px; }
+  .phonics-word { min-width: 80px; padding: 10px 12px 8px; }
+  .phonics-word .pw-emoji { font-size: 40px; }
+  .review-grid { gap: 8px; }
+  .review-card .rc-emoji { font-size: 32px; }
+  .review-card .rc-en { font-size: 16px; }
+}
+
+/* ===== UTILITY ===== */
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Header -->
+  <header class="header">
+    <a href="../" aria-label="Home">🏠</a>
+    <button id="speakBtn" aria-label="Speak" title="Listen">▶</button>
+  </header>
+
+  <!-- Progress Bar -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Slides -->
+  <div class="slides" id="slides">
+    <!-- Slides injected by JS -->
+  </div>
+
+  <!-- Page Counter -->
+  <div class="page-num" id="pageNum">1 / 10</div>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <button id="prevBtn" aria-label="Previous">◀</button>
+    <div class="dots" id="dots"></div>
+    <button id="nextBtn" aria-label="Next">▶</button>
+  </nav>
+
+  <!-- Celebration Overlay (appears on last page) -->
+  <div class="celebration" id="celebration">
+    <div class="celeb-inner">
+      <div class="celeb-icon">🎉</div>
+      <div class="celeb-title">Great Job!</div>
+      <div class="celeb-sub">你太棒了！</div>
+      <div class="celeb-text">You completed Lesson 14 — Places 🏘️🏫</div>
+      <button class="celeb-btn" onclick="goTo(0)">🔄 Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<canvas id="confettiCanvas"></canvas>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
+</script>
+
+<script>
+/* ============================================================
+   ENGLISH LESSON 14 — PLACES 🏘️🏫
+   ============================================================ */
+
+// ── DATA ──────────────────────────────────────────────────────
+const SLIDES = [
+  { // 0 — Title
+    type: 'title',
+    lesson: 'Lesson 14',
+    main: 'Places',
+    chinese: '地方',
+    emoji: '🏘️🏫🏥🏞️🛒📚',
+    speak: 'Places. Let us learn about different places today!'
+  },
+  { // 1 — Park
+    type: 'word',
+    word: 'Park',
+    chinese: '公园',
+    img: 'page-00.webp',
+    emoji: '🌳',
+    sentence: "Let's play at the park.",
+    speak: 'Park. Let us play at the park.'
+  },
+  { // 2 — School
+    type: 'word',
+    word: 'School',
+    chinese: '学校',
+    img: 'page-01.webp',
+    emoji: '🏫',
+    sentence: 'I go to school every day.',
+    speak: 'School. I go to school every day.'
+  },
+  { // 3 — Hospital
+    type: 'word',
+    word: 'Hospital',
+    chinese: '医院',
+    img: 'page-02.webp',
+    emoji: '🏥',
+    sentence: 'The hospital helps sick people.',
+    speak: 'Hospital. The hospital helps sick people.'
+  },
+  { // 4 — Supermarket
+    type: 'word',
+    word: 'Supermarket',
+    chinese: '超市',
+    img: 'page-03.webp',
+    emoji: '🛒',
+    sentence: 'We buy food at the supermarket.',
+    speak: 'Supermarket. We buy food at the supermarket.'
+  },
+  { // 5 — Library
+    type: 'word',
+    word: 'Library',
+    chinese: '图书馆',
+    img: 'page-04.webp',
+    emoji: '📚',
+    sentence: 'I read books at the library.',
+    speak: 'Library. I read books at the library.'
+  },
+  { // 6 — Playground
+    type: 'word',
+    word: 'Playground',
+    chinese: '游乐场',
+    img: 'page-05.webp',
+    emoji: '🎠',
+    sentence: 'Children love the playground.',
+    speak: 'Playground. Children love the playground.'
+  },
+  { // 7 — Zoo & Museum
+    type: 'dual',
+    left: { word: 'Zoo', chinese: '动物园', img: 'page-06.webp', emoji: '🦁', speak: 'Zoo' },
+    right: { word: 'Museum', chinese: '博物馆', img: 'page-07.webp', emoji: '🏛️', speak: 'Museum' },
+    speak: 'Zoo and museum. I see animals at the zoo. We learn at the museum.'
+  },
+  { // 8 — Phonics: st = /st/
+    type: 'phonics',
+    rule: 'st = /st/',
+    desc: 'The letters "st" say /st/ like the start of "store"',
+    words: [
+      { text: 'store', phone: '/stɔːr/', emoji: '🏪', speak: 'store' },
+      { text: 'stop', phone: '/stɒp/', emoji: '🛑', speak: 'stop' },
+      { text: 'star', phone: '/stɑːr/', emoji: '⭐', speak: 'star' },
+      { text: 'station', phone: '/ˈsteɪʃən/', emoji: '🚉', speak: 'station' }
+    ],
+    speak: 'st says st. store, stop, star, station.'
+  },
+  { // 9 — Sight Words Review
+    type: 'review',
+    title: 'Sight Words',
+    chinese: '复习 · 词汇',
+    hint: 'Tap a card to hear the word',
+    speak: 'Let us review all the place words!',
+    words: [
+      { en: 'Park', zh: '公园', emoji: '🌳' },
+      { en: 'School', zh: '学校', emoji: '🏫' },
+      { en: 'Hospital', zh: '医院', emoji: '🏥' },
+      { en: 'Supermarket', zh: '超市', emoji: '🛒' },
+      { en: 'Library', zh: '图书馆', emoji: '📚' },
+      { en: 'Playground', zh: '游乐场', emoji: '🎠' },
+      { en: 'Zoo', zh: '动物园', emoji: '🦁' },
+      { en: 'Museum', zh: '博物馆', emoji: '🏛️' },
+      { en: 'Home', zh: '家', emoji: '🏠' },
+      { en: 'Restaurant', zh: '餐厅', emoji: '🍽️' }
+    ]
+  }
+];
+
+const IMG_BASE = 'images/english-14/webp/';
+
+// ── STATE ─────────────────────────────────────────────────────
+let current = 0;
+let isAnimating = false;
+let speechUtterance = null;
+
+// ── DOM REFS ──────────────────────────────────────────────────
+const slidesEl     = document.getElementById('slides');
+const dotsEl       = document.getElementById('dots');
+const prevBtn      = document.getElementById('prevBtn');
+const nextBtn      = document.getElementById('nextBtn');
+const speakBtn     = document.getElementById('speakBtn');
+const progressBar  = document.getElementById('progressBar');
+const pageNumEl    = document.getElementById('pageNum');
+const celebration  = document.getElementById('celebration');
+const confettiCtx  = document.getElementById('confettiCanvas').getContext('2d');
+
+// ── BUILD SLIDES ──────────────────────────────────────────────
+function buildSlides() {
+  SLIDES.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'slide' + (i === 0 ? ' active' : '');
+    div.dataset.index = i;
+    div.dataset.speak = s.speak || '';
+
+    switch (s.type) {
+      case 'title':
+        div.classList.add('slide-title');
+        div.innerHTML = `
+          <div class="lesson-num">${s.lesson}</div>
+          <div class="title-main">${s.main}</div>
+          <div class="title-sub">${s.chinese}</div>
+          <div class="title-icons">${s.emoji}</div>
+        `;
+        break;
+
+      case 'word':
+        div.innerHTML = `
+          <div class="slide-icon">${s.emoji}</div>
+          <img class="slide-img" src="${IMG_BASE}${s.img}" alt="${s.word}" loading="lazy" onerror="this.style.display='none'">
+          <div class="slide-word">${s.word}</div>
+          <div class="slide-chinese">${s.chinese}</div>
+          ${s.sentence ? `<div class="slide-sentence">${s.sentence}</div>` : ''}
+        `;
+        break;
+
+      case 'dual':
+        div.classList.add('slide-dual');
+        div.style.flexDirection = 'row';
+        div.style.gap = '16px';
+        div.style.paddingLeft = '12px';
+        div.style.paddingRight = '12px';
+        div.innerHTML = `
+          <div class="dual-item" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+            <div class="slide-icon" style="font-size:52px">${s.left.emoji}</div>
+            <img class="slide-img" src="${IMG_BASE}${s.left.img}" alt="${s.left.word}" loading="lazy" onerror="this.style.display='none'" style="width:120px;height:120px;">
+            <div class="slide-word" style="font-size:32px">${s.left.word}</div>
+            <div class="slide-chinese">${s.left.chinese}</div>
+          </div>
+          <div class="dual-item" style="flex:1;display:flex;flex-direction:column;align-items:center;">
+            <div class="slide-icon" style="font-size:52px">${s.right.emoji}</div>
+            <img class="slide-img" src="${IMG_BASE}${s.right.img}" alt="${s.right.word}" loading="lazy" onerror="this.style.display='none'" style="width:120px;height:120px;">
+            <div class="slide-word" style="font-size:32px">${s.right.word}</div>
+            <div class="slide-chinese">${s.right.chinese}</div>
+          </div>
+        `;
+        break;
+
+      case 'phonics':
+        div.innerHTML = `
+          <div class="phonics-rule">${s.rule}</div>
+          ${s.desc ? `<div class="phonics-desc">${s.desc}</div>` : ''}
+          <div class="phonics-words">
+            ${s.words.map(w => `
+              <div class="phonics-word" data-speak="${w.speak}">
+                <div class="pw-emoji">${w.emoji}</div>
+                <span class="pw-text">${w.text}</span>
+                <span class="pw-phone">${w.phone}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="slide-hint" style="margin-top:16px">Tap a word to hear it</div>
+        `;
+        // Click to speak individual phonics words
+        div.querySelectorAll('.phonics-word').forEach(el => {
+          el.addEventListener('click', () => {
+            const txt = el.dataset.speak;
+            if (txt) speak(txt);
+          });
+        });
+        break;
+
+      case 'review':
+        div.innerHTML = `
+          <div class="slide-word" style="font-size:30px;margin-bottom:2px">${s.title}</div>
+          <div class="slide-chinese" style="font-size:18px;margin-bottom:6px">${s.chinese}</div>
+          <div class="slide-hint" style="margin-bottom:6px">${s.hint || 'Tap a card to practice'}</div>
+          <div class="review-grid">
+            ${s.words.map(w => `
+              <div class="review-card" data-speak="${w.en}">
+                <div class="rc-emoji">${w.emoji}</div>
+                <span class="rc-en">${w.en}</span>
+                <span class="rc-zh">${w.zh}</span>
+              </div>
+            `).join('')}
+          </div>
+        `;
+        // Click to speak review cards
+        div.querySelectorAll('.review-card').forEach(el => {
+          el.addEventListener('click', function() {
+            const txt = this.dataset.speak;
+            if (txt) {
+              speak(txt);
+              this.classList.add('tapped');
+              setTimeout(() => this.classList.remove('tapped'), 300);
+            }
+          });
+        });
+        break;
+    }
+
+    slidesEl.appendChild(div);
+  });
+}
+
+// ── BUILD DOTS ────────────────────────────────────────────────
+function buildDots() {
+  SLIDES.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(dot);
+  });
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────
+function goTo(index) {
+  if (isAnimating || index === current) return;
+  if (index < 0 || index >= SLIDES.length) return;
+
+  isAnimating = true;
+  const prev = current;
+  current = index;
+
+  const prevSlide = slidesEl.children[prev];
+  const nextSlide = slidesEl.children[current];
+
+  // Exit animation
+  gsap.to(prevSlide, {
+    opacity: 0,
+    scale: 0.92,
+    duration: 0.30,
+    ease: 'power2.in',
+    onComplete: () => {
+      prevSlide.classList.remove('active');
+      prevSlide.classList.add('exit');
+      prevSlide.style.cssText = '';
+    }
+  });
+
+  // Enter animation
+  nextSlide.classList.remove('exit');
+  nextSlide.classList.add('active');
+  gsap.fromTo(nextSlide,
+    { opacity: 0, scale: 1.08 },
+    { opacity: 1, scale: 1, duration: 0.38, ease: 'back.out(1.4)', onComplete: () => { isAnimating = false; } }
+  );
+
+  // Entrance stagger for inner elements
+  const kids = nextSlide.querySelectorAll('.slide-word, .slide-chinese, .slide-icon, .slide-img, .phonics-rule, .phonics-word, .review-card, .title-main, .title-sub, .title-icons, .lesson-num, .dual-item');
+  if (kids.length) {
+    gsap.fromTo(kids,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.04, ease: 'power2.out', delay: 0.10 }
+    );
+  }
+
+  updateUI();
+
+  // Confetti on last page
+  if (current === SLIDES.length - 1) {
+    launchConfetti();
+  }
+}
+
+function prev() { goTo(current - 1); }
+function next() { goTo(current + 1); }
+
+function updateUI() {
+  const total = SLIDES.length;
+  prevBtn.disabled = current === 0;
+  nextBtn.disabled = current === total - 1;
+
+  // Update dots
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === current);
+  });
+
+  // Update progress bar
+  const pct = ((current + 1) / total) * 100;
+  if (progressBar) progressBar.style.width = pct + '%';
+
+  // Update page counter
+  if (pageNumEl) pageNumEl.textContent = (current + 1) + ' / ' + total;
+
+  // Toggle celebration overlay on last page
+  if (celebration) {
+    if (current === total - 1) {
+      celebration.classList.add('show');
+    } else {
+      celebration.classList.remove('show');
+    }
+  }
+}
+
+// ── SPEECH SYNTHESIS ─────────────────────────────────────────
+function speak(text) {
+  if (!window.speechSynthesis) return;
+
+  // Cancel any ongoing speech
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.88;
+  utterance.pitch = 1.05;
+  utterance.volume = 1;
+
+  speechUtterance = utterance;
+
+  speakBtn.classList.add('speaking');
+
+  utterance.onend = () => {
+    speakBtn.classList.remove('speaking');
+    speechUtterance = null;
+  };
+  utterance.onerror = () => {
+    speakBtn.classList.remove('speaking');
+    speechUtterance = null;
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+function speakCurrent() {
+  const slide = slidesEl.children[current];
+  if (!slide) return;
+  const text = slide.dataset.speak || '';
+  if (text) speak(text);
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────
+const confettiParticles = [];
+const CONFETTI_COLORS = ['#43A047','#66BB6A','#FFD54F','#FF7043','#42A5F5','#AB47BC','#EF5350','#26C6DA','#FFEE58'];
+
+function launchConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const W = canvas.width  = window.innerWidth;
+  const H = canvas.height = window.innerHeight;
+
+  // Burst 200 particles
+  for (let i = 0; i < 200; i++) {
+    confettiParticles.push({
+      x: W / 2 + (Math.random() - 0.5) * 60,
+      y: H / 2,
+      vx: (Math.random() - 0.5) * 18,
+      vy: -Math.random() * 16 - 4,
+      size: Math.random() * 10 + 5,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      rotation: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 12,
+      gravity: 0.30 + Math.random() * 0.15,
+      opacity: 1,
+      drag: 0.97
+    });
+  }
+
+  if (!confettiParticles.length) return;
+  animateConfetti();
+}
+
+function animateConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  const ctx = confettiCtx;
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.clearRect(0, 0, W, H);
+
+  for (let i = confettiParticles.length - 1; i >= 0; i--) {
+    const p = confettiParticles[i];
+    p.vx *= p.drag;
+    p.vy += p.gravity;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.rotation += p.rotSpeed;
+    p.opacity -= 0.002;
+
+    if (p.opacity <= 0 || p.y > H + 20) {
+      confettiParticles.splice(i, 1);
+      continue;
+    }
+
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation * Math.PI / 180);
+    ctx.globalAlpha = Math.max(0, p.opacity);
+    ctx.fillStyle = p.color;
+    ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+    ctx.restore();
+  }
+
+  if (confettiParticles.length > 0) {
+    requestAnimationFrame(animateConfetti);
+  } else {
+    ctx.clearRect(0, 0, W, H);
+  }
+}
+
+// ── KEYBOARD / SWIPE ──────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') prev();
+  if (e.key === 'ArrowRight') next();
+  if (e.key === ' ') { e.preventDefault(); speakCurrent(); }
+});
+
+// Touch swipe
+let touchStartX = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+document.addEventListener('touchend', (e) => {
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  const dy = e.changedTouches[0].screenY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+    if (dx < 0) next();
+    else prev();
+  }
+}, { passive: true });
+
+// ── EVENT LISTENERS ──────────────────────────────────────────
+prevBtn.addEventListener('click', prev);
+nextBtn.addEventListener('click', next);
+speakBtn.addEventListener('click', speakCurrent);
+
+// ── INIT ──────────────────────────────────────────────────────
+buildSlides();
+buildDots();
+updateUI();
+
+// Entrance animation for first slide
+const firstKids = slidesEl.children[0].querySelectorAll('.lesson-num, .title-main, .title-sub, .title-icons');
+gsap.fromTo(firstKids,
+  { opacity: 0, y: 24 },
+  { opacity: 1, y: 0, duration: 0.5, stagger: 0.12, ease: 'power2.out', delay: 0.2 }
+);
+
+// Resize handler for confetti canvas
+window.addEventListener('resize', () => {
+  const canvas = document.getElementById('confettiCanvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
+console.log('🏘️ English Lesson 14 — Places ready!');
+</script>
+</body>
+</html>

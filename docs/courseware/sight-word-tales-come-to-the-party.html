@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Sight Word Tales - Come to the Party!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Nunito','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+    background: linear-gradient(145deg, #FFF8E7 0%, #FFE8C8 100%);
+    min-height: 100vh; display: flex; justify-content: center;
+    align-items: center; padding: 20px;
+  }
+  .book {flex-shrink:0;
+    max-width: 800px; width: 100%; background: #FFFCF5;
+    border-radius: 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 4px #FFF, 0 0 0 8px #FFB347;
+    padding: 24px 20px;
+    position: relative;
+  }
+  .page-area { min-height: 380px; }
+  .page {
+    display: none; flex-direction: column; align-items: center;
+    animation: fadeIn 0.4s ease;
+  }
+  .page.active { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-title {
+    font-size: 34px;
+    color: #E8751A;
+    text-align: center;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+  .page-subtitle {
+    font-size: 16px;
+    color: #B07D44;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  /* SVG illustration container */
+  .illustration {
+    width: 200px; height: 180px; border-radius: 24px;
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(255,179,71,0.2);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .illustration svg {
+    width: 100%; height: 100%;
+    display: block;
+  }
+
+  .sentence {
+    font-size: 26px; line-height: 1.6; text-align: center;
+    padding: 15px 20px; background: #FFF8F0; border-radius: 20px;
+    width: 100%; margin-bottom: 10px;
+    border: 2px solid #FFE0B2;
+  }
+  .sentence .highlight {
+    color: #E8751A; font-weight: bold;
+    text-decoration: underline; text-decoration-color: #FFB347;
+    text-underline-offset: 4px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    padding: 2px 6px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .sentence .highlight:hover {
+    background: #FFF3E0;
+    transform: scale(1.08);
+  }
+  .sentence .highlight:active {
+    transform: scale(0.95);
+  }
+
+  /* Party vocabulary items row */
+  .party-items {
+    display: flex; gap: 8px; justify-content: center;
+    flex-wrap: wrap; margin: 6px 0 10px; width: 100%;
+  }
+  .party-item {
+    padding: 6px 14px; border-radius: 16px;
+    background: #FFF8F0; border: 2px solid #FFE0B2;
+    font-size: 20px; cursor: pointer;
+    transition: all 0.2s; text-align: center;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .party-item:hover {
+    border-color: #FFB347; background: #FFF3E0;
+    transform: scale(1.1);
+  }
+  .party-item:active { transform: scale(0.92); }
+  .party-item .en-word {
+    font-size: 14px; color: #E8751A; font-weight: bold;
+  }
+
+  /* Game area - gears style */
+  .game-area {
+    width: 100%; padding: 16px;
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE8C8 100%);
+    border-radius: 24px; text-align: center; margin-top: 6px;
+    border: 3px solid #FFB347;
+    box-shadow: 0 4px 15px rgba(255,179,71,0.15);
+  }
+  .game-area h3 {
+    font-size: 16px; color: #E8751A; margin-bottom: 10px;
+  }
+  .game-area h3 .gear {
+    display: inline-block;
+    animation: spin 6s linear infinite;
+    font-size: 20px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .word-choices { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .word-choice {
+    padding: 10px 24px; border-radius: 16px; border: 3px solid #E0D5C7;
+    background: white; font-size: 22px; font-weight: bold; cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .word-choice:hover { border-color: #FFB347; transform: scale(1.08); box-shadow: 0 4px 16px rgba(255,179,71,0.3); }
+  .word-choice.correct { border-color: #4caf50; background: #e8f5e9; transform: scale(1.05); box-shadow: 0 4px 16px rgba(76,175,80,0.3); }
+  .word-choice.wrong { border-color: #f44336; background: #ffebee; animation: shake 0.4s; }
+
+  /* Drag & Drop styles */
+  .drop-zone {
+    border: 3px dashed #FFB347; border-radius: 16px; padding: 16px;
+    text-align: center; font-size: 16px; color: #AAA; margin-bottom: 10px;
+    transition: all 0.2s; min-height: 50px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .drop-zone.drag-over {
+    border-color: #66BB6A; background: rgba(102,187,106,0.1); color: #4CAF50;
+    transform: scale(1.02);
+  }
+  .word-choice { cursor: grab; }
+  .word-choice:active { cursor: grabbing; }
+  .word-choice.dragging { opacity: 0.5; transform: scale(1.05); }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20% { transform: translateX(-10px); }
+    40% { transform: translateX(10px); }
+    60% { transform: translateX(-6px); }
+    80% { transform: translateX(6px); }
+  }
+
+  /* Speech bubble - fixed bottom, gear style */
+  .speech-bubble {
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FFFCF5;
+    border: 3px solid #FFB347;
+    border-radius: 24px;
+    padding: 18px 32px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #E8751A;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18), 0 0 0 3px rgba(255,179,71,0.1);
+    z-index: 1000;
+    max-width: 85%;
+    text-align: center;
+    animation: bubbleIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: none;
+    line-height: 1.4;
+  }
+  .speech-bubble::before {
+    content: '🔊 ';
+    font-size: 22px;
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 12px solid transparent;
+    border-top-color: #FFB347;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.08));
+  }
+  @keyframes bubbleIn {
+    0% { opacity: 0; transform: translateX(-50%) translateY(30px) scale(0.8); }
+    100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  }
+  @keyframes bubbleOut {
+    0% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(20px) scale(0.8); }
+  }
+
+  /* Controls - gears nav style */
+  .controls {
+    display: flex; gap: 12px; justify-content: center; align-items: center;
+    padding: 16px 0 8px;
+  }
+  .btn {
+    border: none; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-weight: 600;
+  }
+  .btn:hover { transform: scale(1.08); }
+  .btn:active { transform: scale(0.92); }
+
+  .btn-nav {
+    width: 50px; height: 50px; border-radius: 50%;
+    background: #FFB347; color: white; font-size: 22px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px rgba(255,179,71,0.5);
+  }
+  .btn-nav:disabled {
+    opacity: 0.35; cursor: not-allowed; box-shadow: none;
+  }
+  .btn-nav:disabled:hover { transform: none; }
+
+  .btn-sound {
+    padding: 10px 24px; border-radius: 30px;
+    background: #6BCB77; color: white; font-size: 16px;
+    box-shadow: 0 4px 15px rgba(107,203,119,0.5);
+    display: flex; align-items: center; gap: 6px;
+  }
+
+  .page-counter {
+    font-size: 14px; color: #B07D44;
+    text-align: center; font-weight: bold;
+  }
+
+  .progress { display: flex; gap: 8px; justify-content: center; padding: 4px 0 0; }
+  .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #E0D5C7; cursor: pointer;
+    transition: all 0.25s;
+  }
+  .dot.active { background: #FFB347; transform: scale(1.3); box-shadow: 0 0 8px rgba(255,179,71,0.5); }
+  .dot.done { background: #6BCB77; }
+
+  /* Cover page */
+  .cover-page { text-align: center; padding: 20px 10px; }
+  .cover-page .cover-svg {
+    width: 240px; height: 180px; margin: 0 auto 16px;
+  }
+  .cover-page h2 { font-size: 34px; color: #E8751A; }
+  .cover-page p { font-size: 16px; color: #B07D44; margin-top: 8px; }
+
+  /* Animations */
+  @keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+  @keyframes confetti-fall {
+    0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+    100% { opacity: 0; transform: translateY(600px) rotate(720deg) scale(0.3); }
+  }
+
+  .celebration {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 999;
+  }
+  .confetti {
+    position: absolute; width: 12px; height: 12px; border-radius: 2px;
+    animation: confetti-fall 2.5s ease-out forwards;
+  }
+
+  .star { color: #FFB347; font-size: 28px; }
+
+  .completed-badge {
+    background: #E8F5E9; padding: 10px; border-radius: 16px;
+    margin-top: 4px;
+  }
+  .completed-badge h3 { color: #2E7D32 !important; font-size: 18px !important; }
+  .completed-badge p { font-size: 30px; }
+
+  /* Speak buttons for quizzes */
+  .speak-btn { background:#FFB347; border:none; color:#FFF; font-size:14px; width:32px; height:32px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 6px rgba(255,179,71,0.3); }
+  .speak-btn:hover { transform:scale(1.15); background:#FF9F1C; }
+  .quiz-opt-speak { background:#E8D5C4; border:none; color:#FFF; font-size:12px; width:24px; height:24px; border-radius:50%; cursor:pointer; transition:all 0.15s; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; margin-left:6px; vertical-align:middle; }
+  .quiz-opt-speak:hover { transform:scale(1.2); background:#D4B89C; }
+
+  @media (max-width: 500px) {
+    .illustration { width: 150px; height: 140px; }
+    .sentence { font-size: 20px; }
+    .page-title { font-size: 26px; }
+    .cover-page .cover-svg { width: 180px; height: 140px; }
+    .speech-bubble { font-size: 20px; padding: 14px 24px; max-width: 90%; bottom: 80px; }
+    .party-item { font-size: 16px; padding: 4px 10px; }
+  }
+/* Top navigation buttons */
+.top-nav-btn {
+  position:absolute; z-index:50; border:none;
+  background:rgba(255,255,255,0.85); border-radius:30px;
+  padding:4px 12px; font-size:14px; font-weight:bold;
+  cursor:pointer; transition:all .2s; font-family:inherit;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+  display:flex; align-items:center; gap:4px; touch-action:manipulation;
+  text-decoration:none; color:#6B4F3A;
+}
+.top-nav-btn:hover { background:rgba(255,255,255,1); transform:scale(1.05); box-shadow:0 4px 12px rgba(0,0,0,0.12); }
+.top-nav-btn:active { transform:scale(0.95); }
+.top-nav-btn.home { left:10px; top:10px; }
+.top-nav-btn.next { right:10px; top:10px; }
+
+@media(max-width:500px){
+  .top-nav-btn { font-size:12px; padding:3px 10px; }
+}
+</style>
+
+/* === Tablet Landscape Override === */
+@media (min-width: 768px) {
+  .app, .slide, .book-container, .slider, .slides, .page-area {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  body { padding: 12px 24px !important; }
+  .slide { padding: 80px 40px 100px !important; }
+  .slide-inner { padding: 32px 40px !important; }
+  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
+    max-width: 600px !important;
+  }
+  .page-num { font-size: 14px !important; }
+  h1, .title { font-size: 32px !important; }
+  h2 { font-size: 26px !important; }
+  h3 { font-size: 22px !important; }
+  p, li, .text { font-size: 18px !important; }
+  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
+  .scroll-card { flex: 0 0 180px !important; }
+  .scroll-card .sc-icon { font-size: 42px !important; }
+  .scroll-card .sc-name { font-size: 14px !important; }
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="audio/tts/tts-engine.js"></script>
+</head>
+<body>
+<div class="book">
+  <a class="top-nav-btn home" href="https://nonomil.github.io/childrens-library/courseware/">🏠 首页</a>
+  <button class="top-nav-btn next" onclick="nextPage()">下一个 ▶</button>
+  <div class="page-area" id="pageArea"></div>
+
+  <div class="controls">
+    <button class="btn btn-nav" id="prevBtn" onclick="prevPage()">◀</button>
+    <button class="btn btn-sound" onclick="speakPage()">🔊 读给我听</button>
+    <button class="btn btn-nav" id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+  <div class="page-counter" id="pageCounter">第1页 / 共9页</div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<script>
+/* ========== SVG SCENE GENERATORS ========== */
+
+function svgBalloons() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="b1g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A8A"/><stop offset="100%" stop-color="#FF4757"/>
+      </linearGradient>
+      <linearGradient id="b2g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#74E0FF"/><stop offset="100%" stop-color="#2ED1FF"/>
+      </linearGradient>
+      <linearGradient id="b3g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE066"/><stop offset="100%" stop-color="#FFC107"/>
+      </linearGradient>
+      <linearGradient id="b4g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#B388FF"/><stop offset="100%" stop-color="#7C4DFF"/>
+      </linearGradient>
+    </defs>
+    <!-- Background dots -->
+    <circle cx="30" cy="30" r="3" fill="#FFD93D" opacity="0.5"/>
+    <circle cx="170" cy="25" r="2" fill="#FF6B6B" opacity="0.5"/>
+    <circle cx="185" cy="80" r="2.5" fill="#48DBFB" opacity="0.4"/>
+    <circle cx="15" cy="100" r="2" fill="#B388FF" opacity="0.4"/>
+    <!-- Balloon 1 - Red -->
+    <ellipse cx="55" cy="80" rx="32" ry="40" fill="url(#b1g)"/>
+    <polygon points="55,120 50,128 60,128" fill="#FF4757"/>
+    <path d="M55,128 Q48,148 42,168" stroke="#DDD" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="45" cy="68" rx="8" ry="12" fill="rgba(255,255,255,0.35)" transform="rotate(-20,45,68)"/>
+    <!-- Balloon 2 - Blue -->
+    <ellipse cx="145" cy="72" rx="30" ry="38" fill="url(#b2g)"/>
+    <polygon points="145,110 140,118 150,118" fill="#2ED1FF"/>
+    <path d="M145,118 Q152,140 158,165" stroke="#DDD" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="136" cy="60" rx="7" ry="11" fill="rgba(255,255,255,0.35)" transform="rotate(-15,136,60)"/>
+    <!-- Balloon 3 - Yellow -->
+    <ellipse cx="100" cy="58" rx="26" ry="34" fill="url(#b3g)"/>
+    <polygon points="100,92 95,100 105,100" fill="#FFC107"/>
+    <path d="M100,100 Q98,122 100,150" stroke="#DDD" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="92" cy="48" rx="6" ry="9" fill="rgba(255,255,255,0.35)" transform="rotate(-10,92,48)"/>
+    <!-- Balloon 4 - Purple -->
+    <ellipse cx="25" cy="60" rx="24" ry="30" fill="url(#b4g)"/>
+    <polygon points="25,90 21,97 29,97" fill="#7C4DFF"/>
+    <path d="M25,97 Q20,118 18,140" stroke="#DDD" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+    <ellipse cx="19" cy="50" rx="5" ry="8" fill="rgba(255,255,255,0.35)" transform="rotate(-15,19,50)"/>
+  </svg>`;
+}
+
+function svgCake() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="c1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFD93D"/><stop offset="100%" stop-color="#F5A623"/>
+      </linearGradient>
+      <linearGradient id="c2" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFB347"/><stop offset="100%" stop-color="#E8751A"/>
+      </linearGradient>
+      <linearGradient id="c3" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A80"/><stop offset="100%" stop-color="#FF6B6B"/>
+      </linearGradient>
+    </defs>
+    <!-- Background sparkles -->
+    <text x="20" y="30" font-size="14" fill="#FFD93D" opacity="0.4">✦</text>
+    <text x="170" y="25" font-size="10" fill="#FFB347" opacity="0.4">✦</text>
+    <text x="10" y="140" font-size="8" fill="#48DBFB" opacity="0.3">✦</text>
+    <text x="185" y="100" font-size="12" fill="#B388FF" opacity="0.3">✦</text>
+    <!-- Plate -->
+    <ellipse cx="100" cy="165" rx="70" ry="10" fill="#E0D5C7"/>
+    <ellipse cx="100" cy="163" rx="65" ry="7" fill="#F5F0E8"/>
+    <!-- Bottom layer -->
+    <rect x="48" y="130" width="104" height="30" rx="4" fill="url(#c3)"/>
+    <rect x="48" y="130" width="104" height="30" rx="4" fill="rgba(255,255,255,0.08)"/>
+    <!-- Cream between bottom and middle -->
+    <path d="M48,130 Q55,124 62,130 Q69,124 76,130 Q83,124 90,130 Q97,124 104,130 Q111,124 118,130 Q125,124 132,130 Q139,124 146,130 Q152,124 152,130" fill="none" stroke="#FFF8F0" stroke-width="5" stroke-linecap="round"/>
+    <!-- Middle layer -->
+    <rect x="54" y="100" width="92" height="28" rx="4" fill="url(#c2)"/>
+    <!-- Cream between middle and top -->
+    <path d="M54,100 Q61,94 68,100 Q75,94 82,100 Q89,94 96,100 Q103,94 110,100 Q117,94 124,100 Q131,94 138,100 Q146,94 146,100" fill="none" stroke="#FFF8F0" stroke-width="5" stroke-linecap="round"/>
+    <!-- Top layer -->
+    <rect x="62" y="72" width="76" height="26" rx="4" fill="url(#c1)"/>
+    <!-- Top cream swirl -->
+    <path d="M62,72 Q70,66 78,72 Q86,66 94,72 Q102,66 110,72 Q118,66 126,72 Q134,66 138,72" fill="none" stroke="#FFF8F0" stroke-width="4" stroke-linecap="round"/>
+    <!-- Decorative dots on middle layer -->
+    <circle cx="70" cy="113" r="2.5" fill="#FFD93D"/>
+    <circle cx="90" cy="115" r="2.5" fill="#48DBFB"/>
+    <circle cx="110" cy="113" r="2.5" fill="#FF6B6B"/>
+    <circle cx="130" cy="115" r="2.5" fill="#B388FF"/>
+    <!-- Strawberry -->
+    <ellipse cx="90" cy="65" rx="10" ry="8" fill="#FF4757"/>
+    <ellipse cx="90" cy="65" rx="8" ry="6" fill="#FF6B6B"/>
+    <path d="M86,60 Q90,56 94,60" fill="none" stroke="#2ECC71" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="88" cy="63" r="1" fill="#FFD93D" opacity="0.5"/>
+    <circle cx="92" cy="66" r="1" fill="#FFD93D" opacity="0.5"/>
+    <!-- Candle -->
+    <rect x="112" y="50" width="6" height="16" rx="2" fill="#FFF"/>
+    <rect x="112" y="50" width="6" height="16" rx="2" fill="rgba(255,255,255,0.7)"/>
+    <rect x="112" y="50" width="2" height="16" fill="rgba(0,0,0,0.05)"/>
+    <!-- Flame -->
+    <ellipse cx="115" cy="46" rx="4" ry="7" fill="#FFD93D"/>
+    <ellipse cx="115" cy="47" rx="2.5" ry="5" fill="#FFB347"/>
+    <ellipse cx="115" cy="48" rx="1.2" ry="3" fill="#FFF"/>
+    <!-- Candle stripes -->
+    <line x1="112" y1="54" x2="118" y2="54" stroke="#48DBFB" stroke-width="1.5"/>
+    <line x1="112" y1="60" x2="118" y2="60" stroke="#FF6B6B" stroke-width="1.5"/>
+  </svg>`;
+}
+
+function svgGift() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="gb1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A80"/><stop offset="100%" stop-color="#FF5252"/>
+      </linearGradient>
+    </defs>
+    <!-- Background stars -->
+    <text x="25" y="25" font-size="16" fill="#FFD93D" opacity="0.4">★</text>
+    <text x="165" y="35" font-size="12" fill="#48DBFB" opacity="0.35">★</text>
+    <text x="180" y="120" font-size="10" fill="#B388FF" opacity="0.3">★</text>
+    <text x="10" y="160" font-size="8" fill="#FF6B6B" opacity="0.3">★</text>
+    <!-- Shadow -->
+    <ellipse cx="100" cy="165" rx="60" ry="8" fill="rgba(0,0,0,0.06)"/>
+    <!-- Box body -->
+    <rect x="50" y="95" width="100" height="65" rx="6" fill="url(#gb1)"/>
+    <rect x="50" y="95" width="100" height="65" rx="6" fill="rgba(255,255,255,0.06)"/>
+    <!-- Box lid -->
+    <rect x="46" y="82" width="108" height="20" rx="5" fill="#FF8A80"/>
+    <rect x="46" y="82" width="108" height="20" rx="5" fill="rgba(255,255,255,0.1)"/>
+    <!-- Lid highlight -->
+    <rect x="46" y="82" width="108" height="4" rx="2" fill="rgba(255,255,255,0.2)"/>
+    <!-- Ribbon vertical -->
+    <rect x="95" y="82" width="10" height="78" fill="#FFD93D"/>
+    <!-- Ribbon horizontal -->
+    <rect x="50" y="118" width="100" height="8" fill="#FFD93D"/>
+    <!-- Ribbon shine -->
+    <rect x="95" y="82" width="3" height="78" fill="rgba(255,255,255,0.2)"/>
+    <!-- Bow loops -->
+    <path d="M100,82 Q80,60 70,75 Q60,90 100,82" fill="#FFD93D"/>
+    <path d="M100,82 Q120,60 130,75 Q140,90 100,82" fill="#FFD93D"/>
+    <path d="M100,82 Q85,65 78,78" fill="none" stroke="#FFC107" stroke-width="1.5"/>
+    <path d="M100,82 Q115,65 122,78" fill="none" stroke="#FFC107" stroke-width="1.5"/>
+    <!-- Bow center knot -->
+    <ellipse cx="100" cy="82" rx="6" ry="5" fill="#F5A623"/>
+    <ellipse cx="99" cy="81" rx="3" ry="2.5" fill="#FFD93D"/>
+    <!-- Bow ribbon tails -->
+    <path d="M94,86 Q86,100 80,108" fill="none" stroke="#FFD93D" stroke-width="3" stroke-linecap="round"/>
+    <path d="M106,86 Q114,100 120,108" fill="none" stroke="#FFD93D" stroke-width="3" stroke-linecap="round"/>
+    <!-- Polka dots on box -->
+    <circle cx="65" cy="105" r="3" fill="rgba(255,255,255,0.25)"/>
+    <circle cx="80" cy="140" r="3" fill="rgba(255,255,255,0.25)"/>
+    <circle cx="120" cy="105" r="3" fill="rgba(255,255,255,0.25)"/>
+    <circle cx="135" cy="140" r="3" fill="rgba(255,255,255,0.25)"/>
+    <circle cx="72" cy="128" r="2" fill="rgba(255,255,255,0.2)"/>
+    <circle cx="128" cy="128" r="2" fill="rgba(255,255,255,0.2)"/>
+  </svg>`;
+}
+
+function svgBunting() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="bg1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A8A"/><stop offset="100%" stop-color="#FF4757"/>
+      </linearGradient>
+      <linearGradient id="bg2" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FFE066"/><stop offset="100%" stop-color="#FFC107"/>
+      </linearGradient>
+      <linearGradient id="bg3" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#74E0FF"/><stop offset="100%" stop-color="#2ED1FF"/>
+      </linearGradient>
+      <linearGradient id="bg4" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#B388FF"/><stop offset="100%" stop-color="#7C4DFF"/>
+      </linearGradient>
+      <linearGradient id="bg5" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#69F0AE"/><stop offset="100%" stop-color="#2ECC71"/>
+      </linearGradient>
+      <linearGradient id="bg6" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A80"/><stop offset="100%" stop-color="#FF5252"/>
+      </linearGradient>
+    </defs>
+    <!-- Background clouds -->
+    <ellipse cx="40" cy="150" rx="30" ry="12" fill="rgba(255,255,255,0.5)"/>
+    <ellipse cx="155" cy="160" rx="35" ry="10" fill="rgba(255,255,255,0.45)"/>
+    <!-- String -->
+    <path d="M10,25 Q100,40 190,25" fill="none" stroke="#CCC" stroke-width="1.5"/>
+    <!-- Flags -->
+    <!-- Red flag -->
+    <polygon points="30,28 50,28 40,60" fill="url(#bg1)"/>
+    <polygon points="30,28 50,28 40,60" fill="rgba(255,255,255,0.1)"/>
+    <!-- Yellow flag -->
+    <polygon points="62,31 82,31 72,63" fill="url(#bg2)"/>
+    <polygon points="62,31 82,31 72,63" fill="rgba(255,255,255,0.1)"/>
+    <!-- Blue flag -->
+    <polygon points="94,33 114,33 104,65" fill="url(#bg3)"/>
+    <polygon points="94,33 114,33 104,65" fill="rgba(255,255,255,0.1)"/>
+    <!-- Purple flag -->
+    <polygon points="126,31 146,31 136,63" fill="url(#bg4)"/>
+    <polygon points="126,31 146,31 136,63" fill="rgba(255,255,255,0.1)"/>
+    <!-- Green flag -->
+    <polygon points="158,28 178,28 168,60" fill="url(#bg5)"/>
+    <polygon points="158,28 178,28 168,60" fill="rgba(255,255,255,0.1)"/>
+    <!-- Flag decorations - dots -->
+    <circle cx="40" cy="42" r="2" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="72" cy="45" r="2" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="104" cy="47" r="2" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="136" cy="45" r="2" fill="rgba(255,255,255,0.4)"/>
+    <circle cx="168" cy="42" r="2" fill="rgba(255,255,255,0.4)"/>
+    <!-- Bottom decorations - small balloons -->
+    <ellipse cx="40" cy="130" rx="15" ry="18" fill="url(#bg6)" opacity="0.7"/>
+    <path d="M40,148 Q36,160 32,170" stroke="#DDD" fill="none" stroke-width="1"/>
+    <ellipse cx="160" cy="120" rx="14" ry="17" fill="url(#bg2)" opacity="0.7"/>
+    <path d="M160,137 Q164,150 168,165" stroke="#DDD" fill="none" stroke-width="1"/>
+    <!-- Confetti dots -->
+    <circle cx="55" cy="100" r="3" fill="#FFD93D" opacity="0.5"/>
+    <circle cx="140" cy="95" r="2.5" fill="#FF6B6B" opacity="0.5"/>
+    <circle cx="80" cy="110" r="2" fill="#48DBFB" opacity="0.4"/>
+    <circle cx="110" cy="90" r="3" fill="#B388FF" opacity="0.4"/>
+    <circle cx="170" cy="105" r="2" fill="#2ECC71" opacity="0.4"/>
+  </svg>`;
+}
+
+function svgPartyHat() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="hg1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A8A"/><stop offset="100%" stop-color="#FF4757"/>
+      </linearGradient>
+      <linearGradient id="hg2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#74E0FF"/><stop offset="100%" stop-color="#2ED1FF"/>
+      </linearGradient>
+      <linearGradient id="hg3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE066"/><stop offset="100%" stop-color="#FFC107"/>
+      </linearGradient>
+    </defs>
+    <!-- Background confetti -->
+    <circle cx="20" cy="25" r="3" fill="#FF6B6B" opacity="0.35"/>
+    <circle cx="175" cy="30" r="2.5" fill="#48DBFB" opacity="0.35"/>
+    <circle cx="185" cy="90" r="2" fill="#FFD93D" opacity="0.3"/>
+    <circle cx="15" cy="120" r="3" fill="#B388FF" opacity="0.3"/>
+    <circle cx="165" cy="160" r="2" fill="#2ECC71" opacity="0.3"/>
+    <circle cx="35" cy="170" r="2.5" fill="#FF6B6B" opacity="0.25"/>
+    <!-- Hat 1 - Red cone (left) -->
+    <polygon points="30,140 80,140 55,40" fill="url(#hg1)"/>
+    <!-- Stripes on hat 1 -->
+    <line x1="38" y1="120" x2="72" y2="120" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>
+    <line x1="43" y1="100" x2="67" y2="100" stroke="rgba(255,255,255,0.2)" stroke-width="2.5"/>
+    <line x1="47" y1="80" x2="63" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+    <line x1="50" y1="60" x2="60" y2="60" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+    <!-- Pom-pom on hat 1 -->
+    <circle cx="55" cy="38" r="8" fill="#FFD93D"/>
+    <circle cx="53" cy="36" r="4" fill="rgba(255,255,255,0.3)"/>
+    <!-- Hat 2 - Blue cone (right) -->
+    <polygon points="120,145 170,145 145,50" fill="url(#hg2)"/>
+    <!-- Stripes on hat 2 -->
+    <line x1="128" y1="125" x2="162" y2="125" stroke="rgba(255,255,255,0.25)" stroke-width="3"/>
+    <line x1="132" y1="105" x2="158" y2="105" stroke="rgba(255,255,255,0.2)" stroke-width="2.5"/>
+    <line x1="136" y1="85" x2="154" y2="85" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+    <line x1="139" y1="65" x2="151" y2="65" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+    <!-- Pom-pom on hat 2 -->
+    <circle cx="145" cy="48" r="7" fill="#FF6B6B"/>
+    <circle cx="143" cy="46" r="3.5" fill="rgba(255,255,255,0.3)"/>
+    <!-- Hat 3 - Yellow small cone (center front) -->
+    <polygon points="88,155 118,155 103,75" fill="url(#hg3)"/>
+    <line x1="93" y1="140" x2="113" y2="140" stroke="rgba(255,255,255,0.25)" stroke-width="2.5"/>
+    <line x1="96" y1="125" x2="110" y2="125" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+    <line x1="99" y1="110" x2="107" y2="110" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+    <line x1="100" y1="95" x2="106" y2="95" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+    <!-- Pom-pom on hat 3 -->
+    <circle cx="103" cy="73" r="5" fill="#48DBFB"/>
+    <circle cx="102" cy="72" r="2.5" fill="rgba(255,255,255,0.3)"/>
+    <!-- Confetti pieces -->
+    <rect x="65" y="20" width="4" height="4" fill="#FFD93D" opacity="0.5" transform="rotate(30,67,22)"/>
+    <rect x="130" y="18" width="3" height="3" fill="#FF6B6B" opacity="0.5" transform="rotate(45,131,19)"/>
+    <rect x="90" y="15" width="3" height="3" fill="#48DBFB" opacity="0.4" transform="rotate(60,91,16)"/>
+    <!-- Small stars scattered -->
+    <text x="70" y="168" font-size="10" fill="#FFD93D" opacity="0.5">✦</text>
+    <text x="130" y="170" font-size="8" fill="#FF6B6B" opacity="0.4">✦</text>
+    <text x="50" y="165" font-size="6" fill="#B388FF" opacity="0.4">✦</text>
+  </svg>`;
+}
+
+function svgFullParty() {
+  return `<svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fp1" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FF8A8A"/><stop offset="100%" stop-color="#FF4757"/>
+      </linearGradient>
+      <linearGradient id="fp2" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#74E0FF"/><stop offset="100%" stop-color="#2ED1FF"/>
+      </linearGradient>
+      <linearGradient id="fp3" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE066"/><stop offset="100%" stop-color="#FFC107"/>
+      </linearGradient>
+      <linearGradient id="fp4" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#B388FF"/><stop offset="100%" stop-color="#7C4DFF"/>
+      </linearGradient>
+      <linearGradient id="fp5" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#69F0AE"/><stop offset="100%" stop-color="#2ECC71"/>
+      </linearGradient>
+    </defs>
+    <!-- Bunting string across top -->
+    <path d="M5,30 Q100,45 195,30" fill="none" stroke="#CCC" stroke-width="1.2"/>
+    <!-- Bunting flags -->
+    <polygon points="20,31 38,31 29,58" fill="url(#fp1)"/>
+    <polygon points="50,33 68,33 59,60" fill="url(#fp3)"/>
+    <polygon points="80,35 98,35 89,62" fill="url(#fp2)"/>
+    <polygon points="110,35 128,35 119,62" fill="url(#fp4)"/>
+    <polygon points="140,33 158,33 149,60" fill="url(#fp5)"/>
+    <polygon points="170,31 188,31 179,58" fill="url(#fp1)"/>
+    <!-- Balloon cluster (left) -->
+    <ellipse cx="35" cy="95" rx="20" ry="26" fill="url(#fp1)"/>
+    <polygon points="35,121 32,127 38,127" fill="#FF4757"/>
+    <path d="M35,127 Q30,140 28,155" stroke="#DDD" fill="none" stroke-width="1.2"/>
+    <ellipse cx="28" cy="85" rx="5" ry="8" fill="rgba(255,255,255,0.3)" transform="rotate(-20,28,85)"/>
+    <ellipse cx="60" cy="100" rx="18" ry="23" fill="url(#fp2)"/>
+    <polygon points="60,123 57,128 63,128" fill="#2ED1FF"/>
+    <path d="M60,128 Q65,140 68,155" stroke="#DDD" fill="none" stroke-width="1.2"/>
+    <ellipse cx="54" cy="90" rx="4" ry="7" fill="rgba(255,255,255,0.3)" transform="rotate(-15,54,90)"/>
+    <!-- Balloon cluster (right) -->
+    <ellipse cx="165" cy="90" rx="19" ry="24" fill="url(#fp3)"/>
+    <polygon points="165,114 162,120 168,120" fill="#FFC107"/>
+    <path d="M165,120 Q170,135 172,150" stroke="#DDD" fill="none" stroke-width="1.2"/>
+    <ellipse cx="158" cy="80" rx="4" ry="7" fill="rgba(255,255,255,0.3)" transform="rotate(-15,158,80)"/>
+    <ellipse cx="140" cy="95" rx="17" ry="22" fill="url(#fp4)"/>
+    <polygon points="140,117 137,122 143,122" fill="#7C4DFF"/>
+    <path d="M140,122 Q135,135 133,150" stroke="#DDD" fill="none" stroke-width="1.2"/>
+    <ellipse cx="134" cy="85" rx="4" ry="6" fill="rgba(255,255,255,0.3)" transform="rotate(-20,134,85)"/>
+    <!-- Gift box at bottom center-left -->
+    <rect x="65" y="140" width="30" height="25" rx="3" fill="#FF8A80"/>
+    <rect x="63" y="135" width="34" height="10" rx="3" fill="#FF5252"/>
+    <rect x="77" y="135" width="4" height="30" fill="#FFD93D"/>
+    <rect x="65" y="147" width="30" height="3" fill="#FFD93D"/>
+    <path d="M79,135 Q73,128 69,132 Q65,138 79,135" fill="#FFD93D"/>
+    <path d="M79,135 Q85,128 89,132 Q93,138 79,135" fill="#FFD93D"/>
+    <ellipse cx="79" cy="135" rx="3" ry="2.5" fill="#F5A623"/>
+    <!-- Cake at bottom center -->
+    <rect x="90" y="148" width="25" height="18" rx="2" fill="#FFB347"/>
+    <rect x="93" y="140" width="19" height="10" rx="2" fill="#FFD93D"/>
+    <path d="M90,140 Q95,136 100,140 Q103,136 108,140 Q111,136 115,140" fill="none" stroke="#FFF8F0" stroke-width="2.5"/>
+    <!-- Candle -->
+    <rect x="101" y="132" width="3" height="8" rx="1" fill="#FFF"/>
+    <ellipse cx="102.5" cy="130" rx="2.5" ry="4" fill="#FFD93D"/>
+    <ellipse cx="102.5" cy="131" rx="1.5" ry="2.5" fill="#FFF"/>
+    <!-- Party hat (top) -->
+    <polygon points="105,18 125,18 115,60" fill="url(#fp5)"/>
+    <line x1="108" y1="35" x2="122" y2="35" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>
+    <line x1="110" y1="25" x2="120" y2="25" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+    <circle cx="115" cy="16" r="4" fill="#FF6B6B"/>
+    <circle cx="114" cy="15" r="2" fill="rgba(255,255,255,0.3)"/>
+    <!-- Sparkles and stars -->
+    <text x="8" y="20" font-size="10" fill="#FFD93D" opacity="0.5">✦</text>
+    <text x="185" y="70" font-size="8" fill="#FF6B6B" opacity="0.4">✦</text>
+    <text x="90" y="12" font-size="6" fill="#48DBFB" opacity="0.4">✦</text>
+    <text x="150" y="15" font-size="7" fill="#FFD93D" opacity="0.4">✦</text>
+    <circle cx="175" cy="50" r="1.5" fill="#FFD93D" opacity="0.4"/>
+    <circle cx="25" cy="60" r="1.5" fill="#48DBFB" opacity="0.4"/>
+    <circle cx="85" cy="70" r="2" fill="#FF6B6B" opacity="0.3"/>
+  </svg>`;
+}
+
+/* ========== PAGE DATA ========== */
+
+const pages = [
+  {
+    cover: true,
+    svgScene: 'fullParty',
+    title: 'Come to the Party!',
+    subtitle: 'Sight Words: "come" & "to"'
+  },
+  {
+    id: 'page-0',
+    svgScene: 'balloons',
+    sentence: '"<span class="highlight">Come</span> <span class="highlight">to</span> my party!" said the girl.',
+    game: { word: 'come', options: ['come', 'came', 'some', 'home'] },
+    partyItems: [
+      { word: 'balloon', icon: '🎈', label: '气球' },
+      { word: 'cake', icon: '🎂', label: '蛋糕' },
+      { word: 'gift', icon: '🎁', label: '礼物' }
+    ]
+  },
+  {
+    id: 'page-1',
+    svgScene: 'gift',
+    sentence: '"I will <span class="highlight">come</span> <span class="highlight">to</span> the party!" said the dog.',
+    game: { word: 'to', options: ['to', 'too', 'two', 'do'] },
+    partyItems: [
+      { word: 'balloon', icon: '🎈', label: '气球' },
+      { word: 'hat', icon: '🎉', label: '帽子' },
+      { word: 'candle', icon: '🕯️', label: '蜡烛' }
+    ]
+  },
+  {
+    id: 'page-2',
+    svgScene: 'bunting',
+    sentence: '"I will <span class="highlight">come</span> <span class="highlight">to</span> the party!" said the cat.',
+    game: { word: 'come', options: ['come', 'came', 'some', 'home'] },
+    partyItems: [
+      { word: 'bunting', icon: '🚩', label: '彩旗' },
+      { word: 'cake', icon: '🎂', label: '蛋糕' },
+      { word: 'gift', icon: '🎁', label: '礼物' }
+    ]
+  },
+  {
+    id: 'page-3',
+    svgScene: 'partyHat',
+    sentence: '"We will all <span class="highlight">come</span> <span class="highlight">to</span> the party!" said the bunny.',
+    game: { word: 'to', options: ['to', 'too', 'two', 'into'] },
+    partyItems: [
+      { word: 'hat', icon: '🎉', label: '派对帽' },
+      { word: 'balloon', icon: '🎈', label: '气球' },
+      { word: 'confetti', icon: '🎊', label: '彩纸' }
+    ]
+  },
+  {
+    id: 'page-4',
+    svgScene: 'cake',
+    sentence: '"I <span class="highlight">come</span> <span class="highlight">to</span> the party with a bear hug!" said the bear.',
+    game: { word: 'come', options: ['come', 'came', 'some', 'home'] },
+    partyItems: [
+      { word: 'cake', icon: '🎂', label: '蛋糕' },
+      { word: 'candle', icon: '🕯️', label: '蜡烛' },
+      { word: 'strawberry', icon: '🍓', label: '草莓' }
+    ]
+  },
+  {
+    id: 'page-5',
+    svgScene: 'fullParty',
+    sentence: 'Everyone says: "We <span class="highlight">come</span> <span class="highlight">to</span> have fun! Hooray!"',
+    game: { word: 'to', options: ['to', 'too', 'two', 'for'] },
+    partyItems: [
+      { word: 'party', icon: '🎉', label: '派对' },
+      { word: 'fun', icon: '😊', label: '快乐' },
+      { word: 'friends', icon: '👫', label: '朋友' }
+    ]
+  },
+  {
+    id: 'page-6',
+    svgScene: 'balloons',
+    sentence: '"Thank you for coming <span class="highlight">to</span> my party! <span class="highlight">Come</span> again!" said the girl.',
+    game: null,
+    partyItems: [
+      { word: 'thank you', icon: '🙏', label: '谢谢' },
+      { word: 'again', icon: '🔄', label: '再来' },
+      { word: 'hooray', icon: '🎉', label: '万岁' }
+    ]
+  }
+];
+
+/* ========== STATE ========== */
+
+let currentPage = 0;
+let gameDone = new Array(pages.length).fill(false);
+let speechTimeout = null;
+
+/* ========== SVG MAP ========== */
+
+const svgMap = {
+  balloons: svgBalloons,
+  cake: svgCake,
+  gift: svgGift,
+  bunting: svgBunting,
+  partyHat: svgPartyHat,
+  fullParty: svgFullParty
+};
+
+/* ========== RENDER ========== */
+
+function renderPage(idx) {
+  const area = document.getElementById('pageArea');
+  const p = pages[idx];
+
+  if (p.cover) {
+    const svgFn = svgMap[p.svgScene] || svgFullParty;
+    area.innerHTML = `
+      <div class="page active cover-page" id="page-cover">
+        <div class="cover-svg">${svgFn()}</div>
+        <h2>${p.title}</h2>
+        <p>${p.subtitle}</p>
+        <p style="margin-top:20px;font-size:14px;color:#B07D44">👆 点击 ▶ 开始阅读！</p>
+      </div>
+    `;
+    updateUI(idx);
+    document.getElementById('prevBtn').disabled = true;
+    return;
+  }
+
+  // Get SVG
+  const svgFn = svgMap[p.svgScene] || svgBalloons;
+
+  // Game HTML
+  const isDone = !p.game || gameDone[idx];
+  let gameHTML = '';
+  if (p.game && !gameDone[idx]) {
+    var qSpeak = 'Select the word: ' + p.game.word;
+    gameHTML = `
+      <div class="game-area" id="game-${idx}">
+        <h3><span class="gear">⚙️</span> 派对准备：选出正确的词！ <button class="speak-btn" onclick="event.stopPropagation();speakText('${qSpeak}')">🔊</button></h3>
+        <p style="font-size:14px;color:#B07D44;margin-bottom:8px;">
+          帮小朋友完成派对邀请吧！选 "<strong>${p.game.word}</strong>"
+        </p>
+        <div class="drop-zone" id="drop-zone-${idx}" ondragover="onDropZoneDragOver(event)" ondrop="onDropZoneDrop(event, ${idx})" ondragleave="onDropZoneDragLeave(event)">
+          📥 拖拽单词到这里
+        </div>
+        <div class="word-choices">
+          ${p.game.options.map((w, i) => `<div class="word-choice" draggable="true" ondragstart="onWordChoiceDragStart(event, ${idx}, '${p.game.word}', '${w}')" ondragend="onWordChoiceDragEnd(event)" onclick="checkWord(${idx}, '${p.game.word}', '${w}', this);speakText('${w}')">${w} <button class="quiz-opt-speak" onclick="event.stopPropagation();speakText('${w}')">🔊</button></div>`).join('')}
+        </div>
+      </div>
+    `;
+  } else if (isDone && p.game) {
+    gameHTML = `<div class="game-area completed-badge"><h3>✅ 派对准备完成！</h3><p>🎉 ⭐ 🎉</p></div>`;
+  } else {
+    gameHTML = `<div class="game-area" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);border-color:#4caf50"><h3 style="color:#2E7D32">🎉 派对开始啦！🎊</h3><p style="font-size:36px">🎈 🎂 🎁</p></div>`;
+  }
+
+  // Party items row
+  let partyItemsHTML = '';
+  if (p.partyItems && p.partyItems.length > 0) {
+    partyItemsHTML = `<div class="party-items">${p.partyItems.map(item =>
+      `<div class="party-item" onclick="speakPartyItem('${item.word}')" title="${item.label}">
+        ${item.icon} <span class="en-word">${item.word}</span>
+      </div>`
+    ).join('')}</div>`;
+  }
+
+  area.innerHTML = `
+    <div class="page active" id="${p.id || 'page-' + idx}">
+      <div class="illustration">${svgFn()}</div>
+      <div class="sentence">${p.sentence}</div>
+      ${partyItemsHTML}
+      ${gameHTML}
+    </div>
+  `;
+
+  // Add click handlers for highlighted sight words
+  document.querySelectorAll('.sentence .highlight').forEach(el => {
+    el.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const word = this.textContent.trim();
+      showSpeechBubble('🔊 ' + word);
+      speakText(word);
+    });
+  });
+
+  updateUI(idx);
+  document.getElementById('prevBtn').disabled = idx === 0;
+}
+
+/* ========== SPEECH BUBBLE ========== */
+
+function showSpeechBubble(text) {
+  // Remove existing bubble
+  const existing = document.querySelector('.speech-bubble');
+  if (existing) existing.remove();
+
+  // Clear any pending timeout
+  if (speechTimeout) {
+    clearTimeout(speechTimeout);
+    speechTimeout = null;
+  }
+
+  // Create bubble
+  const bubble = document.createElement('div');
+  bubble.className = 'speech-bubble';
+  bubble.textContent = text;
+  document.body.appendChild(bubble);
+
+  // Auto-remove after 4 seconds
+  speechTimeout = setTimeout(() => {
+    const bub = document.querySelector('.speech-bubble');
+    if (bub) {
+      bub.style.animation = 'bubbleOut 0.3s ease forwards';
+      setTimeout(() => {
+        if (bub.parentNode) bub.remove();
+      }, 300);
+    }
+    speechTimeout = null;
+  }, 4000);
+}
+
+/* ========== SPEECH SYNTHESIS ========== */
+
+let currentAudio = null;
+function playAudio(src, showText) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if (showText) showSpeechBubble(showText);
+  if (!src) return;
+  try {
+    const a = new Audio(src);
+    a.play();
+    currentAudio = a;
+    a.onended = function() { currentAudio = null; };
+    a.onerror = function() { currentAudio = null; if(showText) speakText(showText); };
+  } catch(e) { console.log('Audio error:', e); if(showText) speakText(showText); }
+}
+
+function speakPage() {
+  const AUDIO_MAP = ['party-cover', 'party-page1', 'party-page2', 'party-page3', 'party-page4', 'party-page5', 'party-page6', 'party-page7'];
+  const TEXTS = [
+    'Come to the Party! Sight words come and to.',
+    '"Come to my party!" said the girl.',
+    '"I will come to the party!" said the dog.',
+    '"I will come to the party!" said the cat.',
+    '"We will all come to the party!" said the bunny.',
+    '"I come to the party with a bear hug!" said the bear.',
+    'Everyone says: We come to have fun! Hooray!',
+    '"Thank you for coming to my party! Come again!" said the girl.'
+  ];
+  const idx = currentPage;
+  if (idx >= 0 && idx < AUDIO_MAP.length) {
+    playAudio('audio/' + AUDIO_MAP[idx] + '.mp3', TEXTS[idx]);
+  }
+}
+
+function speakText(text) {
+    if (typeof ttsPlay === 'function') { ttsPlay(text); }
+    else if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      var clean = text.replace(/[\uD800-\uDFFF]./g,'');
+      var utter = new SpeechSynthesisUtterance(clean);
+      utter.lang = /[\u4e00-\u9fff]/.test(clean) ? 'zh-CN' : 'en-US';
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+  }
+
+function speakPartyItem(word) {
+  showSpeechBubble(word);
+  speakText(word);
+}
+
+/* ========== GAME ========== */
+
+function checkWord(idx, target, chosen, el) {
+  if (gameDone[idx]) return;
+  if (chosen === target) {
+    el.classList.add('correct');
+    gameDone[idx] = true;
+    showSpeechBubble('✅ 太棒了！ ' + target + '!');
+    speakText('Correct! ' + target);
+    launchConfetti();
+    setTimeout(() => { renderPage(idx); }, 800);
+  } else {
+    el.classList.add('wrong');
+    showSpeechBubble('❌ 再试试！');
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+}
+
+/* ========== DRAG & DROP ========== */
+
+let dragWordData = null;
+
+function onWordChoiceDragStart(e, idx, target, chosen) {
+  dragWordData = { idx, target, chosen };
+  e.dataTransfer.setData('text/plain', chosen);
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+
+function onWordChoiceDragEnd(e) {
+  e.target.classList.remove('dragging');
+}
+
+function onDropZoneDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const dropZone = e.currentTarget;
+  if (!dropZone.classList.contains('drag-over')) {
+    dropZone.classList.add('drag-over');
+    dropZone.textContent = '🎯 松开鼠标投放！';
+  }
+}
+
+function onDropZoneDrop(e, idx) {
+  e.preventDefault();
+  const dropZone = e.currentTarget;
+  dropZone.classList.remove('drag-over');
+
+  if (!dragWordData) {
+    dropZone.textContent = '📥 拖拽单词到这里';
+    return;
+  }
+
+  // Use the stored drag data or fall back to dataTransfer
+  const { target, chosen } = dragWordData;
+  dropZone.textContent = chosen === target ? '✅ 正确！' : '❌ 错误！再试试';
+  dragWordData = null;
+
+  // Trigger same logic as click handler
+  const wordChoices = dropZone.parentElement.querySelector('.word-choices');
+  if (wordChoices) {
+    const choiceEls = wordChoices.querySelectorAll('.word-choice');
+    // Find the element for the chosen word
+    for (const el of choiceEls) {
+      if (el.textContent.trim().startsWith(chosen)) {
+        checkWord(idx, target, chosen, el);
+        break;
+      }
+    }
+  }
+
+  // Reset drop zone text after a short delay if not correct
+  setTimeout(() => {
+    if (!document.querySelector('#drop-zone-' + idx + '.drag-over')) {
+      dropZone.textContent = '📥 拖拽单词到这里';
+    }
+  }, 1500);
+}
+
+function onDropZoneDragLeave(e) {
+  const dropZone = e.currentTarget;
+  dropZone.classList.remove('drag-over');
+  dropZone.textContent = '📥 拖拽单词到这里';
+}
+
+/* ========== NAVIGATION ========== */
+
+function nextPage() {
+  if (!gameDone[currentPage] && pages[currentPage].game) return;
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    renderPage(currentPage);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 0) {
+    currentPage--;
+    renderPage(currentPage);
+  }
+}
+
+/* ========== CONFETTI ========== */
+
+function launchConfetti() {
+  const div = document.createElement('div');
+  div.className = 'celebration';
+  const colors = ['#FFB347','#6BCB77','#7B1FA2','#E8751A','#F3E5F5','#FF6B6B','#48DBFB','#FFD93D'];
+  for (let i = 0; i < 40; i++) {
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * 100 + '%';
+    c.style.top = '-10%';
+    c.style.background = colors[Math.floor(Math.random() * colors.length)];
+    c.style.width = (6 + Math.random() * 10) + 'px';
+    c.style.height = (6 + Math.random() * 10) + 'px';
+    c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    c.style.animationDelay = Math.random() * 1.2 + 's';
+    c.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
+    div.appendChild(c);
+  }
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
+/* ========== UI UPDATE ========== */
+
+function updateUI(idx) {
+  document.getElementById('pageCounter').textContent = `第${idx+1}页 / 共${pages.length}页`;
+  const dots = document.getElementById('progress');
+  dots.innerHTML = pages.map((_, i) =>
+    `<div class="dot ${i === idx ? 'active' : ''} ${gameDone[i] || i === 0 ? 'done' : ''}" onclick="currentPage=${i};renderPage(${i})"></div>`
+  ).join('');
+}
+
+/* ========== INIT ========== */
+
+renderPage(0);
+</script>
+</body>
+</html>
