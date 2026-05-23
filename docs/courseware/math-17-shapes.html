@@ -1028,5 +1028,73 @@ gsap.from('.page.active .page-content',{opacity:0,y:40,duration:0.6,ease:'power2
 // Touch support
 document.addEventListener('touchstart',function(){},{passive:true});
 </script>
+
+<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
+<script>
+(function(){
+  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
+    btn.textContent = '🔊';
+    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(btn);
+  }
+  var sp = false, audioEl = null;
+  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
+  var lang = (document.documentElement.lang || 'en-US').indexOf('zh')>=0?'zh-CN':'en-US';
+
+  function getPageIdx(){
+    var a=document.querySelector('.page.active,.slide.active');
+    return a?Array.prototype.indexOf.call(a.parentNode.children,a):-1;
+  }
+
+  function speakPage(){
+    if(sp){stopPage();return;}
+    var idx=getPageIdx(); if(idx<0) return;
+    var mp3='audio/'+courseName+'/page-'+(idx+1)+'.mp3';
+    if(audioEl){audioEl.pause();audioEl=null;}
+    audioEl=new Audio(mp3);
+    audioEl.onerror=function(){
+      var flat=new Audio('audio/'+courseName+'.mp3');
+      flat.onerror=function(){speakTTS();};
+      flat.oncanplaythrough=function(){
+        if(audioEl)audioEl.pause(); audioEl=flat;
+        audioEl.play().catch(function(){speakTTS();});
+        btn.textContent='⏹';btn.classList.add('speaking');
+      };
+      flat.load();
+    };
+    audioEl.oncanplaythrough=function(){
+      audioEl.play(); btn.textContent='⏹';btn.classList.add('speaking');
+      sp=true; audioEl.onended=function(){stopPage();};
+    };
+    audioEl.load();
+  }
+
+  function speakTTS(){
+    if(!window.speechSynthesis)return;
+    var a=document.querySelector('.page.active,.slide.active');
+    if(!a)return;
+    var t=(a.innerText||a.textContent||'').replace(/\s+/g,' ').trim();
+    if(!t||t.length<2)return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t);
+    u.lang=lang;u.rate=0.85;
+    u.onstart=function(){sp=true;btn.classList.add('speaking');btn.textContent='⏹';};
+    u.onend=u.onerror=function(){stopPage();};
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopPage(){
+    if(audioEl){audioEl.pause();audioEl=null;}
+    if(window.speechSynthesis)window.speechSynthesis.cancel();
+    sp=false;btn.classList.remove('speaking');btn.textContent='🔊';
+  }
+
+  btn.addEventListener('click',function(e){e.stopPropagation();speakPage();});
+  if(btn.textContent.trim()===''||btn.textContent.trim()==='▶')btn.textContent='🔊';
+})();
+</script>
 </body>
 </html>
