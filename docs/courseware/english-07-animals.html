@@ -850,7 +850,7 @@ function playPageMp3(pageNum) {
         card.innerHTML = '<div class="label">'+item.en+'</div><div class="label cn">'+item.cn+'</div>';
       } else {
         const imgSrc = 'images/english-07/webp/'+item.img+'.webp';
-        card.innerHTML = '<img src="'+imgSrc+'" alt="'+item.en+'" loading="lazy"><div class="label" style="font-size:12px;color:#90a4ae;">'+item.en+'</div>';
+        card.innerHTML = '<img src="'+imgSrc+'" onerror="this.style.display='none'" alt="'+item.en+'" loading="lazy"><div class="label" style="font-size:12px;color:#90a4ae;">'+item.en+'</div>';
       }
 
       card.addEventListener('click', function(){
@@ -922,7 +922,7 @@ function playPageMp3(pageNum) {
         card.innerHTML = '<div class="label ph">'+item.content+'</div>';
       } else {
         const imgSrc = 'images/english-07/webp/'+item.img+'.webp';
-        card.innerHTML = '<img src="'+imgSrc+'" alt="'+item.content+'" loading="lazy"><div class="label">'+item.content+'</div><div class="label cn">'+item.cn+'</div>';
+        card.innerHTML = '<img src="'+imgSrc+'" onerror="this.style.display='none'" alt="'+item.content+'" loading="lazy"><div class="label">'+item.content+'</div><div class="label cn">'+item.cn+'</div>';
       }
 
       card.addEventListener('click', function(){
@@ -973,7 +973,7 @@ function playPageMp3(pageNum) {
       const el = document.createElement('div');
       el.className = 'review-item';
       const imgSrc = 'images/english-07/webp/'+a.img+'.webp';
-      el.innerHTML = '<img src="'+imgSrc+'" alt="'+a.en+'" loading="lazy"><div class="en">'+a.en+'</div><div class="cn">'+a.cn+'</div>';
+      el.innerHTML = '<img src="'+imgSrc+'" onerror="this.style.display='none'" alt="'+a.en+'" loading="lazy"><div class="en">'+a.en+'</div><div class="cn">'+a.cn+'</div>';
       el.addEventListener('click', function(){
         speakText(a.en, 'en-US');
       });

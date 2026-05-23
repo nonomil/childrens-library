@@ -1020,5 +1020,35 @@ function initPinyinClicks(){
 }
 </script>
 
+
+<script>
+(function(){
+  var sx = 0, sy = 0, swiping = false;
+  document.addEventListener('touchstart', function(e) {
+    var t = e.changedTouches[0];
+    sx = t.clientX; sy = t.clientY; swiping = true;
+  }, {passive:true});
+  document.addEventListener('touchmove', function(e) {
+    if (!swiping) return;
+    var dx = e.changedTouches[0].clientX - sx;
+    var dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      swiping = false;
+      // Find and click the appropriate nav button
+      if (dx < 0) {
+        // Swipe left → next
+        var n = document.querySelector('[onclick*="next"], [onclick*="Next"], .nav-btn:last-of-type:not([disabled]), a[href*="next"], [class*="next"], #nextBtn');
+        if (n) n.click();
+        else { var a = document.querySelector('a[href]:not([href*="#"])'); if (a && !a.href.includes("#")) a.click(); }
+      } else {
+        // Swipe right → prev
+        var p = document.querySelector('[onclick*="prev"], [onclick*="Prev"], .nav-btn:first-of-type:not([disabled]), [class*="prev"], #prevBtn');
+        if (p) p.click();
+      }
+    }
+  }, {passive:true});
+  document.addEventListener('touchend', function() { swiping = false; }, {passive:true});
+})();
+</script>
 </body>
 </html>

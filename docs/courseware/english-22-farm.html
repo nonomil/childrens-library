@@ -584,7 +584,7 @@ function buildShQuiz() {
     const imgSrc = item.img || '';
     card.innerHTML = `
       <div class="animal-emoji">${item.emoji}</div>
-      ${imgSrc ? `<img src="${imgSrc}" alt="${item.word}" loading="lazy">` : ''}
+      ${imgSrc ? `<img src="${imgSrc}" onerror="this.style.display='none'" alt="${item.word}" loading="lazy">` : ''}
       <div class="word-label">${item.word}</div>
     `;
     card.addEventListener('click', () => handleShClick(card, item));
