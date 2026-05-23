@@ -376,6 +376,34 @@ body{background:#1a1a2e;display:flex;justify-content:center;align-items:center;m
 <button class="read-btn" id="readAloudBtn" onclick="readCurrentPage()" style="position:fixed;bottom:80px;right:max(calc(50% - 210px),8px);z-index:30;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.15)">🔊</button>
 
 <script>
+// === MP3 Audio Support ===
+var COURSE_NAME = 'math-03-compare';
+var audioEl = null;
+function playPageMp3(pageNum) {
+  if (audioEl) { audioEl.pause(); audioEl = null; }
+  var path = 'audio/' + COURSE_NAME + '/page-' + pageNum + '.mp3';
+  audioEl = new Audio(path);
+  audioEl.play().catch(function(err) {
+    console.log('MP3 not available, using speechSynthesis:', err.message);
+  });
+}
+// Patch speech button or navigation to trigger MP3
+document.addEventListener('DOMContentLoaded', function() {
+  // Find speak buttons
+  var btns = document.querySelectorAll('.speak-btn, .nav-btn.speak, [id*="speak"], [id*="Speak"], [id*="sound"], [id*="audio"]');
+  btns.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      var active = document.querySelector('.page.active, .slide.active, [class*="page"].active');
+      if (active) {
+        var idx = Array.from(active.parentNode.children).indexOf(active);
+        playPageMp3(idx + 1);
+      }
+    });
+  });
+});
+// === End MP3 Support ===
+</script>
+<script>
 // ===== CONFIG =====
 const TOTAL_PAGES = 8;
 let currentPage = 0;
