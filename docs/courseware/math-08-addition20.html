@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>第8课：20以内的进位加法</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; background: #f0f4f8; }
+  body { display: flex; justify-content: center; align-items: center; }
+  .app {
+    position: relative;
+    width: 100%; max-width: 420px; height: 100vh; max-height: 820px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
+    border-radius: 0;
+  }
+  @media (min-width: 421px) {
+    .app { border-radius: 20px; height: 90vh; }
+  }
+  /* Header */
+  .header {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 20;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; pointer-events: none;
+  }
+  .header > * { pointer-events: auto; }
+  .btn-home, .btn-speak {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: none; font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.85);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    transition: transform 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-home:active, .btn-speak:active { transform: scale(0.90); }
+  .btn-speak.speaking { background: #42A5F5; color: #fff; }
+
+  /* Pages container */
+  .pages { position: relative; width: 100%; height: 100%; }
+  .page {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: none;
+    padding: 70px 24px 80px;
+    background: #fff;
+  }
+  .page.active {
+    opacity: 1; visibility: visible; z-index: 10;
+  }
+  .page img.page-img {
+    width: 100%; max-width: 340px; height: auto;
+    border-radius: 16px; box-shadow: 0 4px 20px rgba(66,165,245,0.18);
+    margin-bottom: 10px;
+    display: block;
+  }
+  .page .caption {
+    font-size: 18px; font-weight: 700; color: #333;
+    text-align: center; line-height: 1.5;
+    margin-top: 6px;
+  }
+  .page .caption .highlight {
+    color: #42A5F5; font-weight: 900;
+  }
+
+  /* Cover special */
+  .page-cover {
+    background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%);
+    justify-content: center;
+  }
+  .page-cover .cover-title {
+    font-size: 28px; font-weight: 900; color: #1565c0;
+    text-align: center; line-height: 1.3; margin-bottom: 6px;
+  }
+  .page-cover .cover-sub {
+    font-size: 16px; font-weight: 700; color: #42A5F5;
+    text-align: center; margin-bottom: 12px;
+  }
+  .page-cover .cover-lesson {
+    font-size: 14px; font-weight: 600; color: #64b5f6;
+    text-align: center;
+  }
+  .page-cover img.page-img { box-shadow: 0 6px 30px rgba(66,165,245,0.30); max-width: 300px; }
+
+  /* Concept page special */
+  .page-concept { background: #f5faff; }
+  .concept-box {
+    background: #fff; border: 3px solid #42A5F5; border-radius: 16px;
+    padding: 16px; text-align: center; margin-bottom: 6px; max-width: 340px;
+    box-shadow: 0 4px 16px rgba(66,165,245,0.15);
+  }
+  .concept-box .big { font-size: 42px; font-weight: 900; color: #42A5F5; }
+  .concept-box .label { font-size: 16px; font-weight: 700; color: #555; margin-top: 4px; }
+
+  /* Practice pages */
+  .practice-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+    max-width: 340px; width: 100%; margin: 8px 0;
+  }
+  .practice-card {
+    background: #f0f8ff; border: 2px solid #e0eefb; border-radius: 12px;
+    padding: 12px 4px; text-align: center; cursor: pointer;
+    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .practice-card:active { transform: scale(0.95); }
+  .practice-card .eq { font-size: 24px; font-weight: 800; color: #333; }
+  .practice-card .ans { font-size: 22px; font-weight: 900; color: #42A5F5; margin-top: 4px; }
+  .practice-card.hidden-ans .ans { visibility: hidden; }
+  .practice-card.correct { background: #e8f5e9; border-color: #66bb6a; }
+  .practice-card.correct .ans { color: #2e7d32; visibility: visible; }
+  .practice-card.wrong { background: #ffebee; border-color: #ef9a9a; animation: shake 0.4s; }
+  .practice-card.wrong .ans { color: #c62828; visibility: visible; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+
+  /* Quiz page */
+  .quiz-progress { font-size: 14px; font-weight: 700; color: #90a4ae; margin-bottom: 6px; }
+  .quiz-question { font-size: 36px; font-weight: 900; color: #333; margin: 8px 0; text-align: center; }
+  .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 300px; width: 100%; }
+  .quiz-opt {
+    background: #f0f8ff; border: 3px solid #e0eefb; border-radius: 14px;
+    padding: 14px; font-size: 26px; font-weight: 800; color: #333;
+    text-align: center; cursor: pointer; transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+  }
+  .quiz-opt:active { transform: scale(0.95); }
+  .quiz-opt.selected { border-color: #42A5F5; background: #e3f2fd; }
+  .quiz-opt.correct { border-color: #66bb6a; background: #e8f5e9; color: #2e7d32; }
+  .quiz-opt.wrong { border-color: #ef9a9a; background: #ffebee; color: #c62828; }
+  .quiz-feedback { font-size: 20px; font-weight: 700; margin-top: 10px; min-height: 30px; text-align: center; }
+  .quiz-next {
+    margin-top: 8px; padding: 10px 30px; font-size: 18px; font-weight: 800;
+    background: #42A5F5; color: #fff; border: none; border-radius: 30px;
+    cursor: pointer; transition: transform 0.2s; display: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quiz-next:active { transform: scale(0.95); }
+
+  /* Celebration confetti canvas */
+  #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+  /* Navigation bottom bar */
+  .nav-bar {
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 20;
+    display: flex; justify-content: center; align-items: center;
+    gap: 16px; padding: 12px 16px;
+    background: #fff; border-top: 1px solid #e8edf2;
+  }
+  .nav-btn {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 2px solid #cfd8dc; font-size: 20px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    background: #fff; color: #546e7a; transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn:active { transform: scale(0.90); }
+  .nav-btn:disabled { opacity: 0.3; pointer-events: none; }
+  .dots { display: flex; gap: 6px; }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%; background: #cfd8dc;
+    cursor: pointer; transition: all 0.3s; border: none; padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dot.active { background: #42A5F5; transform: scale(1.3); }
+
+  /* Speak button pulse */
+  @keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(66,165,245,0.4)} 70%{box-shadow:0 0 0 12px rgba(66,165,245,0)} 100%{box-shadow:0 0 0 0 rgba(66,165,245,0)} }
+  .btn-speak.speaking { animation: pulse-ring 1.25s infinite; }
+
+  /* Blocks page */
+  .blocks-row { display: flex; gap: 4px; margin: 4px 0; justify-content: center; }
+  .block {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: #42A5F5; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; color: #fff;
+    transition: transform 0.3s, opacity 0.3s;
+    box-shadow: 0 2px 6px rgba(66,165,245,0.3);
+  }
+  .block.highlight { background: #ff7043; transform: scale(1.15); }
+  .block-group-label { font-size: 14px; font-weight: 700; color: #78909c; text-align: center; margin: 2px 0; }
+  .blocks-formula { font-size: 28px; font-weight: 900; color: #333; margin: 4px 0; text-align: center; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Confetti canvas -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Header -->
+  <div class="header">
+    <button class="btn-home" id="btnHome" aria-label="首页">🏠</button>
+    <button class="btn-speak" id="btnSpeak" aria-label="朗读">▶</button>
+  </div>
+
+  <!-- Pages -->
+  <div class="pages" id="pagesContainer">
+
+    <!-- Page 1: Cover -->
+    <div class="page page-cover active" data-page="0">
+      <div class="cover-title">20以内的<br>进位加法</div>
+      <div class="cover-sub">✧ 凑十法小探险 ✧</div>
+      <img class="page-img" src="images/math-08/webp/page-01.webp" alt="Cover" loading="lazy">
+      <div class="cover-lesson">第8课 · 一起来学进位加法吧！</div>
+    </div>
+
+    <!-- Page 2: Concept - Making 10 -->
+    <div class="page page-concept" data-page="1">
+      <img class="page-img" src="images/math-08/webp/page-02.webp" alt="凑十法概念" loading="lazy">
+      <div class="concept-box">
+        <div class="big">凑十法</div>
+        <div class="label">先把小的拆一拆，凑成10再加剩</div>
+      </div>
+    </div>
+
+    <!-- Page 3: Examples -->
+    <div class="page" data-page="2">
+      <img class="page-img" src="images/math-08/webp/page-03.webp" alt="Examples" loading="lazy">
+      <div class="caption">9 + 2 = <span class="highlight">11</span> &nbsp;|&nbsp; 8 + 3 = <span class="highlight">11</span> &nbsp;|&nbsp; 7 + 4 = <span class="highlight">11</span></div>
+      <div class="caption" style="font-size:15px;color:#78909c;font-weight:600;">凑十法：找大数，分小数，凑成十，加剩余</div>
+    </div>
+
+    <!-- Page 4: Hands-on with blocks -->
+    <div class="page" data-page="3">
+      <img class="page-img" src="images/math-08/webp/page-04.webp" alt="Blocks" loading="lazy">
+      <div style="max-width:340px;width:100%;margin-top:4px;">
+        <div class="blocks-formula">8 + 5 = ?</div>
+        <div class="block-group-label">先凑十</div>
+        <div class="blocks-row" id="blocksRow1">
+          <div class="block block-click" data-idx="0">8</div>
+          <div class="block block-click" data-idx="1">2</div>
+        </div>
+        <div class="block-group-label">还剩</div>
+        <div class="blocks-row" id="blocksRow2">
+          <div class="block block-click" data-idx="2">3</div>
+        </div>
+        <div class="blocks-formula" id="blocksResult" style="font-size:22px;margin-top:4px;">👆 点击方块</div>
+      </div>
+    </div>
+
+    <!-- Page 5: Practice 1 -->
+    <div class="page" data-page="4">
+      <img class="page-img" src="images/math-08/webp/page-05.webp" alt="Practice 1" loading="lazy">
+      <div class="caption" style="font-size:16px;">👆 点卡片看答案</div>
+      <div class="practice-grid" id="practice1">
+        <div class="practice-card hidden-ans" data-ans="12"><div class="eq">9 + 3</div><div class="ans">12</div></div>
+        <div class="practice-card hidden-ans" data-ans="11"><div class="eq">6 + 5</div><div class="ans">11</div></div>
+        <div class="practice-card hidden-ans" data-ans="13"><div class="eq">7 + 6</div><div class="ans">13</div></div>
+        <div class="practice-card hidden-ans" data-ans="14"><div class="eq">8 + 6</div><div class="ans">14</div></div>
+        <div class="practice-card hidden-ans" data-ans="12"><div class="eq">4 + 8</div><div class="ans">12</div></div>
+        <div class="practice-card hidden-ans" data-ans="15"><div class="eq">9 + 6</div><div class="ans">15</div></div>
+      </div>
+    </div>
+
+    <!-- Page 6: Practice 2 -->
+    <div class="page" data-page="5">
+      <img class="page-img" src="images/math-08/webp/page-06.webp" alt="Practice 2" loading="lazy">
+      <div class="caption" style="font-size:16px;">👆 点卡片对答案</div>
+      <div class="practice-grid" id="practice2">
+        <div class="practice-card hidden-ans" data-ans="15"><div class="eq">8 + 7</div><div class="ans">15</div></div>
+        <div class="practice-card hidden-ans" data-ans="13"><div class="eq">9 + 4</div><div class="ans">13</div></div>
+        <div class="practice-card hidden-ans" data-ans="16"><div class="eq">7 + 9</div><div class="ans">16</div></div>
+        <div class="practice-card hidden-ans" data-ans="14"><div class="eq">5 + 9</div><div class="ans">14</div></div>
+        <div class="practice-card hidden-ans" data-ans="17"><div class="eq">8 + 9</div><div class="ans">17</div></div>
+        <div class="practice-card hidden-ans" data-ans="12"><div class="eq">3 + 9</div><div class="ans">12</div></div>
+      </div>
+    </div>
+
+    <!-- Page 7: Challenge Quiz -->
+    <div class="page" data-page="6">
+      <img class="page-img" src="images/math-08/webp/page-07.webp" alt="Quiz" loading="lazy">
+      <div class="quiz-progress" id="quizProgress">第 1 / 4 题</div>
+      <div class="quiz-question" id="quizQuestion">9 + 4 = ?</div>
+      <div class="quiz-options" id="quizOptions"></div>
+      <div class="quiz-feedback" id="quizFeedback"></div>
+      <button class="quiz-next" id="quizNext">下一题 →</button>
+    </div>
+
+    <!-- Page 8: Celebration -->
+    <div class="page" data-page="7">
+      <img class="page-img" src="images/math-08/webp/page-08.webp" alt="Celebration" loading="lazy" style="max-width:280px;">
+      <div style="font-size:32px;margin:8px 0;">🎉🌟🎉</div>
+      <div class="caption" style="font-size:24px;color:#42A5F5;">太棒啦！</div>
+      <div class="caption" style="font-size:16px;color:#78909c;font-weight:600;">你学会了20以内的进位加法！</div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar">
+    <button class="nav-btn" id="prevBtn" aria-label="上一页">◀</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn" id="nextBtn" aria-label="下一页">▶</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ---- Confetti (full screen canvas) ----
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  let confettiPieces = [];
+  let confettiRunning = false;
+  let confettiRAF = null;
+
+  function resizeCanvas() {
+    const rect = document.getElementById('app').getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function launchConfetti() {
+    const w = canvas.width / window.devicePixelRatio;
+    const h = canvas.height / window.devicePixelRatio;
+    confettiPieces = [];
+    const colors = ['#42A5F5','#FF7043','#66BB6A','#FFCA28','#AB47BC','#EF5350','#26C6DA'];
+    for (let i = 0; i < 120; i++) {
+      confettiPieces.push({
+        x: Math.random() * w,
+        y: Math.random() * h - h,
+        w: 8 + Math.random() * 6,
+        h: 6 + Math.random() * 4,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: (Math.random() - 0.5) * 2.5,
+        vy: 1.5 + Math.random() * 2.5,
+        rot: Math.random() * 360,
+        rotV: (Math.random() - 0.5) * 6,
+        opacity: 0.9 + Math.random() * 0.1,
+      });
+    }
+    confettiRunning = true;
+    if (!confettiRAF) animateConfetti();
+  }
+
+  function animateConfetti() {
+    if (!confettiRunning) { confettiRAF = null; return; }
+    const w = canvas.width / window.devicePixelRatio;
+    const h = canvas.height / window.devicePixelRatio;
+    ctx.clearRect(0, 0, w, h);
+    let alive = false;
+    for (const p of confettiPieces) {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.04;
+      p.rot += p.rotV;
+      if (p.y > h + 40) continue;
+      alive = true;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    }
+    if (!alive) { confettiRunning = false; confettiRAF = null; return; }
+    confettiRAF = requestAnimationFrame(animateConfetti);
+  }
+
+  // ---- Page state ----
+  const pages = document.querySelectorAll('.page');
+  const totalPages = pages.length;
+  let currentPage = 0;
+
+  // Build dots
+  const dotsEl = document.getElementById('dots');
+  for (let i = 0; i < totalPages; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.dataset.index = i;
+    dot.addEventListener('click', function() { goTo(parseInt(this.dataset.index)); });
+    dotsEl.appendChild(dot);
+  }
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function goTo(idx, dir) {
+    if (idx < 0 || idx >= totalPages) return;
+    if (idx === currentPage) return;
+    const prev = currentPage;
+    currentPage = idx;
+
+    // Update pages
+    pages.forEach(p => p.classList.remove('active'));
+    pages[currentPage].classList.add('active');
+
+    // Update dots
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === currentPage);
+    });
+
+    // Buttons
+    prevBtn.disabled = (currentPage === 0);
+    nextBtn.disabled = (currentPage === totalPages - 1);
+    nextBtn.textContent = (currentPage === totalPages - 1) ? '✓' : '▶';
+
+    // GSAP entrance
+    gsap.fromTo(pages[currentPage], { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+
+    // Confetti on last page
+    if (currentPage === totalPages - 1) {
+      launchConfetti();
+    } else {
+      confettiRunning = false;
+    }
+
+    // Auto-speak page
+    speakPage(currentPage);
+  }
+
+  prevBtn.addEventListener('click', function() { goTo(currentPage - 1, -1); });
+  nextBtn.addEventListener('click', function() { goTo(currentPage + 1, 1); });
+
+  // ---- Speech Synthesis ----
+  const speakBtn = document.getElementById('btnSpeak');
+  let speaking = false;
+  let utterance = null;
+  const pageTexts = [
+    '第8课，20以内的进位加法，凑十法小探险',
+    '凑十法，先把小的拆一拆，凑成10再加剩下的',
+    '9加2等于11，8加3等于11，7加4等于11，凑十法：找大数，分小数，凑成十，加剩余',
+    '8加5等于多少？先凑十，8加2等于10，还剩3，10加3等于13',
+    '练习一，点卡片看答案',
+    '练习二，点卡片对答案',
+    '挑战小测验',
+    '太棒啦！你学会了20以内的进位加法！'
+  ];
+
+  function speakPage(idx) {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      if (utterance) utterance.onend = null;
+      const text = pageTexts[idx] || '';
+      utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      utterance.onstart = function() { speaking = true; speakBtn.classList.add('speaking'); };
+      utterance.onend = function() { speaking = false; speakBtn.classList.remove('speaking'); };
+      utterance.onerror = function() { speaking = false; speakBtn.classList.remove('speaking'); };
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  speakBtn.addEventListener('click', function() {
+    if (speaking) {
+      window.speechSynthesis.cancel();
+      speaking = false;
+      speakBtn.classList.remove('speaking');
+    } else {
+      speakPage(currentPage);
+    }
+  });
+
+  // Home button
+  document.getElementById('btnHome').addEventListener('click', function() {
+    goTo(0);
+  });
+
+  // ---- Practice card flip ----
+  function setupPracticeCards(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.querySelectorAll('.practice-card').forEach(card => {
+      card.addEventListener('click', function() {
+        // Remove previous states
+        this.classList.remove('correct', 'wrong');
+        // Show answer
+        this.classList.remove('hidden-ans');
+        this.classList.add('correct');
+        // GSAP bounce
+        gsap.fromTo(this, { scale: 0.92 }, { scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
+      });
+    });
+  }
+  setupPracticeCards('practice1');
+  setupPracticeCards('practice2');
+
+  // ---- Blocks interactive ----
+  const blocks = document.querySelectorAll('.block-click');
+  const blocksResult = document.getElementById('blocksResult');
+  blocks.forEach(b => {
+    b.addEventListener('click', function() {
+      const idx = parseInt(this.dataset.idx);
+      if (idx === 0) {
+        blocksResult.textContent = '8 + 2 + 3 = 13 🎯';
+        gsap.fromTo(blocksResult, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(2)' });
+      } else if (idx === 1) {
+        blocksResult.textContent = '找到了2和8凑成10！';
+        document.querySelectorAll('#blocksRow1 .block').forEach(el => el.classList.add('highlight'));
+        setTimeout(() => document.querySelectorAll('#blocksRow1 .block').forEach(el => el.classList.remove('highlight')), 800);
+      } else if (idx === 2) {
+        blocksResult.textContent = '剩下3，10 + 3 = 13 ✨';
+        gsap.fromTo(blocksResult, { scale: 0.8 }, { scale: 1, duration: 0.3, ease: 'back.out(2)' });
+      }
+    });
+  });
+
+  // ---- Quiz ----
+  const quizData = [
+    { q: '9 + 4 = ?', options: ['12','13','14','11'], correct: 1 },
+    { q: '8 + 7 = ?', options: ['14','16','15','13'], correct: 2 },
+    { q: '6 + 8 = ?', options: ['13','15','12','14'], correct: 3 },
+    { q: '9 + 9 = ?', options: ['18','17','19','16'], correct: 0 },
+  ];
+  let quizIndex = 0;
+  let quizAnswered = false;
+  const quizQuestion = document.getElementById('quizQuestion');
+  const quizOptions = document.getElementById('quizOptions');
+  const quizFeedback = document.getElementById('quizFeedback');
+  const quizNext = document.getElementById('quizNext');
+  const quizProgress = document.getElementById('quizProgress');
+
+  function loadQuiz() {
+    quizAnswered = false;
+    const d = quizData[quizIndex];
+    quizQuestion.textContent = d.q;
+    quizProgress.textContent = `第 ${quizIndex+1} / ${quizData.length} 题`;
+    quizOptions.innerHTML = '';
+    quizFeedback.textContent = '';
+    quizNext.style.display = 'none';
+    d.options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'quiz-opt';
+      btn.textContent = opt;
+      btn.dataset.idx = i;
+      btn.addEventListener('click', function() {
+        if (quizAnswered) return;
+        quizAnswered = true;
+        const selected = parseInt(this.dataset.idx);
+        const correct = d.correct;
+        document.querySelectorAll('.quiz-opt').forEach(el => {
+          const idx = parseInt(el.dataset.idx);
+          if (idx === correct) el.classList.add('correct');
+          else if (idx === selected && idx !== correct) el.classList.add('wrong');
+          el.style.pointerEvents = 'none';
+        });
+        if (selected === correct) {
+          quizFeedback.innerHTML = '✅ 答对啦！真棒！';
+          gsap.fromTo(quizFeedback, { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(2)' });
+        } else {
+          quizFeedback.innerHTML = '❌ 再想想哦～正确答案是 ' + d.options[correct];
+        }
+        if (quizIndex < quizData.length - 1) {
+          quizNext.style.display = 'inline-block';
+          quizNext.textContent = '下一题 →';
+        } else {
+          quizNext.style.display = 'inline-block';
+          quizNext.textContent = '🎉 完成挑战！';
+        }
+      });
+      quizOptions.appendChild(btn);
+    });
+    // GSAP entrance
+    gsap.fromTo(quizOptions.children, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, stagger: 0.06, ease: 'power2.out' });
+  }
+
+  quizNext.addEventListener('click', function() {
+    if (quizIndex < quizData.length - 1) {
+      quizIndex++;
+      loadQuiz();
+    } else {
+      // Go to celebration page
+      goTo(totalPages - 1);
+    }
+  });
+
+  // Initialize quiz when page 7 becomes active
+  // We'll detect via page change
+  const origGoTo = goTo;
+  goTo = function(idx, dir) {
+    origGoTo(idx, dir);
+    if (idx === 6) {
+      quizIndex = 0;
+      loadQuiz();
+    }
+  };
+  // Call initial
+  goTo(0);
+
+  // ---- Keyboard nav ----
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      if (currentPage > 0) goTo(currentPage - 1);
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      if (currentPage < totalPages - 1) goTo(currentPage + 1);
+      e.preventDefault();
+    }
+  });
+
+  // ---- Touch swipe ----
+  let touchStartX = 0;
+  let touchStartY = 0;
+  document.addEventListener('touchstart', function(e) {
+    const t = e.changedTouches[0];
+    touchStartX = t.screenX;
+    touchStartY = t.screenY;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    const t = e.changedTouches[0];
+    const dx = t.screenX - touchStartX;
+    const dy = t.screenY - touchStartY;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      if (dx < 0 && currentPage < totalPages - 1) goTo(currentPage + 1);
+      else if (dx > 0 && currentPage > 0) goTo(currentPage - 1);
+    }
+  }, { passive: true });
+
+  // ---- Initial speak delay ----
+  setTimeout(function() { speakPage(0); }, 500);
+})();
+</script>
+</body>
+</html>
