@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Math Lesson 11 · 测量与长度</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+body {
+  font-family: 'Nunito', sans-serif;
+  background: linear-gradient(145deg, #e3f2fd 0%, #bbdefb 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+.slide-container {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  height: 100vh;
+  max-height: 780px;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 28px;
+  box-shadow: 0 20px 60px rgba(66,165,245,.30), 0 6px 20px rgba(0,0,0,.08);
+}
+@media (max-width: 440px) {
+  .slide-container { max-width: 100%; border-radius: 0; max-height: 100vh; }
+}
+.slides-wrapper { position: relative; width: 100%; height: 100%; }
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  padding: 24px 20px 90px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  overflow-y: auto; overflow-x: hidden;
+  opacity: 0; visibility: hidden;
+  transition: opacity .5s, visibility .5s;
+  -webkit-overflow-scrolling: touch;
+}
+.slide.active { opacity: 1; visibility: visible; position: relative; }
+.slide::-webkit-scrollbar { width: 4px; }
+.slide::-webkit-scrollbar-track { background: transparent; }
+.slide::-webkit-scrollbar-thumb { background: #42A5F5; border-radius: 4px; }
+.top-bar {
+  position: absolute; top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+}
+.top-btn {
+  width: 42px; height: 42px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.90); box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .2s, box-shadow .2s;
+}
+.top-btn:active { transform: scale(.90); }
+.page-number {
+  font-size: 13px; font-weight: 700; color: #90a4ae;
+  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+}
+.lesson-badge {
+  display: inline-block; background: #42A5F5; color: #fff;
+  font-size: 14px; font-weight: 800; padding: 4px 16px;
+  border-radius: 20px; letter-spacing: 1px; margin-bottom: 8px;
+}
+h1 {
+  font-size: 32px; font-weight: 900; color: #1a237e;
+  text-align: center; line-height: 1.2; margin-bottom: 4px;
+}
+h1 .sub {
+  display: block; font-size: 18px;
+  font-weight: 600; color: #42A5F5; margin-top: 4px;
+}
+h2 {
+  font-size: 24px; font-weight: 800; color: #1a237e;
+  text-align: center; line-height: 1.3; margin-bottom: 6px;
+}
+h3 {
+  font-size: 18px; font-weight: 700;
+  color: #37474f; margin-bottom: 8px;
+}
+p {
+  font-size: 16px; line-height: 1.6; color: #455a64;
+  text-align: center; max-width: 360px; margin: 0 auto 10px;
+}
+.image-wrap {
+  width: 100%; max-width: 360px; margin: 8px auto;
+  display: flex; justify-content: center;
+}
+.image-wrap img {
+  width: 100%; max-width: 400px;
+  border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,.06);
+  display: block;
+}
+.concept-card {
+  background: #e3f2fd; border-radius: 16px; padding: 16px 18px;
+  margin: 6px 0; width: 100%; max-width: 360px;
+  border-left: 4px solid #42A5F5;
+}
+.concept-card h3 {
+  color: #1565c0;
+  margin-bottom: 4px;
+  text-align: left;
+}
+.concept-card p {
+  text-align: left;
+  font-size: 15px;
+  margin: 0;
+  color: #37474f;
+}
+.ruler-visual {
+  width: 100%; max-width: 360px; height: 48px;
+  background: #fff8e1; border: 2px solid #ffcc02;
+  border-radius: 8px; position: relative; margin: 10px 0;
+  display: flex; align-items: flex-end; overflow: hidden;
+}
+.ruler-tick {
+  flex: 1; height: 60%;
+  border-right: 1px solid #bdbdbd;
+  position: relative;
+}
+.ruler-tick::after {
+  content: attr(data-label);
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 700;
+  color: #616161;
+}
+.ruler-tick.major {
+  border-right: 2px solid #616161;
+  height: 80%;
+}
+.ruler-arrow {
+  position: absolute;
+  bottom: 4px;
+  height: 20px;
+  width: 2px;
+  background: #e53935;
+  z-index: 2;
+}
+.ruler-arrow::before, .ruler-arrow::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background: #e53935;
+  top: 0;
+}
+.ruler-arrow::before { left: -5px; transform: rotate(-40deg); }
+.ruler-arrow::after { right: -5px; transform: rotate(40deg); }
+.practice-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; width: 100%; max-width: 360px; margin: 8px 0;
+}
+.practice-item {
+  background: #f5f5f5; border-radius: 14px; padding: 12px;
+  text-align: center; border: 2px solid transparent; transition: border-color .2s;
+}
+.practice-item.selected { border-color: #42A5F5; background: #e3f2fd; }
+.practice-item .emoji-big { font-size: 36px; display: block; margin-bottom: 4px; }
+.practice-item .label { font-size: 13px; font-weight: 700; color: #37474f; }
+.practice-item .cm-label { font-size: 12px; color: #78909c; font-weight: 600; }
+.compare-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; width: 100%; max-width: 360px;
+  margin: 6px 0; padding: 10px 14px;
+  background: #fafafa; border-radius: 14px;
+}
+.compare-bar-wrap {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+}
+.compare-bar {
+  width: 100%; height: 24px; border-radius: 12px;
+  background: #e0e0e0; position: relative; overflow: hidden;
+}
+.compare-fill {
+  height: 100%; border-radius: 12px; transition: width .6s ease;
+}
+.compare-fill.blue { background: linear-gradient(90deg,#42A5F5,#1e88e5); }
+.compare-fill.green { background: linear-gradient(90deg,#66bb6a,#43a047); }
+.compare-fill.orange { background: linear-gradient(90deg,#ffa726,#fb8c00); }
+.compare-fill.purple { background: linear-gradient(90deg,#ab47bc,#8e24aa); }
+.compare-label { font-size: 13px; font-weight: 700; color: #37474f; margin-top: 2px; }
+.challenge-box {
+  width: 100%; max-width: 360px;
+  background: #fff3e0; border-radius: 16px; padding: 16px;
+  margin: 6px 0; border: 2px solid #ffb74d;
+}
+.challenge-box h3 { color: #e65100; }
+.challenge-options {
+  display: flex; gap: 10px; justify-content: center; margin: 8px 0;
+}
+.challenge-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 3px solid #bdbdbd; background: #fff;
+  font-size: 24px; font-weight: 800; color: #37474f;
+  cursor: pointer; transition: all .2s;
+}
+.challenge-btn:active { transform: scale(.92); }
+.challenge-btn.correct { border-color: #66bb6a; background: #e8f5e9; color: #2e7d32; }
+.challenge-btn.wrong { border-color: #ef5350; background: #ffebee; color: #c62828; }
+.challenge-feedback {
+  font-size: 16px; font-weight: 700;
+  text-align: center; margin-top: 6px; min-height: 24px;
+}
+.celebration-content {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex: 1; gap: 8px;
+}
+.trophy {
+  font-size: 80px;
+  animation: bounce 1.2s infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+.stars-row { font-size: 32px; letter-spacing: 8px; }
+.score-badge {
+  background: #42A5F5; color: #fff;
+  font-size: 20px; font-weight: 800;
+  padding: 8px 32px; border-radius: 30px; margin: 6px 0;
+}
+.bottom-nav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px 16px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(0,0,0,.04);
+}
+.nav-btn {
+  width: 48px; height: 48px; border-radius: 50%; border: none;
+  background: #42A5F5; color: #fff; font-size: 18px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: transform .2s, opacity .3s;
+  box-shadow: 0 4px 12px rgba(66,165,245,.35);
+}
+.nav-btn:disabled { opacity: .25; pointer-events: none; }
+.nav-btn:active { transform: scale(.88); }
+.nav-btn.prev { background: #90a4ae; box-shadow: 0 4px 12px rgba(144,164,174,.30); }
+.dots-wrap { display: flex; gap: 6px; align-items: center; }
+.dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: none; background: #cfd8dc;
+  cursor: pointer; transition: all .3s; padding: 0;
+}
+.dot.active { background: #42A5F5; width: 28px; border-radius: 6px; }
+#confetti-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 60;
+}
+.spacer { flex: 1; }
+.mt-8 { margin-top: 8px; }
+.fade-in { opacity: 0; transform: translateY(12px); }
+</style>
+</head>
+<body>
+
+<div class="slide-container" id="app">
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <button class="top-btn" id="homeBtn" aria-label="首页">🏠</button>
+    <button class="top-btn" id="speakBtn" aria-label="朗读">▶</button>
+  </div>
+
+  <div class="slides-wrapper" id="slidesWrapper">
+
+    <!-- SLIDE 1 · COVER -->
+    <div class="slide active" data-page="1" id="slide1">
+      <div class="spacer" style="flex:0.3"></div>
+      <div class="lesson-badge">Lesson 11</div>
+      <h1>
+        测量与长度
+        <span class="sub">Measurement &amp; Length</span>
+      </h1>
+      <div class="image-wrap mt-8">
+        <img src="images/math-11/webp/page-01.webp" alt="测量与长度封面" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <p class="mt-8">一起来学习如何测量身边的物品吧！<br>Let's learn how to measure things around us!</p>
+      <div class="spacer"></div>
+      <div class="fade-in" style="font-size:14px;color:#90a4ae;font-weight:600;">👆 点击 ▶ 听朗读 · 滑动翻页</div>
+    </div>
+
+    <!-- SLIDE 2 · CONCEPT -->
+    <div class="slide" data-page="2" id="slide2">
+      <div class="page-number">PAGE 02 · 概念</div>
+      <h2>
+        什么是测量？
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">What Is Measurement?</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-02.webp" alt="测量概念" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <div class="concept-card fade-in">
+        <h3>📏 长度 Length</h3>
+        <p>长度是测量物体有多长、多宽或多高。<br>Length tells us how long, wide, or tall something is.</p>
+      </div>
+      <div class="concept-card fade-in">
+        <h3>📐 单位 Units</h3>
+        <p>我们使用厘米 (cm) 和米 (m) 来测量长度。<br>We use centimeters (cm) and meters (m).</p>
+      </div>
+      <div class="concept-card fade-in">
+        <h3>✋ 工具 Tools</h3>
+        <p>尺子、卷尺和米尺都是测量工具。<br>Rulers, tape measures, and meter sticks are tools.</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 · MEASURING -->
+    <div class="slide" data-page="3" id="slide3">
+      <div class="page-number">PAGE 03 · 测量方法</div>
+      <h2>
+        如何测量？
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">How to Measure</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-04.webp" alt="如何使用尺子" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <div class="concept-card fade-in" style="background:#e8f5e9;border-left-color:#66bb6a;">
+        <h3>📌 步骤 Steps</h3>
+        <p>1. 把尺子的零刻度对准物体一端<br>
+        2. 看另一端在尺子的哪个数字上<br>
+        3. 读出的数字就是长度（厘米）</p>
+      </div>
+      <!-- Ruler Visual -->
+      <div class="ruler-visual fade-in">
+        <div class="ruler-tick major" data-label="0"></div>
+        <div class="ruler-tick" data-label="1"></div>
+        <div class="ruler-tick" data-label="2"></div>
+        <div class="ruler-tick" data-label="3"></div>
+        <div class="ruler-tick" data-label="4"></div>
+        <div class="ruler-tick major" data-label="5"></div>
+        <div class="ruler-tick" data-label="6"></div>
+        <div class="ruler-tick" data-label="7"></div>
+        <div class="ruler-tick" data-label="8"></div>
+        <div class="ruler-tick" data-label="9"></div>
+        <div class="ruler-tick major" data-label="10"></div>
+        <div class="ruler-arrow" style="left:2%;">
+          <span style="position:absolute;bottom:-22px;left:-8px;font-size:11px;font-weight:800;color:#e53935;white-space:nowrap;">0</span>
+        </div>
+        <div class="ruler-arrow" style="left:72%;">
+          <span style="position:absolute;bottom:-22px;left:-8px;font-size:11px;font-weight:800;color:#e53935;white-space:nowrap;">7 cm</span>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#78909c;margin-top:2px;">这支铅笔大约 7 厘米长</p>
+    </div>
+
+    <!-- SLIDE 4 · PRACTICE 1 -->
+    <div class="slide" data-page="4" id="slide4">
+      <div class="page-number">PAGE 04 · 练习一</div>
+      <h2>
+        练习：有多长？
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Practice: How Long?</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-05.webp" alt="练习一" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <p>看图片，猜猜这些物品的长度：</p>
+      <div class="practice-grid">
+        <div class="practice-item" onclick="selectPractice(this,'pencil')">
+          <span class="emoji-big">✏️</span>
+          <span class="label">铅笔</span>
+          <span class="cm-label">? cm</span>
+        </div>
+        <div class="practice-item" onclick="selectPractice(this,'book')">
+          <span class="emoji-big">📘</span>
+          <span class="label">书本</span>
+          <span class="cm-label">? cm</span>
+        </div>
+        <div class="practice-item" onclick="selectPractice(this,'phone')">
+          <span class="emoji-big">📱</span>
+          <span class="label">手机</span>
+          <span class="cm-label">? cm</span>
+        </div>
+        <div class="practice-item" onclick="selectPractice(this,'spoon')">
+          <span class="emoji-big">🥄</span>
+          <span class="label">勺子</span>
+          <span class="cm-label">? cm</span>
+        </div>
+      </div>
+      <div style="width:100%;max-width:360px;margin:4px 0;display:flex;justify-content:center;">
+        <button class="nav-btn" style="width:auto;padding:8px 28px;border-radius:24px;font-size:15px;background:#42A5F5;" onclick="showPracticeAnswers()">
+          ✨ 显示答案
+        </button>
+      </div>
+      <div id="practiceAnswers" style="display:none;width:100%;max-width:360px;text-align:center;font-size:15px;font-weight:700;color:#2e7d32;background:#e8f5e9;border-radius:12px;padding:8px;margin:2px 0;">
+        铅笔 ≈ 18cm &nbsp;·&nbsp; 书本 ≈ 26cm &nbsp;·&nbsp; 手机 ≈ 14cm &nbsp;·&nbsp; 勺子 ≈ 16cm
+      </div>
+    </div>
+
+    <!-- SLIDE 5 · PRACTICE 2 -->
+    <div class="slide" data-page="5" id="slide5">
+      <div class="page-number">PAGE 05 · 练习二</div>
+      <h2>
+        选择合适的单位
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Choose the Right Unit</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-06.webp" alt="练习二" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <p>选 cm 还是 m？<br>Choose cm or m for each item:</p>
+      <div class="practice-grid" style="grid-template-columns:1fr;">
+        <!-- 钢笔 -->
+        <div class="practice-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;">
+          <span><span style="font-size:24px;">🖊️</span> <strong>钢笔</strong></span>
+          <span style="display:flex;gap:8px;">
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'cm')">cm</button>
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'m')">m</button>
+          </span>
+        </div>
+        <!-- 汽车 -->
+        <div class="practice-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;">
+          <span><span style="font-size:24px;">🚗</span> <strong>汽车</strong></span>
+          <span style="display:flex;gap:8px;">
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'cm')">cm</button>
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'m')">m</button>
+          </span>
+        </div>
+        <!-- 课桌 -->
+        <div class="practice-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;">
+          <span><span style="font-size:24px;">📏</span> <strong>课桌</strong></span>
+          <span style="display:flex;gap:8px;">
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'cm')">cm</button>
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'m')">m</button>
+          </span>
+        </div>
+        <!-- 房子 -->
+        <div class="practice-item" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;">
+          <span><span style="font-size:24px;">🏠</span> <strong>房子</strong></span>
+          <span style="display:flex;gap:8px;">
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'cm')">cm</button>
+            <button class="challenge-btn" style="width:48px;height:36px;border-radius:18px;font-size:14px;" onclick="unitChoice(this,'m')">m</button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 · COMPARE -->
+    <div class="slide" data-page="6" id="slide6">
+      <div class="page-number">PAGE 06 · 比较长度</div>
+      <h2>
+        比较长度
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Compare Lengths</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-07.webp" alt="比较长度" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <p>把物品按从短到长排列：</p>
+      <div class="compare-row fade-in">
+        <span style="font-size:22px;">✏️</span>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar">
+            <div class="compare-fill blue" style="width:30%;"></div>
+          </div>
+          <span class="compare-label">铅笔 18 cm</span>
+        </div>
+      </div>
+      <div class="compare-row fade-in">
+        <span style="font-size:22px;">📘</span>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar">
+            <div class="compare-fill green" style="width:50%;"></div>
+          </div>
+          <span class="compare-label">书本 26 cm</span>
+        </div>
+      </div>
+      <div class="compare-row fade-in">
+        <span style="font-size:22px;">📏</span>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar">
+            <div class="compare-fill orange" style="width:70%;"></div>
+          </div>
+          <span class="compare-label">尺子 30 cm</span>
+        </div>
+      </div>
+      <div class="compare-row fade-in">
+        <span style="font-size:22px;">🏀</span>
+        <div class="compare-bar-wrap">
+          <div class="compare-bar">
+            <div class="compare-fill purple" style="width:90%;"></div>
+          </div>
+          <span class="compare-label">球棒 60 cm</span>
+        </div>
+      </div>
+      <p style="font-size:14px;color:#78909c;margin-top:4px;">铅笔 &lt; 书本 &lt; 尺子 &lt; 球棒</p>
+    </div>
+
+    <!-- SLIDE 7 · CHALLENGE -->
+    <div class="slide" data-page="7" id="slide7">
+      <div class="page-number">PAGE 07 · 挑战</div>
+      <h2>
+        ⭐ 挑战题
+        <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Challenge</span>
+      </h2>
+      <div class="image-wrap">
+        <img src="images/math-11/webp/page-08.webp" alt="挑战题" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+      </div>
+      <div class="challenge-box" id="challenge1">
+        <h3>🤔 问题 1</h3>
+        <p style="font-size:15px;text-align:left;">一根绳子长 45 厘米，另一根长 30 厘米。把两根接在一起有多长？</p>
+        <div class="challenge-options">
+          <button class="challenge-btn" onclick="checkChallenge(this,1,55)">55</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,1,65)">65</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,1,75)">75</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,1,85)">85</button>
+        </div>
+        <div class="challenge-feedback" id="fb1"></div>
+      </div>
+      <div class="challenge-box" style="margin-top:4px;">
+        <h3>🤔 问题 2</h3>
+        <p style="font-size:15px;text-align:left;">书桌高 70 cm，椅子高 45 cm。书桌比椅子高多少？</p>
+        <div class="challenge-options">
+          <button class="challenge-btn" onclick="checkChallenge(this,2,15)">15</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,2,25)">25</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,2,35)">35</button>
+          <button class="challenge-btn" onclick="checkChallenge(this,2,45)">45</button>
+        </div>
+        <div class="challenge-feedback" id="fb2"></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 · CELEBRATION -->
+    <div class="slide" data-page="8" id="slide8">
+      <div class="celebration-content">
+        <div class="stars-row">⭐⭐⭐</div>
+        <div class="trophy">🏆</div>
+        <h1 style="font-size:28px;">
+          太棒了！
+          <span class="sub" style="font-size:16px;">Amazing Job!</span>
+        </h1>
+        <div class="score-badge">🎉 测量小达人 🎉</div>
+        <div class="image-wrap" style="max-width:280px;">
+          <img src="images/math-11/webp/page-01.webp" alt="庆祝" style="width:100%;max-width:400px;border-radius:12px;opacity:.6;" loading="lazy">
+        </div>
+        <p style="font-size:15px;color:#78909c;">
+          你已经学会了如何测量长度！<br>
+          You've learned how to measure length!
+        </p>
+      </div>
+      <canvas id="confetti-canvas"></canvas>
+    </div>
+
+  </div><!-- /slides-wrapper -->
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <button class="nav-btn prev" id="prevBtn" aria-label="上一页">‹</button>
+    <div class="dots-wrap" id="dotsWrap"></div>
+    <button class="nav-btn next" id="nextBtn" aria-label="下一页">›</button>
+  </div>
+
+</div><!-- /slide-container -->
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Configuration ──
+  var TOTAL_SLIDES = 8;
+  var currentSlide = 0;
+  var isTransitioning = false;
+
+  // ── DOM References ──
+  var slides = document.querySelectorAll('.slide');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var dotsWrap = document.getElementById('dotsWrap');
+  var homeBtn = document.getElementById('homeBtn');
+  var speakBtn = document.getElementById('speakBtn');
+  var confettiCanvas = document.getElementById('confetti-canvas');
+
+  // ── Build Dots ──
+  function buildDots() {
+    dotsWrap.innerHTML = '';
+    for (var i = 0; i < TOTAL_SLIDES; i++) {
+      var dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.dataset.index = i;
+      dot.addEventListener('click', function() {
+        goToSlide(parseInt(this.dataset.index));
+      });
+      dotsWrap.appendChild(dot);
+    }
+  }
+  buildDots();
+
+  // ── Update Dots & Buttons ──
+  function updateUI() {
+    var dots = dotsWrap.querySelectorAll('.dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].classList.toggle('active', i === currentSlide);
+    }
+    prevBtn.disabled = (currentSlide === 0);
+    nextBtn.disabled = (currentSlide === TOTAL_SLIDES - 1);
+  }
+
+  // ── Navigate to Slide ──
+  function goToSlide(index) {
+    if (isTransitioning) return;
+    if (index < 0 || index >= TOTAL_SLIDES) return;
+    if (index === currentSlide) return;
+
+    isTransitioning = true;
+
+    // Stop speech if playing
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+
+    var currentEl = slides[currentSlide];
+    var nextEl = slides[index];
+    var direction = (index > currentSlide) ? 1 : -1;
+
+    // Exit current slide
+    gsap.to(currentEl, {
+      opacity: 0,
+      y: direction * -20,
+      duration: 0.35,
+      ease: 'power2.in',
+      onComplete: function() {
+        currentEl.classList.remove('active');
+        currentEl.style.opacity = '';
+        currentEl.style.transform = '';
+
+        // Enter next slide
+        nextEl.classList.add('active');
+        gsap.fromTo(nextEl,
+          { opacity: 0, y: direction * 30 },
+          { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out',
+            onComplete: function() {
+              isTransitioning = false;
+            }
+          }
+        );
+
+        // Animate fade-in elements within the new slide
+        var fades = nextEl.querySelectorAll('.fade-in');
+        if (fades.length > 0) {
+          gsap.set(fades, { opacity: 0, y: 12 });
+          gsap.to(fades, {
+            opacity: 1, y: 0,
+            duration: 0.5,
+            stagger: 0.15,
+            ease: 'power2.out',
+            delay: 0.15
+          });
+        }
+      }
+    });
+
+    currentSlide = index;
+    updateUI();
+
+    // Trigger confetti when reaching celebration slide
+    if (currentSlide === TOTAL_SLIDES - 1) {
+      triggerConfetti();
+    }
+  }
+
+  // ── Button handlers ──
+  prevBtn.addEventListener('click', function() {
+    goToSlide(currentSlide - 1);
+  });
+
+  nextBtn.addEventListener('click', function() {
+    goToSlide(currentSlide + 1);
+  });
+
+  homeBtn.addEventListener('click', function() {
+    goToSlide(0);
+  });
+
+  // ── Touch Swipe Support ──
+  var touchStartX = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    var diff = touchStartX - e.changedTouches[0].screenX;
+    if (Math.abs(diff) < 40) return;
+    if (diff > 0) {
+      if (currentSlide < TOTAL_SLIDES - 1) goToSlide(currentSlide + 1);
+    } else {
+      if (currentSlide > 0) goToSlide(currentSlide - 1);
+    }
+  }, { passive: true });
+
+  // ── Keyboard Navigation ──
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentSlide < TOTAL_SLIDES - 1) goToSlide(currentSlide + 1);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentSlide > 0) goToSlide(currentSlide - 1);
+    } else if (e.key === 'Home' || e.key === 'h' || e.key === 'H') {
+      e.preventDefault();
+      goToSlide(0);
+    }
+  });
+
+  // ── Speech Synthesis (zh-CN) ──
+  speakBtn.addEventListener('click', function() {
+    var ss = window.speechSynthesis;
+    if (!ss) return;
+
+    if (ss.speaking) {
+      ss.cancel();
+      return;
+    }
+
+    var el = slides[currentSlide];
+    var text = '';
+
+    var selectors = [
+      '.page-number', 'h1', 'h2', 'h3', 'p',
+      '.concept-card p', '.compare-label',
+      '.challenge-box h3', '.challenge-box p'
+    ];
+
+    selectors.forEach(function(sel) {
+      el.querySelectorAll(sel).forEach(function(node) {
+        var t = node.textContent.trim();
+        if (t) text += t + '. ';
+      });
+    });
+
+    if (!text.trim()) return;
+
+    var utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
+    utterance.rate = 0.92;
+    utterance.pitch = 1.05;
+    utterance.volume = 1;
+    ss.speak(utterance);
+  });
+
+  // ── Confetti Celebration ──
+  function triggerConfetti() {
+    if (!confettiCanvas) return;
+    var rect = confettiCanvas.getBoundingClientRect();
+    var x = (rect.left + rect.width / 2) / window.innerWidth;
+    var y = (rect.top + rect.height / 2) / window.innerHeight;
+
+    // Multiple bursts from center
+    (function burst(count) {
+      if (count <= 0) return;
+      confetti({
+        canvas: confettiCanvas,
+        particleCount: 80,
+        spread: 80,
+        origin: { x: x, y: y - 0.1 },
+        colors: ['#42A5F5', '#66bb6a', '#ffa726', '#ef5350', '#ab47bc', '#ffcc02']
+      });
+      setTimeout(function() { burst(count - 1); }, 350);
+    })(3);
+
+    // Side bursts
+    setTimeout(function() {
+      confetti({
+        canvas: confettiCanvas,
+        particleCount: 60,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.6 },
+        colors: ['#42A5F5', '#66bb6a', '#ffcc02']
+      });
+      confetti({
+        canvas: confettiCanvas,
+        particleCount: 60,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.6 },
+        colors: ['#42A5F5', '#ffa726', '#ab47bc']
+      });
+    }, 500);
+  }
+
+  // ── Practice 1: Toggle Selection ──
+  window.selectPractice = function(el) {
+    el.classList.toggle('selected');
+  };
+
+  // ── Practice 1: Show Answers ──
+  window.showPracticeAnswers = function() {
+    var div = document.getElementById('practiceAnswers');
+    div.style.display = 'block';
+    gsap.fromTo(div, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+  };
+
+  // ── Practice 2: Unit Choice ──
+  window.unitChoice = function(btn, chosen) {
+    var parent = btn.parentElement;
+    var allBtns = parent.querySelectorAll('.challenge-btn');
+
+    allBtns.forEach(function(b) {
+      b.classList.remove('correct', 'wrong');
+    });
+
+    var itemLabel = parent.closest('.practice-item').querySelector('strong').textContent;
+    var answers = { '钢笔': 'cm', '汽车': 'm', '课桌': 'cm', '房子': 'm' };
+    var correct = answers[itemLabel] || 'cm';
+
+    if (chosen === correct) {
+      btn.classList.add('correct');
+    } else {
+      btn.classList.add('wrong');
+      allBtns.forEach(function(b) {
+        if (b.textContent.trim() === correct) {
+          b.classList.add('correct');
+        }
+      });
+    }
+  };
+
+  // ── Challenge Check ──
+  window.checkChallenge = function(btn, qNum, answer) {
+    var fb = document.getElementById('fb' + qNum);
+    var parent = btn.closest('.challenge-box');
+    var allBtns = parent.querySelectorAll('.challenge-btn');
+
+    // Lock all buttons
+    allBtns.forEach(function(b) {
+      b.style.pointerEvents = 'none';
+      b.style.opacity = '0.6';
+    });
+
+    var correctAnswers = { 1: 75, 2: 25 };
+    var isCorrect = (answer === correctAnswers[qNum]);
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      fb.textContent = '✅ 正确！太棒了！';
+      fb.style.color = '#2e7d32';
+      // Mini confetti pop
+      confetti({
+        particleCount: 30,
+        spread: 40,
+        origin: { y: 0.5 },
+        colors: ['#42A5F5', '#66bb6a', '#ffcc02']
+      });
+    } else {
+      btn.classList.add('wrong');
+      fb.textContent = '❌ 再想想哦！正确答案是 ' + correctAnswers[qNum] + ' cm';
+      fb.style.color = '#c62828';
+      allBtns.forEach(function(b) {
+        if (parseInt(b.textContent.trim()) === correctAnswers[qNum]) {
+          b.classList.add('correct');
+        }
+      });
+    }
+  };
+
+  // ── Entry Animation ──
+  gsap.fromTo('#slide1 .lesson-badge',{opacity:0,y:-20},{opacity:1,y:0,duration:.6,ease:'power2.out'});
+  gsap.fromTo('#slide1 h1',{opacity:0,y:20},{opacity:1,y:0,duration:.7,ease:'power2.out',delay:.15});
+  gsap.fromTo('#slide1 .image-wrap',{opacity:0,scale:.92},{opacity:1,scale:1,duration:.7,ease:'power2.out',delay:.3});
+  gsap.fromTo('#slide1 p',{opacity:0,y:12},{opacity:1,y:0,duration:.5,ease:'power2.out',delay:.5});
+  gsap.fromTo('#slide1 .fade-in',{opacity:0,y:8},{opacity:1,y:0,duration:.5,ease:'power2.out',delay:.7});
+  prevBtn.disabled = true;
+  console.log('📐 Math Lesson 11 · 测量与长度 loaded ('+TOTAL_SLIDES+' slides)');
+})();
+</script>
+
+</body>
+</html>

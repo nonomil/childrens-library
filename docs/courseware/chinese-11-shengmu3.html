@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>第11课 · 声母王国下 | 拼音乐园</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Nunito',sans-serif;overflow:hidden;background:#1a1a2e;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center}
+.book{position:relative;width:100%;max-width:420px;height:100vh;max-height:780px;overflow:hidden;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.page{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px 70px;opacity:0;pointer-events:none;transition:opacity .5s ease;overflow-y:auto;background:#fff}
+.page.active{opacity:1;pointer-events:auto;z-index:2}
+.page.prev{opacity:0;pointer-events:none;z-index:1}
+/* top bar */
+.top-bar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;z-index:10}
+.top-bar .home-btn,.top-bar .sound-btn{width:40px;height:40px;border-radius:50%;border:none;background:rgba(239,83,80,.12);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s;color:#EF5350}
+.top-bar .home-btn:hover,.top-bar .sound-btn:hover{background:rgba(239,83,80,.25);transform:scale(1.1)}
+/* nav dots */
+.nav-dots{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:#ddd;border:2px solid transparent;transition:all .3s;cursor:pointer}
+.nav-dot.active{background:#EF5350;border-color:#EF5350;transform:scale(1.3)}
+.nav-dot.seen{background:#f8a5a5}
+/* prev next */
+.nav-arrows{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:space-between;padding:0 20px;z-index:10;pointer-events:none}
+.nav-arrows button{width:44px;height:44px;border-radius:50%;border:2px solid #EF5350;background:#fff;font-size:20px;color:#EF5350;cursor:pointer;pointer-events:auto;transition:all .3s;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(239,83,80,.2)}
+.nav-arrows button:active{transform:scale(.9);background:#EF5350;color:#fff}
+.nav-arrows button:disabled{opacity:.3;pointer-events:none}
+/* headings */
+h1{font-size:32px;font-weight:900;color:#EF5350;margin-bottom:6px;text-align:center}
+h2{font-size:24px;font-weight:800;color:#EF5350;margin-bottom:8px;text-align:center}
+h3{font-size:18px;font-weight:700;color:#c0392b;margin-bottom:10px;text-align:center}
+h4{font-size:15px;font-weight:700;color:#e74c3c;margin-bottom:6px;text-align:center}
+/* cover */
+.cover-icon{font-size:72px;margin-bottom:10px;display:block}
+.cover-sub{font-size:14px;color:#999;margin-bottom:20px;text-align:center}
+.cover-badge{background:#EF5350;color:#fff;padding:10px 32px;border-radius:30px;font-size:18px;font-weight:800;margin-bottom:16px;display:inline-block;box-shadow:0 6px 20px rgba(239,83,80,.35)}
+.cover-img{width:200px;height:auto;margin:10px 0;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+/* cards grid */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:360px;margin:8px auto}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;width:100%;max-width:360px;margin:8px auto}
+.init-card{background:#fff;border-radius:16px;padding:14px 8px;text-align:center;border:2px solid #ffe0e0;cursor:pointer;transition:all .3s;position:relative;overflow:hidden}
+.init-card:active{transform:scale(.95)}
+.init-card .pinyin{font-size:28px;font-weight:900;color:#EF5350;display:block;line-height:1.2}
+.init-card .example{font-size:14px;color:#888;margin-top:4px;display:block}
+.init-card .hanzi{font-size:20px;color:#333;margin-top:2px;display:block}
+.init-card.playing{border-color:#EF5350;background:#fff5f5;box-shadow:0 0 0 3px rgba(239,83,80,.15)}
+/* blending cards */
+.blend-card{background:#fef6f6;border-radius:14px;padding:14px 12px;text-align:center;border:2px solid #ffd6d6;cursor:pointer;transition:all .3s;margin-bottom:12px}
+.blend-card:active{transform:scale(.97)}
+.blend-card .big{font-size:36px;font-weight:900;color:#EF5350;display:block;line-height:1.2}
+.blend-card .parts{font-size:14px;color:#999;margin-top:4px}
+.blend-card .meaning{font-size:16px;font-weight:600;color:#333;margin-top:4px}
+/* comparison card */
+.comp-card{background:#fff;border-radius:14px;padding:12px 10px;text-align:center;border:2px solid #ffd6d6;cursor:pointer;transition:all .3s;margin-bottom:8px;width:100%;max-width:360px}
+.comp-card:active{transform:scale(.97)}
+.comp-card .pair{font-size:28px;font-weight:900;color:#EF5350}
+.comp-card .label{font-size:13px;color:#999;margin-top:2px}
+/* quiz */
+.quiz-card{background:#fff;border-radius:16px;padding:20px;text-align:center;border:2px solid #ffe0e0;width:100%;max-width:360px;margin:6px auto}
+.quiz-q{font-size:32px;font-weight:900;color:#EF5350;margin-bottom:10px}
+.quiz-q .hint{font-size:15px;color:#999;font-weight:400}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.quiz-btn{background:#fff;border:2px solid #ddd;border-radius:12px;padding:14px 8px;font-size:20px;font-weight:700;color:#333;cursor:pointer;transition:all .3s;text-align:center;font-family:'Nunito',sans-serif}
+.quiz-btn:active{transform:scale(.95)}
+.quiz-btn.correct{background:#27ae60;border-color:#27ae60;color:#fff;animation:pop .4s}
+.quiz-btn.wrong{background:#e74c3c;border-color:#e74c3c;color:#fff;animation:shake .4s}
+.quiz-feedback{font-size:14px;margin-top:8px;min-height:22px;font-weight:600}
+/* celebration */
+.celebration{text-align:center}
+.celebration .trophy{font-size:80px;margin-bottom:8px;display:block}
+.celebration .congrats{font-size:28px;font-weight:900;color:#EF5350;margin-bottom:4px}
+.celebration .sub{font-size:16px;color:#888;margin-bottom:20px}
+.celebration .restart-btn{background:#EF5350;color:#fff;border:none;padding:14px 40px;border-radius:30px;font-size:18px;font-weight:800;cursor:pointer;transition:all .3s;margin-top:8px;font-family:'Nunito',sans-serif}
+.celebration .restart-btn:active{transform:scale(.95)}
+/* progress bar */
+.progress-bar{position:absolute;top:0;left:0;right:0;height:4px;background:#f0f0f0;z-index:11}
+.progress-fill{height:100%;background:#EF5350;transition:width .5s ease;border-radius:0 4px 4px 0}
+/* animations */
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0);opacity:1}100%{transform:translateY(600px) rotate(720deg);opacity:0}}
+.fade-up{animation:fadeUp .5s ease forwards}
+.float-anim{animation:float 3s ease-in-out infinite}
+/* confetti */
+.confetti-piece{position:absolute;width:10px;height:10px;top:-20px;border-radius:2px;animation:confetti-fall linear forwards;z-index:20;pointer-events:none}
+/* scroll */
+.page-content{width:100%;max-width:360px;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center}
+.page-scroll{overflow-y:auto;flex:1;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 0}
+/* pinyin grid */
+.py-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;max-width:360px;margin:8px 0}
+.py-cell{background:#fef2f2;border:1px solid #fdd;border-radius:10px;padding:6px 2px;text-align:center;cursor:pointer;transition:all .2s;font-weight:700;font-size:18px;color:#c0392b}
+.py-cell:active{transform:scale(.92);background:#EF5350;color:#fff}
+.py-cell .tone{font-size:11px;color:#999;font-weight:400}
+/* comparison table */
+.comp-table{width:100%;max-width:360px;border-collapse:separate;border-spacing:4px;margin:8px 0;font-size:14px}
+.comp-table td{padding:8px 6px;text-align:center;border-radius:10px;font-weight:700;cursor:pointer;transition:all .2s}
+.comp-table td:active{transform:scale(.95)}
+.comp-table .head{background:#EF5350;color:#fff;font-size:13px;cursor:default}
+.comp-table .zh-group{background:#fff0f0;color:#c0392b;border:1px solid #ffd6d6}
+.comp-table .z-group{background:#fef6f6;color:#888;border:1px solid #f0e0e0}
+.comp-table .highlight-cell{background:#ffe8e8!important;color:#EF5350!important;font-size:20px}
+/* info box */
+.info-box{background:#fff5f5;border-left:4px solid #EF5350;border-radius:8px;padding:10px 14px;width:100%;max-width:360px;margin:8px 0}
+.info-box p{font-size:14px;color:#555;line-height:1.6}
+.info-box .label{font-weight:800;color:#EF5350}
+/* tongue twister / chant */
+.chant-box{background:#fef2f2;border:2px dashed #ffc0c0;border-radius:16px;padding:16px;width:100%;max-width:360px;margin:10px 0;text-align:center}
+.chant-box .line{font-size:20px;font-weight:700;color:#EF5350;margin:4px 0;cursor:pointer;transition:all .2s}
+.chant-box .line:active{color:#c0392b;transform:scale(.98)}
+.chant-box .note{font-size:13px;color:#999;margin-top:6px}
+/* misc */
+.mt-4{margin-top:4px}.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-16{margin-top:16px}.mb-4{margin-bottom:4px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
+.text-muted{color:#aaa;font-size:13px}
+.tap-hint{font-size:12px;color:#bbb;margin-top:6px}
+.highlight{color:#EF5350;font-weight:800}
+.pinyin-row{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:6px 0}
+.pinyin-chip{background:#fff5f5;border:1px solid #ffd6d6;border-radius:20px;padding:4px 14px;font-size:15px;font-weight:700;color:#EF5350}
+.section-label{background:#EF5350;color:#fff;font-size:12px;font-weight:700;padding:3px 14px;border-radius:12px;margin-bottom:8px;display:inline-block}
+.divider{width:60px;height:3px;background:#ffe0e0;border-radius:3px;margin:6px 0}
+.star-row{display:flex;gap:4px;justify-content:center;margin:4px 0}
+.star-row span{font-size:16px}
+/* scrollbar */
+.page-scroll::-webkit-scrollbar{width:3px}
+.page-scroll::-webkit-scrollbar-thumb{background:#EF5350;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="book" id="book">
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  <div class="top-bar">
+    <button class="home-btn" onclick="goHome()" aria-label="首页">🏠</button>
+    <button class="sound-btn" id="soundBtn" onclick="toggleSound()" aria-label="朗读">🔊</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 1 – COVER                                                -->
+  <!-- ============================================================ -->
+  <div class="page active" data-page="1" id="page1">
+    <div class="page-content" style="justify-content:center">
+      <span class="cover-icon float-anim">🏯</span>
+      <div class="cover-badge">第11课</div>
+      <h1>声母王国下</h1>
+      <p style="color:#666;font-size:16px;font-weight:600;margin-bottom:4px">✨ Initial Consonants · Part 3 ✨</p>
+      <p class="cover-sub">zh ch sh r  ·  z c s  ·  y w</p>
+      <div class="divider"></div>
+      <p style="color:#c0392b;font-size:14px;font-weight:600;margin:4px 0">最后 9 个声母 · 全部学完！</p>
+      <img class="cover-img" src="images/chinese-11/webp/page-01.webp" alt="声母王国" loading="lazy" onerror="this.style.display='none'">
+      <p class="tap-hint" style="margin-top:16px">👆 点击 ▶ 开始冒险</p>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 2 – INITIALS REVIEW: zh ch sh r                          -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="2" id="page2">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">声母复习 · 1/3</span>
+        <h2>🌱 翘舌音兄弟</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Retroflex initials · 舌尖向上翘起</p>
+        <div class="info-box">
+          <p><span class="label">💡 发音小窍门：</span>舌尖卷起顶住硬腭前部，慢慢放开。像说英语 "judge" 里的 j，但要更卷一些。</p>
+        </div>
+        <div class="grid-3">
+          <div class="init-card" onclick="speak('zhī zhū','zhī zhū',this)">
+            <span class="pinyin">zh</span>
+            <span class="example">蜘蛛 spider</span>
+            <span class="hanzi">zhī zhū</span>
+          </div>
+          <div class="init-card" onclick="speak('chī fàn','chī fàn',this)">
+            <span class="pinyin">ch</span>
+            <span class="example">吃饭 eat</span>
+            <span class="hanzi">chī fàn</span>
+          </div>
+          <div class="init-card" onclick="speak('shī zi','shī zi',this)">
+            <span class="pinyin">sh</span>
+            <span class="example">狮子 lion</span>
+            <span class="hanzi">shī zi</span>
+          </div>
+        </div>
+        <div class="grid-3" style="margin-top:2px">
+          <div class="init-card" onclick="speak('rì chū','rì chū',this)">
+            <span class="pinyin">r</span>
+            <span class="example">日出 sunrise</span>
+            <span class="hanzi">rì chū</span>
+          </div>
+          <div class="init-card" onclick="speak('zhōng guó','zhōng guó',this)">
+            <span class="pinyin">zh</span>
+            <span class="example">中国 China</span>
+            <span class="hanzi">zhōng guó</span>
+          </div>
+          <div class="init-card" onclick="speak('shù','shù',this)">
+            <span class="pinyin">sh</span>
+            <span class="example">树 tree</span>
+            <span class="hanzi">shù</span>
+          </div>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip">zhā (扎)</span>
+          <span class="pinyin-chip">chá (茶)</span>
+          <span class="pinyin-chip">shā (沙)</span>
+          <span class="pinyin-chip">rè (热)</span>
+        </div>
+        <img src="images/chinese-11/webp/page-02.webp" alt="initials zh ch sh" style="width:190px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听发音</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 3 – INITIALS REVIEW: z c s y w                           -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="3" id="page3">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">声母复习 · 2/3</span>
+        <h2>🌿 平舌音兄弟</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">Flat / dental initials · 舌尖抵住下齿背</p>
+        <div class="info-box">
+          <p><span class="label">💡 发音小窍门：</span>舌尖平放抵住下门齿背，像英语 "cats" 的 ts。和翘舌音 zh ch sh 最大的区别是——舌尖不用卷起！</p>
+        </div>
+        <div class="grid-3">
+          <div class="init-card" onclick="speak('zú qiú','zú qiú',this)">
+            <span class="pinyin">z</span>
+            <span class="example">足球 football</span>
+            <span class="hanzi">zú qiú</span>
+          </div>
+          <div class="init-card" onclick="speak('cǎo méi','cǎo méi',this)">
+            <span class="pinyin">c</span>
+            <span class="example">草莓 strawberry</span>
+            <span class="hanzi">cǎo méi</span>
+          </div>
+          <div class="init-card" onclick="speak('sōng shǔ','sōng shǔ',this)">
+            <span class="pinyin">s</span>
+            <span class="example">松鼠 squirrel</span>
+            <span class="hanzi">sōng shǔ</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <h4>🌤️ 头母 y w  ·  Half vowels</h4>
+        <div class="grid-3">
+          <div class="init-card" onclick="speak('yuè liang','yuè liang',this)">
+            <span class="pinyin">y</span>
+            <span class="example">月亮 moon</span>
+            <span class="hanzi">yuè liang</span>
+          </div>
+          <div class="init-card" onclick="speak('wá wa','wá wa',this)">
+            <span class="pinyin">w</span>
+            <span class="example">娃娃 doll</span>
+            <span class="hanzi">wá wa</span>
+          </div>
+          <div class="init-card" onclick="speak('yā zi','yā zi',this)">
+            <span class="pinyin">y</span>
+            <span class="example">鸭子 duck</span>
+            <span class="hanzi">yā zi</span>
+          </div>
+        </div>
+        <img src="images/chinese-11/webp/page-03.webp" alt="initials zcs yw" style="width:190px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+        <p class="text-muted">👆 点击卡片听发音</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 4 – COMPLETE INITIALS TABLE + COMPARISONS                -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="4" id="page4">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">声母总表</span>
+        <h2>📋 本课 9 个声母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:4px">一共 21 个声母，今天学最后 9 个！</p>
+        <div class="py-grid">
+          <div class="py-cell" onclick="speak('zī','zī',null,this)">z<span class="tone">资 zī</span></div>
+          <div class="py-cell" onclick="speak('cí','cí',null,this)">c<span class="tone">词 cí</span></div>
+          <div class="py-cell" onclick="speak('sī','sī',null,this)">s<span class="tone">丝 sī</span></div>
+          <div class="py-cell" onclick="speak('zhī','zhī',null,this)">zh<span class="tone">知 zhī</span></div>
+          <div class="py-cell" onclick="speak('chī','chī',null,this)">ch<span class="tone">吃 chī</span></div>
+          <div class="py-cell" onclick="speak('shī','shī',null,this)">sh<span class="tone">诗 shī</span></div>
+          <div class="py-cell" onclick="speak('rì','rì',null,this)">r<span class="tone">日 rì</span></div>
+          <div class="py-cell" onclick="speak('yī','yī',null,this)">y<span class="tone">一 yī</span></div>
+          <div class="py-cell" onclick="speak('wū','wū',null,this)">w<span class="tone">屋 wū</span></div>
+        </div>
+        <p style="color:#888;font-size:12px;margin:4px 0 2px">🔊 点击表格中的声母听读音</p>
+        <div class="divider"></div>
+        <h4>⚡ 翘舌音 vs 平舌音 对比</h4>
+        <table class="comp-table">
+          <tr><td class="head">翘舌音</td><td class="head">平舌音</td><td class="head">区别</td></tr>
+          <tr><td class="zh-group" onclick="speak('zhī','zhī')">zhī 知</td><td class="z-group" onclick="speak('zī','zī')">zī 资</td><td class="highlight-cell">卷舌 vs 平舌</td></tr>
+          <tr><td class="zh-group" onclick="speak('chī','chī')">chī 吃</td><td class="z-group" onclick="speak('cī','cī')">cī 呲</td><td class="highlight-cell">送气 vs 送气</td></tr>
+          <tr><td class="zh-group" onclick="speak('shī','shī')">shī 诗</td><td class="z-group" onclick="speak('sī','sī')">sī 丝</td><td class="highlight-cell">卷舌 vs 平舌</td></tr>
+        </table>
+        <img src="images/chinese-11/webp/page-04.webp" alt="initials table" style="width:170px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 5 – BLENDING PRACTICE: zh ch sh r                        -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="5" id="page5">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">拼读练习 · 1/3</span>
+        <h2>🔊 翘舌音拼读</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:8px">zh / ch / sh / r + 韵母 → 音节</p>
+        <div class="blend-card" onclick="speak('zhā','zhā',this)">
+          <span class="big">zh + a = zhā</span>
+          <span class="parts">zh (知) + a (啊) → 一声 zhā</span>
+          <span class="meaning">🐷 扎辫子 zhā biàn zi</span>
+        </div>
+        <div class="blend-card" onclick="speak('zhè','zhè',this)">
+          <span class="big">zh + e = zhè</span>
+          <span class="parts">zh + e (四声) → zhè</span>
+          <span class="meaning">👉 这个 zhè ge</span>
+        </div>
+        <div class="blend-card" onclick="speak('zhū','zhū',this)">
+          <span class="big">zh + u = zhū</span>
+          <span class="parts">zh + u (一声) → zhū</span>
+          <span class="meaning">🐷 小猪 xiǎo zhū</span>
+        </div>
+        <div class="blend-card" onclick="speak('chī','chī',this)">
+          <span class="big">ch + i = chī</span>
+          <span class="parts">ch + i (一声) → chī</span>
+          <span class="meaning">🍚 吃饭 chī fàn</span>
+        </div>
+        <div class="blend-card" onclick="speak('shā','shā',this)">
+          <span class="big">sh + a = shā</span>
+          <span class="parts">sh + a (一声) → shā</span>
+          <span class="meaning">🏖️ 沙子 shā zi</span>
+        </div>
+        <div class="blend-card" onclick="speak('rè','rè',this)">
+          <span class="big">r + e = rè</span>
+          <span class="parts">r + e (四声) → rè</span>
+          <span class="meaning">🔥 热天 rè tiān</span>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip">zhā (扎)</span>
+          <span class="pinyin-chip">chē (车)</span>
+          <span class="pinyin-chip">shū (书)</span>
+          <span class="pinyin-chip">rì (日)</span>
+        </div>
+        <img src="images/chinese-11/webp/page-05.webp" alt="blending zh ch sh" style="width:150px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 6 – BLENDING PRACTICE: z c s                             -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="6" id="page6">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">拼读练习 · 2/3</span>
+        <h2>🔊 平舌音拼读</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:8px">z / c / s + 韵母 → 音节</p>
+        <div class="blend-card" onclick="speak('zá zhì','zá zhì',this)">
+          <span class="big">z + a = zá</span>
+          <span class="parts">z (资) + a (二声) → zá</span>
+          <span class="meaning">📚 杂志 zá zhì</span>
+        </div>
+        <div class="blend-card" onclick="speak('zú qiú','zú qiú',this)">
+          <span class="big">z + u = zú</span>
+          <span class="parts">z + u (二声) → zú</span>
+          <span class="meaning">⚽ 足球 zú qiú</span>
+        </div>
+        <div class="blend-card" onclick="speak('cā','cā',this)">
+          <span class="big">c + a = cā</span>
+          <span class="parts">c + a (一声) → cā</span>
+          <span class="meaning">🧽 擦桌子 cā zhuō zi</span>
+        </div>
+        <div class="blend-card" onclick="speak('cū','cū',this)">
+          <span class="big">c + u = cū</span>
+          <span class="parts">c + u (一声) → cū</span>
+          <span class="meaning">🌳 粗大 cū dà</span>
+        </div>
+        <div class="blend-card" onclick="speak('sǎ shuǐ','sǎ shuǐ',this)">
+          <span class="big">s + a = sǎ</span>
+          <span class="parts">s + a (三声) → sǎ</span>
+          <span class="meaning">💧 洒水 sǎ shuǐ</span>
+        </div>
+        <div class="blend-card" onclick="speak('sù dù','sù dù',this)">
+          <span class="big">s + u = sù</span>
+          <span class="parts">s + u (四声) → sù</span>
+          <span class="meaning">🚀 速度 sù dù</span>
+        </div>
+        <div class="pinyin-row">
+          <span class="pinyin-chip">zū (租)</span>
+          <span class="pinyin-chip">cā (擦)</span>
+          <span class="pinyin-chip">sǎ (洒)</span>
+          <span class="pinyin-chip">zǔ (组)</span>
+        </div>
+        <img src="images/chinese-11/webp/page-06.webp" alt="blending z c s" style="width:150px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 7 – BLENDING PRACTICE: y w + COMPOUND FINALS             -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="7" id="page7">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">拼读练习 · 3/3</span>
+        <h2>🔊 头母 y w 拼读</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">y w 是特殊声母（半元音）</p>
+        <div class="info-box">
+          <p><span class="label">📌 规则：</span>y 后面跟 ü 时，ü 上两点要省略，写成 yu。比如 y + ü → yú (鱼)，不是 yǘ。</p>
+        </div>
+        <div class="blend-card" onclick="speak('yā zi','yā zi',this)">
+          <span class="big">y + a = yā</span>
+          <span class="parts">y (一) + a (啊) → yā</span>
+          <span class="meaning">🦆 鸭子 yā zi</span>
+        </div>
+        <div class="blend-card" onclick="speak('yè zi','yè zi',this)">
+          <span class="big">y + e = yè</span>
+          <span class="parts">y + e (四声) → yè</span>
+          <span class="meaning">🍃 叶子 yè zi</span>
+        </div>
+        <div class="blend-card" onclick="speak('yú','yú',this)">
+          <span class="big">y + ü = yú</span>
+          <span class="parts">y + ü → yú · ü 上两点省略 ✨</span>
+          <span class="meaning">🐟 小鱼 xiǎo yú</span>
+        </div>
+        <div class="blend-card" onclick="speak('wā','wā',this)">
+          <span class="big">w + a = wā</span>
+          <span class="parts">w (屋) + a (一声) → wā</span>
+          <span class="meaning">🐸 青蛙 qīng wā</span>
+        </div>
+        <div class="blend-card" onclick="speak('wǒ','wǒ',this)">
+          <span class="big">w + o = wǒ</span>
+          <span class="parts">w + o (三声) → wǒ</span>
+          <span class="meaning">👤 我 wǒ</span>
+        </div>
+        <div class="blend-card" onclick="speak('wū','wū',this)">
+          <span class="big">w + u = wū</span>
+          <span class="parts">w + u (一声) → wū</span>
+          <span class="meaning">🏠 房屋 fáng wū</span>
+        </div>
+        <img src="images/chinese-11/webp/page-07.webp" alt="blending y w" style="width:150px;border-radius:12px;margin:8px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 8 – COMPOUND BLENDING + CHANT                            -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="8" id="page8">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">综合拼读</span>
+        <h2>🎯 复合韵母拼读</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:8px">声母 + 复合韵母 → 更多音节</p>
+        <div class="grid-2">
+          <div class="blend-card" onclick="speak('zhuō zi','zhuō zi',this)" style="margin:0">
+            <span class="big" style="font-size:28px">zh + uo</span>
+            <span class="parts" style="font-size:12px">zhuō (桌)</span>
+            <span class="meaning">🪑 桌子</span>
+          </div>
+          <div class="blend-card" onclick="speak('chǎo','chǎo',this)" style="margin:0">
+            <span class="big" style="font-size:28px">ch + ao</span>
+            <span class="parts" style="font-size:12px">chǎo (吵)</span>
+            <span class="meaning">🗣️ 吵闹</span>
+          </div>
+          <div class="blend-card" onclick="speak('shuǐ','shuǐ',this)" style="margin:0">
+            <span class="big" style="font-size:28px">sh + ui</span>
+            <span class="parts" style="font-size:12px">shuǐ (水)</span>
+            <span class="meaning">💧 水</span>
+          </div>
+          <div class="blend-card" onclick="speak('ròu','ròu',this)" style="margin:0">
+            <span class="big" style="font-size:28px">r + ou</span>
+            <span class="parts" style="font-size:12px">ròu (肉)</span>
+            <span class="meaning">🥩 肉</span>
+          </div>
+          <div class="blend-card" onclick="speak('cài','cài',this)" style="margin:0">
+            <span class="big" style="font-size:28px">c + ai</span>
+            <span class="parts" style="font-size:12px">cài (菜)</span>
+            <span class="meaning">🥬 蔬菜</span>
+          </div>
+          <div class="blend-card" onclick="speak('sǎo','sǎo',this)" style="margin:0">
+            <span class="big" style="font-size:28px">s + ao</span>
+            <span class="parts" style="font-size:12px">sǎo (扫)</span>
+            <span class="meaning">🧹 扫地</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="chant-box">
+          <p style="font-size:13px;color:#c0392b;font-weight:700;margin-bottom:4px">🎵 绕口令 Tongue Twister</p>
+          <div class="line" onclick="speak('sì shì sì, shí shì shí, shí sì shì shí sì, sì shí shì sì shí','sì shì sì, shí shì shí, shí sì shì shí sì, sì shí shì sì shí',this)">
+            四是四，十是十，<br>十四是十四，四十是四十。
+          </div>
+          <div class="note">👆 点击朗读 · 试试分清 s 和 sh！</div>
+        </div>
+        <img src="images/chinese-11/webp/page-08.webp" alt="compound blending" style="width:150px;border-radius:12px;margin:6px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 9 – QUIZ (5 questions)                                   -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="9" id="page9">
+    <div class="page-scroll">
+      <div class="page-content">
+        <span class="section-label">小测验</span>
+        <h2>📝 选择正确的声母</h2>
+        <p style="color:#888;font-size:13px;margin-bottom:6px">每题只有一个正确答案 🎯</p>
+        <!-- Q1 -->
+        <div class="quiz-card" id="quiz1">
+          <div class="quiz-q">___ī zhū <span class="hint">蜘蛛</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="1" data-answer="z" onclick="checkQuiz(this,'z')">z</button>
+            <button class="quiz-btn" data-q="1" data-answer="zh" onclick="checkQuiz(this,'zh')">zh</button>
+            <button class="quiz-btn" data-q="1" data-answer="ch" onclick="checkQuiz(this,'ch')">ch</button>
+            <button class="quiz-btn" data-q="1" data-answer="sh" onclick="checkQuiz(this,'sh')">sh</button>
+          </div>
+          <div class="quiz-feedback" id="fb1"></div>
+        </div>
+        <!-- Q2 -->
+        <div class="quiz-card" id="quiz2">
+          <div class="quiz-q">___ǎo méi <span class="hint">草莓</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="2" data-answer="z" onclick="checkQuiz(this,'z')">z</button>
+            <button class="quiz-btn" data-q="2" data-answer="c" onclick="checkQuiz(this,'c')">c</button>
+            <button class="quiz-btn" data-q="2" data-answer="s" onclick="checkQuiz(this,'s')">s</button>
+            <button class="quiz-btn" data-q="2" data-answer="zh" onclick="checkQuiz(this,'zh')">zh</button>
+          </div>
+          <div class="quiz-feedback" id="fb2"></div>
+        </div>
+        <!-- Q3 -->
+        <div class="quiz-card" id="quiz3">
+          <div class="quiz-q">___ī zi <span class="hint">狮子</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="3" data-answer="s" onclick="checkQuiz(this,'s')">s</button>
+            <button class="quiz-btn" data-q="3" data-answer="sh" onclick="checkQuiz(this,'sh')">sh</button>
+            <button class="quiz-btn" data-q="3" data-answer="c" onclick="checkQuiz(this,'c')">c</button>
+            <button class="quiz-btn" data-q="3" data-answer="ch" onclick="checkQuiz(this,'ch')">ch</button>
+          </div>
+          <div class="quiz-feedback" id="fb3"></div>
+        </div>
+        <!-- Q4 -->
+        <div class="quiz-card" id="quiz4">
+          <div class="quiz-q">y___ <span class="hint">鱼 fish</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="4" data-answer="u" onclick="checkQuiz(this,'u')">u</button>
+            <button class="quiz-btn" data-q="4" data-answer="ü" onclick="checkQuiz(this,'ü')">ü</button>
+            <button class="quiz-btn" data-q="4" data-answer="yu" onclick="checkQuiz(this,'yu')">yu</button>
+            <button class="quiz-btn" data-q="4" data-answer="wu" onclick="checkQuiz(this,'wu')">wu</button>
+          </div>
+          <div class="quiz-feedback" id="fb4"></div>
+        </div>
+        <!-- Q5 -->
+        <div class="quiz-card" id="quiz5">
+          <div class="quiz-q">___ā zi <span class="hint">沙子</span></div>
+          <div class="quiz-options">
+            <button class="quiz-btn" data-q="5" data-answer="s" onclick="checkQuiz(this,'s')">s</button>
+            <button class="quiz-btn" data-q="5" data-answer="sh" onclick="checkQuiz(this,'sh')">sh</button>
+            <button class="quiz-btn" data-q="5" data-answer="c" onclick="checkQuiz(this,'c')">c</button>
+            <button class="quiz-btn" data-q="5" data-answer="ch" onclick="checkQuiz(this,'ch')">ch</button>
+          </div>
+          <div class="quiz-feedback" id="fb5"></div>
+        </div>
+        <img src="images/chinese-11/webp/page-09.webp" alt="quiz" style="width:130px;border-radius:12px;margin:6px 0 2px;box-shadow:0 4px 20px rgba(0,0,0,.08)" loading="lazy" onerror="this.style.display='none'">
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PAGE 10 – CELEBRATION                                         -->
+  <!-- ============================================================ -->
+  <div class="page" data-page="10" id="page10">
+    <div class="page-content" style="justify-content:center">
+      <div class="celebration">
+        <span class="trophy float-anim">🏆</span>
+        <div class="congrats">🎉 太棒了！完美完成！</div>
+        <p class="sub">你学会了声母王国最后的 9 个声母！<br>🎊 全部 21 个声母都学完啦 🎊</p>
+        <div class="star-row">
+          <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0">
+          <span class="pinyin-chip">zh</span>
+          <span class="pinyin-chip">ch</span>
+          <span class="pinyin-chip">sh</span>
+          <span class="pinyin-chip">r</span>
+          <span class="pinyin-chip">z</span>
+          <span class="pinyin-chip">c</span>
+          <span class="pinyin-chip">s</span>
+          <span class="pinyin-chip">y</span>
+          <span class="pinyin-chip">w</span>
+        </div>
+        <img src="images/chinese-11/webp/page-10.webp" alt="celebration" style="width:180px;border-radius:16px;margin:8px 0;box-shadow:0 8px 30px rgba(239,83,80,.2)" loading="lazy" onerror="this.style.display='none'">
+        <p style="color:#999;font-size:14px;margin:10px 0 6px">✨ 你已经是声母小达人啦 ✨</p>
+        <button class="restart-btn" onclick="goHome()">🔄 再学一遍</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV DOTS -->
+  <div class="nav-dots" id="navDots"></div>
+
+  <!-- ARROWS -->
+  <div class="nav-arrows">
+    <button id="prevBtn" onclick="prevPage()" disabled>◀</button>
+    <button id="nextBtn" onclick="nextPage()">▶</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+// ===================================================================
+// STATE
+// ===================================================================
+const TOTAL = 10;
+let current = 1;
+let quizState = {};
+let soundEnabled = true;
+const synth = window.speechSynthesis;
+
+// ===================================================================
+// INIT
+// ===================================================================
+function init() {
+  renderDots();
+  goTo(1);
+  // Preload voices
+  if (synth) {
+    synth.getVoices();
+    synth.onvoiceschanged = () => synth.getVoices();
+  }
+}
+
+function renderDots() {
+  const container = document.getElementById('navDots');
+  container.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'nav-dot' + (i === 1 ? ' active' : '');
+    dot.dataset.page = i;
+    dot.onclick = () => goTo(i);
+    container.appendChild(dot);
+  }
+}
+
+function updateDots() {
+  document.querySelectorAll('.nav-dot').forEach((d, i) => {
+    d.classList.toggle('active', i + 1 === current);
+    d.classList.toggle('seen', i + 1 < current);
+  });
+}
+
+function updateArrows() {
+  document.getElementById('prevBtn').disabled = current === 1;
+  document.getElementById('nextBtn').disabled = current === TOTAL;
+  document.getElementById('progressFill').style.width = ((current - 1) / (TOTAL - 1) * 100) + '%';
+}
+
+// ===================================================================
+// NAVIGATION
+// ===================================================================
+function goTo(n) {
+  if (n < 1 || n > TOTAL) return;
+  const prev = current;
+  current = n;
+
+  const prevEl = document.querySelector('.page.active');
+  const nextEl = document.getElementById('page' + n);
+
+  if (prevEl && prevEl !== nextEl) {
+    prevEl.classList.remove('active');
+    prevEl.classList.add('prev');
+  }
+  nextEl.classList.remove('prev');
+  nextEl.classList.add('active');
+
+  // GSAP enter animation on page content children
+  const content = nextEl.querySelector('.page-content');
+  if (content) {
+    const kids = content.querySelectorAll(':scope > *');
+    gsap.fromTo(kids,
+      { opacity: 0, y: 24 },
+      { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out', clearProps: 'opacity,y' }
+    );
+  }
+
+  updateDots();
+  updateArrows();
+
+  // Auto-read cover title
+  if (n === 1 && soundEnabled) {
+    setTimeout(() => speakText('第11课 声母王国下 Initial Consonants Part 3'), 600);
+  }
+
+  // Celebration confetti on last page
+  if (n === TOTAL) {
+    setTimeout(launchConfetti, 400);
+  }
+}
+
+function nextPage() { if (current < TOTAL) goTo(current + 1); }
+
+function prevPage() { if (current > 1) goTo(current - 1); }
+
+function goHome() {
+  // Reset quiz
+  quizState = {};
+  document.querySelectorAll('.quiz-btn').forEach(b => {
+    b.disabled = false;
+    b.className = 'quiz-btn';
+  });
+  document.querySelectorAll('.quiz-feedback').forEach(f => {
+    f.textContent = '';
+  });
+  goTo(1);
+}
+
+// ===================================================================
+// SPEECH
+// ===================================================================
+function toggleSound() {
+  soundEnabled = !soundEnabled;
+  document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+  if (!soundEnabled && synth) synth.cancel();
+}
+
+function speak(text, fullText, cardEl, cellEl) {
+  if (!soundEnabled) return;
+  // Highlight the tapped card
+  const el = cardEl || cellEl;
+  if (el) {
+    document.querySelectorAll('.init-card,.blend-card,.py-cell,.comp-table td,.chant-box .line,.quiz-card').forEach(c => c.classList.remove('playing'));
+    el.classList.add('playing');
+  }
+  speakText(fullText || text);
+}
+
+function speakText(text) {
+  if (!synth || !soundEnabled) return;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'zh-CN';
+  u.rate = 0.85;
+  u.pitch = 1.05;
+  const voices = synth.getVoices();
+  const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+  if (zhVoice) u.voice = zhVoice;
+  synth.speak(u);
+}
+
+// ===================================================================
+// QUIZ
+// ===================================================================
+function checkQuiz(btn, answer) {
+  const q = btn.dataset.q;
+  const correct = btn.dataset.answer;
+  const card = btn.closest('.quiz-card');
+  const feedback = document.getElementById('fb' + q);
+  if (quizState[q]) return; // already answered
+  quizState[q] = true;
+
+  const allBtns = card.querySelectorAll('.quiz-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  if (answer === correct) {
+    btn.classList.add('correct');
+    feedback.textContent = '✅ 正确！太棒啦！';
+    feedback.style.color = '#27ae60';
+    if (soundEnabled) speakText('正确');
+  } else {
+    btn.classList.add('wrong');
+    feedback.textContent = '❌ 不对哦，正确答案已标绿';
+    feedback.style.color = '#e74c3c';
+    // Highlight correct answer
+    allBtns.forEach(b => {
+      if (b.dataset.answer === correct) b.classList.add('correct');
+    });
+    if (soundEnabled) speakText('再想想');
+  }
+
+  // Check if all 5 questions done
+  const done = Object.keys(quizState).length;
+  if (done === 5) {
+    setTimeout(() => {
+      if (soundEnabled) speakText('恭喜你完成测验，你太棒了');
+      setTimeout(() => goTo(10), 1000);
+    }, 700);
+  }
+}
+
+// ===================================================================
+// CONFETTI
+// ===================================================================
+function launchConfetti() {
+  const colors = ['#EF5350', '#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff8fab', '#e17055', '#a29bfe', '#fd79a8'];
+  const book = document.getElementById('book');
+  for (let i = 0; i < 70; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.width = (4 + Math.random() * 8) + 'px';
+    el.style.height = (4 + Math.random() * 8) + 'px';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    el.style.animationDuration = (1.5 + Math.random() * 2.5) + 's';
+    el.style.animationDelay = (Math.random() * 2) + 's';
+    el.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+    book.appendChild(el);
+    setTimeout(() => el.remove(), 5000);
+  }
+}
+
+// ===================================================================
+// KEYBOARD
+// ===================================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') nextPage();
+  if (e.key === 'ArrowLeft') prevPage();
+});
+
+// ===================================================================
+// START
+// ===================================================================
+init();
+</script>
+</body>
+</html>
