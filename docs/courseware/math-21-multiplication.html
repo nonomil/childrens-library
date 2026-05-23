@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#42A5F5">
+<title>第21课 · 乘法启蒙 | 儿童数学乐园</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f7ff;color:#1a2332;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.top-bar{position:fixed;top:0;left:0;width:100%;height:56px;background:#42A5F5;display:flex;align-items:center;padding:0 16px;z-index:100;box-shadow:0 2px 8px rgba(66,165,245,0.3)}
+.top-bar a{color:#fff;text-decoration:none;font-size:18px;display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;transition:background .2s}
+.top-bar a:hover{background:rgba(255,255,255,0.2)}
+.top-bar .spacer{flex:1}
+.top-bar .title{color:#fff;font-size:18px;font-weight:700;letter-spacing:.5px}
+.scroll-container{padding-top:56px;width:100%;max-width:800px;margin:0 auto}
+.page{display:none;min-height:calc(100vh - 56px);padding:24px 20px 40px;animation:fadeIn .5s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* cover */
+.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 56px);text-align:center;padding:40px 20px;background:linear-gradient(135deg,#e3f2fd 0%,#bbdefb 100%)}
+.cover-icon{font-size:80px;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(66,165,245,0.3))}
+.cover h1{font-size:32px;color:#1565C0;margin-bottom:8px}
+.cover h2{font-size:20px;color:#42A5F5;font-weight:600;margin-bottom:24px}
+.cover p{color:#546e7a;font-size:16px;margin-bottom:32px;max-width:360px;line-height:1.7}
+.btn-start{display:inline-flex;align-items:center;gap:8px;background:#42A5F5;color:#fff;border:none;padding:14px 40px;font-size:20px;font-weight:700;border-radius:50px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,0.4);transition:all .3s}
+.btn-start:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(66,165,245,0.5)}
+.btn-start:active{transform:scale(0.96)}
+
+/* cards */
+.card{background:#fff;border-radius:20px;padding:24px;margin-bottom:20px;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid rgba(66,165,245,0.1)}
+.card-title{font-size:22px;font-weight:800;color:#1565C0;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.card-title .emoji{font-size:28px}
+.section-desc{color:#546e7a;font-size:15px;line-height:1.7;margin-bottom:16px}
+
+/* nav buttons */
+.nav-row{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.btn-nav{display:inline-flex;align-items:center;gap:6px;padding:12px 24px;border-radius:50px;font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .2s;flex:1;justify-content:center}
+.btn-nav.primary{background:#42A5F5;color:#fff;box-shadow:0 2px 8px rgba(66,165,245,0.3)}
+.btn-nav.primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(66,165,245,0.4)}
+.btn-nav.secondary{background:#e3f2fd;color:#42A5F5}
+.btn-nav.secondary:hover{background:#bbdefb}
+.btn-nav:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* page indicator */
+.page-dots{display:flex;justify-content:center;gap:8px;padding:16px 0 8px}
+.page-dot{width:10px;height:10px;border-radius:50%;background:#cfd8dc;transition:all .3s;border:none;cursor:pointer;padding:0}
+.page-dot.active{background:#42A5F5;width:28px;border-radius:5px}
+
+/* story scenes */
+.story-scene{background:linear-gradient(135deg,#e3f2fd,#f0f7ff);border-radius:20px;padding:24px;margin-bottom:16px;border:2px solid #bbdefb;position:relative;min-height:140px}
+.story-scene .story-icon{font-size:48px;margin-bottom:12px}
+.story-scene .story-text{font-size:16px;line-height:1.8;color:#1565C0;font-weight:600}
+.story-scene .story-sub{font-size:14px;color:#42A5F5;margin-top:8px}
+
+/* apple groups */
+.apple-groups{display:flex;gap:20px;flex-wrap:wrap;justify-content:center;padding:16px 0}
+.apple-group{display:flex;gap:6px;background:#fff3e0;border:2px dashed #ffcc02;border-radius:16px;padding:16px 20px;transition:all .3s;cursor:pointer}
+.apple-group:hover{background:#ffe0b2;transform:scale(1.03)}
+.apple-group .apple{font-size:36px;line-height:1;transition:all .2s}
+.apple-group .apple.bounce{animation:appleBounce .4s ease}
+@keyframes appleBounce{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.apple-group-label{text-align:center;font-size:14px;color:#1565C0;font-weight:700;margin-top:8px}
+
+/* number line SVG */
+.numline-wrap{background:#fff;border-radius:16px;padding:16px;border:2px solid #e3f2fd;margin-bottom:16px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.numline-svg{display:block;margin:0 auto;max-width:100%}
+
+/* array dots */
+.array-container{display:flex;flex-direction:column;align-items:center;padding:16px 0}
+.array-svg-wrap{background:#fff;border-radius:16px;padding:16px;border:2px solid #e3f2fd;margin-bottom:12px;display:inline-block}
+.array-label{font-size:18px;font-weight:700;color:#1565C0;margin-bottom:8px;text-align:center}
+.array-input-area{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap}
+.array-input-area input{width:60px;padding:8px 12px;border:2px solid #90CAF9;border-radius:10px;font-size:18px;font-weight:700;text-align:center;color:#1565C0;font-family:'Nunito','PingFang SC',sans-serif;outline:none}
+.array-input-area input:focus{border-color:#42A5F5;box-shadow:0 0 0 3px rgba(66,165,245,0.2)}
+.btn-check{background:#4caf50;color:#fff;border:none;padding:8px 20px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-check:hover{transform:scale(1.05)}
+.btn-check.correct{background:#4caf50}
+.btn-check.wrong{background:#f44336}
+.array-result{font-size:16px;font-weight:600;color:#1565C0;margin-top:8px;min-height:24px}
+
+/* skip counting fill-in */
+.skip-question{font-size:20px;font-weight:700;color:#1565C0;margin-bottom:16px;text-align:center}
+.skip-blanks{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:12px 0}
+.skip-blanks .num{font-size:28px;font-weight:800;color:#42A5F5}
+.skip-blanks .blank{width:56px;height:56px;border:3px dashed #90CAF9;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#1565C0;background:#fff;transition:all .2s}
+.skip-blanks .blank.filled{border-style:solid;border-color:#42A5F5;background:#e3f2fd}
+.skip-blanks .blank.correct{border-color:#4caf50;background:#c8e6c9;animation:popIn .3s ease}
+.skip-blanks .blank.wrong{border-color:#f44336;background:#ffcdd2;animation:shake .4s}
+.skip-blanks .blank input{width:100%;height:100%;border:none;background:transparent;text-align:center;font-size:24px;font-weight:800;color:#1565C0;font-family:'Nunito','PingFang SC',sans-serif;outline:none;border-radius:10px}
+.skip-blanks .blank input:focus{background:#e3f2fd}
+@keyframes popIn{0%{transform:scale(.5)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.skip-step-select{display:flex;gap:12px;justify-content:center;margin-bottom:16px}
+.skip-step-btn{padding:10px 24px;border-radius:50px;border:2px solid #90CAF9;background:#fff;font-size:16px;font-weight:700;color:#1565C0;cursor:pointer;transition:all .2s}
+.skip-step-btn.active{background:#42A5F5;color:#fff;border-color:#42A5F5;box-shadow:0 2px 8px rgba(66,165,245,0.3)}
+.skip-step-btn:hover{transform:translateY(-2px)}
+
+/* groups drag/drop interactive */
+.groups-interactive{background:#fff;border-radius:16px;padding:20px;border:2px solid #e3f2fd;margin-bottom:16px;text-align:center}
+.groups-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.groups-group{background:#fff3e0;border:2px dashed #ffcc02;border-radius:16px;padding:12px 16px;min-height:80px;min-width:80px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;transition:all .3s}
+.groups-group.has-items{background:#fff8e1;border-color:#ffb300}
+.groups-pool{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0;min-height:50px;padding:12px;background:#f5f5f5;border-radius:12px;border:2px dashed #bdbdbd}
+.groups-item{font-size:32px;cursor:grab;transition:all .2s;padding:4px;border-radius:8px;touch-action:none}
+.groups-item:hover{transform:scale(1.2);background:#e3f2fd}
+.groups-item:active{cursor:grabbing}
+.groups-controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+
+/* misconception cards */
+.miscon-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.miscon-card{background:#fff8e1;border-radius:16px;padding:20px;border:2px solid #ffe082;transition:all .3s;cursor:pointer}
+.miscon-card:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(255,193,7,0.2)}
+.miscon-card.wrong{background:#ffebee;border-color:#ef9a9a}
+.miscon-card.correct{background:#e8f5e9;border-color:#a5d6a7}
+.miscon-card .mc-icon{font-size:36px;margin-bottom:8px}
+.miscon-card .mc-title{font-size:16px;font-weight:700;color:#e65100;margin-bottom:4px}
+.miscon-card .mc-desc{font-size:13px;color:#795548;line-height:1.6}
+.miscon-card.wrong .mc-title{color:#c62828}
+.miscon-card.correct .mc-title{color:#2e7d32}
+.miscon-card .mc-explain{display:none;font-size:13px;color:#1565C0;margin-top:8px;padding:8px 12px;background:#e3f2fd;border-radius:8px}
+.miscon-card .mc-explain.show{display:block}
+
+/* quiz */
+.quiz-question{font-size:18px;font-weight:700;color:#1565C0;margin-bottom:16px;line-height:1.6}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.quiz-option{background:#f5faff;border:2px solid #e3f2fd;border-radius:14px;padding:16px;text-align:center;font-size:18px;font-weight:700;color:#1565C0;cursor:pointer;transition:all .2s}
+.quiz-option:hover{background:#e3f2fd;border-color:#42A5F5}
+.quiz-option.correct{background:#c8e6c9;border-color:#4caf50;color:#2e7d32}
+.quiz-option.wrong{background:#ffcdd2;border-color:#f44336;color:#c62828}
+.quiz-option:disabled{cursor:default;opacity:.8}
+.quiz-feedback{margin-top:16px;padding:14px 18px;border-radius:12px;font-size:16px;font-weight:600;display:none}
+.quiz-feedback.show{display:block}
+.quiz-feedback.correct{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
+.quiz-feedback.wrong{background:#ffebee;color:#c62828;border:1px solid #ef9a9a}
+
+/* Minecraft challenge */
+.mc-challenge{background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:20px;padding:24px;margin-bottom:16px;border:2px solid #a5d6a7}
+.mc-creepers{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:16px 0}
+.mc-creeper{font-size:40px;cursor:pointer;transition:all .2s;padding:4px;border-radius:8px}
+.mc-creeper:hover{transform:scale(1.15);background:rgba(76,175,80,0.15)}
+.mc-creeper.counted{opacity:.5;filter:grayscale(1)}
+.mc-formula{font-size:22px;font-weight:800;color:#2e7d32;text-align:center;padding:12px;background:#fff;border-radius:12px;border:2px solid #a5d6a7;margin:12px 0;min-height:40px}
+.mc-input-group{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.mc-input-group input{width:60px;padding:8px 12px;border:2px solid #66bb6a;border-radius:10px;font-size:20px;font-weight:700;text-align:center;color:#2e7d32;font-family:'Nunito','PingFang SC',sans-serif;outline:none}
+.mc-input-group input:focus{border-color:#43a047;box-shadow:0 0 0 3px rgba(76,175,80,0.2)}
+.mc-input-group button{background:#66bb6a;color:#fff;border:none;padding:10px 24px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s}
+.mc-input-group button:hover{transform:scale(1.05);background:#43a047}
+.mc-result{font-size:16px;font-weight:600;color:#2e7d32;min-height:24px;text-align:center}
+.mc-level{text-align:center;font-size:18px;font-weight:700;color:#1565C0;margin-bottom:12px}
+.mc-star{font-size:48px;text-align:center;margin:12px 0}
+
+/* celebration */
+.celebration{text-align:center;padding:40px 20px}
+.celebration-icon{font-size:80px;margin-bottom:16px}
+.celebration h2{font-size:28px;color:#1565C0;margin-bottom:8px}
+.celebration p{font-size:16px;color:#546e7a;margin-bottom:24px;line-height:1.7}
+.confetti-container{position:relative;height:200px;overflow:hidden;margin-bottom:24px}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;top:-20px}
+
+/* tooltip */
+.tooltip{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a2332;color:#fff;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:200;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
+.tooltip.show{opacity:1}
+
+/* groups info box */
+.groups-info{background:#e3f2fd;border-radius:12px;padding:12px 16px;text-align:center;font-size:16px;font-weight:600;color:#1565C0;margin:12px 0;line-height:1.6}
+
+/* responsive */
+@media(max-width:480px){
+ .cover h1{font-size:26px}
+ .cover-icon{font-size:60px}
+ .quiz-options{grid-template-columns:1fr 1fr}
+ .miscon-grid{grid-template-columns:1fr}
+ .apple-group .apple{font-size:28px}
+ .skip-blanks .num{font-size:22px}
+ .skip-blanks .blank{width:46px;height:46px;font-size:20px}
+ .skip-blanks .blank input{font-size:20px}
+}
+@media(min-width:768px){
+ .apple-group .apple{font-size:42px}
+ .skip-blanks .blank{width:64px;height:64px;font-size:28px}
+ .skip-blanks .blank input{font-size:28px}
+ .groups-item{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="../" aria-label="首页">🏠</a>
+  <span class="spacer"></span>
+  <span class="title">✖️ 乘法启蒙</span>
+  <span class="spacer"></span>
+  <a href="../math-22-fractions.html" aria-label="下一课">▶</a>
+</div>
+
+<div class="scroll-container">
+
+<!-- ===== PAGE 0: COVER ===== -->
+<div class="page active" id="page-0">
+  <div class="cover">
+    <div class="cover-icon">✖️</div>
+    <h1>第21课 · 乘法启蒙</h1>
+    <h2>Intro to Multiplication</h2>
+    <p>和史蒂夫一起发现乘法的秘密！<br>我们会学习如何快速数出好多东西——<br>不需要一个一个慢慢数！</p>
+    <button class="btn-start" onclick="goToPage(1)">开始学习 ▶</button>
+  </div>
+</div>
+
+<!-- ===== PAGE 1: MINECRAFT STORY ===== -->
+<div class="page" id="page-1">
+  <div class="card">
+    <div class="card-title"><span class="emoji">⛏️</span> Minecraft 乘法故事</div>
+    <div class="story-scene">
+      <div class="story-icon">🧱</div>
+      <div class="story-text">史蒂夫在建造一座城堡！<br>「我需要很多砖块……有了！我有3组砖块，每组有2个。」<br>「3个2——那就是 3 × 2 = 6 块砖！」</div>
+      <div class="story-sub">乘法就是「一组一组地数」！</div>
+    </div>
+    <div class="story-scene">
+      <div class="story-icon">👾</div>
+      <div class="story-text">「小心！有4组苦力怕，每组5只……<br>4个5——4 × 5 = 20 只苦力怕！快跑！🏃」</div>
+      <div class="story-sub">当我们有很多相同大小的组时，乘法让数数变快！</div>
+    </div>
+    <div class="story-scene">
+      <div class="story-icon">🍎</div>
+      <div class="story-text">「看！3个盘子，每个盘子里有2个苹果。」<br>我们可以说：<strong>3组，每组2个</strong> → <strong>3 × 2 = 6</strong></div>
+      <div class="story-sub">✖️ 这个符号就叫「乘号」！</div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(0)">⬅ 上一页</button>
+      <button class="btn-nav primary" onclick="goToPage(2)">学习核心概念 ➡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 2: CORE CONCEPTS ===== -->
+<div class="page" id="page-2">
+  <div class="card">
+    <div class="card-title"><span class="emoji">🧠</span> 核心概念：什么是乘法？</div>
+    <div class="section-desc">乘法就是<strong>相同大小的组加起来</strong>。看看下面的例子：</div>
+
+    <!-- Apple groups -->
+    <div style="background:#fff8e1;border-radius:16px;padding:20px;margin-bottom:16px;border:2px solid #ffe082">
+      <div style="font-size:18px;font-weight:700;color:#e65100;margin-bottom:12px;text-align:center">🍎 3组，每组2个苹果 = 3 × 2 = 6</div>
+      <div class="apple-groups" id="appleGroups">
+        <div class="apple-group" onclick="bounceApples(0)">
+          <span class="apple">🍎</span><span class="apple">🍎</span>
+        </div>
+        <div class="apple-group" onclick="bounceApples(1)">
+          <span class="apple">🍎</span><span class="apple">🍎</span>
+        </div>
+        <div class="apple-group" onclick="bounceApples(2)">
+          <span class="apple">🍎</span><span class="apple">🍎</span>
+        </div>
+      </div>
+      <div class="apple-group-label">👆 点击每组苹果数一数！每组有 <strong>2</strong> 个，一共 <strong>3组</strong> → 3 × 2 = 6</div>
+    </div>
+
+    <!-- Number line skip counting -->
+    <div style="margin-bottom:16px">
+      <div style="font-size:18px;font-weight:700;color:#1565C0;margin-bottom:8px;text-align:center">📏 跳着数（skip counting）—— 数的快速通道</div>
+      <div style="text-align:center;margin-bottom:8px">
+        <button class="skip-step-btn active" data-step="2" onclick="setSkipStep(2,this)" style="font-size:14px;padding:8px 16px">2个一跳</button>
+        <button class="skip-step-btn" data-step="5" onclick="setSkipStep(5,this)" style="font-size:14px;padding:8px 16px">5个一跳</button>
+        <button class="skip-step-btn" data-step="10" onclick="setSkipStep(10,this)" style="font-size:14px;padding:8px 16px">10个一跳</button>
+      </div>
+      <div class="numline-wrap">
+        <svg class="numline-svg" id="numlineSvg" viewBox="0 0 720 100" width="720" height="100"></svg>
+      </div>
+      <div style="text-align:center;font-size:14px;color:#546e7a" id="numlineDesc">👆 点击数字跳着读！</div>
+    </div>
+
+    <!-- Array SVG -->
+    <div style="background:#e3f2fd;border-radius:16px;padding:20px;border:2px solid #90CAF9;margin-bottom:16px">
+      <div style="font-size:18px;font-weight:700;color:#1565C0;margin-bottom:12px;text-align:center">🔲 阵列（Array）—— 行和列</div>
+      <div class="array-container">
+        <div class="array-svg-wrap">
+          <svg id="arraySvg" viewBox="0 0 280 220" width="280" height="220"></svg>
+        </div>
+        <div class="array-label" id="arrayLabel">3行 × 4列 = 12 个点</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+          <button class="btn-nav secondary" onclick="changeArray(-1)" style="flex:none;padding:8px 16px;font-size:14px">⬅ 变小</button>
+          <button class="btn-nav primary" onclick="speakZh('3行乘4列等于12')" style="flex:none;padding:8px 16px;font-size:14px">🔊 读出来</button>
+          <button class="btn-nav secondary" onclick="changeArray(1)" style="flex:none;padding:8px 16px;font-size:14px">变大 ➡</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(1)">⬅ 故事</button>
+      <button class="btn-nav primary" onclick="goToPage(3)">动手练习 ➡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 3: PRACTICE ===== -->
+<div class="page" id="page-3">
+  <div class="card">
+    <div class="card-title"><span class="emoji">✏️</span> 动手练习：跳着数</div>
+    <div class="section-desc">选择步长，然后填入缺少的数字！</div>
+
+    <div class="skip-step-select">
+      <button class="skip-step-btn active" data-step="2" onclick="setSkipPractice(2,this)" style="font-size:14px;padding:8px 20px">✌️ 2个一跳</button>
+      <button class="skip-step-btn" data-step="5" onclick="setSkipPractice(5,this)" style="font-size:14px;padding:8px 20px">🖐️ 5个一跳</button>
+      <button class="skip-step-btn" data-step="10" onclick="setSkipPractice(10,this)" style="font-size:14px;padding:8px 20px">🔟 10个一跳</button>
+    </div>
+
+    <div class="skip-question" id="skipQuestion">按2个一跳填数：</div>
+    <div class="skip-blanks" id="skipBlanks"></div>
+    <div style="text-align:center;margin-top:12px">
+      <button class="btn-nav primary" onclick="checkSkipBlanks()" style="flex:none;display:inline-flex;padding:10px 32px">✅ 检查答案</button>
+      <button class="btn-nav secondary" onclick="resetSkipBlanks()" style="flex:none;display:inline-flex;padding:10px 20px">🔄 重来</button>
+    </div>
+    <div id="skipResult" style="text-align:center;font-size:16px;font-weight:600;margin-top:12px;min-height:24px;color:#1565C0"></div>
+
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(2)">⬅ 核心概念</button>
+      <button class="btn-nav primary" onclick="goToPage(4)">常见误解 ➡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 4: COMMON MISCONCEPTIONS ===== -->
+<div class="page" id="page-4">
+  <div class="card">
+    <div class="card-title"><span class="emoji">🤔</span> 常见误解</div>
+    <div class="section-desc">点击下面每个小卡片，看看大家对乘法常有的疑问！</div>
+    <div class="miscon-grid" id="misconGrid"></div>
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(3)">⬅ 练习</button>
+      <button class="btn-nav primary" onclick="goToPage(5)">挑战测验 ➡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 5: QUIZ ===== -->
+<div class="page" id="page-5">
+  <div class="card">
+    <div class="card-title"><span class="emoji">🏆</span> 乘法小测验</div>
+    <div class="quiz-question" id="quizQuestion">3 × 2 等于几？</div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(4)">⬅ 误解</button>
+      <button class="btn-nav primary" onclick="nextQuiz()" id="quizNextBtn" disabled>下一题 ➡</button>
+    </div>
+    <div style="text-align:center;margin-top:8px;color:#90CAF9;font-size:13px" id="quizProgress">第 1 / 8 题</div>
+  </div>
+</div>
+
+<!-- ===== PAGE 6: MINECRAFT CHALLENGE ===== -->
+<div class="page" id="page-6">
+  <div class="card">
+    <div class="card-title"><span class="emoji">👾</span> Minecraft 闯关</div>
+    <div class="section-desc">用乘法快速算出苦力怕的数量！点击苦力怕标记它们，然后写出乘法算式。</div>
+    <div class="mc-level" id="mcLevel">第 1 / 5 关</div>
+    <div class="mc-challenge">
+      <div class="mc-creepers" id="mcCreepers"></div>
+      <div class="mc-formula" id="mcFormula">? × ? = ?</div>
+      <div class="mc-input-group">
+        <input type="number" id="mcInput1" min="0" max="20" placeholder="?" aria-label="第一个数">
+        <span style="font-size:24px;font-weight:700;color:#2e7d32">×</span>
+        <input type="number" id="mcInput2" min="0" max="20" placeholder="?" aria-label="第二个数">
+        <span style="font-size:24px;font-weight:700;color:#2e7d32">=</span>
+        <input type="number" id="mcInput3" min="0" max="100" placeholder="?" aria-label="结果">
+        <button onclick="checkMcChallenge()">✅ 提交</button>
+      </div>
+      <div class="mc-result" id="mcResult"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-nav secondary" onclick="goToPage(5)">⬅ 测验</button>
+      <button class="btn-nav primary" onclick="goToPage(7)" id="mcNextBtn" style="display:none">下一关 ➡</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PAGE 7: CELEBRATION ===== -->
+<div class="page" id="page-7">
+  <div class="celebration">
+    <div class="celebration-icon">🎉</div>
+    <h2>太棒了！你学会了乘法！</h2>
+    <p>现在你知道了：<br>
+    ✖️ 乘法就是「一组一组地数」<br>
+    📏 跳着数能帮我们快速计算<br>
+    🔲 阵列帮助我们理解行和列<br>
+    🧮 3×2 表示3个2，等于6</p>
+    <div class="confetti-container" id="confettiBox"></div>
+    <div class="nav-row" style="justify-content:center">
+      <button class="btn-nav secondary" onclick="goToPage(6)">⬅ 再玩一次</button>
+      <button class="btn-nav primary" onclick="location.href='../math-22-fractions.html'">下一课：分数 ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- page dots -->
+<div class="page-dots" id="pageDots"></div>
+
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ===== NAVIGATION =====
+const TOTAL_PAGES = 8;
+let currentPage = 0;
+
+function goToPage(n){
+  if(n<0||n>=TOTAL_PAGES)return;
+  document.querySelectorAll('.page').forEach((p,i)=>{
+    p.classList.toggle('active',i===n);
+  });
+  currentPage=n;
+  updateDots();
+  window.scrollTo({top:0,behavior:'smooth'});
+  // init pages
+  if(n===2){initNumline();initArray();}
+  if(n===3){resetSkipBlanks();}
+  if(n===4){initMisconceptions();}
+  if(n===5){initQuiz();}
+  if(n===6){initMcChallenge();}
+  if(n===7){fireConfetti();}
+}
+
+// page dots
+function updateDots(){
+  document.querySelectorAll('.page-dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===currentPage);
+  });
+}
+
+(function initDots(){
+  const c=document.getElementById('pageDots');
+  for(let i=0;i<TOTAL_PAGES;i++){
+    const d=document.createElement('button');
+    d.className='page-dot'+(i===0?' active':'');
+    d.onclick=()=>goToPage(i);
+    d.setAttribute('aria-label','Page '+(i+1));
+    c.appendChild(d);
+  }
+})();
+
+// ===== SPEECH =====
+function speakZh(text){
+  if(!window.speechSynthesis)return;
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN';
+  u.rate=0.85;
+  u.pitch=1.05;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
+}
+
+// ===== TOOLTIP =====
+let tooltipTimer=null;
+function showTooltip(msg){
+  const t=document.getElementById('tooltip');
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(tooltipTimer);
+  tooltipTimer=setTimeout(()=>t.classList.remove('show'),2000);
+}
+
+// ===== PAGE 2: APPLE BOUNCE =====
+function bounceApples(idx){
+  const groups=document.querySelectorAll('.apple-group');
+  if(!groups[idx])return;
+  const apples=groups[idx].querySelectorAll('.apple');
+  apples.forEach(a=>{
+    a.classList.remove('bounce');
+    void a.offsetWidth;
+    a.classList.add('bounce');
+  });
+  const total=groups.length;
+  const perGroup=2;
+  speakZh(`${total}组, 每组${perGroup}个, 一共${total*perGroup}个`);
+  showTooltip(`🍎 第${idx+1}组：${perGroup}个苹果`);
+}
+
+// ===== PAGE 2: NUMBER LINE =====
+let currentSkipStep=2;
+
+function setSkipStep(step,btn){
+  document.querySelectorAll('.skip-step-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  currentSkipStep=step;
+  drawNumline(step);
+}
+
+function drawNumline(step){
+  const svg=document.getElementById('numlineSvg');
+  const W=720,H=100;
+  const maxNum=step*10;
+  const labelCount=10;
+  const padX=40;
+  const usable=W-padX*2;
+  const spacing=usable/labelCount;
+
+  let html='';
+  // axis line
+  html+=`<line x1="${padX}" y1="60" x2="${W-padX}" y2="60" stroke="#90CAF9" stroke-width="3" stroke-linecap="round"/>`;
+
+  // arrows and jumps
+  for(let i=1;i<=labelCount;i++){
+    const x=padX+i*spacing;
+    const val=i*step;
+    const prevX=padX+(i-1)*spacing;
+    // jump arc
+    const arcMid=(prevX+x)/2;
+    html+=`<path d="M${prevX},60 Q${arcMid},30 ${x},60" fill="none" stroke="#42A5F5" stroke-width="2.5" stroke-dasharray="6,3" opacity="0.6"/>`;
+    // +step label on arc
+    html+=`<text x="${arcMid}" y="28" text-anchor="middle" font-size="13" fill="#42A5F5" font-weight="700">+${step}</text>`;
+    // tick mark
+    html+=`<line x1="${x}" y1="55" x2="${x}" y2="65" stroke="#1565C0" stroke-width="2.5"/>`;
+  }
+
+  // circles at each number
+  for(let i=0;i<=labelCount;i++){
+    const x=i===0?padX:padX+i*spacing;
+    const val=i*step;
+    const r=i===0?16:18;
+    html+=`<circle cx="${x}" cy="60" r="${r}" fill="${i===0?'#e3f2fd':'#42A5F5'}" stroke="#1565C0" stroke-width="2" class="numline-dot" data-val="${val}" onclick="speakNumline(${val})" style="cursor:pointer"/>`;
+    html+=`<text x="${x}" y="65" text-anchor="middle" font-size="${i===0?13:15}" fill="#fff" font-weight="800" pointer-events="none">${val}</text>`;
+  }
+
+  // labels
+  html+=`<text x="${padX}" y="90" text-anchor="middle" font-size="12" fill="#1565C0" font-weight="600">0</text>`;
+  html+=`<text x="${W-padX}" y="90" text-anchor="middle" font-size="12" fill="#1565C0" font-weight="600">${step*10}</text>`;
+
+  svg.innerHTML=html;
+
+  // Animate dots with GSAP
+  gsap.fromTo('.numline-dot',{scale:0,opacity:0},{scale:1,opacity:1,duration:.4,stagger:0.08,ease:'back.out(1.7)'});
+
+  document.getElementById('numlineDesc').textContent=`👆 点击数字听读音！每次+${step}`;
+}
+
+function speakNumline(val){
+  speakZh(`${val}`);
+  gsap.fromTo(`[data-val="${val}"]`,{r:18},{r:24,duration:.2,yoyo:true,repeat:1,ease:'power2.inOut'});
+}
+
+// ===== PAGE 2: ARRAY =====
+let arrayRows=3, arrayCols=4;
+
+function drawArray(){
+  const svg=document.getElementById('arraySvg');
+  const W=280,H=220;
+  const pad=30;
+  const r=10;
+  const gapX=10, gapY=10;
+  const totalW=W-pad*2;
+  const totalH=H-pad*2;
+  const spacingX=(totalW-(arrayCols*2*r))/Math.max(1,arrayCols-1);
+  const spacingY=(totalH-(arrayRows*2*r))/Math.max(1,arrayRows-1);
+  const startX=pad+r;
+  const startY=pad+r;
+
+  let html='';
+  // grid background
+  html+=`<rect x="${pad-5}" y="${pad-5}" width="${totalW+10}" height="${totalH+10}" rx="12" fill="#f5faff" stroke="#90CAF9" stroke-width="1.5"/>`;
+
+  // row labels
+  for(let rw=0;rw<arrayRows;rw++){
+    const y=startY+rw*(2*r+spacingY);
+    html+=`<text x="${pad-15}" y="${y+5}" text-anchor="end" font-size="13" fill="#1565C0" font-weight="700">${rw+1}</text>`;
+  }
+  // col labels
+  for(let cl=0;cl<arrayCols;cl++){
+    const x=startX+cl*(2*r+spacingX);
+    html+=`<text x="${x}" y="${pad+totalH+18}" text-anchor="middle" font-size="13" fill="#1565C0" font-weight="700">${cl+1}</text>`;
+  }
+
+  // dots
+  for(let rw=0;rw<arrayRows;rw++){
+    for(let cl=0;cl<arrayCols;cl++){
+      const x=startX+cl*(2*r+spacingX);
+      const y=startY+rw*(2*r+spacingY);
+      const delay=((rw*arrayCols+cl)*0.03);
+      html+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#42A5F5" stroke="#1565C0" stroke-width="1.5" opacity="0.9" class="array-dot" data-row="${rw+1}" data-col="${cl+1}" data-delay="${delay}" onclick="clickArrayDot(${rw+1},${cl+1})" style="cursor:pointer"/>`;
+    }
+  }
+
+  // row highlight guides (left side)
+  for(let rw=0;rw<arrayRows;rw++){
+    const y=startY+rw*(2*r+spacingY);
+    html+=`<rect x="${pad-18}" y="${y-8}" width="4" height="16" rx="2" fill="#FF7043" opacity="0.6"/>`;
+  }
+  // col highlight guides (top)
+  for(let cl=0;cl<arrayCols;cl++){
+    const x=startX+cl*(2*r+spacingX);
+    html+=`<rect x="${x-8}" y="${pad-18}" width="16" height="4" rx="2" fill="#AB47BC" opacity="0.6"/>`;
+  }
+
+  svg.innerHTML=html;
+
+  document.getElementById('arrayLabel').textContent=`${arrayRows}行 × ${arrayCols}列 = ${arrayRows*arrayCols} 个点`;
+
+  // GSAP animation
+  gsap.fromTo('.array-dot',{scale:0,opacity:0},{scale:1,opacity:0.9,duration:.3,stagger:0.03,ease:'back.out(2)'});
+}
+
+function clickArrayDot(r,c){
+  speakZh(`第${r}行第${c}列`);
+  showTooltip(`📍 第 ${r} 行，第 ${c} 列`);
+  // highlight
+  gsap.fromTo(`[data-row="${r}"][data-col="${c}"]`,{r:10,fill:'#FF7043'},{r:14,duration:.15,yoyo:true,repeat:1,ease:'power2.inOut',onComplete:()=>{
+    document.querySelectorAll('.array-dot').forEach(d=>{
+      if(d.getAttribute('data-row')==r&&d.getAttribute('data-col')==c)d.setAttribute('fill','#42A5F5');
+    });
+  }});
+}
+
+function changeArray(dir){
+  const sizes=[[2,2],[2,3],[3,3],[3,4],[4,4],[4,5],[5,5]];
+  const currentIdx=sizes.findIndex(s=>s[0]===arrayRows&&s[1]===arrayCols);
+  let newIdx=currentIdx+dir;
+  if(newIdx<0)newIdx=0;
+  if(newIdx>=sizes.length)newIdx=sizes.length-1;
+  arrayRows=sizes[newIdx][0];
+  arrayCols=sizes[newIdx][1];
+  drawArray();
+  speakZh(`${arrayRows}行${arrayCols}列，一共${arrayRows*arrayCols}个点`);
+}
+
+// ===== PAGE 3: SKIP COUNTING PRACTICE =====
+let skipPracticeStep=2;
+let skipAnswer=[];
+let skipBlanksData=[];
+
+function setSkipPractice(step,btn){
+  document.querySelectorAll('.skip-step-select .skip-step-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  skipPracticeStep=step;
+  resetSkipBlanks();
+}
+
+function resetSkipBlanks(){
+  const container=document.getElementById('skipBlanks');
+  container.innerHTML='';
+  document.getElementById('skipResult').textContent='';
+  const step=skipPracticeStep;
+  const max=step*6;
+  // generate sequence with some blanks
+  const seq=[];
+  for(let i=1;i<=6;i++)seq.push(i*step);
+  
+  // decide which indices are blanks (positions 2,4,5 - 0-indexed: 1,3,4)
+  const blankIndices=[1,3,4]; // e.g. 2, _, 6, _, _, 12
+  skipBlanksData=seq.map((v,i)=>({value:v,blank:blankIndices.includes(i),input:''}));
+  skipAnswer=seq.slice();
+
+  document.getElementById('skipQuestion').textContent=`按${step}个一跳填数：`;
+
+  seq.forEach((v,i)=>{
+    const isBlank=blankIndices.includes(i);
+    const wrapper=document.createElement('span');
+    if(isBlank){
+      wrapper.className='blank';
+      wrapper.id='skipBlank_'+i;
+      const inp=document.createElement('input');
+      inp.type='number';
+      inp.min='0';
+      inp.max='100';
+      inp.placeholder='?';
+      inp.addEventListener('input',()=>{
+        skipBlanksData[i].input=inp.value;
+      });
+      inp.addEventListener('focus',()=>{
+        gsap.fromTo(wrapper,{scale:1},{scale:1.05,duration:.15,ease:'power2.inOut'});
+      });
+      wrapper.appendChild(inp);
+    }else{
+      wrapper.className='num';
+      wrapper.textContent=v;
+    }
+    container.appendChild(wrapper);
+  });
+}
+
+function checkSkipBlanks(){
+  const step=skipPracticeStep;
+  let allCorrect=true;
+  skipBlanksData.forEach((d,i)=>{
+    const wrapper=document.getElementById('skipBlank_'+i);
+    if(!wrapper)return;
+    const inp=wrapper.querySelector('input');
+    if(!inp)return;
+    const val=parseInt(inp.value);
+    const correct=d.value;
+    if(val===correct){
+      wrapper.className='blank filled correct';
+      inp.disabled=true;
+    }else{
+      wrapper.className='blank filled wrong';
+      allCorrect=false;
+      // shake animation via class
+      setTimeout(()=>{
+        wrapper.className='blank filled';
+        inp.value='';
+        inp.disabled=false;
+        inp.focus();
+      },800);
+    }
+  });
+
+  const result=document.getElementById('skipResult');
+  if(allCorrect){
+    result.innerHTML='🎉 全部正确！你太棒了！'+'<br>'+`${step}×6=${step*6}`;
+    result.style.color='#2e7d32';
+    speakZh(`全部正确！${step}个一跳，一共${step*6}`);
+    showTooltip('🌟 太厉害了！');
+    // celebrate animation
+    gsap.fromTo('.blank.correct',{scale:1},{scale:1.2,duration:.3,yoyo:true,repeat:1,ease:'power2.inOut'});
+  }else{
+    result.innerHTML='❌ 有些不对，再试试吧！';
+    result.style.color='#c62828';
+  }
+}
+
+// ===== PAGE 4: MISCONCEPTIONS =====
+function initMisconceptions(){
+  const grid=document.getElementById('misconGrid');
+  if(grid.children.length>0)return;
+  
+  const data=[
+    {icon:'🤔',title:'乘法就是快速加法',desc:'是的！3×2就是3个2加起来：2+2+2=6。乘法是相同加数的加法。',correct:true},
+    {icon:'😕',title:'3×2和2×3不一样',desc:'它们的结果一样（都等于6），但意思不同。3×2是3个2，2×3是2个3。结果相同！',correct:true},
+    {icon:'😵',title:'乘法的结果总是更大',desc:'不一定！1×2=2（和原来一样），0×5=0（更小了）。但大多数时候会变大。',correct:false},
+    {icon:'🤯',title:'我不会跳着数也能做乘法',desc:'跳着数（skip counting）是乘法的好帮手！会跳着数，乘法就学会了一半！',correct:true}
+  ];
+
+  data.forEach((d,i)=>{
+    const card=document.createElement('div');
+    card.className='miscon-card'+(d.correct?' correct':' wrong');
+    card.innerHTML=`
+      <div class="mc-icon">${d.icon}</div>
+      <div class="mc-title">${d.correct?'✅ 正确':'❌ 误解'}：${d.title}</div>
+      <div class="mc-desc">${d.desc}</div>
+      <div class="mc-explain" id="mcExplain_${i}">💡 ${d.correct?'没错！你已经理解了！':'要记住哦！'}</div>
+    `;
+    card.onclick=function(){
+      const explain=this.querySelector('.mc-explain');
+      explain.classList.toggle('show');
+      if(explain.classList.contains('show')){
+        speakZh(d.title);
+        gsap.fromTo(explain,{opacity:0,y:5},{opacity:1,y:0,duration:.3,ease:'power2.out'});
+      }
+    };
+    grid.appendChild(card);
+  });
+}
+
+// ===== PAGE 5: QUIZ =====
+const quizData=[
+  {q:'🍎 3个2相加等于几？',opts:['5','6','8','4'],ans:1,explain:'3×2=6，因为2+2+2=6！'},
+  {q:'🔢 4 × 5 = ?',opts:['9','20','25','15'],ans:1,explain:'4×5=20，跳着数：5,10,15,20！'},
+  {q:'👾 2组苦力怕，每组6只，一共几只？',opts:['8','10','12','14'],ans:2,explain:'2×6=12，6+6=12！'},
+  {q:'📏 跳着数：5, 10, 15, ___',opts:['16','20','25','30'],ans:1,explain:'每次+5，15+5=20！'},
+  {q:'🔲 一个阵列有3行4列，共有几个点？',opts:['7','10','12','14'],ans:2,explain:'3×4=12！行数×列数=总数！'},
+  {q:'🧱 史蒂夫有5组砖块，每组2块，共几块？',opts:['7','10','12','8'],ans:1,explain:'5×2=10，跳着数：2,4,6,8,10！'},
+  {q:'✖️ 哪个算式等于8？',opts:['2×5','3×3','2×4','4×3'],ans:2,explain:'2×4=8！2+2+2+2=8！'},
+  {q:'🎯 7×2 等于几？',opts:['9','12','14','16'],ans:2,explain:'7×2=14，7个2加起来是14！'}
+];
+let quizIndex=0;
+let quizAnswered=false;
+let quizScore=0;
+
+function initQuiz(){
+  quizIndex=0;
+  quizScore=0;
+  showQuiz(0);
+}
+
+function showQuiz(i){
+  const q=quizData[i];
+  document.getElementById('quizQuestion').textContent=q.q;
+  const opts=document.getElementById('quizOptions');
+  opts.innerHTML='';
+  q.opts.forEach((o,idx)=>{
+    const btn=document.createElement('button');
+    btn.className='quiz-option';
+    btn.textContent=o;
+    btn.onclick=()=>checkQuiz(idx,btn);
+    opts.appendChild(btn);
+  });
+  document.getElementById('quizFeedback').className='quiz-feedback';
+  document.getElementById('quizFeedback').style.display='none';
+  document.getElementById('quizNextBtn').disabled=true;
+  document.getElementById('quizNextBtn').textContent='下一题 ➡';
+  document.getElementById('quizNextBtn').onclick=nextQuiz;
+  document.getElementById('quizProgress').textContent=`第 ${i+1} / ${quizData.length} 题`;
+  quizAnswered=false;
+}
+
+function checkQuiz(idx,btn){
+  if(quizAnswered)return;
+  quizAnswered=true;
+  const q=quizData[quizIndex];
+  const opts=document.querySelectorAll('.quiz-option');
+  opts.forEach(o=>o.disabled=true);
+
+  if(idx===q.ans){
+    btn.classList.add('correct');
+    quizScore++;
+    const fb=document.getElementById('quizFeedback');
+    fb.textContent='✅ 回答正确！'+q.explain;
+    fb.className='quiz-feedback correct show';
+    speakZh('回答正确');
+    gsap.fromTo(btn,{scale:1},{scale:1.08,duration:.2,yoyo:true,repeat:1,ease:'power2.inOut'});
+  }else{
+    btn.classList.add('wrong');
+    opts[q.ans].classList.add('correct');
+    const fb=document.getElementById('quizFeedback');
+    fb.textContent='❌ 再想想哦！'+q.explain;
+    fb.className='quiz-feedback wrong show';
+    speakZh('再想想');
+  }
+  document.getElementById('quizNextBtn').disabled=false;
+}
+
+function nextQuiz(){
+  quizIndex++;
+  if(quizIndex>=quizData.length){
+    document.getElementById('quizQuestion').textContent='🎉 测验完成！你答对了 '+quizScore+'/'+quizData.length+' 题！';
+    document.getElementById('quizOptions').innerHTML='';
+    document.getElementById('quizFeedback').className='quiz-feedback';
+    document.getElementById('quizFeedback').style.display='none';
+    document.getElementById('quizNextBtn').textContent='去闯关 🏆';
+    document.getElementById('quizNextBtn').onclick=()=>goToPage(6);
+    document.getElementById('quizProgress').textContent='完成！';
+    if(quizScore===quizData.length){
+      showTooltip('🌟 满分！太厉害了！');
+      speakZh('满分');
+    }
+    return;
+  }
+  showQuiz(quizIndex);
+}
+
+// ===== PAGE 6: MINECRAFT CHALLENGE =====
+const mcLevels=[
+  {creepers:3,groups:2,emoji:'👾'},   // 3 groups of 2 = 6
+  {creepers:4,groups:3,emoji:'👾'},   // 4 groups of 3 = 12
+  {creepers:2,groups:5,emoji:'👾'},   // 2 groups of 5 = 10
+  {creepers:3,groups:4,emoji:'👾'},   // 3 groups of 4 = 12
+  {creepers:5,groups:2,emoji:'👾'}    // 5 groups of 2 = 10
+];
+let mcCurrentLevel=0;
+let mcCounted=[];
+
+function initMcChallenge(){
+  mcCurrentLevel=0;
+  mcCounted=[];
+  loadMcLevel(0);
+  document.getElementById('mcNextBtn').style.display='none';
+}
+
+function loadMcLevel(idx){
+  if(idx>=mcLevels.length){
+    goToPage(7);
+    return;
+  }
+  const level=mcLevels[idx];
+  document.getElementById('mcLevel').textContent=`第 ${idx+1} / ${mcLevels.length} 关`;
+  document.getElementById('mcResult').textContent='';
+  document.getElementById('mcInput1').value='';
+  document.getElementById('mcInput2').value='';
+  document.getElementById('mcInput3').value='';
+  document.getElementById('mcNextBtn').style.display='none';
+  mcCounted=[];
+
+  // Generate creepers in groups
+  const container=document.getElementById('mcCreepers');
+  container.innerHTML='';
+  
+  // Show groups with dividers
+  const totalC=level.creepers*level.groups;
+  for(let g=0;g<level.groups;g++){
+    for(let c=0;c<level.creepers;c++){
+      const span=document.createElement('span');
+      span.className='mc-creeper';
+      span.textContent=level.emoji;
+      span.dataset.group=g;
+      span.dataset.idx=g*level.creepers+c;
+      span.onclick=function(){
+        if(this.classList.contains('counted'))return;
+        this.classList.add('counted');
+        mcCounted.push(parseInt(this.dataset.idx));
+        const counted=mcCounted.length;
+        const total=totalC;
+        document.getElementById('mcResult').textContent=`已标记 ${counted}/${total} 只`;
+        speakZh(`${counted}`);
+        gsap.fromTo(this,{scale:1},{scale:0.8,duration:.15,yoyo:true,repeat:1,ease:'power2.inOut'});
+        if(counted===total){
+          showTooltip('✅ 全部标记完了！写出乘法算式吧！');
+          speakZh('全部标记完了，写出乘法算式');
+        }
+      };
+      container.appendChild(span);
+    }
+    // Add visual separator between groups
+    if(g<level.groups-1){
+      const sep=document.createElement('span');
+      sep.style.cssText='font-size:20px;color:#90CAF9;font-weight:700;padding:0 4px;opacity:0.5';
+      sep.textContent='│';
+      container.appendChild(sep);
+    }
+  }
+
+  // Update formula placeholders
+  document.getElementById('mcFormula').innerHTML=`
+    <span style="color:#FF7043">${level.groups}</span> 组 × 
+    <span style="color:#66BB6A">${level.creepers}</span> 只 = 
+    <span style="color:#42A5F5">?</span>
+  `;
+
+  // Animate creepers
+  gsap.fromTo('.mc-creeper',{scale:0,opacity:0},{scale:1,opacity:1,duration:.3,stagger:0.05,ease:'back.out(2)'});
+}
+
+function checkMcChallenge(){
+  const level=mcLevels[mcCurrentLevel];
+  const a=parseInt(document.getElementById('mcInput1').value);
+  const b=parseInt(document.getElementById('mcInput2').value);
+  const c=parseInt(document.getElementById('mcInput3').value);
+  const result=document.getElementById('mcResult');
+
+  if(isNaN(a)||isNaN(b)||isNaN(c)){
+    result.innerHTML='❌ 请填完所有空格！';
+    result.style.color='#c62828';
+    return;
+  }
+
+  // Check: groups × perGroup = total
+  const correctGroups=level.groups;
+  const correctPerGroup=level.creepers;
+  const correctTotal=correctGroups*correctPerGroup;
+
+  // We accept either groups×perGroup or perGroup×groups
+  const ok1=(a===correctGroups&&b===correctPerGroup&&c===correctTotal);
+  const ok2=(a===correctPerGroup&&b===correctGroups&&c===correctTotal);
+
+  if(ok1||ok2){
+    result.innerHTML='🎉 完全正确！'+`${correctGroups}×${correctPerGroup}=${correctTotal}`;
+    result.style.color='#2e7d32';
+    speakZh(`闯关成功！${correctGroups}乘${correctPerGroup}等于${correctTotal}`);
+    showTooltip('🌟 太棒了！进入下一关！');
+    
+    // celebrate with GSAP
+    gsap.fromTo('.mc-creeper',{scale:1},{scale:1.15,duration:.2,yoyo:true,repeat:2,ease:'power2.inOut',delay:.1});
+    
+    // update formula
+    document.getElementById('mcFormula').innerHTML=`
+      <span style="color:#FF7043">${correctGroups}</span> × 
+      <span style="color:#66BB6A">${correctPerGroup}</span> = 
+      <span style="color:#42A5F5;font-size:26px">${correctTotal}</span> ✅
+    `;
+
+    mcCurrentLevel++;
+    if(mcCurrentLevel>=mcLevels.length){
+      document.getElementById('mcNextBtn').style.display='inline-flex';
+      document.getElementById('mcNextBtn').textContent='🎉 全部完成！';
+      document.getElementById('mcNextBtn').onclick=()=>goToPage(7);
+    }else{
+      document.getElementById('mcNextBtn').style.display='inline-flex';
+      document.getElementById('mcNextBtn').textContent='下一关 ➡';
+      document.getElementById('mcNextBtn').onclick=()=>loadMcLevel(mcCurrentLevel);
+    }
+  }else{
+    result.innerHTML='❌ 不对哦！再数一数有几组，每组几只？';
+    result.style.color='#c62828';
+    speakZh('再试试');
+    // shake inputs
+    ['mcInput1','mcInput2','mcInput3'].forEach(id=>{
+      gsap.fromTo('#'+id,{x:0},{x:6,duration:.1,yoyo:true,repeat:3,ease:'power2.inOut'});
+    });
+  }
+}
+
+// ===== PAGE 2: INIT NUMBER LINE AND ARRAY ON LOAD =====
+document.addEventListener('DOMContentLoaded',()=>{
+  // Pre-init for page 2
+  drawNumline(2);
+  drawArray();
+  resetSkipBlanks();
+});
+
+// ===== CONFETTI =====
+function fireConfetti(){
+  const box=document.getElementById('confettiBox');
+  box.innerHTML='';
+  const colors=['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#FF9FF3','#54A0FF','#FFB74D','#81C784'];
+  for(let i=0;i<60;i++){
+    const div=document.createElement('div');
+    div.className='confetti-piece';
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    const left=Math.random()*100;
+    const size=5+Math.random()*10;
+    const rot=Math.random()*360;
+    const delay=Math.random()*2;
+    const dur=2+Math.random()*3;
+    div.style.cssText=`left:${left}%;width:${size}px;height:${size*0.6}px;background:${color};transform:rotate(${rot}deg);animation:confettiFall ${dur}s ${delay}s ease-in forwards;`;
+    box.appendChild(div);
+  }
+}
+
+const confettiStyle=document.createElement('style');
+confettiStyle.textContent=`
+@keyframes confettiFall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(280px) rotate(720deg);opacity:0}
+}`;
+document.head.appendChild(confettiStyle);
+</script>
+
+</body>
+</html>
