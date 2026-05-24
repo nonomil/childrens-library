@@ -11,6 +11,9 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js">
 </script>
+<link rel="stylesheet" href="shared/courseware.css">
+
+<script src="shared/courseware.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -184,8 +187,6 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
     50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
 </style>
 
-
-
 </head>
 <body>
 <div id="app">
@@ -206,7 +207,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
         <div class="cover-title">我的身体</div>
         <div class="cover-sub">Wǒ de shēntǐ</div>
         <div class="cover-badge">第13课</div>
-        <img class="cover-img" src="images/chinese-13/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="我的身体" loading="lazy" onerror="this.style.display='none'">
+        <img class="cover-img" src="images/chinese-13-body/webp/page-00.webp" onerror="this.style.display=\'none\'" alt="我的身体" loading="lazy" onerror="this.style.display='none'">
         <div class="cover-char-list">
           <span>口 kǒu</span>
           <span>耳 ěr</span>
@@ -230,7 +231,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">口</div>
           <div class="char-pinyin">kǒu</div>
           <div class="char-strokes">3 画 · 笔画: 丨𠃍一</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="口 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="口 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('嘴巴')">嘴巴 zuǐba</span>
             <span class="word" onclick="speakText('入口')">入口 rùkǒu</span>
@@ -257,7 +258,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">耳</div>
           <div class="char-pinyin">ěr</div>
           <div class="char-strokes">6 画 · 笔画: 一丨丨一一一</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="耳 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="耳 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('耳朵')">耳朵 ěrduo</span>
             <span class="word" onclick="speakText('耳机')">耳机 ěrjī</span>
@@ -284,7 +285,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">目</div>
           <div class="char-pinyin">mù</div>
           <div class="char-strokes">5 画 · 笔画: 丨𠃍一一一</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="目 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="目 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('目光')">目光 mùguāng</span>
             <span class="word" onclick="speakText('目前')">目前 mùqián</span>
@@ -311,7 +312,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">手</div>
           <div class="char-pinyin">shǒu</div>
           <div class="char-strokes">4 画 · 笔画: 一一𠃌丿</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="手 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="手 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('小手')">小手 xiǎoshǒu</span>
             <span class="word" onclick="speakText('手机')">手机 shǒujī</span>
@@ -338,7 +339,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">足</div>
           <div class="char-pinyin">zú</div>
           <div class="char-strokes">7 画 · 笔画: 丨𠃍一丨一丿㇏</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="足 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="足 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('足球')">足球 zúqiú</span>
             <span class="word" onclick="speakText('足够')">足够 zúgòu</span>
@@ -365,7 +366,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">头</div>
           <div class="char-pinyin">tóu</div>
           <div class="char-strokes">5 画 · 笔画: 丶丶一丿丶</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="头 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="头 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('头发')">头发 tóufa</span>
             <span class="word" onclick="speakText('石头')">石头 shítou</span>
@@ -392,7 +393,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">牙</div>
           <div class="char-pinyin">yá</div>
           <div class="char-strokes">4 画 · 笔画: 一𠃌丿丿</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="牙 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="牙 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('牙齿')">牙齿 yáchǐ</span>
             <span class="word" onclick="speakText('牙膏')">牙膏 yágāo</span>
@@ -419,7 +420,7 @@ h3{font-size:18px;font-weight:700;color:var(--red);margin-bottom:8px}
           <div class="char-display">心</div>
           <div class="char-pinyin">xīn</div>
           <div class="char-strokes">4 画 · 笔画: 丶𠃌丶丶</div>
-          <img class="char-stroke-img" src="images/chinese-13/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="心 stroke order" loading="lazy" onerror="this.style.display='none'">
+          <img class="char-stroke-img" src="images/chinese-13-body/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="心 stroke order" loading="lazy" onerror="this.style.display='none'">
           <div class="char-words">
             <span class="word" onclick="speakText('开心')">开心 kāixīn</span>
             <span class="word" onclick="speakText('心里')">心里 xīnli</span>
@@ -934,89 +935,6 @@ window.addEventListener('load',()=>{
 
 // ======================== START ========================
 updateNav();
-</script>
-
-
-<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
-<script>
-(function(){
-  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-  if (!btn) {
-    btn = document.createElement('button');
-    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
-    btn.textContent = '🔊';
-    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
-    document.body.appendChild(btn);
-  }
-  var sp = false, audioEl = null;
-  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
-  var uiv = document.documentElement.lang || 'en-US';
-  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
-
-  function getPageIdx() {
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return -1;
-    var parent = active.parentNode;
-    return Array.prototype.indexOf.call(parent.children, active);
-  }
-
-  function speakPage() {
-    if (sp) { stopPage(); return; }
-    var idx = getPageIdx();
-    if (idx < 0) return;
-
-    // Try MP3 first: audio/COURSENAME/page-N.mp3
-    var mp3Path = 'audio/' + courseName + '/page-' + (idx + 1) + '.mp3';
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    audioEl = new Audio(mp3Path);
-    audioEl.onerror = function() {
-      // MP3 failed → try flat MP3: audio/COURSENAME.mp3 or audio/songname.mp3
-      var flatPath = 'audio/' + courseName + '.mp3';
-      var flatAudio = new Audio(flatPath);
-      flatAudio.onerror = function() {
-        // Both MP3 failed → use speechSynthesis TTS
-        speakTTS();
-      };
-      flatAudio.oncanplaythrough = function() {
-        if (audioEl) audioEl.pause();
-        audioEl = flatAudio;
-        audioEl.play().catch(function(){ speakTTS(); });
-        btn.textContent = '⏹'; btn.classList.add('speaking');
-      };
-      flatAudio.load();
-    };
-    audioEl.oncanplaythrough = function() {
-      audioEl.play();
-      btn.textContent = '⏹'; btn.classList.add('speaking');
-      sp = true;
-      audioEl.onended = function(){ stopPage(); };
-    };
-    audioEl.load();
-  }
-
-  function speakTTS() {
-    if (!window.speechSynthesis) return;
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return;
-    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
-    if (!txt || txt.length < 2) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(txt);
-    u.lang = lang; u.rate = 0.85;
-    u.onstart = function(){ sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
-    u.onend = u.onerror = function(){ stopPage(); };
-    window.speechSynthesis.speak(u);
-  }
-
-  function stopPage() {
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊';
-  }
-
-  btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
-  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
-})();
 </script>
 
 </body>

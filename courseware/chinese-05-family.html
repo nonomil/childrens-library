@@ -9,6 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js">
 </script>
+<link rel="stylesheet" href="shared/courseware.css">
+
+<script src="shared/courseware.js"></script>
 <style>
 /* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -369,8 +372,6 @@ body{
 }
 </style>
 
-
-
 </head>
 <body>
 
@@ -392,7 +393,7 @@ body{
         <div class="mascot">👨‍👩‍👧‍👦</div>
         <div class="lesson-badge">第5课</div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="村庄里的一家人 - Steve & Alex visit" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="村庄里的一家人 - Steve & Alex visit" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>🏡 村庄里的一家人<br>👨 Steve &amp; Alex 拜访农家<br><span style=font-size:12px;color:#999>page-01.webp</span></div>'">
         </div>
         <div class="total-count">📖 累计识字 <strong style="color:#ef5350">46</strong> 个</div>
@@ -419,7 +420,7 @@ body{
           </div>
         </div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="爸 - 爸爸" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="爸 - 爸爸" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👨 爸 (bà) — 爸爸 老爸<br><span style=font-size:12px;color:#999>page-02.webp</span></div>'">
         </div>
         <div class="stroke-section">
@@ -471,7 +472,7 @@ body{
           </div>
         </div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="妈 - 妈妈" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="妈 - 妈妈" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👩 妈 (mā) — 妈妈 老妈<br><span style=font-size:12px;color:#999>page-03.webp</span></div>'">
         </div>
         <div class="stroke-section">
@@ -512,7 +513,7 @@ body{
           <div class="info-text">兄弟 (xiōng dì) — 哥哥</div>
         </div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="兄 - 兄弟" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="兄 - 兄弟" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👦 兄 (xiōng) — 兄弟 哥哥<br><span style=font-size:12px;color:#999>page-04.webp</span></div>'">
         </div>
         <div class="stroke-section">
@@ -552,7 +553,7 @@ body{
           <div class="info-text">妹妹 (mèi mei) — 妹妹</div>
         </div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="妹 - 妹妹" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="妹 - 妹妹" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👧 妹 (mèi) — 妹妹 姐妹<br><span style=font-size:12px;color:#999>page-05.webp</span></div>'">
         </div>
         <div class="stroke-section">
@@ -606,15 +607,15 @@ body{
           </div>
         </div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="爷爷 - Grandpa" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="爷爷 - Grandpa" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👴 爷爷 (yé ye) — Grandpa<br><span style=font-size:12px;color:#999>page-06.webp</span></div>'">
         </div>
         <div class="img-wrap mc-border" style="margin-top:8px">
-          <img src="images/chinese-05/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="奶奶 - Grandma" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="奶奶 - Grandma" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>👵 奶奶 (nǎi nai) — Grandma<br><span style=font-size:12px;color:#999>page-07.webp</span></div>'">
         </div>
         <div class="img-wrap mc-border" style="margin-top:8px">
-          <img src="images/chinese-05/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="宝 - Treasure/Baby" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="宝 - Treasure/Baby" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>💎 宝 (bǎo) — 宝贝 宝宝<br><span style=font-size:12px;color:#999>page-08.webp</span></div>'">
         </div>
         <div class="word-examples">
@@ -636,7 +637,7 @@ body{
       <div class="page-inner">
         <div class="page-title">✏️ 练一练</div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="练一练 - 练习页面" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="练一练 - 练习页面" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>✏️ 练一练 — 匹配与填空<br><span style=font-size:12px;color:#999>page-09.webp</span></div>'">
         </div>
 
@@ -681,7 +682,7 @@ body{
       <div class="page-inner">
         <div class="page-title">🏆 挑战</div>
         <div class="img-wrap mc-border">
-          <img src="images/chinese-05/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="挑战 - 测验" loading="lazy"
+          <img src="images/chinese-05-family/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="挑战 - 测验" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>🏆 挑战 — 家庭知识小测验<br><span style=font-size:12px;color:#999>page-10.webp</span></div>'">
         </div>
         <div class="card">
@@ -704,7 +705,7 @@ body{
           <span class="meaning">慈祥的母亲手里拿着针线</span>
         </div>
         <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
-          <img src="images/chinese-05/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="慈母手中线" loading="lazy"
+          <img src="images/chinese-05-family/webp/poem-line-1.webp" onerror="this.style.display=\'none\'" alt="慈母手中线" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>慈母手中线<br><span style=font-size:11px;color:#999>poem-line-1.webp</span></div>'">
         </div>
         <div class="poem-line">
@@ -713,7 +714,7 @@ body{
           <span class="meaning">为孩子缝制远行的衣裳</span>
         </div>
         <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
-          <img src="images/chinese-05/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="游子身上衣" loading="lazy"
+          <img src="images/chinese-05-family/webp/poem-line-2.webp" onerror="this.style.display=\'none\'" alt="游子身上衣" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>游子身上衣<br><span style=font-size:11px;color:#999>poem-line-2.webp</span></div>'">
         </div>
         <div class="poem-line">
@@ -722,7 +723,7 @@ body{
           <span class="meaning">临行前一针针密密地缝着</span>
         </div>
         <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
-          <img src="images/chinese-05/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="临行密密缝" loading="lazy"
+          <img src="images/chinese-05-family/webp/poem-line-3.webp" onerror="this.style.display=\'none\'" alt="临行密密缝" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>临行密密缝<br><span style=font-size:11px;color:#999>poem-line-3.webp</span></div>'">
         </div>
         <div class="poem-line">
@@ -731,7 +732,7 @@ body{
           <span class="meaning">担心孩子迟迟不能回家</span>
         </div>
         <div class="img-wrap mc-border" style="max-width:180px;margin:6px auto">
-          <img src="images/chinese-05/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="意恐迟迟归" loading="lazy"
+          <img src="images/chinese-05-family/webp/poem-line-4.webp" onerror="this.style.display=\'none\'" alt="意恐迟迟归" loading="lazy"
                onerror="this.parentElement.innerHTML='<div class=fallback>意恐迟迟归<br><span style=font-size:11px;color:#999>poem-line-4.webp</span></div>'">
         </div>
         <button class="btn-sound-mini" onclick="speak('慈母手中线，游子身上衣。临行密密缝，意恐迟迟归。')">🔊 听全诗</button>
@@ -1222,7 +1223,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
-
 <script>
 (function(){
   var sx = 0, sy = 0, swiping = false;
@@ -1253,89 +1253,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 })();
 </script>
 
-<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
-<script>
-(function(){
-  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-  if (!btn) {
-    btn = document.createElement('button');
-    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
-    btn.textContent = '🔊';
-    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
-    document.body.appendChild(btn);
-  }
-  var sp = false, audioEl = null;
-  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
-  var uiv = document.documentElement.lang || 'en-US';
-  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
-
-  function getPageIdx() {
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return -1;
-    var parent = active.parentNode;
-    return Array.prototype.indexOf.call(parent.children, active);
-  }
-
-  function speakPage() {
-    if (sp) { stopPage(); return; }
-    var idx = getPageIdx();
-    if (idx < 0) return;
-
-    // Try MP3 first: audio/COURSENAME/page-N.mp3
-    var mp3Path = 'audio/' + courseName + '/page-' + (idx + 1) + '.mp3';
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    audioEl = new Audio(mp3Path);
-    audioEl.onerror = function() {
-      // MP3 failed → try flat MP3: audio/COURSENAME.mp3 or audio/songname.mp3
-      var flatPath = 'audio/' + courseName + '.mp3';
-      var flatAudio = new Audio(flatPath);
-      flatAudio.onerror = function() {
-        // Both MP3 failed → use speechSynthesis TTS
-        speakTTS();
-      };
-      flatAudio.oncanplaythrough = function() {
-        if (audioEl) audioEl.pause();
-        audioEl = flatAudio;
-        audioEl.play().catch(function(){ speakTTS(); });
-        btn.textContent = '⏹'; btn.classList.add('speaking');
-      };
-      flatAudio.load();
-    };
-    audioEl.oncanplaythrough = function() {
-      audioEl.play();
-      btn.textContent = '⏹'; btn.classList.add('speaking');
-      sp = true;
-      audioEl.onended = function(){ stopPage(); };
-    };
-    audioEl.load();
-  }
-
-  function speakTTS() {
-    if (!window.speechSynthesis) return;
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return;
-    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
-    if (!txt || txt.length < 2) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(txt);
-    u.lang = lang; u.rate = 0.85;
-    u.onstart = function(){ sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
-    u.onend = u.onerror = function(){ stopPage(); };
-    window.speechSynthesis.speak(u);
-  }
-
-  function stopPage() {
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊';
-  }
-
-  btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
-  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
-})();
-</script>
-
-
   <!-- Bottom Navigation -->
   <div class="nav-bar">
     <button class="nav-btn" id="prevBtn" onclick="navPrev()">&#9664;</button>
@@ -1345,7 +1262,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   <div style="text-align:center;margin:4px 0 12px">
     <button class="read-btn" onclick="navSpeakCurrentPage()">&#128264; 读给我听</button>
   </div>
-
 
 <script>
 /* Unified nav (added by conversion) - uses unique names to avoid conflicts */

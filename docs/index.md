@@ -60,6 +60,7 @@
     <span class="stat-item">🔤 <strong>24</strong> 个英语课</span>
     <span class="stat-item">🀄 <strong>24</strong> 个语文课</span>
     <span class="stat-item">🧮 <strong>24</strong> 个数学课</span>
+    <span class="stat-item">📖 <strong>8</strong> 本绘本</span>
   </div>
 </div>
 
@@ -231,6 +232,27 @@
 <a href="courseware/sight-word-tales-can-we-get-a-pet.html" class="scroll-card card-purple"><span class="sc-icon">🐱</span><span class="sc-name">Can We Get Pet</span></a>
 <a href="courseware/elephant-piggie-surprise.html" class="scroll-card card-pink"><span class="sc-icon">🐘</span><span class="sc-name">Elephant &amp; Piggie</span></a>
 <a href="courseware/i-am-an-apple.html" class="scroll-card card-red"><span class="sc-icon">🍎</span><span class="sc-name">I Am an Apple</span></a>
+
+</div>
+</div>
+
+<!-- ===== 📚 绘本阅读 (新) ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">📚</span>
+  <span class="sh-name">绘本阅读</span>
+  <span class="sh-count">6 本</span>
+</div>
+<div class="scroll-row">
+
+<a href="./books/pete_cat.md" class="scroll-card card-red"><span class="sc-icon">🐱</span><span class="sc-name">Pete the Cat</span></a>
+<a href="./books/pigeon_bus.md" class="scroll-card card-orange"><span class="sc-icon">🚌</span><span class="sc-name">Don't Let Pigeon</span></a>
+<a href="./books/crayons_quit.md" class="scroll-card card-yellow"><span class="sc-icon">🖍️</span><span class="sc-name">Crayons Quit</span></a>
+<a href="./books/gruffalo.md" class="scroll-card card-brown"><span class="sc-icon">🐭</span><span class="sc-name">The Gruffalo</span></a>
+<a href="./books/knuffle_bunny.md" class="scroll-card card-pink"><span class="sc-icon">🐰</span><span class="sc-name">Knuffle Bunny</span></a>
+<a href="./books/little_critter.md" class="scroll-card card-green"><span class="sc-icon">🐿️</span><span class="sc-name">Little Critter</span></a>
+<a href="./books/wild_things.md" class="scroll-card card-blue"><span class="sc-icon">👹</span><span class="sc-name">Wild Things</span></a>
+<a href="./books/winnie_witch.md" class="scroll-card card-purple"><span class="sc-icon">🧙</span><span class="sc-name">Winnie Witch</span></a>
 
 </div>
 </div>

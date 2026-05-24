@@ -8,7 +8,9 @@
      8|<link rel="preconnect" href="https://fonts.googleapis.com">
      9|<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     10|<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-    11|<style>
+    11|<link rel="stylesheet" href="shared/courseware.css">
+<script src="shared/courseware.js"></script>
+<style>
     12|*{margin:0;padding:0;box-sizing:border-box}
     13|body{font-family:'Nunito','Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
     14|.book{flex-shrink:0;width:100%;max-width:800px;background:#FFFCF5;border-radius:40px;box-shadow:0 20px 60px rgba(0,0,0,0.15),0 0 0 4px #FFF,0 0 0 8px #FFB347;padding:30px;position:relative;min-height:80vh;display:flex;flex-direction:column}
@@ -569,73 +571,7 @@
    569|})();
    570|</script>
    571|
-   572|<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
-   573|<script>
-   574|(function(){
-   575|  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-   576|  if (!btn) {
-   577|    btn = document.createElement('button');
-   578|    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
-   579|    btn.textContent = '🔊';
-   580|    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
-   581|    document.body.appendChild(btn);
-   582|  }
-   583|  var sp = false, audioEl = null;
-   584|  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
-   585|  var lang = (document.documentElement.lang || 'en-US').indexOf('zh')>=0?'zh-CN':'en-US';
-   586|
-   587|  function getPageIdx(){
-   588|    var a=document.querySelector('.page.active,.slide.active');
-   589|    return a?Array.prototype.indexOf.call(a.parentNode.children,a):-1;
-   590|  }
-   591|
-   592|  function speakPage(){
-   593|    if(sp){stopPage();return;}
-   594|    var idx=getPageIdx(); if(idx<0) return;
-   595|    var mp3='audio/'+courseName+'/page-'+(idx+1)+'.mp3';
-   596|    if(audioEl){audioEl.pause();audioEl=null;}
-   597|    audioEl=new Audio(mp3);
-   598|    audioEl.onerror=function(){
-   599|      var flat=new Audio('audio/'+courseName+'.mp3');
-   600|      flat.onerror=function(){speakTTS();};
-   601|      flat.oncanplaythrough=function(){
-   602|        if(audioEl)audioEl.pause(); audioEl=flat;
-   603|        audioEl.play().catch(function(){speakTTS();});
-   604|        btn.textContent='⏹';btn.classList.add('speaking');
-   605|      };
-   606|      flat.load();
-   607|    };
-   608|    audioEl.oncanplaythrough=function(){
-   609|      audioEl.play(); btn.textContent='⏹';btn.classList.add('speaking');
-   610|      sp=true; audioEl.onended=function(){stopPage();};
-   611|    };
-   612|    audioEl.load();
-   613|  }
-   614|
-   615|  function speakTTS(){
-   616|    if(!window.speechSynthesis)return;
-   617|    var a=document.querySelector('.page.active,.slide.active');
-   618|    if(!a)return;
-   619|    var t=(a.innerText||a.textContent||'').replace(/\s+/g,' ').trim();
-   620|    if(!t||t.length<2)return;
-   621|    window.speechSynthesis.cancel();
-   622|    var u=new SpeechSynthesisUtterance(t);
-   623|    u.lang=lang;u.rate=0.85;
-   624|    u.onstart=function(){sp=true;btn.classList.add('speaking');btn.textContent='⏹';};
-   625|    u.onend=u.onerror=function(){stopPage();};
-   626|    window.speechSynthesis.speak(u);
-   627|  }
-   628|
-   629|  function stopPage(){
-   630|    if(audioEl){audioEl.pause();audioEl=null;}
-   631|    if(window.speechSynthesis)window.speechSynthesis.cancel();
-   632|    sp=false;btn.classList.remove('speaking');btn.textContent='🔊';
-   633|  }
-   634|
-   635|  btn.addEventListener('click',function(e){e.stopPropagation();speakPage();});
-   636|  if(btn.textContent.trim()===''||btn.textContent.trim()==='▶')btn.textContent='🔊';
-   637|})();
-   638|</script>
+   572|
    639|</body>
    640|</html>
    641|

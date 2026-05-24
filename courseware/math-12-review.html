@@ -10,6 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<link rel="stylesheet" href="shared/courseware.css">
+
+<script src="shared/courseware.js"></script>
 <style>
 * {
   margin: 0;
@@ -329,8 +332,6 @@ p {
 
 </style>
 
-
-
 </head>
 <body>
 
@@ -350,7 +351,7 @@ p {
         <span class="sub">Final Review</span>
       </h1>
       <div class="image-wrap mt-8">
-        <img src="images/math-12/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="总复习封面" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="总复习封面" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p class="mt-8">一起来复习这学期学过的数学知识吧！<br>Let's review all the math we've learned!</p>
       <div class="spacer"></div>
@@ -365,7 +366,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Counting Review</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="数数复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="数数复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p>还记得数字 1 到 20 吗？数一数下面的小动物！</p>
       <div class="counting-row fade-in">
@@ -406,7 +407,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Addition &amp; Subtraction Review</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="加减法复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="加减法复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p>算一算下面的算式：</p>
       <div class="concept-card fade-in" style="background:#e8f5e9;border-left-color:#66bb6a;">
@@ -443,7 +444,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Comparing Review</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="比多少复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="比多少复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p>比较下面物品的数量和大小：</p>
       <div class="compare-row fade-in">
@@ -490,7 +491,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Shapes Review</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="图形复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="图形复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p>我们学过的图形有哪些？</p>
       <div class="shape-demo fade-in">
@@ -544,7 +545,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Measurement Review</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="测量复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-10.webp" onerror="this.style.display=\'none\'" alt="测量复习" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <p>还记得怎么测量长度吗？选择合适的单位：</p>
       <div class="unit-row fade-in">
@@ -597,7 +598,7 @@ p {
         <br><span style="font-size:16px;font-weight:600;color:#42A5F5;">Mixed Challenge</span>
       </h2>
       <div class="image-wrap">
-        <img src="images/math-12/webp/page-11.webp" onerror="this.style.display=\'none\'" alt="综合挑战" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
+        <img src="images/math-12-review/webp/page-11.webp" onerror="this.style.display=\'none\'" alt="综合挑战" style="width:100%;max-width:400px;border-radius:12px" loading="lazy">
       </div>
       <div class="challenge-box" id="challenge1">
         <h3>🤔 问题 1 · 数数</h3>
@@ -645,7 +646,7 @@ p {
         </h1>
         <div class="score-badge">🎉 数学小达人 🎉</div>
         <div class="image-wrap" style="max-width:280px;">
-          <img src="images/math-12/webp/page-27.webp" onerror="this.style.display=\'none\'" alt="庆祝" style="width:100%;max-width:400px;border-radius:12px;opacity:.6;" loading="lazy">
+          <img src="images/math-12-review/webp/page-27.webp" onerror="this.style.display=\'none\'" alt="庆祝" style="width:100%;max-width:400px;border-radius:12px;opacity:.6;" loading="lazy">
         </div>
         <p style="font-size:15px;color:#78909c;">
           你已经复习了这学期所有的数学知识！<br>
@@ -972,92 +973,6 @@ p {
 })();
 </script>
 
-
-
-<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
-<script>
-(function(){
-  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-  if (!btn) {
-    btn = document.createElement('button');
-    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
-    btn.textContent = '🔊';
-    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
-    document.body.appendChild(btn);
-  }
-  var sp = false, audioEl = null;
-  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
-  var uiv = document.documentElement.lang || 'en-US';
-  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
-
-  function getPageIdx() {
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return -1;
-    var parent = active.parentNode;
-    return Array.prototype.indexOf.call(parent.children, active);
-  }
-
-  function speakPage() {
-    if (sp) { stopPage(); return; }
-    var idx = getPageIdx();
-    if (idx < 0) return;
-
-    // Try MP3 first: audio/COURSENAME/page-N.mp3
-    var mp3Path = 'audio/' + courseName + '/page-' + (idx + 1) + '.mp3';
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    audioEl = new Audio(mp3Path);
-    audioEl.onerror = function() {
-      // MP3 failed → try flat MP3: audio/COURSENAME.mp3 or audio/songname.mp3
-      var flatPath = 'audio/' + courseName + '.mp3';
-      var flatAudio = new Audio(flatPath);
-      flatAudio.onerror = function() {
-        // Both MP3 failed → use speechSynthesis TTS
-        speakTTS();
-      };
-      flatAudio.oncanplaythrough = function() {
-        if (audioEl) audioEl.pause();
-        audioEl = flatAudio;
-        audioEl.play().catch(function(){ speakTTS(); });
-        btn.textContent = '⏹'; btn.classList.add('speaking');
-      };
-      flatAudio.load();
-    };
-    audioEl.oncanplaythrough = function() {
-      audioEl.play();
-      btn.textContent = '⏹'; btn.classList.add('speaking');
-      sp = true;
-      audioEl.onended = function(){ stopPage(); };
-    };
-    audioEl.load();
-  }
-
-  function speakTTS() {
-    if (!window.speechSynthesis) return;
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return;
-    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
-    if (!txt || txt.length < 2) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(txt);
-    u.lang = lang; u.rate = 0.85;
-    u.onstart = function(){ sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
-    u.onend = u.onerror = function(){ stopPage(); };
-    window.speechSynthesis.speak(u);
-  }
-
-  function stopPage() {
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊';
-  }
-
-  btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
-  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
-})();
-</script>
-
-
-
   <!-- Bottom Navigation -->
   <div class="nav-bar">
     <button class="nav-btn" id="prevBtn" onclick="navPrev()">&#9664;</button>
@@ -1067,7 +982,6 @@ p {
   <div style="text-align:center;margin:4px 0 12px">
     <button class="read-btn" onclick="navSpeakCurrentPage()">&#128264; 读给我听</button>
   </div>
-
 
 <script>
 /* Unified nav (added by conversion) - uses unique names to avoid conflicts */

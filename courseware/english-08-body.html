@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<link rel="stylesheet" href="shared/courseware.css">
+
+<script src="shared/courseware.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;background:#e8f5e9}
@@ -140,15 +143,12 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
 </style>
 
-
-
 </head>
 <body>
 
 <div class="slider" id="slider">
 
 <!-- ===== TOP BAR ===== -->
-
 
 <!-- ════════════════════════════════════════════ -->
 <!-- PAGE 1: COVER                                -->
@@ -160,7 +160,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
     <p class="subtitle">身体部位 · Shēntǐ bùwèi</p>
     <div class="emoji-row">👀👂👃👄🖐️🦶</div>
     <div class="img-wrap" style="max-width:280px;aspect-ratio:1/1">
-      <img src="images/english-08/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Body Parts Cover" loading="lazy">
+      <img src="images/english-08-body/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="Body Parts Cover" loading="lazy">
     </div>
     <div class="badge-row">
       <span class="badge">9 Words 📚</span>
@@ -178,7 +178,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 <div class="slide" data-page="2">
   <div class="page-title">🌟 Head &amp; Eyes · 头和眼睛</div>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="Head and Eyes" loading="lazy">
+    <img src="images/english-08-body/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="Head and Eyes" loading="lazy">
   </div>
   <div class="vocab-card" data-word="head">
     <div class="en">head <span class="ipa">/hɛd/</span></div>
@@ -199,7 +199,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 <div class="slide" data-page="3">
   <div class="page-title">🌟 Ears &amp; Nose · 耳朵和鼻子</div>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Ears and Nose" loading="lazy">
+    <img src="images/english-08-body/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="Ears and Nose" loading="lazy">
   </div>
   <div class="vocab-card" data-word="ears">
     <div class="en">ears <span class="ipa">/ɪrz/</span></div>
@@ -220,7 +220,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 <div class="slide" data-page="4">
   <div class="page-title">🌟 Mouth &amp; Hands · 嘴和手</div>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Mouth and Hands" loading="lazy">
+    <img src="images/english-08-body/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="Mouth and Hands" loading="lazy">
   </div>
   <div class="vocab-card" data-word="mouth">
     <div class="en">mouth <span class="ipa">/maʊθ/</span></div>
@@ -241,7 +241,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 <div class="slide" data-page="5">
   <div class="page-title">🌟 Feet &amp; Arms · 脚和手臂</div>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="Feet and Arms" loading="lazy">
+    <img src="images/english-08-body/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="Feet and Arms" loading="lazy">
   </div>
   <div class="vocab-card" data-word="feet">
     <div class="en">feet <span class="ipa">/fiːt/</span></div>
@@ -262,7 +262,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
 <div class="slide" data-page="6">
   <div class="page-title">🌟 Legs &amp; Review · 腿和复习</div>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="Legs Review" loading="lazy">
+    <img src="images/english-08-body/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="Legs Review" loading="lazy">
   </div>
   <div class="vocab-card" data-word="legs">
     <div class="en">legs <span class="ipa">/lɛɡz/</span></div>
@@ -286,7 +286,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   <div class="page-title">📖 Sight Words · 高频词</div>
   <p class="page-subtitle">Short /ɪ/ sound words · 短元音 /ɪ/ 单词</p>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="Sight Words" loading="lazy">
+    <img src="images/english-08-body/webp/page-07.webp" onerror="this.style.display=\'none\'" alt="Sight Words" loading="lazy">
   </div>
   <div class="vocab-card" data-word="in">
     <div class="en">in <span class="ipa">/ɪn/</span></div>
@@ -317,7 +317,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   <div class="page-title">🔊 Short <em>i</em> · 短元音 /ɪ/</div>
   <p class="page-subtitle">Repeat after me! · 跟我读！</p>
   <div class="img-wrap">
-    <img src="images/english-08/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="Phonics Short i" loading="lazy">
+    <img src="images/english-08-body/webp/page-08.webp" onerror="this.style.display=\'none\'" alt="Phonics Short i" loading="lazy">
   </div>
   <div class="vocab-card phonics">
     <div class="en" style="color:#1565c0;font-size:1.8rem;text-align:center">/ɪ/</div>
@@ -354,7 +354,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Nunito',sans-serif
   <p class="page-subtitle" style="margin-bottom:2px">Tap a word → Tap a marker</p>
   <div class="game-area">
     <div class="game-img-wrap">
-      <img src="images/english-08/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="Body Label Game" loading="lazy" id="gameImg">
+      <img src="images/english-08-body/webp/page-09.webp" onerror="this.style.display=\'none\'" alt="Body Label Game" loading="lazy" id="gameImg">
     </div>
   </div>
   <div class="word-choices" id="wordChoices"></div>
@@ -860,91 +860,6 @@ init();
 })();
 </script>
 
-
-
-<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
-<script>
-(function(){
-  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
-  if (!btn) {
-    btn = document.createElement('button');
-    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
-    btn.textContent = '🔊';
-    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
-    document.body.appendChild(btn);
-  }
-  var sp = false, audioEl = null;
-  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
-  var uiv = document.documentElement.lang || 'en-US';
-  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
-
-  function getPageIdx() {
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return -1;
-    var parent = active.parentNode;
-    return Array.prototype.indexOf.call(parent.children, active);
-  }
-
-  function speakPage() {
-    if (sp) { stopPage(); return; }
-    var idx = getPageIdx();
-    if (idx < 0) return;
-
-    // Try MP3 first: audio/COURSENAME/page-N.mp3
-    var mp3Path = 'audio/' + courseName + '/page-' + (idx + 1) + '.mp3';
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    audioEl = new Audio(mp3Path);
-    audioEl.onerror = function() {
-      // MP3 failed → try flat MP3: audio/COURSENAME.mp3 or audio/songname.mp3
-      var flatPath = 'audio/' + courseName + '.mp3';
-      var flatAudio = new Audio(flatPath);
-      flatAudio.onerror = function() {
-        // Both MP3 failed → use speechSynthesis TTS
-        speakTTS();
-      };
-      flatAudio.oncanplaythrough = function() {
-        if (audioEl) audioEl.pause();
-        audioEl = flatAudio;
-        audioEl.play().catch(function(){ speakTTS(); });
-        btn.textContent = '⏹'; btn.classList.add('speaking');
-      };
-      flatAudio.load();
-    };
-    audioEl.oncanplaythrough = function() {
-      audioEl.play();
-      btn.textContent = '⏹'; btn.classList.add('speaking');
-      sp = true;
-      audioEl.onended = function(){ stopPage(); };
-    };
-    audioEl.load();
-  }
-
-  function speakTTS() {
-    if (!window.speechSynthesis) return;
-    var active = document.querySelector('.page.active, .slide.active');
-    if (!active) return;
-    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
-    if (!txt || txt.length < 2) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(txt);
-    u.lang = lang; u.rate = 0.85;
-    u.onstart = function(){ sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
-    u.onend = u.onerror = function(){ stopPage(); };
-    window.speechSynthesis.speak(u);
-  }
-
-  function stopPage() {
-    if (audioEl) { audioEl.pause(); audioEl = null; }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊';
-  }
-
-  btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
-  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
-})();
-</script>
-
-
 <script>
 (function(){
   var sx = 0, sy = 0, swiping = false;
@@ -975,7 +890,6 @@ init();
 })();
 </script>
 
-
   <!-- Bottom Navigation -->
   <div class="nav-bar">
     <button class="nav-btn" id="prevBtn" onclick="navPrev()">&#9664;</button>
@@ -985,7 +899,6 @@ init();
   <div style="text-align:center;margin:4px 0 12px">
     <button class="read-btn" onclick="navSpeakCurrentPage()">&#128264; 读给我听</button>
   </div>
-
 
 <script>
 /* Unified nav (added by conversion) - uses unique names to avoid conflicts */

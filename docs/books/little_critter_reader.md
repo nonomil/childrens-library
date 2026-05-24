@@ -7,7 +7,7 @@
 
 <div id="little_critter-reader" style="max-width: 800px; margin: 0 auto; text-align: center;">
   <div id="page-display" style="position: relative;">
-    <img id="page-img" src="../../images/little_critter/page_01.webp"
+    <img id="page-img" src="../images/little_critter/page_01.webp"
          style="width: 100%; max-width: 700px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); cursor: pointer;"
          onclick="nextPage()" alt="Page">
     <div style="position: absolute; bottom: 12px; right: 12px;
@@ -40,7 +40,7 @@
   </div>
 
   <div style="margin: 24px 0;">
-    <a href="../../pdfs/little_critter.pdf" target="_blank" style="display: inline-block; padding: 12px 28px; background: #ff6f00; color: white; border-radius: 30px; text-decoration: none; font-size: 18px; font-weight: bold;">📥 下载完整PDF</a>
+    <a href="../pdfs/little_critter.pdf" target="_blank" style="display: inline-block; padding: 12px 28px; background: #ff6f00; color: white; border-radius: 30px; text-decoration: none; font-size: 18px; font-weight: bold;">📥 下载完整PDF</a>
   </div>
 </div>
 
@@ -54,7 +54,7 @@ function loadPage(n) {
   const pageNum = document.getElementById('page-num');
   const progress = document.getElementById('progress-bar');
   const input = document.getElementById('page-input');
-  const src = `../../images/little_critter/page_${String(n).padStart(2, '0')}.webp`;
+  const src = `../images/little_critter/page_${String(n).padStart(2, '0')}.webp`;
   if (!imgCache[n]) { const pre = new Image(); pre.src = src; imgCache[n] = pre; }
   img.src = src;
   pageNum.textContent = n;
@@ -63,7 +63,7 @@ function loadPage(n) {
   for (let i = n - 1; i <= n + 1; i++) {
     if (i >= 1 && i <= totalPages && !imgCache[i]) {
       const pre = new Image();
-      pre.src = `../../images/little_critter/page_${String(i).padStart(2, '0')}.webp`;
+      pre.src = `../images/little_critter/page_${String(i).padStart(2, '0')}.webp`;
       imgCache[i] = pre;
     }
   }
