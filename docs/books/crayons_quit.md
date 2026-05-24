@@ -24,6 +24,8 @@ Duncan打开文具盒发现一叠信——蜡笔们写来的！红色抱怨工�
 
 ## 📥 在线阅读/下载
 
+👉 [📖 逐页配图阅读](./crayons_quit_reader.md)
+
 👉 [点击查看PDF全文](../pdfs/crayons_quit.pdf)
 
 !!! warning "版权提示"

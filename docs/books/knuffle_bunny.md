@@ -24,6 +24,8 @@ Trixie和爸爸去洗衣房，她最爱的Knuffle Bunny被一起带去了。回�
 
 ## 📥 在线阅读/下载
 
+👉 [📖 逐页配图阅读](./knuffle_bunny_reader.md)
+
 👉 [点击查看PDF全文](../pdfs/knuffle_bunny.pdf)
 
 !!! warning "版权提示"

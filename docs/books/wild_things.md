@@ -24,6 +24,8 @@ Max穿上狼外套在家里捣蛋，被妈妈罚不准吃晚饭。他的房间�
 
 ## 📥 在线阅读/下载
 
+👉 [📖 逐页配图阅读](./wild_things_reader.md)
+
 👉 [点击查看PDF全文](../pdfs/wild_things.pdf)
 
 !!! warning "版权提示"

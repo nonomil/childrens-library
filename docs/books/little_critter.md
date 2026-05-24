@@ -24,6 +24,8 @@
 
 ## 📥 在线阅读/下载
 
+👉 [📖 逐页配图阅读](./little_critter_reader.md)
+
 👉 [点击查看PDF全文](../pdfs/little_critter.pdf)
 
 !!! warning "版权提示"
