@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI制作有声绘本 — MiniMax语音技术指南</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FDF6E3;
+            --paper: #FFFDF7;
+            --ink: #2C2416;
+            --brown: #8B6914;
+            --olive: #6B7B3E;
+            --sage: #A8B58E;
+            --terracotta: #C75B3E;
+            --gold: #D4A84B;
+            --soft-pink: #E8C4C4;
+            --blue: #4A7C8C;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        
+        /* Flipbook container */
+        .flipbook {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Each page */
+        .page {
+            background: var(--paper);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(44,36,22,0.12), 0 2px 8px rgba(44,36,22,0.08);
+            margin-bottom: 24px;
+            overflow: hidden;
+            position: relative;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-header {
+            padding: 40px 48px 0;
+        }
+        
+        .page-tag {
+            display: inline-block;
+            background: var(--gold);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .page-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 16px 0 8px;
+            line-height: 1.3;
+        }
+        
+        .page-subtitle {
+            color: var(--brown);
+            font-size: 15px;
+        }
+        
+        .page-content {
+            padding: 24px 48px 40px;
+            flex: 1;
+        }
+        
+        /* Cover page */
+        .cover {
+            background: linear-gradient(135deg, #FDF6E3 0%, #F5ECD0 50%, #E8DCC0 100%);
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(212,168,75,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(107,123,62,0.08) 0%, transparent 50%);
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, -10px); }
+        }
+        
+        .cover-emoji {
+            font-size: 80px;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 42px;
+            color: var(--ink);
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover .subtitle {
+            font-size: 18px;
+            color: var(--brown);
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover .start-btn {
+            display: inline-block;
+            background: var(--terracotta);
+            color: white;
+            padding: 14px 48px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(199,91,62,0.3);
+        }
+        
+        /* Comparison table */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        .compare-table th {
+            background: var(--olive);
+            color: white;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .compare-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(107,123,62,0.15);
+        }
+        
+        .compare-table tr:nth-child(even) {
+            background: rgba(107,123,62,0.04);
+        }
+        
+        .compare-table .check { color: var(--olive); font-weight: bold; }
+        .compare-table .tag { 
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .tag-green { background: rgba(107,123,62,0.15); color: var(--olive); }
+        .tag-blue { background: rgba(74,124,140,0.15); color: var(--blue); }
+        .tag-orange { background: rgba(212,168,75,0.2); color: var(--gold); }
+        
+        /* Code block */
+        .code-block {
+            background: #2C2416;
+            color: #FDF6E3;
+            padding: 20px 24px;
+            border-radius: 12px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .code-block .comment { color: #8B6914; }
+        .code-block .string { color: #A8B58E; }
+        .code-block .keyword { color: #C75B3E; }
+        .code-block .function { color: #D4A84B; }
+        
+        /* Feature cards */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+        
+        .feature-card {
+            background: rgba(107,123,62,0.06);
+            border: 1px solid rgba(107,123,62,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            background: rgba(107,123,62,0.1);
+        }
+        
+        .feature-card .icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-card h4 {
+            font-size: 15px;
+            margin-bottom: 6px;
+            color: var(--ink);
+        }
+        
+        .feature-card p {
+            font-size: 13px;
+            color: var(--brown);
+            line-height: 1.6;
+        }
+        
+        /* Flow diagram */
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin: 24px 0;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(107,123,62,0.06);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .flow-step .num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--olive);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .flow-step .text h4 {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+        
+        .flow-step .text p {
+            font-size: 13px;
+            color: var(--brown);
+        }
+        
+        .arrow-down {
+            text-align: center;
+            color: var(--sage);
+            font-size: 20px;
+            margin: -4px 0;
+        }
+        
+        /* Emotion demo */
+        .emotion-demo {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .emotion-chip {
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .emotion-chip:hover {
+            transform: scale(1.05);
+        }
+        
+        .chip-happy { border-color: #D4A84B; background: rgba(212,168,75,0.1); }
+        .chip-angry { border-color: #C75B3E; background: rgba(199,91,62,0.1); }
+        .chip-surprised { border-color: #4A7C8C; background: rgba(74,124,140,0.1); }
+        .chip-gentle { border-color: #8B6914; background: rgba(139,105,20,0.1); }
+        .chip-scared { border-color: #6B7B3E; background: rgba(107,123,62,0.1); }
+        
+        /* Tips */
+        .tip-box {
+            background: linear-gradient(135deg, rgba(212,168,75,0.1), rgba(168,181,142,0.1));
+            border-left: 4px solid var(--gold);
+            padding: 20px 24px;
+            border-radius: 0 12px 12px 0;
+            margin: 20px 0;
+        }
+        
+        .tip-box h4 {
+            color: var(--brown);
+            margin-bottom: 8px;
+        }
+        
+        .tip-box p {
+            color: var(--ink);
+            font-size: 14px;
+        }
+        
+        /* Footer page */
+        .end-page {
+            background: linear-gradient(135deg, #FDF6E3, #F5ECD0);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+        
+        .end-page .big-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        
+        .end-page h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        
+        .end-page p {
+            color: var(--brown);
+            max-width: 400px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .page-header, .page-content { padding-left: 24px; padding-right: 24px; }
+            .page-title { font-size: 24px; }
+            .cover h1 { font-size: 28px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .compare-table { font-size: 12px; }
+            .compare-table th, .compare-table td { padding: 10px 12px; }
+        }
+        
+        h3 { font-family: 'Noto Serif SC', serif; font-size: 20px; margin: 24px 0 12px; color: var(--ink); }
+        p { margin-bottom: 12px; }
+        ul, ol { margin-left: 20px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; }
+        
+        .highlight { background: rgba(212,168,75,0.15); padding: 2px 6px; border-radius: 4px; }
+        
+        /* Scroll reveal */
+        .page { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .page.visible { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="flipbook">
+        <!-- Page 1: Cover -->
+        <div class="page cover">
+            <div class="cover-emoji">🎙️📖</div>
+            <h1>声音居然可以这样捏出来</h1>
+            <p class="subtitle">用 MiniMax AI 语音，5步做出孩子的专属有声绘本</p>
+            <a href="#start" class="start-btn" onclick="document.getElementById('start').scrollIntoView({behavior:'smooth'})">开始学习 →</a>
+        </div>
+        
+        <!-- Page 2: What is it -->
+        <div class="page" id="start">
+            <div class="page-header">
+                <span class="page-tag">01 介绍</span>
+                <h2 class="page-title">什么是有声绘本？</h2>
+                <p class="page-subtitle">不只是"读书"，而是给孩子一场沉浸式的故事体验</p>
+            </div>
+            <div class="page-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="icon">👩‍👧</div>
+                        <h4>多角色声音</h4>
+                        <p>每个角色都有独特的声音，兔子、狐狸、熊，一听就能分辨</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🎭</div>
+                        <h4>情绪表达</h4>
+                        <p>同一句台词，开心版、生气版、惊讶版，声音完全不一样</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🎵</div>
+                        <h4>背景音乐</h4>
+                        <p>描述一下场景氛围，AI自动生成适配的背景音乐</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">👨‍👩‍👧</div>
+                        <h4>父母声音</h4>
+                        <p>录制30秒自己的声音，AI克隆，孩子听到的是爸妈讲故事</p>
+                    </div>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>💡 核心优势</h4>
+                    <p>不需要配音演员，不需要录音棚。输入几句提示词，AI给你生成，试听，保存，完事。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 3: Tools Comparison -->
+        <div class="page">
+            <div class="page-header">
+                <span class="page-tag">02 工具选择</span>
+                <h2 class="page-title">语音工具对比</h2>
+                <p class="page-subtitle">选对工具，事半功倍</p>
+            </div>
+            <div class="page-content">
+                <table class="compare-table">
+                    <tr>
+                        <th>工具</th>
+                        <th>中文能力</th>
+                        <th>情绪控制</th>
+                        <th>声音克隆</th>
+                        <th>适用场景</th>
+                    </tr>
+                    <tr>
+                        <td><strong>MiniMax</strong></td>
+                        <td class="check">⭐⭐⭐⭐⭐</td>
+                        <td class="check">⭐⭐⭐⭐⭐</td>
+                        <td class="check">✅</td>
+                        <td><span class="tag tag-green">中文绘本首选</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>ElevenLabs</strong></td>
+                        <td class="check">⭐⭐⭐</td>
+                        <td class="check">⭐⭐⭐⭐</td>
+                        <td class="check">✅</td>
+                        <td><span class="tag tag-blue">英文内容</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Azure TTS</strong></td>
+                        <td class="check">⭐⭐⭐⭐</td>
+                        <td class="check">⭐⭐⭐⭐</td>
+                        <td>❌</td>
+                        <td><span class="tag tag-orange">企业应用</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>OpenAI TTS</strong></td>
+                        <td class="check">⭐⭐⭐</td>
+                        <td class="check">⭐⭐⭐</td>
+                        <td>❌</td>
+                        <td><span class="tag tag-green">快速原型</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Edge TTS</strong></td>
+                        <td class="check">⭐⭐⭐⭐</td>
+                        <td class="check">⭐⭐</td>
+                        <td>❌</td>
+                        <td><span class="tag tag-blue">免费离线</span></td>
+                    </tr>
+                </table>
+                
+                <div class="tip-box">
+                    <h4>🎯 推荐</h4>
+                    <p>中文有声绘本首选 <strong>MiniMax</strong>，情绪表达最丰富，对中文语境的理解最好。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 4: Workflow -->
+        <div class="page">
+            <div class="page-header">
+                <span class="page-tag">03 制作流程</span>
+                <h2 class="page-title">5步制作流程</h2>
+                <p class="page-subtitle">从剧本到有声绘本，一步一步来</p>
+            </div>
+            <div class="page-content">
+                <div class="flow-container">
+                    <div class="flow-step">
+                        <div class="num">1</div>
+                        <div class="text">
+                            <h4>写剧本</h4>
+                            <p>分角色对话 + 旁白 + 场景描述，标注每个角色的情绪</p>
+                        </div>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="flow-step">
+                        <div class="num">2</div>
+                        <div class="text">
+                            <h4>分配声音</h4>
+                            <p>为每个角色选择 voice_id，或克隆自己的声音</p>
+                        </div>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="flow-step">
+                        <div class="num">3</div>
+                        <div class="text">
+                            <h4>生成语音</h4>
+                            <p>逐句调用 TTS，注意情绪标记和语速调节</p>
+                        </div>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="flow-step">
+                        <div class="num">4</div>
+                        <div class="text">
+                            <h4>生成BGM</h4>
+                            <p>描述场景氛围，AI自动生成背景音乐</p>
+                        </div>
+                    </div>
+                    <div class="arrow-down">↓</div>
+                    <div class="flow-step">
+                        <div class="num">5</div>
+                        <div class="text">
+                            <h4>合成发布</h4>
+                            <p>用 ffmpeg 混合语音和BGM，嵌入 HTML 翻页绘本</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 5: Emotion Control -->
+        <div class="page">
+            <div class="page-header">
+                <span class="page-tag">04 情绪控制</span>
+                <h2 class="page-title">情绪让角色活起来</h2>
+                <p class="page-subtitle">同一句台词，5种不同的情绪表达</p>
+            </div>
+            <div class="page-content">
+                <p>孩子会不会入戏，差就差在声音的情绪上。</p>
+                
+                <h3>演示：「你怎么能这样！」</h3>
+                <div class="emotion-demo">
+                    <span class="emotion-chip chip-happy">😊 开心地 — 调皮玩笑</span>
+                    <span class="emotion-chip chip-angry">😠 生气地 — 真的生气了</span>
+                    <span class="emotion-chip chip-surprised">😲 惊讶地 — 不敢相信</span>
+                    <span class="emotion-chip chip-gentle">🥺 委屈地 — 快哭了</span>
+                    <span class="emotion-chip chip-scared">😨 害怕地 — 瑟瑟发抖</span>
+                </div>
+                
+                <h3>代码示例</h3>
+                <div class="code-block">
+<span class="comment"># 为同一句台词生成不同情绪的版本</span>
+text = <span class="string">"你怎么能这样！"</span>
+
+emotions = {<br>
+    <span class="string">"happy"</span>: <span class="string">"开心地笑着说："</span> + text,<br>
+    <span class="string">"angry"</span>: <span class="string">"生气地大声说："</span> + text,<br>
+    <span class="string">"surprised"</span>: <span class="string">"惊讶地捂住嘴："</span> + text,<br>
+    <span class="string">"sad"</span>: <span class="string">"委屈地低下头："</span> + text,<br>
+    <span class="string">"scared"</span>: <span class="string">"害怕地往后退："</span> + text,<br>
+}<br><br>
+
+<span class="keyword">for</span> emotion, prompt <span class="keyword">in</span> emotions.items():<br>
+    <span class="function">minimax_tts</span>(prompt, voice_id=<span class="string">"female-01"</span>, <br>
+                 output=<span class="string">f"{emotion}.mp3"</span>)
+                </div>
+                
+                <div class="tip-box">
+                    <h4>🎭 技巧</h4>
+                    <p>在文本前加情绪副词（<span class="highlight">"开心地"</span>、<span class="highlight">"生气地"</span>、<span class="highlight">"惊讶地"</span>），AI会自动调整语调和节奏。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 6: Complete Code -->
+        <div class="page">
+            <div class="page-header">
+                <span class="page-tag">05 完整代码</span>
+                <h2 class="page-title">一键生成有声绘本</h2>
+                <p class="page-subtitle">Python + MiniMax API，30行代码搞定</p>
+            </div>
+            <div class="page-content">
+                <div class="code-block">
+<span class="keyword">import</span> requests<br><br>
+<span class="keyword">class</span> <span class="function">VoiceBook</span>:<br>
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, api_key):<br>
+        self.headers = {<br>
+            <span class="string">"Authorization"</span>: <span class="string">f"Bearer {api_key}"</span>,<br>
+            <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span><br>
+        }<br><br>
+    <br>
+    <span class="keyword">def</span> <span class="function">tts</span>(self, text, voice_id, output):<br>
+        <span class="string">"""生成单句语音"""</span><br>
+        url = <span class="string">"https://api.minimax.chat/v1/t2a_v2"</span><br>
+        payload = {<br>
+            <span class="string">"model"</span>: <span class="string">"speech-01"</span>,<br>
+            <span class="string">"text"</span>: text,<br>
+            <span class="string">"voice_id"</span>: voice_id<br>
+        }<br>
+        resp = requests.post(url, headers=self.headers, json=payload)<br>
+        audio_url = resp.json()[<span class="string">"audio_url"</span>]<br>
+        <span class="comment"># 下载并保存</span><br>
+        <span class="keyword">open</span>(output, <span class="string">"wb"</span>).write(requests.get(audio_url).content)<br>
+        <br>
+    <span class="keyword">def</span> <span class="function">bgm</span>(self, desc, duration, output):<br>
+        <span class="string">"""生成背景音乐"""</span><br>
+        url = <span class="string">"https://api.minimax.chat/v1/music_generation"</span><br>
+        payload = {<br>
+            <span class="string">"description"</span>: desc,<br>
+            <span class="string">"duration"</span>: duration<br>
+        }<br>
+        resp = requests.post(url, headers=self.headers, json=payload)<br>
+        audio_url = resp.json()[<span class="string">"audio_url"</span>]<br>
+        <span="open"(output, "wb").write(requests.get(audio_url).content)>
+                </div>
+                
+                <div class="tip-box">
+                    <h4>🚀 下一步</h4>
+                    <p>获取 MiniMax API Key → 安装 <code>requests</code> → 运行代码 → 生成你的第一本有声绘本！</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 7: Tips -->
+        <div class="page">
+            <div class="page-header">
+                <span class="page-tag">06 实用技巧</span>
+                <h2 class="page-title">让效果更好的小技巧</h2>
+            </div>
+            <div class="page-content">
+                <h3>🎯 语速调节</h3>
+                <ul>
+                    <li><strong>小孩角色</strong>：speed 0.85，慢一点更可爱</li>
+                    <li><strong>旁白</strong>：speed 1.0，正常速度</li>
+                    <li><strong>紧张场景</strong>：speed 1.2，加快制造紧张感</li>
+                </ul>
+                
+                <h3>🎭 声音克隆技巧</h3>
+                <ul>
+                    <li>录制 <strong>30秒以上</strong> 的清晰音频</li>
+                    <li>环境要安静，不要背景音乐</li>
+                    <li>用日常讲故事的语气，不要太刻意</li>
+                    <li>克隆后先试几句，不自然就重录</li>
+                </ul>
+                
+                <h3>🎵 BGM 描述技巧</h3>
+                <ul>
+                    <li>描述 <strong>场景 + 乐器 + 情绪</strong>，如"温馨森林冒险，轻柔钢琴，梦幻"</li>
+                    <li>时长建议 <strong>30-60秒</strong>，循环播放</li>
+                    <li>混合时BGM音量降到 <strong>20%</strong>，不要盖过人声</li>
+                </ul>
+                
+                <div class="tip-box">
+                    <h4>⚠️ 注意</h4>
+                    <p>API 调用有费用，大量生成前先小规模测试。MiniMax 新用户通常有免费额度。</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Page 8: End -->
+        <div class="page end-page">
+            <div class="big-emoji">🎉📚🎙️</div>
+            <h2>开始制作你的有声绘本吧！</h2>
+            <p>用AI的声音，给孩子讲一个温暖的故事。<br>不需要专业设备，不需要配音演员，<br>你就是你孩子最好的故事讲述者。</p>
+        </div>
+    </div>
+    
+    <script>
+        // Scroll reveal animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        document.querySelectorAll('.page').forEach(page => {
+            observer.observe(page);
+        });
+        
+        // Emotion chip click feedback
+        document.querySelectorAll('.emotion-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.style.transform = 'scale(0.95)';
+                setTimeout(() => chip.style.transform = 'scale(1.05)', 150);
+            });
+        });
+    </script>
+</body>
+</html>
