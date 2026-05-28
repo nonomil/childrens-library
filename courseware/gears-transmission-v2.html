@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 html{scroll-behavior:smooth}
 body{font-family:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#faf5f0;min-height:100vh;color:#334155;overflow:hidden;line-height:1.7;font-size:16px}
-canvas{display:block;touch-action:none;cursor:grab}
+canvas{display:block;touch-action:none;cursor:grab;width:100%}
 canvas:active{cursor:grabbing}
 
 /* ===== PAGE CONTAINER ===== */
@@ -1806,15 +1806,26 @@ function boot() {
   document.getElementById('heroSubtitle').textContent = TEMPLATE_CONFIG.topic.subtitle;
   document.title = TEMPLATE_CONFIG.topic.title;
 
-  // Build DOM
+  // Build DOM (structure only, no canvas init yet)
   buildKnowledgeSections();
   buildGameSections();
+  buildSummary();
+
+  // Prep hero page - must be first in the navigation
+  const heroSection = document.getElementById('hero');
+  if (heroSection && !allSections.includes(heroSection)) {
+    allSections.unshift(heroSection);
+  }
+
+  // Page navigation (wraps all sections into .page-container with .page class)
+  // MUST run before canvas init so getBoundingClientRect() returns correct dimensions
+  createPageNav();
 
   // Init hero
   initHeroGears();
   initHeroParticles();
 
-  // Init knowledge sections
+  // Init knowledge sections (canvases now have correct page layout)
   initGearBasics();
   initGearPair();
   initChainDrive();
@@ -1831,18 +1842,6 @@ function boot() {
   initGamePuzzle();
   initGameFind();
   initGameBuild();
-
-  // Summary
-  buildSummary();
-
-  // Prep hero page - must be first in the navigation
-  const heroSection = document.getElementById('hero');
-  if (heroSection && !allSections.includes(heroSection)) {
-    allSections.unshift(heroSection);
-  }
-
-  // Page navigation (must be last - wraps all sections)
-  createPageNav();
 }
 
 document.addEventListener('DOMContentLoaded', boot);
