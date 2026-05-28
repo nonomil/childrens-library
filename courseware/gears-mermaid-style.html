@@ -531,7 +531,34 @@
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.2); }
         }
-    </style>
+    
+        .nav-arrow {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 999;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: rgba(0,0,0,0.2);
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .nav-arrow:hover { color: rgba(0,0,0,0.6); background: rgba(0,0,0,0.06); }
+        .nav-prev { left: 8px; }
+        .nav-next { right: 8px; }
+        @media (max-width: 600px) {
+            .nav-arrow { width: 36px; height: 36px; font-size: 24px; }
+            .nav-prev { left: 2px; }
+            .nav-next { right: 2px; }
+        }
+</style>
 </head>
 <body>
     <div id="book-container">
@@ -834,6 +861,8 @@
     </div>
 
     <!-- Loading indicator -->
+        <div class="nav-arrow nav-prev" onclick="$('#book').turn('previous')" title="上一页">‹</div>
+    <div class="nav-arrow nav-next" onclick="$('#book').turn('next')" title="下一页">›</div>
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
     <script>
@@ -923,6 +952,24 @@
             }
             // Init on ready, re-init on resize/orientation change
             initBook();
+            // Keyboard navigation
+            $(document).on('keydown', function(e) {
+                if (e.key === 'ArrowLeft') { $('#book').turn('previous'); e.preventDefault(); }
+                if (e.key === 'ArrowRight') { $('#book').turn('next'); e.preventDefault(); }
+            });
+            
+            // Touch swipe
+            var _touchStartX = 0;
+            $('#book').on('touchstart', function(e) {
+                _touchStartX = e.originalEvent.touches[0].pageX;
+            });
+            $('#book').on('touchend', function(e) {
+                var dx = e.originalEvent.changedTouches[0].pageX - _touchStartX;
+                if (Math.abs(dx) > 50) {
+                    if (dx < 0) $('#book').turn('next');
+                    else $('#book').turn('previous');
+                }
+            });
             var _resizeTimer;
             $(window).on('resize', function() {
                 clearTimeout(_resizeTimer);
