@@ -1753,10 +1753,11 @@ function createPageNav() {
     container.appendChild(s);
   });
   totalPages = allSections.length;
- // Rebuild body
+  // Insert container at top of body, remove old nav-dots
   const body = document.body;
-  body.innerHTML = '';
-  body.appendChild(container);
+  const oldNav = document.getElementById('navDots');
+  if (oldNav) oldNav.remove();
+  body.insertBefore(container, body.firstChild);
   // Bottom nav bar
   const nav = document.createElement('div');
   nav.className = 'page-nav';
