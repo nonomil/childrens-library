@@ -52,6 +52,19 @@ canvas:active{cursor:grabbing}
 
 /* ===== SECTION BASE ===== */
 .section{min-height:auto;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:1;transform:translateY(0);transition:opacity .8s ease,transform .8s ease}
+/* Alternating page backgrounds for visual variety */
+.page:nth-child(odd):not(:first-of-type){background:linear-gradient(180deg,rgba(26,54,93,0.02) 0%,#faf5f0 40%)}
+.page:nth-child(even):not(:first-of-type){background:linear-gradient(180deg,rgba(217,119,6,0.02) 0%,#faf5f0 40%)}
+.page:nth-child(n+8){background:linear-gradient(180deg,rgba(74,124,89,0.02) 0%,#faf5f0 40%)}
+/* Hero page - full screen, no padding */
+.page:first-of-type{padding:0;overflow:hidden}
+/* Knowledge section pages get a subtle accent top bar */
+.page:nth-child(odd):not(:first-of-type){background:linear-gradient(180deg,rgba(26,54,93,0.02) 0%,#faf5f0 40%)}
+.page:nth-child(even):not(:first-of-type){background:linear-gradient(180deg,rgba(217,119,6,0.02) 0%,#faf5f0 40%)}
+/* Game section pages */
+.page:nth-child(n+8){background:linear-gradient(180deg,rgba(74,124,89,0.02) 0%,#faf5f0 40%)}
+/* Hero page full-screen */
+.page:first-of-type{padding:0;overflow:hidden}
 .section.scrolled-in{opacity:1;transform:translateY(0)}
 .section-inner{width:100%;max-width:760px}
 
@@ -1821,6 +1834,12 @@ function boot() {
 
   // Summary
   buildSummary();
+
+  // Prep hero page - must be first in the navigation
+  const heroSection = document.getElementById('hero');
+  if (heroSection && !allSections.includes(heroSection)) {
+    allSections.unshift(heroSection);
+  }
 
   // Page navigation (must be last - wraps all sections)
   createPageNav();
