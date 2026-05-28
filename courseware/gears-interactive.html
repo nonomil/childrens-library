@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gear Physics Demo</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#FFF8F0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:16px}
+  h1{font-size:clamp(1.2rem,4vw,1.8rem);color:#333;margin-bottom:8px;text-align:center}
+  .card{background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.08);padding:16px;width:100%;max-width:800px;margin-bottom:12px}
+  canvas{display:block;width:100%;border-radius:12px;cursor:grab;touch-action:none}
+  canvas:active{cursor:grabbing}
+  .controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:center}
+  .control-group{display:flex;align-items:center;gap:6px;font-size:.85rem;color:#555}
+  .control-group label{font-weight:600}
+  input[type=range]{-webkit-appearance:none;width:120px;height:6px;border-radius:3px;background:#e0e0e0;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#FF6B35;cursor:pointer}
+  button{border:none;padding:8px 18px;border-radius:20px;font-size:.85rem;font-weight:600;cursor:pointer;transition:transform .1s}
+  button:active{transform:scale(.95)}
+  .btn-dir{background:#2196F3;color:#fff}
+  .btn-reset{background:#FF6B35;color:#fff}
+  #ratio-display{font-size:clamp(1rem,3vw,1.3rem);font-weight:700;color:#FF6B35;text-align:center;padding:6px}
+  .info{font-size:.78rem;color:#999;text-align:center;margin-top:4px}
+</style>
+</head>
+<body>
+<h1>⚙️ Gear Physics Lab</h1>
+<div class="card">
+  <canvas id="gc"></canvas>
+</div>
+<div id="ratio-display">Ratio: 24:12 (2:1)</div>
+<div class="card">
+  <div class="controls">
+    <div class="control-group">
+      <label>Small gear teeth:</label>
+      <input type="range" id="teeth-slider" min="7" max="20" value="12">
+      <span id="teeth-val">12</span>
+    </div>
+    <div class="control-group">
+      <label>Direction:</label>
+      <button class="btn-dir" id="dir-btn">CW ↻</button>
+    </div>
+    <div class="control-group">
+      <button class="btn-reset" id="reset-btn">Reset</button>
+    </div>
+  </div>
+  <div class="info">Drag the orange gear to spin • Watch the teal gear follow!</div>
+</div>
+
+<script>
+(function(){
+const SUN_TEETH = 24;
+let followerTeeth = 12;
+let ratio = SUN_TEETH / followerTeeth;
+let dir = 1; // 1=CW, -1=CCW
+
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+const slider = document.getElementById('teeth-slider');
+const teethVal = document.getElementById('teeth-val');
+const dirBtn = document.getElementById('dir-btn');
+const resetBtn = document.getElementById('reset-btn');
+const ratioDisplay = document.getElementById('ratio-display');
+
+let W, H, dpr;
+let sunAngle = 0, followerAngle = 0;
+let dragging = false, dragStart = null, lastAngle = null;
+let angularVel = 0;
+let sparkles = [];
+let blinkTimer = 0, blinkState = 0, nextBlink = 3000 + Math.random()*2000;
+let lastTime = 0;
+
+function resize(){
+  dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;
+  H = Math.min(W * 0.7, 420);
+  canvas.style.height = H + 'px';
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+const sunR = () => Math.min(W, H) * 0.22;
+const followerR = () => sunR() * (followerTeeth / SUN_TEETH);
+const toothH = () => sunR() * 0.12;
+
+function sunCenter(){ return { x: W*0.38, y: H*0.5 }; }
+function followerCenter(){ return { x: sunCenter().x + sunR() + followerR() + toothH()*0.5, y: H*0.5 }; }
+
+function drawGear(cx, cy, radius, teeth, angle, colors, isSun){
+  const th = toothH();
+  const outerR = radius + th;
+  const innerR = radius - th * 0.6;
+  const eyeR = radius * 0.28;
+  const pupilR = eyeR * 0.45;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+
+  // Teeth
+  ctx.beginPath();
+  for(let i=0;i<teeth;i++){
+    const a1 = (i/teeth)*Math.PI*2;
+    const a2 = ((i+0.35)/teeth)*Math.PI*2;
+    const a3 = ((i+0.65)/teeth)*Math.PI*2;
+    const a4 = ((i+1)/teeth)*Math.PI*2;
+    if(i===0) ctx.moveTo(Math.cos(a1)*innerR, Math.sin(a1)*innerR);
+    ctx.lineTo(Math.cos(a2)*outerR, Math.sin(a2)*outerR);
+    ctx.lineTo(Math.cos(a3)*outerR, Math.sin(a3)*outerR);
+    ctx.lineTo(Math.cos(a4)*innerR, Math.sin(a4)*innerR);
+  }
+  ctx.closePath();
+  const grad = ctx.createRadialGradient(0,0,0,0,0,outerR);
+  grad.addColorStop(0, colors[0]);
+  grad.addColorStop(1, colors[1]);
+  ctx.fillStyle = grad;
+  ctx.fill();
+  ctx.strokeStyle = colors[2] || 'rgba(0,0,0,0.1)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Inner circle
+  ctx.beginPath();
+  ctx.arc(0, 0, radius*0.65, 0, Math.PI*2);
+  ctx.fillStyle = colors[1];
+  ctx.fill();
+
+  // Mark line on follower
+  if(!isSun){
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(radius*0.65, 0);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  }
+
+  // Center hub
+  ctx.beginPath();
+  ctx.arc(0,0,radius*0.12,0,Math.PI*2);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.restore();
+
+  // Eyes (drawn without rotation so they stay upright-ish)
+  if(eyeR > 6){
+    const eyeOff = radius * 0.22;
+    for(let side=-1;side<=1;side+=2){
+      const ex = cx + side * eyeOff;
+      const ey = cy - radius * 0.15;
+      const blink = blinkState > 0 ? 0.1 : 1;
+      ctx.beginPath();
+      ctx.ellipse(ex, ey, eyeR, eyeR * blink, 0, 0, Math.PI*2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      if(blink > 0.5){
+        ctx.beginPath();
+        ctx.arc(ex + side*2, ey+1, pupilR, 0, Math.PI*2);
+        ctx.fillStyle = '#333';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(ex + side*2 + 1, ey - 1, pupilR*0.3, 0, Math.PI*2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
+    }
+  }
+}
+
+function drawChain(){
+  const sc = sunCenter(), fc = followerCenter();
+  const sr = sunR(), fr = followerR(), th = toothH();
+  const outerSR = sr + th, outerFR = fr + th;
+  const angle = Math.atan2(fc.y - sc.y, fc.x - sc.x);
+
+  ctx.save();
+  ctx.strokeStyle = 'rgba(120,120,120,0.35)';
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6,4]);
+  ctx.beginPath();
+  // top
+  const topAngle = angle - Math.PI/2;
+  ctx.moveTo(sc.x + Math.cos(topAngle)*(sr-2), sc.y + Math.sin(topAngle)*(sr-2));
+  ctx.lineTo(fc.x + Math.cos(topAngle)*(fr-2), fc.y + Math.sin(topAngle)*(fr-2));
+  // bottom
+  const botAngle = angle + Math.PI/2;
+  ctx.moveTo(sc.x + Math.cos(botAngle)*(sr-2), sc.y + Math.sin(botAngle)*(sr-2));
+  ctx.lineTo(fc.x + Math.cos(botAngle)*(fr-2), fc.y + Math.sin(botAngle)*(fr-2));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function spawnSparkle(x,y){
+  for(let i=0;i<4;i++){
+    sparkles.push({
+      x: x + (Math.random()-0.5)*20,
+      y: y + (Math.random()-0.5)*20,
+      vx: (Math.random()-0.5)*3,
+      vy: (Math.random()-0.5)*3 - 1,
+      life: 1,
+      size: 2+Math.random()*3,
+      color: ['#FFD700','#FF6B35','#FF8C42','#FFA500'][Math.floor(Math.random()*4)]
+    });
+  }
+}
+
+function drawSparkles(){
+  for(let i=sparkles.length-1;i>=0;i--){
+    const s = sparkles[i];
+    s.x += s.vx;
+    s.y += s.vy;
+    s.vy += 0.05;
+    s.life -= 0.02;
+    if(s.life<=0){sparkles.splice(i,1);continue;}
+    ctx.save();
+    ctx.globalAlpha = s.life;
+    ctx.fillStyle = s.color;
+    ctx.beginPath();
+    // star shape
+    const spikes = 4;
+    const outer = s.size, inner = s.size*0.4;
+    for(let j=0;j<spikes*2;j++){
+      const r = j%2===0?outer:inner;
+      const a = (j/(spikes*2))*Math.PI*2 - Math.PI/2;
+      if(j===0) ctx.moveTo(s.x+Math.cos(a)*r, s.y+Math.sin(a)*r);
+      else ctx.lineTo(s.x+Math.cos(a)*r, s.y+Math.sin(a)*r);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function angleFromCenter(cx,cy){
+  const rect = canvas.getBoundingClientRect();
+  return Math.atan2(
+    (eventY - rect.top) - cy,
+    (eventX - rect.left) - cx
+  );
+}
+
+let eventX=0, eventY=0;
+function getPos(e){
+  const t = e.touches ? e.touches[0] : e;
+  eventX = t.clientX;
+  eventY = t.clientY;
+}
+
+function onDown(e){
+  e.preventDefault();
+  getPos(e);
+  const sc = sunCenter();
+  const rect = canvas.getBoundingClientRect();
+  const dx = eventX - rect.left - sc.x;
+  const dy = eventY - rect.top - sc.y;
+  if(Math.sqrt(dx*dx+dy*dy) < sunR() + toothH()){
+    dragging = true;
+    lastAngle = Math.atan2(dy, dx);
+    angularVel = 0;
+  }
+}
+function onMove(e){
+  if(!dragging) return;
+  e.preventDefault();
+  getPos(e);
+  const sc = sunCenter();
+  const rect = canvas.getBoundingClientRect();
+  const dx = eventX - rect.left - sc.x;
+  const dy = eventY - rect.top - sc.y;
+  const a = Math.atan2(dy, dx);
+  let delta = a - lastAngle;
+  if(delta > Math.PI) delta -= Math.PI*2;
+  if(delta < -Math.PI) delta += Math.PI*2;
+  sunAngle += delta;
+  angularVel = delta;
+  lastAngle = a;
+  spawnSparkle(
+    sc.x + Math.cos(a)*(sunR()+toothH()*0.5),
+    sc.y + Math.sin(a)*(sunR()+toothH()*0.5)
+  );
+}
+function onUp(){ dragging = false; }
+
+canvas.addEventListener('mousedown', onDown);
+canvas.addEventListener('mousemove', onMove);
+canvas.addEventListener('mouseup', onUp);
+canvas.addEventListener('mouseleave', onUp);
+canvas.addEventListener('touchstart', onDown, {passive:false});
+canvas.addEventListener('touchmove', onMove, {passive:false});
+canvas.addEventListener('touchend', onUp);
+
+slider.addEventListener('input', function(){
+  followerTeeth = parseInt(this.value);
+  teethVal.textContent = followerTeeth;
+  ratio = SUN_TEETH / followerTeeth;
+  updateRatio();
+});
+
+dirBtn.addEventListener('click', function(){
+  dir = -dir;
+  this.textContent = dir===1 ? 'CW ↻' : 'CCW ↺';
+});
+
+resetBtn.addEventListener('click', function(){
+  sunAngle = 0;
+  followerAngle = 0;
+  angularVel = 0;
+  sparkles = [];
+  followerTeeth = 12;
+  slider.value = 12;
+  teethVal.textContent = 12;
+  ratio = SUN_TEETH / followerTeeth;
+  dir = 1;
+  dirBtn.textContent = 'CW ↻';
+  updateRatio();
+});
+
+function updateRatio(){
+  const g = gcd(SUN_TEETH, followerTeeth);
+  const a = SUN_TEETH/g, b = followerTeeth/g;
+  ratioDisplay.textContent = `Ratio: ${SUN_TEETH}:${followerTeeth} (${a}:${b})`;
+}
+function gcd(a,b){ return b===0?a:gcd(b,a%b); }
+updateRatio();
+
+function frame(t){
+  const dt = lastTime ? (t - lastTime) : 16;
+  lastTime = t;
+
+  // Blink logic
+  blinkTimer += dt;
+  if(blinkTimer >= nextBlink){
+    blinkState = 1;
+    blinkTimer = 0;
+    nextBlink = 3000 + Math.random()*2000;
+  }
+  if(blinkState > 0 && blinkTimer > 200){
+    blinkState = 0;
+  }
+
+  // Easing
+  if(!dragging){
+    sunAngle += angularVel;
+    angularVel *= 0.96;
+    if(Math.abs(angularVel) < 0.0001) angularVel = 0;
+  }
+
+  followerAngle = -sunAngle * ratio * dir;
+
+  const sc = sunCenter(), fc = followerCenter();
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0, '#FFF8F0');
+  bg.addColorStop(1, '#FFF0E0');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  drawChain();
+  drawSparkles();
+  drawGear(sc.x, sc.y, sunR(), SUN_TEETH, sunAngle, ['#FF6B35','#FF8C42','rgba(0,0,0,0.08)'], true);
+  drawGear(fc.x, fc.y, followerR(), followerTeeth, followerAngle, ['#2196F3','#64B5F6','rgba(0,0,0,0.08)'], false);
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+})();
+</script>
+</body>
+</html>
