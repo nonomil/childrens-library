@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>田园乐</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#0B1026 0%,#1a237e 50%,#0B1026 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,215,0,0.2);margin-bottom:16px;border:1px solid rgba(255,215,0,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#FFD700;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,215,0,0.5)}
+.cover-subtitle{color:#B0C4DE;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#FFD700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(255,215,0,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(255,215,0,0.3)}
+.btn{background:linear-gradient(135deg,#FFD700,#FFA500);color:#0B1026;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,215,0,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#4FC3F7,#0288D1);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700}
+.dialogue-name{font-weight:700;color:#FFD700;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#FFD700;background:rgba(255,215,0,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFD700}
+.poem-explain{font-size:14px;color:#B0C4DE;padding:8px 0}
+.star{position:fixed;pointer-events:none;animation:twinkle 2s infinite}
+@keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🌸</div>
+    <h1 class="cover-title">田园乐</h1>
+    <p class="cover-subtitle">像自然一样慢慢来，不着急</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始学习</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'space',
+  title: '田园乐',
+  subtitle: '像自然一样慢慢来，不着急',
+  colors: {
+    primary: '#0B1026',
+    secondary: '#1a237e',
+    accent: '#FFD700',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🌸', '🌺', '🌿', '🐦', '⭐', '🍃']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">🌟 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#B0C4DE">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#B0C4DE">像自然一样慢慢来，不着急。美好的事都需要时间，我们要学会欣赏生活中的小美好！</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'poem') {
+      s.lines.forEach(line => {
+        html += `<div class="poem-line">${line}</div>`;
+      });
+      if (s.explain) html += `<div class="poem-explain">${s.explain}</div>`;
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        } else if (block.type === 'poem') {
+          block.lines.forEach(line => {
+            html += `<div class="poem-line">${line}</div>`;
+          });
+          if (block.explain) html += `<div class="poem-explain">${block.explain}</div>`;
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '"桃红复含宿雨"是什么意思？',
+      options: ['桃花红红的，花瓣里藏着昨晚的雨滴小水珠', '桃花是白色的', '桃花已经谢了', '桃花在晚上开'],
+      answer: 0
+    },
+    {
+      question: '花瓣落在地上，小朋友（家童）怎么做？',
+      options: ['马上扫掉', '还不舍得扫掉，让它们当花地毯', '踩在上面', '捡起来'],
+      answer: 1
+    },
+    {
+      question: '这首诗告诉我们什么道理？',
+      options: ['要很快', '像自然一样慢慢来，不着急，美好的事都需要时间', '要睡觉', '要扫地'],
+      answer: 1
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 20; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.innerHTML = '✦';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.fontSize = (Math.random() * 12 + 8) + 'px';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    star.style.color = TEMPLATE_CONFIG.colors.accent;
+    container.appendChild(star);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '📜',
+      title: '诗句欣赏',
+      type: 'poem',
+      lines: ['桃红复含宿雨，', '柳绿更带朝烟。', '花落家童未扫，', '莺啼山客犹眠。'],
+      explain: '王维（唐朝）——会画画的诗人'
+    },
+    {
+      emoji: '🔍',
+      title: '逐句解读',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '🌸 <strong>"桃红复含宿雨"</strong> = 桃花红红的，花瓣里藏着昨晚的雨滴小水珠。' },
+        { type: 'text', content: '🌿 <strong>"柳绿更带朝烟"</strong> = 柳树绿绿的，叶子上飘着早晨的雾气轻纱。' },
+        { type: 'text', content: '🍂 <strong>"花落家童未扫"</strong> = 花瓣轻轻落在地上，小朋友（家童）还不舍得扫掉，让它们当花地毯。' },
+        { type: 'text', content: '🐦 <strong>"莺啼山客犹眠"</strong> = 小鸟"叽叽"唱歌的时候，诗人还在被窝里做甜甜的梦呢。' }
+      ]
+    },
+    {
+      emoji: '👨‍🏫',
+      title: '诗人小档案',
+      type: 'text',
+      content: '王维——唐代诗人、画家，住在美丽的山里，喜欢写大自然和安静的生活。<br><br>他特别会观察身边的小事物，把看到的画面写成了诗。人们叫他"诗佛"。'
+    },
+    {
+      emoji: '🐰',
+      title: '小故事',
+      type: 'text',
+      content: '早上，小兔子蹦蹦跳跳来到花园，发现桃花瓣上挂着露珠。<br><br>"这是昨晚星星哭的眼泪吗？"她轻轻碰了碰，露珠"咕噜"滚下来，吓得蚯蚓钻进土里。<br><br>这时屋里传来呼噜声——原来诗人叔叔还在睡懒觉！<br><br>小兔子捂着嘴笑："原来大人也会错过美丽的早晨呀。"<br><br><strong>像自然一样慢慢来，不着急。雨水慢慢滋润花朵，春天悄悄变绿，美好的事都需要时间！</strong><br><br>（读完后可以带孩子早晨看植物上的露珠，或者收集花瓣哦～）'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

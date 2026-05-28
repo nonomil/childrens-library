@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>太空小探险家</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#2A1B3D 0%,#6A3093 50%,#2A1B3D 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,183,77,0.2);margin-bottom:16px;border:1px solid rgba(255,183,77,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#FFB74D;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,183,77,0.5)}
+.cover-subtitle{color:#CE93D8;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#FFB74D;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(255,183,77,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(255,183,77,0.3)}
+.btn{background:linear-gradient(135deg,#FFB74D,#FF9800);color:#2A1B3D;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,183,77,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#CE93D8,#9C27B0);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFB74D}
+.dialogue-name{font-weight:700;color:#FFB74D;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#FFB74D;background:rgba(255,183,77,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFB74D}
+.poem-explain{font-size:14px;color:#CE93D8;padding:8px 0}
+.sparkle{position:fixed;pointer-events:none;animation:sparkle 1.5s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🚀</div>
+    <h1 class="cover-title">太空小探险家</h1>
+    <p class="cover-subtitle">冷静和勇敢，是探险家最重要的品质</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'fairy',
+  title: '太空小探险家',
+  subtitle: '冷静和勇敢，是探险家最重要的品质',
+  colors: {
+    primary: '#2A1B3D',
+    secondary: '#6A3093',
+    accent: '#FFB74D',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🚀', '🌟', '🌍', '🌙', '⭐', '💫']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">👑 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#CE93D8">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#CE93D8">遇到困难不要慌，冷静才能想到好办法。宇宙那么大，我们要爱护我们唯一的地球。</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '小圆圆在太空遇到了什么危险？',
+      options: ['飞船没油了', '遇到了小行星带', '遇到了外星人', '飞船着火了'],
+      answer: 1
+    },
+    {
+      question: '小圆圆在小星球上发现了什么宝贝？',
+      options: ['钻石', '月光石', '金子', '水晶'],
+      answer: 1
+    },
+    {
+      question: '小圆圆最后明白了什么道理？',
+      options: ['太空比地球好', '最珍贵的星球是有爱你的人在等你回去的那一颗', '探险没有意义', '机器人比人聪明'],
+      answer: 1
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 20; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.innerHTML = ['✨', '⭐', '💫'][i % 3];
+    sparkle.style.left = Math.random() * 100 + '%';
+    sparkle.style.top = Math.random() * 100 + '%';
+    sparkle.style.fontSize = (Math.random() * 12 + 8) + 'px';
+    sparkle.style.animationDelay = Math.random() * 1.5 + 's';
+    container.appendChild(sparkle);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '⭐',
+      title: '仰望星空的小圆圆',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '五岁的小圆圆最喜欢仰头看星星。每天晚上，她都会爬上阳台的小板凳，指着天空数呀数："一颗、两颗、三颗……"可是星星太多了，数也数不完。' },
+        { type: 'dialogue', lines: [
+          { name: '👧 小圆圆', text: '妈妈，星星上面有什么呀？' },
+          { name: '👩 妈妈', text: '有闪亮的星尘，有安静的陨石，还有好多好多等待探索的秘密呢。' }
+        ] },
+        { type: 'text', content: '那天晚上，小圆圆做了一个梦。她梦见自己穿上了一件银光闪闪的太空服，戴上了透明的头盔，背上喷着蓝色火焰的小背包。她变成了一名真正的太空小探险家！' }
+      ]
+    },
+    {
+      emoji: '🚀',
+      title: '起飞！星星号飞船',
+      type: 'mixed',
+      blocks: [
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '小圆圆探险家，请就位！你好呀！我叫小咕噜，是你的飞行伙伴！' }
+        ] },
+        { type: 'text', content: '飞船的名字叫"星星号"。小圆圆坐进驾驶舱，按下了金色的启动按钮。"嗡——"星星号轻轻颤动起来，穿过云层，穿过大气层，眼前忽然变得又黑又亮。' },
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '那是木星！它是太阳系里最大的行星，可以装下一千多个地球呢。' }
+        ] }
+      ]
+    },
+    {
+      emoji: '☄️',
+      title: '穿越小行星带',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '星星号继续向前飞。突然，警报响了起来。"叮叮叮！前方发现大量小石块，正在高速靠近！"' },
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '不要慌张！这是小行星带。记住，遇到危险的时候，越是冷静，越能找到出路。' }
+        ] },
+        { type: 'text', content: '小圆圆深吸一口气，学着深呼吸——吸气，呼气，吸气，呼气。心跳慢慢平复下来。她轻轻推动操控杆，向左，再向下，再向右……星星号像一条灵活的小鱼，在石块之间穿梭。终于，她们安全地穿过了小行星带！' },
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '你真棒！冷静和勇敢，是探险家最重要的品质。' }
+        ] }
+      ]
+    },
+    {
+      emoji: '🌙',
+      title: '月光石的秘密',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '穿过小行星带，她们来到了一颗安静的小星球。这颗星球灰扑扑的，表面布满了大大小小的坑。' },
+        { type: 'dialogue', lines: [{ name: '🤖 小咕噜', text: '这些坑叫陨石坑，是很久很久以前，石头从天上掉下来砸出来的。' }] },
+        { type: 'text', content: '忽然，她发现陨石坑旁边有一个小小的洞，洞口闪着淡淡的蓝光。洞里躺着一颗圆圆的小石头，正在发光。' },
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '是……月光石！这是一种非常非常稀有的宝石，只有在很久很久以前的星球上才能找到。它可以储存光线，在黑暗的时候发亮！' },
+          { name: '👧 小圆圆', text: '我要把它带回去，送给妈妈！这样妈妈晚上看书的时候，就不用总开着大灯啦。' }
+        ] }
+      ]
+    },
+    {
+      emoji: '🌍',
+      title: '最美的星球——地球',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '返程的路上，星星号经过了一颗蔚蓝色的星球。小圆圆望着那颗美丽的星球，眼睛亮晶晶的。' },
+        { type: 'dialogue', lines: [
+          { name: '🤖 小咕噜', text: '那就是——地球呀，我们的家。' }
+        ] },
+        { type: 'text', content: '小圆圆趴在窗户上看了好久好久。她看见蓝色的海洋、白色的云朵、绿色的森林和棕色的山脉。地球那么美，那么温柔，像一颗发光的弹珠，安安静静地挂在太空里。' },
+        { type: 'dialogue', lines: [
+          { name: '👧 小圆圆', text: '太空虽然很大很美，但是地球才是我最想回去的地方。因为这里有妈妈，有小花，有小狗，还有我最爱的热牛奶。' },
+          { name: '🤖 小咕噜', text: '说得对，每一颗星球都有自己的故事，而最珍贵的星球，就是有爱你的人在等你回去的那一颗。' }
+        ] }
+      ]
+    },
+    {
+      emoji: '🌞',
+      title: '醒来后的秘密',
+      type: 'text',
+      content: '"圆圆，起床啦！太阳晒屁股啦！"<br><br>小圆圆睁开眼睛，发现自己躺在床上，窗外的阳光暖暖地照着她的脸。原来是一场梦呀。<br><br>她摸了摸枕头底下——咦，有一颗圆圆的、亮亮的小石头，正闪着淡淡的蓝光。<br><br>小圆圆笑了。她把小石头紧紧攥在手心里，跑到阳台，对着天空大声说：<br><br>"太空等着我，我一定会去的！"<br><br>然后她跑回屋里，抱住了妈妈，说："妈妈，我最喜欢地球，因为地球上有你。"<br><br>🌟 <strong>小圆圆学到了什么？</strong><br>• 遇到困难不要慌，<strong>冷静</strong>才能想到好办法。<br>• 冒险的意义不只是发现宝贝，更是学会<strong>珍惜身边的人</strong>。<br>• 宇宙那么大，我们要<strong>爱护我们唯一的地球</strong>。<br><br><strong>（完）</strong>'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

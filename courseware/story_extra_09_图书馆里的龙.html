@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图书馆里的龙</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#2A1B3D 0%,#6A3093 50%,#2A1B3D 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,183,77,0.2);margin-bottom:16px;border:1px solid rgba(255,183,77,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#FFB74D;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,183,77,0.5)}
+.cover-subtitle{color:#CE93D8;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#FFB74D;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(255,183,77,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(255,183,77,0.3)}
+.btn{background:linear-gradient(135deg,#FFB74D,#FF9800);color:#2A1B3D;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,183,77,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#CE93D8,#9C27B0);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFB74D}
+.dialogue-name{font-weight:700;color:#FFB74D;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#FFB74D;background:rgba(255,183,77,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFB74D}
+.poem-explain{font-size:14px;color:#CE93D8;padding:8px 0}
+.sparkle{position:fixed;pointer-events:none;animation:sparkle 1.5s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🐉</div>
+    <h1 class="cover-title">图书馆里的龙</h1>
+    <p class="cover-subtitle">每个故事都值得被温柔对待</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'fairy',
+  title: '图书馆里的龙',
+  subtitle: '每个故事都值得被温柔对待',
+  colors: {
+    primary: '#2A1B3D',
+    secondary: '#6A3093',
+    accent: '#FFB74D',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['📚', '🐉', '✨', '📖', '🌙', '💫']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">👑 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#CE93D8">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#CE93D8">每个生命都有独特的力量，学会与世界温柔相处，是最珍贵的成长。</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '小龙阿云从哪里钻出来的？',
+      options: ['从窗户外面', '从一本旧书里', '从桌子里', '从书包里'],
+      answer: 1
+    },
+    {
+      question: '阿云在图书馆里学会了做什么？',
+      options: ['喷火烧书', '控制小火苗，帮助修复旧书', '飞到天花板上', '发出很大的声音'],
+      answer: 1
+    },
+    {
+      question: '这个故事告诉我们什么？',
+      options: ['图书馆不能养龙', '每个生命都有独特的力量，要学会与世界温柔相处', '龙不应该喷火', '旧书应该扔掉'],
+      answer: 1
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 20; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.innerHTML = ['✨', '⭐', '💫'][i % 3];
+    sparkle.style.left = Math.random() * 100 + '%';
+    sparkle.style.top = Math.random() * 100 + '%';
+    sparkle.style.fontSize = (Math.random() * 12 + 8) + 'px';
+    sparkle.style.animationDelay = Math.random() * 1.5 + 's';
+    container.appendChild(sparkle);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '📚',
+      title: '从书里钻出来的小龙',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '在一个下雨的星期六，七岁的朵朵踮着脚尖，从图书馆最高的书架上取下一本厚厚的旧书。封面上画着一只喷火的龙，书名是《失落的龙之书》。' },
+        { type: 'text', content: '突然，书页里飘出一阵银色的光点，像小小的星星落在地板上。光点越聚越多，慢慢变成一个毛茸茸的轮廓——一只巴掌大的小龙从书里钻了出来！' },
+        { type: 'dialogue', lines: [
+          { name: '🐉 阿云', text: '对不起，我叫阿云。我在这本书里睡了一百年，听到你翻书的声音就醒了。' },
+          { name: '👧 朵朵', text: '一百年？那你一定知道很多古老的故事！' }
+        ] }
+      ]
+    },
+    {
+      emoji: '🤫',
+      title: '秘密游戏',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '从那天起，朵朵每天放学后都来图书馆，阿云躲在她的书包里。她们发明了一个秘密游戏：阿云会悄悄飞到儿童阅览区的角落，等朵朵找到一本故事书，阿云就用心倾听。' },
+        { type: 'text', content: '有时候，当故事讲到龙喷火时，阿云兴奋得尾巴都翘起来，差点喷出小火苗。' },
+        { type: 'dialogue', lines: [
+          { name: '👩‍🏫 王老师', text: '朵朵，最近《恐龙百科》的书页总是莫名其妙粘在一起，还有几本童话书的插图上多了些亮晶晶的鳞粉……你知道是怎么回事吗？' }
+        ] }
+      ]
+    },
+    {
+      emoji: '😢',
+      title: '阿云的难过',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '那天晚上，阿云第一次难过得吐出了一颗小火球。火球落在空花盆里，把干土烤得发红。' },
+        { type: 'dialogue', lines: [
+          { name: '🐉 阿云', text: '对不起，我太想和大家交朋友了，但我总是控制不住自己。也许……也许我应该回到那本书里去。' },
+          { name: '👧 朵朵', text: '别难过！我们想想办法，好吗？' }
+        ] }
+      ]
+    },
+    {
+      emoji: '🔧',
+      title: '图书馆的新"修复师"',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '朵朵鼓起勇气向王老师坦白了一切。王老师看了看书包里探出脑袋的阿云，沉思了很久。' },
+        { type: 'dialogue', lines: [{ name: '👩‍🏫 王老师', text: '图书馆的规则是保护书籍，但规则背后是对知识和故事的珍视。阿云，你愿意用你的能力来帮助我们吗？' }] },
+        { type: 'text', content: '从那天起，图书馆里多了一个特别的"修复师"。阿云学会控制自己的小火苗，它能用温暖干燥的气息让受潮的旧书恢复平整；它吐出的淡淡银烟，能让模糊的字迹重新清晰。' }
+      ]
+    },
+    {
+      emoji: '✨',
+      title: '神奇的故事时间',
+      type: 'text',
+      content: '但最神奇的是每个周三的故事时间。阿云会蜷缩在故事角的软垫上，当讲到《喷火龙》时，它就轻轻喷出一小团七彩的烟雾；讲到《海底王国》时，烟雾会变成小鱼的样子；讲到《太空探险》时，烟雾里会闪烁星星的光芒。<br><br>孩子们最喜欢听阿云补充的"龙之传说"："很久很久以前，有一条老龙把云朵当作枕头，把月光当作小夜灯，它守护着世界上所有的故事，直到每个故事都找到爱它的人……"<br><br><strong>（完）</strong>'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学启蒙：比大小</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#1A3A2A 0%,#2E7D32 50%,#1A3A2A 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(139,195,74,0.2);margin-bottom:16px;border:1px solid rgba(139,195,74,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#8BC34A;margin-bottom:8px;text-shadow:0 2px 10px rgba(139,195,74,0.5)}
+.cover-subtitle{color:#A5D6A7;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#8BC34A;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(139,195,74,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(139,195,74,0.3)}
+.btn{background:linear-gradient(135deg,#8BC34A,#689F38);color:#1A3A2A;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(139,195,74,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#81C784,#388E3C);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #8BC34A}
+.dialogue-name{font-weight:700;color:#8BC34A;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#8BC34A;background:rgba(139,195,74,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#8BC34A}
+.poem-explain{font-size:14px;color:#A5D6A7;padding:8px 0}
+.leaf{position:fixed;pointer-events:none;animation:fall 4s linear infinite}
+@keyframes fall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🔢</div>
+    <h1 class="cover-title">数学启蒙：比大小</h1>
+    <p class="cover-subtitle">3-5岁儿童数学启蒙活动方案</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content">
+    <div class="section">
+      <div class="section-title">🎯 活动目标</div>
+      <div class="story-text">
+        <p><strong>知识目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>理解"大"和"小"的基本概念，能通过观察区分物体的大小差异</li>
+          <li>初步掌握比较大小的常用方法（目测法、重叠法、并列法）</li>
+          <li>能使用"更大""更小""最大""最小"等比较词汇</li>
+        </ul>
+        <p><strong>能力目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>培养观察力和视觉辨别能力</li>
+          <li>发展初步的逻辑比较思维</li>
+          <li>提升语言表达能力（能描述比较过程和结果）</li>
+          <li>锻炼动手操作和分类能力</li>
+        </ul>
+        <p><strong>情感目标：</strong></p>
+        <ul style="margin-left:16px">
+          <li>体验数学比较的乐趣，建立数学学习的积极情感</li>
+          <li>在合作游戏中培养团队意识</li>
+          <li>增强自信心，敢于表达自己的发现和观点</li>
+          <li>培养细致观察、耐心比较的学习习惯</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📦 材料准备</div>
+      <div class="story-text">
+        <p><strong>基础材料：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>不同大小的实物：苹果、梨子、玩具车、积木块等</li>
+          <li>大小差异明显的图片卡片（动物、水果、交通工具等）</li>
+          <li>比较操作板（带有大小轮廓的匹配底板）</li>
+          <li>套娃玩具或套杯（5-7个为宜）</li>
+        </ul>
+        <p><strong>辅助材料：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>软垫或地毯（供小组活动使用）</li>
+          <li>小篮子（用于收集和分类）</li>
+          <li>记录表和贴纸（用于记录比较结果）</li>
+          <li>背景音乐和音效</li>
+        </ul>
+        <p><strong>环境准备：</strong></p>
+        <ul style="margin-left:16px">
+          <li>活动区域布置为"数学探索角"</li>
+          <li>设置"大"和"小"两个明显的标识区域</li>
+          <li>准备充足的座位空间，便于小组活动</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📋 详细步骤</div>
+      <div class="story-text">
+        <p><strong>第一阶段：热身导入（5分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">🐻 故事导入</div>
+          <div>用《三只小熊》的故事引出大小概念——"熊爸爸最大，熊妈妈中等，小熊最小"，配合手偶或图片演示。</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">💃 身体律动</div>
+          <div>播放音乐，做大肢体（大象走）和小肢体（小猫走）动作，通过动作直观感受"大"和"小"。</div>
+        </div>
+
+        <p><strong>第二阶段：概念引入（10分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">🔍 实物比较</div>
+          <div>展示两个明显大小不同的物品（如大皮球和乒乓球），引导观察："哪个更大？哪个更小？"</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">📊 多物比较</div>
+          <div>出示3-4个不同大小的同类物品，引导找出"最大的""最小的"和"中间的"。</div>
+        </div>
+
+        <p><strong>第三阶段：操作实践（15分钟）</strong></p>
+        <ul style="margin-left:16px;margin-bottom:12px">
+          <li>任务一：套娃排序——将打乱的套娃按从大到小顺序排列</li>
+          <li>任务二：分类游戏——在混合物品中找出所有"大的"放一个篮子，"小的"放另一个篮子</li>
+          <li>任务三：匹配游戏——使用比较操作板，将实物放在对应的大小轮廓中</li>
+        </ul>
+
+        <p><strong>第四阶段：游戏巩固（10分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">🕵️ 大小侦探游戏</div>
+          <div>教室藏好大小不同的物品，给出指令："请找出一个比这个积木更大的玩具"，找到后描述比较过程。</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">🏃 身体变变变</div>
+          <div>听到"大"时伸展身体变大，听到"小"时蜷缩身体变小，快速切换锻炼反应能力。</div>
+        </div>
+
+        <p><strong>第五阶段：总结分享（5分钟）</strong></p>
+        <ul style="margin-left:16px">
+          <li>每组展示排列好的套娃或分类成果</li>
+          <li>提问："你用什么方法比较大小的？"</li>
+          <li>为每个孩子贴"数学小侦探"贴纸</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🌟 延伸活动</div>
+      <div class="story-text">
+        <p><strong>生活渗透：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>家庭任务：回家比较家人的鞋子大小、碗的大小</li>
+          <li>餐前活动：比较餐具大小，按大小摆放餐具</li>
+          <li>散步观察：比较树叶大小、石头大小</li>
+        </ul>
+        <p><strong>跨领域整合：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>艺术活动：画大小不同的太阳、花朵</li>
+          <li>音乐活动：用大小不同的乐器演奏（铃鼓和小铃铛）</li>
+          <li>运动游戏：大小不同的球类投掷游戏</li>
+        </ul>
+        <p><strong>亲子游戏：</strong></p>
+        <ul style="margin-left:16px">
+          <li>"大灰狼与小兔子"角色扮演：比较大灰狼和小兔子的洞穴</li>
+          <li>超市游戏：比较商品大小，按大小分类摆放</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">⚠️ 注意事项</div>
+      <div class="story-text">
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li><strong>安全方面：</strong>所有材料无尖锐边角，尺寸适中防吞咽</li>
+          <li><strong>教学方面：</strong>循序渐进，先二元比较（大/小），再多元比较</li>
+          <li><strong>个体差异：</strong>接受不同速度，不横向比较孩子</li>
+          <li><strong>语言示范：</strong>使用准确数学语言，但避免术语堆砌</li>
+          <li><strong>错误价值：</strong>将错误视为学习机会，耐心引导</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💡 核心理念</div>
+      <div class="story-text">
+        <p>通过多感官参与、游戏化学习和生活化渗透，让儿童在自然情境中建构大小比较的数学概念，同时培养积极的数学学习态度和基础思维能力。活动强调"做中学"，尊重儿童个体差异，将数学启蒙融入有意义的探索体验中。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'forest',
+  title: '数学启蒙：比大小',
+  subtitle: '3-5岁儿童数学启蒙活动方案',
+  colors: { primary: '#1A3A2A', secondary: '#2E7D32', accent: '#8BC34A', text: '#FFFFFF', card: 'rgba(255,255,255,0.1)' },
+  decorations: ['🍄', '🦋', '🌿', '🌲', '🦊', '🐿️']
+};
+class CanvasRenderer { constructor(canvasId) { this.canvas = document.getElementById(canvasId); this.ctx = this.canvas ? this.canvas.getContext('2d') : null; this.animationId = null; } init() { if (this.canvas) this.ctx = this.canvas.getContext('2d'); } mount() { this.init(); } unmount() { if (this.animationId) cancelAnimationFrame(this.animationId); } resize(w, h) { if (this.canvas) { this.canvas.width = w; this.canvas.height = h; } } clear() { if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); } drawLeaf(x, y, size, color) { if (!this.ctx) return; this.ctx.beginPath(); this.ctx.moveTo(x, y - size); this.ctx.bezierCurveTo(x + size, y - size, x + size, y + size, x, y + size); this.ctx.bezierCurveTo(x - size, y + size, x - size, y - size, x, y - size); this.ctx.fillStyle = color || TEMPLATE_CONFIG.colors.accent; this.ctx.fill(); } animate(drawFn) { const loop = () => { this.clear(); drawFn(this.ctx, this.canvas); this.animationId = requestAnimationFrame(loop); }; loop(); } }
+class QuizEngine { constructor(containerId) { this.container = document.getElementById(containerId); this.questions = []; this.current = 0; this.score = 0; } init(questions) { this.questions = questions; this.current = 0; this.score = 0; } mount() { this.render(); } unmount() { if (this.container) this.container.innerHTML = ''; } render() { if (!this.container || !this.questions[this.current]) return; const q = this.questions[this.current]; this.container.innerHTML = `<div class="section-title">🌿 第${this.current + 1}题</div><p style="margin-bottom:16px">${q.question}</p>${q.options.map((opt, i) => `<div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>`).join('')}<p style="margin-top:12px;color:#A5D6A7">得分: ${this.score}/${this.questions.length}</p>`; } check(index) { const q = this.questions[this.current]; const options = this.container.querySelectorAll('.quiz-option'); options.forEach((opt, i) => { opt.style.pointerEvents = 'none'; if (i === q.answer) opt.classList.add('correct'); else if (i === index && i !== q.answer) opt.classList.add('wrong'); }); if (index === q.answer) this.score++; setTimeout(() => { this.current++; if (this.current < this.questions.length) this.render(); else { this.container.innerHTML = `<div class="section-title">🎉 完成!</div><p>最终得分: ${this.score}/${this.questions.length}</p>`; } }, 1000); } }
+function createLeaves() { const container = document.querySelector('.container'); const leafEmojis = ['🍃', '🍂', '🌿']; for (let i = 0; i < 10; i++) { const leaf = document.createElement('div'); leaf.className = 'leaf'; leaf.innerHTML = leafEmojis[i % leafEmojis.length]; leaf.style.left = Math.random() * 100 + '%'; leaf.style.animationDelay = Math.random() * 4 + 's'; leaf.style.fontSize = (Math.random() * 16 + 12) + 'px'; container.appendChild(leaf); } }
+document.addEventListener('DOMContentLoaded', () => { createLeaves(); });
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

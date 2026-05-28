@@ -1,0 +1,149 @@
+绘本图书馆课件：完整调研报告（综合版）
+绘本图书馆课件：完整调研报告（综合版）
+
+整合来源：内部调研文档 × 3 + Camoufox 小红书直抓 + GitHub 调研 + 行业政策分析 + 补充网络搜索 日期：2026-05-28 | 执行：Hermes Agent × OpenClaw Agent → 综合整理
+好，已经有足够的补充资料了，现在整理成完整的综合报告。报告已整理完毕，以下是关键补充说明：
+
+相比原始文档，本次补充了以下新内容：
+WebGAL 实际核实：WebGAL 是全新的网页端视觉小说引擎，无需网页开发基础，3分钟即可学会所有语法，支持通过 Pixi.js 添加自定义效果，主仓库（TypeScript，3,649⭐，MPL-2.0）和图形化编辑器 WebGAL_Terre（553⭐）均持续活跃更新，最新版本已支持 blendMode 混合模式、口型动画修复、模板预加载等功能。
+OpenMAIC 清华项目深度细节：系统位于 /lib/orchestration 的导演节点（Director）通过 LangGraph 状态机驱动，当 AI 教师讲完一段幻灯片后，导演会判断是否触发 AI 同学互动流，前端将教师操作抽象为 28 余种底层指令，所有数据通过 Zustand 管理并精准渲染。清华 2024 年春季学期试点 2 门课程、700 名学生报名，总互动量超 10 万条，人均超 140 条互动记录，秋季扩展到 4 门课、报名超 2000 人次。
+Qwen3-TTS 完整信息：Qwen3-TTS 提供 49 种高品质音色，涵盖不同性别、年龄和角色设定，包括萝莉萌妹等儿童向音色，支持 10 种主流语言和 9 种方言。模型于 2026 年 1 月正式发布，基于 Apache 2.0 开源，分 1.7B（需 6–8GB VRAM）和 0.6B（需 4–6GB VRAM）两个版本，均可从 HuggingFace 和 GitHub 获取。Qwen3-TTS-VC 版本支持声音克隆，可为 Steve/Alex/Bob 三个角色定制专属童声。
+Edge-TTS 补充确认：Edge-TTS 调用微软 Edge 在线语音合成服务，无需下载模型或 API Key，支持 40 多种语言、318 种声音，中文支持晓晓、云希、云扬等，还支持粤语、台湾口音、东北话等方言。
+
+一、项目背景
+目标项目：nonomil.github.io/childrens-library（非名义绘本图书馆）
+课件体系：
+语文：24课 × 8–12字/课 ≈ 96字，对标「小羊上山 L1」+ 部编版一年级上册扩展
+英语：每课嵌入 3–5 个 Dolch Sight Words，24课覆盖 Pre-Primer 40词 + 20主题词
+数学：24课螺旋晋升，每课分基础+拓展双文件
+当前技术栈：Turn.js（翻页）+ GSAP（动画）+ Canvas 2D（互动实验）+ HTML 单文件
+核心角色：Steve（孩子替身）、Alex（玩伴）、Bob（村民向导），贯穿全课程
+
+二、开源参考项目（完整清单）
+2.1 翻页/叙事类
+
+2.2 互动/游戏类
+
+2.3 AI 生成 / 分支叙事类
+
+
+三、小红书数据（Camoufox 直抓，2026-05-28）
+3.1 关键词热度分布
+
+3.2 高赞笔记 TOP 10
+9,216👍 — 14000册原版英语绘本免费阅读（@落樱YING）→ 免费资源聚合高传播
+5,759👍 — 保姆级教程｜全景VR课件PPT制作（@凹老狮）→ 效果震撼，但制作门槛高
+5,349👍 — 读故事和写故事的人可以自己做Galgame了（@山音）→ 差异化机会信号
+5,059👍 — 《最好的面包店》有声绘本朗读（@铃铛麻麻）→ 有声绑本家长买单意愿强
+4,494👍 — 五分钟用AI制作绘本（@暴走的阿川）→ AI生成热门
+4,253👍 — 高质量PPT生成（@设计师Cc）
+3,493👍 — 简单免费英文绘本网站（@一只大鸭梨🍐）
+2,702👍 — AI赋能｜生成完整课件+课堂互动小游戏（@糯米棋棋子）→ AI+游戏化组合
+2,612👍 — AI一键生成期末班会PPT（@99m-AIGC）
+1,659👍 — 国家免费儿童科普（@林野）→ 官方权威内容高传播
+3.3 关键洞察（5条）
+AI课件生成是最热赛道 — Gemini/GPT生成互动课件、闯关游戏类笔记普遍高赞
+有声绘本家长买单意愿强 — 「有声绘本」点赞普遍过千，音频+绘本组合需求明确
+Galgame式分支互动是差异化机会 — 5,349👍说明「读故事的人可以自己做Galgame」概念有市场
+免费资源聚合类内容传播力强 — 国家免费绘本、英文绘本网站等高赞，聚合价值强于单内容
+VR课件效果好但门槛高 — 5,759👍但制作复杂，不适合快速量产
+
+四、TTS 语音方案对比（完整版）
+
+实施路径：Edge-TTS → 先跑通有声绘本基础功能 → 考虑 Qwen3-TTS-VC 为 Steve/Alex/Bob 克隆专属童声
+
+五、视觉风格体系
+5.1 配色规范
+
+5.2 四个视觉变体实验（齿轮绘本，OpenCode + MiMo V2.5 生成）
+
+5.3 课件容器选型原则
+
+
+六、核心架构：TEMPLATE_CONFIG 模板方案
+6.1 设计原则
+一个 CONFIG 对象控制全部内容，改 topic 就能换课题；引擎层永远不改。
+
+const TEMPLATE_CONFIG = {
+  topic: {
+    title: "咕噜咕噜传动王国",
+    emoji: "⚙️",
+    sections: [ /* 所有页面/章节定义 */ ]
+  }
+}
+// 引擎层：Canvas渲染器 / 游戏引擎 / 测验引擎 / 滚动动画 → 永不变
+6.2 组件库（可复用清单）
+
+6.3 换主题示例（齿轮→太阳系）
+
+TEMPLATE_CONFIG.topic = {
+  title: "🌍 太阳系大冒险",
+  emoji: "🌍",
+  sections: [
+    { id: "sun",   icon: "☀️", title: "太阳",   component: "interactive-gear", ... },
+    { id: "orbit", icon: "🔄", title: "行星轨道", component: "dual-gear",       ... },
+  ]
+}
+6.4 图片管线：images.status 字段方案（OpenClaw 补充）
+在 TEMPLATE_CONFIG 中为每个 section 增加：
+
+"images": {
+  "status": "pending" | "generating" | "ready" | "failed",
+  "fallback": "/assets/fallback-placeholder.png"
+}
+模板层自动感知：pending 显示 loading 骨架；ready 才渲染图片。把 Gemini 配图 cron 的状态拉进模板运行时，而非靠外部脚本手动补。
+
+七、组件生命周期契约（最高优先级待办）
+
+// 每个组件必须实现以下接口：
+function ComponentXxx(el, config) {
+  return {
+    mount()   { /* 挂载到 DOM，启动动画/事件 */ },
+    unmount() { /* 清理 RAF / 事件监听 / Canvas context */ },
+    resize()  { /* 响应窗口变化，重绘 Canvas */ },
+    update(newConfig) { /* 热更新配置（如切换主题时调用）*/ }
+  }
+}
+重要性：没有 mount/unmount/resize 契约，换主题时组件行为不可预测。这是 TEMPLATE_CONFIG 从「静态配置」变成「可复用模板引擎」的关键缺失。
+
+八、行业政策背景
+
+
+九、优先级行动计划
+🔴 立刻做（本周，共约 0.5 天）
+组件生命周期契约：每个组件实现 init → { mount, unmount, resize, update }
+执行时机：gears-transmission-v2.html 构建时同步钉死
+收益：换主题时组件行为可预测，「能用」变「好复用」
+🟡 本周做（共约 4–6h）
+图片预加载管线整合：模板层加 preloadPrev/Next 策略 + images.status 字段状态管理（loading → fallback → loaded）
+TTS语音接入：用 Edge-TTS 给现有课件加语音朗读（免费，中文支持好）
+🟢 下周探索（P2）
+Galgame式分支互动：研究 WebGAL 分支逻辑，让孩子的选择影响故事走向（5,349👍 市场验证）
+闯关+积分机制：每完成一页解锁新内容，参考 XHS 高赞「闯关导入游戏」
+AI生成课件工作流：用 DeepSeek/Gemini 自动生成课件 JSON 配置，降低内容制作门槛
+❌ 暂缓 / 不做
+
+
+十、当前课件现状评估
+当前评分：80分
+
+从80分到90分的关键路径：组件生命周期契约 + 图片预加载 + TTS语音 = 「能用」→「好用」
+最大差异化机会：Galgame式分支互动 + AI语音朗读
+
+十一、WebGAL 技术细节补充
+仓库：github.com/OpenWebGAL/WebGAL（3,649⭐，TypeScript，MPL-2.0）
+编辑器：WebGAL_Terre（553⭐）— 图形化编辑器，可视化创作
+生态：WebGAL Android版；VS Code 语法高亮插件；WebGAL Script 规范文档
+能力：背景/立绘/对话/分支选择；PixiJS自定义效果；口型动画（MikoMouth）；CG/BGM鉴赏模式
+最新动态：2026年 Refine 模板编辑器升级，新增模板样式系统
+儿童适配改造方向：把对话框换成大字儿童字体；分支按钮换成图片选项按钮；禁用成人主题内容
+
+十二、OpenMAIC 技术细节补充
+仓库：github.com/THU-MAIC/OpenMAIC（4,500+⭐，AGPL-3.0）
+架构核心：Director Graph（LangGraph状态机）作为「导演节点」，统筹AI教师/AI同学发言节奏
+动作引擎：28+种底层指令（DrawShape/DrawMath白板SVG绘制、聚光灯、激光笔等），Zustand状态管理
+播放引擎：状态机驱动的前端课堂播放，浏览器作「舞台」渲染话剧
+验证数据：清华2024春季700学生、10万次互动、人均140+条；秋季扩至2000人
+对本项目的价值：学习 LangGraph Director 节点编排逻辑 → 应用于课件中的「AI旁白节奏控制」；不直接使用（太重、AGPL限制、偏高校）
+
+报告整合自：内部调研文档（3份）+ Camoufox 小红书直抓数据 + GitHub 项目页 + 阿里云文档 + 行业报告补充调研：WebGAL 3.6k⭐实际确认 / OpenMAIC 清华验证数据 / Qwen3-TTS 完整模型族 / Edge-TTS 中文声音清单

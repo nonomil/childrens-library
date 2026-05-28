@@ -1,0 +1,40 @@
+儿童互动课件·有声绘本·AI开发 — 完整合并版调研报告
+
+## 核心发现
+① 翻页引擎 Turn.js 够用不换，分支叙事选 Ink/inkjs（MIT授权，AI生成脚本最友好）
+② 最大差异化机会：Galgame式分支互动 + AI语音朗读
+③ 组件运行时契约（init→mount→unmount→resize→update）是关键缺失
+④ 音频文件走OSS/CDN而非放仓库
+
+## 技术选型
+- 翻页：Turn.js（7.4k⭐，jQuery）
+- 分支叙事：Ink/inkjs（13k⭐，MIT）
+- Canvas：Canvas 2D
+- TTS：Edge-TTS（免费，中文童声XiaoxiaoNeural）
+
+## 四个视觉变体（必须实现）
+1. 太空冒险（Space Adventure）— 深蓝#0B1026 + 星光色 + 星球/火箭元素
+2. 森林动物（Forest Friends）— 森林绿#1A3A2A + 蘑菇/蝴蝶元素
+3. 海洋世界（Ocean World）— 海洋蓝#0A1628 + 鱼群/珊瑚元素
+4. 童话城堡（Fairy Tale）— 紫色#2A1B3D + 城堡/星星元素
+
+## 设计原则
+- 圆角8px+柔和阴影，无锐利元素
+- 配色柔和不刺眼，对比度适中
+- 角色大头小身（chibi风格），表情夸张友好
+- 字体：圆体优先
+
+## TEMPLATE_CONFIG 架构
+CONFIG区放主题配置（标题、颜色、章节列表）
+REUSABLE区放通用引擎（Canvas渲染器、游戏引擎、测验引擎）
+
+## 组件库
+- text-block：文本展示（支持打字机效果）
+- image-display：图片展示（支持缩放/动画）
+- audio-player：音频播放
+- interactive-canvas：Canvas交互
+- choice-button：选择按钮
+- branch-story：Ink脚本驱动的分支叙事
+
+## 组件生命周期契约
+init(el, config) → { mount, unmount, resize, update }

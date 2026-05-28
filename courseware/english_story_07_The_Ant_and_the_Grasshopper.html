@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ant and the Grasshopper</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#1A3A2A 0%,#2E7D32 50%,#1A3A2A 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(139,195,74,0.2);margin-bottom:16px;border:1px solid rgba(139,195,74,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#8BC34A;margin-bottom:8px;text-shadow:0 2px 10px rgba(139,195,74,0.5)}
+.cover-subtitle{color:#A5D6A7;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#8BC34A;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(139,195,74,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(139,195,74,0.3)}
+.btn{background:linear-gradient(135deg,#8BC34A,#689F38);color:#1A3A2A;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(139,195,74,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#81C784,#388E3C);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #8BC34A}
+.dialogue-name{font-weight:700;color:#8BC34A;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#8BC34A;background:rgba(139,195,74,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#8BC34A}
+.poem-explain{font-size:14px;color:#A5D6A7;padding:8px 0}
+.leaf{position:fixed;pointer-events:none;animation:fall 4s linear infinite}
+@keyframes fall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🐜🦗</div>
+    <h1 class="cover-title">The Ant and the Grasshopper</h1>
+    <p class="cover-subtitle">A story about preparation and friendship</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">Start the Adventure</button>
+  </div>
+  <div id="content"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'forest',
+  title: 'The Ant and the Grasshopper',
+  subtitle: 'A story about preparation and friendship',
+  colors: {
+    primary: '#1A3A2A',
+    secondary: '#2E7D32',
+    accent: '#8BC34A',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🍄', '🦋', '🌿', '🌲', '🦊', '🐿️']
+};
+
+class CanvasRenderer {
+  constructor(canvasId) {
+    this.canvas = document.getElementById(canvasId);
+    this.ctx = this.canvas ? this.canvas.getContext('2d') : null;
+    this.animationId = null;
+  }
+  init() { if (this.canvas) this.ctx = this.canvas.getContext('2d'); }
+  mount() { this.init(); }
+  unmount() { if (this.animationId) cancelAnimationFrame(this.animationId); }
+  resize(w, h) { if (this.canvas) { this.canvas.width = w; this.canvas.height = h; } }
+  clear() { if (this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); }
+  drawLeaf(x, y, size, color) {
+    if (!this.ctx) return;
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y - size);
+    this.ctx.bezierCurveTo(x + size, y - size, x + size, y + size, x, y + size);
+    this.ctx.bezierCurveTo(x - size, y + size, x - size, y - size, x, y - size);
+    this.ctx.fillStyle = color || TEMPLATE_CONFIG.colors.accent;
+    this.ctx.fill();
+  }
+  animate(drawFn) {
+    const loop = () => {
+      this.clear();
+      drawFn(this.ctx, this.canvas);
+      this.animationId = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+}
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section-title">🌿 Question ${this.current + 1}</div>
+      <p style="margin-bottom:16px">${q.question}</p>
+      ${q.options.map((opt, i) => `
+        <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+      `).join('')}
+      <p style="margin-top:12px;color:#A5D6A7">Score: ${this.score}/${this.questions.length}</p>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section-title">🎉 Complete!</div>
+          <p>Final Score: ${this.score}/${this.questions.length}</p>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.type = 'english';
+    this.sections = [];
+    this.current = 0;
+  }
+  init(type, sections) {
+    this.type = type;
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'poem') {
+      s.lines.forEach(line => {
+        html += `<div class="poem-line">${line}</div>`;
+      });
+      if (s.explain) html += `<div class="poem-explain">${s.explain}</div>`;
+    }
+    html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">Next ▶</button></div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+    else {
+      this.container.innerHTML = `
+        <div class="section" id="quiz-container"></div>
+      `;
+      quizEngine.init([
+        { question: "What was Andy Ant always doing?", options: ["Sleeping", "Working hard to gather food", "Playing music", "Flying"], answer: 1 },
+        { question: "What did Gracie Grasshopper love to do?", options: ["Work in the field", "Dance and sing", "Build houses", "Swim in the pond"], answer: 1 },
+        { question: "What happened when winter arrived?", options: ["Gracie had plenty of food", "All the seeds and berries were gone", "The weather stayed warm", "Andy had no food either"], answer: 1 },
+        { question: "How did Andy help Gracie?", options: ["He ignored her", "He shared his food with her", "He chased her away", "He told her to find food herself"], answer: 1 },
+        { question: "What is the moral of this story?", options: ["Never work hard", "Prepare for tomorrow while enjoying today", "Don't make friends", "Winter is fun"], answer: 1 }
+      ]);
+      quizEngine.mount();
+    }
+  }
+}
+
+function createLeaves() {
+  const container = document.querySelector('.container');
+  const leafEmojis = ['🍃', '🍂', '🌿'];
+  for (let i = 0; i < 10; i++) {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf';
+    leaf.innerHTML = leafEmojis[i % leafEmojis.length];
+    leaf.style.left = Math.random() * 100 + '%';
+    leaf.style.animationDelay = Math.random() * 4 + 's';
+    leaf.style.fontSize = (Math.random() * 16 + 12) + 'px';
+    container.appendChild(leaf);
+  }
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  createLeaves();
+  storyEngine.init('english', [
+    {
+      title: 'Sunny Meadow',
+      emoji: '☀️',
+      type: 'text',
+      content: 'In Sunny Meadow, where the grass was soft and the sun was warm, lived two little friends. Andy Ant was very busy. He worked all day, carrying crumbs of cookie and seeds of dandelion back to his little hill. <br><br>"Hurry, hurry!" he would say to himself. "Winter is coming. I must be ready!"'
+    },
+    {
+      title: 'Gracie\'s Song',
+      emoji: '🦗',
+      type: 'text',
+      content: 'Gracie Grasshopper loved to dance. She would leap from blade to blade of grass, singing, "Tra-la-la! What a beautiful day!"<br><br>"Hello, Andy!" Gracie sang one sunny afternoon. "Stop working and dance with me! The sun is shining!"'
+    },
+    {
+      title: 'Andy\'s Warning',
+      emoji: '🐜',
+      type: 'dialogue',
+      lines: [
+        { name: '🐜 Andy Ant', text: 'Andy wiped his forehead with his tiny leg. "I can\'t, Gracie. I need to gather food for the cold winter."' },
+        { name: '🦗 Gracie Grasshopper', text: 'Gracie laughed. "Winter is far away! There is plenty of time. Play with me today!"' },
+        { name: '🐜 Andy Ant', text: 'Andy shook his head. "No, thank you. Work first, then play."' }
+      ]
+    },
+    {
+      title: 'The Seasons Change',
+      emoji: '🍂',
+      type: 'text',
+      content: 'Every day was the same. Andy worked and worked. He gathered grains of wheat and sweet apple seeds. His storage room under the hill got fuller and fuller.<br><br>Gracie played and played. She made flower-chain necklaces and sang with the crickets. She didn\'t think about winter at all.'
+    },
+    {
+      title: 'Winter Arrives',
+      emoji: '❄️',
+      type: 'text',
+      content: 'The leaves turned red and yellow. The air grew cool. Gracie still danced. "Winter is still far away!" she said.<br><br>Then one morning, frost glittered on the grass. The trees were almost bare. Gracie looked for something to eat. But all the seeds and berries were gone. Her tummy rumbled. "Oh dear," she said. "I am very hungry."'
+    },
+    {
+      title: 'Gracie\'s Request',
+      emoji: '🚪',
+      type: 'dialogue',
+      lines: [
+        { name: '🦗 Gracie Grasshopper', text: 'She saw Andy\'s little hill. A warm, yummy smell came from inside. Gracie knocked on Andy\'s door with a shaky leaf. <em>Knock, knock.</em>' },
+        { name: '🦗 Gracie Grasshopper', text: '"Andy," Gracie whispered. "I have no food. Winter came too fast. Could you... could you please share some?"' },
+        { name: '🐜 Andy Ant', text: 'Andy looked at Gracie\'s thin legs and sad eyes. He felt a little sorry for her. "Come in, Gracie," he said kindly.' }
+      ]
+    },
+    {
+      title: 'Andy\'s Kindness',
+      emoji: '🍲',
+      type: 'text',
+      content: 'Inside, Andy\'s home was warm. His storage room was full of yummy food. He made Gracie a tiny soup from seeds and a piece of dried apple.<br><br>"Thank you, Andy," Gracie said quietly. "You were so wise to get ready."'
+    },
+    {
+      title: 'A New Agreement',
+      emoji: '🤝',
+      type: 'dialogue',
+      lines: [
+        { name: '🐜 Andy Ant', text: 'Andy smiled. "I worked hard because I knew winter would come. Next year, maybe we can prepare together? We could gather food in the morning, and then dance in the afternoon."' },
+        { name: '🦗 Gracie Grasshopper', text: 'Gracie\'s eyes lit up. "Yes! That would be perfect. I learned my lesson."' }
+      ]
+    },
+    {
+      title: 'Together in Harmony',
+      emoji: '🌈',
+      type: 'text',
+      content: 'That winter, Gracie helped Andy by telling him funny stories while he worked. When spring came, they worked together every morning. And every afternoon? They danced together in the warm sun, and Gracie\'s songs were the happiest in all of Sunny Meadow.<br><br><strong>The Moral:</strong> It is wise to prepare for tomorrow while enjoying today. Work and play can go together, but a little planning keeps us safe and happy.'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

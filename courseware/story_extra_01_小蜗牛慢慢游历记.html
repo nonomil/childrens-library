@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小蜗牛慢慢游历记</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#0B1026 0%,#1a237e 50%,#0B1026 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,215,0,0.2);margin-bottom:16px;border:1px solid rgba(255,215,0,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#FFD700;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,215,0,0.5)}
+.cover-subtitle{color:#B0C4DE;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#FFD700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(255,215,0,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(255,215,0,0.3)}
+.btn{background:linear-gradient(135deg,#FFD700,#FFA500);color:#0B1026;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,215,0,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#4FC3F7,#0288D1);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700}
+.dialogue-name{font-weight:700;color:#FFD700;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#FFD700;background:rgba(255,215,0,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFD700}
+.poem-explain{font-size:14px;color:#B0C4DE;padding:8px 0}
+.star{position:fixed;pointer-events:none;animation:twinkle 2s infinite}
+@keyframes twinkle{0%,100%{opacity:0.3;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🐌</div>
+    <h1 class="cover-title">小蜗牛慢慢游历记</h1>
+    <p class="cover-subtitle">慢慢走，也能看到很多美好的东西</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'space',
+  title: '小蜗牛慢慢游历记',
+  subtitle: '慢慢走，也能看到很多美好的东西',
+  colors: {
+    primary: '#0B1026',
+    secondary: '#1a237e',
+    accent: '#FFD700',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🐌', '🍄', '🦋', '🐜', '🌈', '🌙']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">🌟 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#B0C4DE">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#B0C4DE">记住：每个人都有自己的节奏，快有快的精彩，慢有慢的风景！</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '你觉得小蜗牛慢慢看到了哪些别人可能错过的东西？',
+      options: ['泥土里小种子的笑脸', '天空中的飞机', '远处的大山', '海里的鱼'],
+      answer: 0
+    },
+    {
+      question: '如果你是小蜗牛，你最想去看什么风景呢？',
+      options: ['蘑菇森林里的小种子', '海底的珊瑚', '火星上的风景', '商场里的玩具'],
+      answer: 0
+    },
+    {
+      question: '妈妈告诉慢慢什么道理？',
+      options: ['每个人都有自己的节奏', '要跑得快才能看到好风景', '蜗牛不应该出门', '外面的世界很危险'],
+      answer: 0
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 20; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.innerHTML = '✦';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.top = Math.random() * 100 + '%';
+    star.style.fontSize = (Math.random() * 12 + 8) + 'px';
+    star.style.animationDelay = Math.random() * 2 + 's';
+    star.style.color = TEMPLATE_CONFIG.colors.accent;
+    container.appendChild(star);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '🌅',
+      title: '清晨出发',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '清晨，阳光透过树叶洒下金色的斑点。一只小小的蜗牛从壳里探出脑袋，揉了揉眼睛。他的名字叫慢慢，背上有一个像小房子一样的壳，壳上有浅棕色的螺旋花纹。' },
+        { type: 'dialogue', lines: [{ name: '🐌 慢慢', text: '今天，我要去看看外面的世界！' }] },
+        { type: 'text', content: '他慢慢地、一步一步地爬出了花园的栅栏。' }
+      ]
+    },
+    {
+      emoji: '🍄',
+      title: '第一站：蘑菇小伞的森林',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '慢慢爬呀爬，来到了一片蘑菇森林。那些蘑菇有的像红色的小伞，有的像白色的柱子。' },
+        { type: 'dialogue', lines: [{ name: '🍄 小蘑菇', text: '小蜗牛，你爬得太慢啦！你看，蝴蝶一下子就飞过去了。' }] },
+        { type: 'dialogue', lines: [{ name: '🐌 慢慢', text: '可是，我每爬一步，都能看清泥土里小种子的笑脸，还能闻到青草的味道。飞得快，也许会错过这些呢。' }] },
+        { type: 'text', content: '小蘑菇想了想，觉得慢慢说得有道理。' }
+      ]
+    },
+    {
+      emoji: '🦋',
+      title: '第二站：蝴蝶的花园',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '花园里开满了鲜花。一只蓝蝴蝶扇动翅膀飞过来，她的翅膀像两片蓝宝石。' },
+        { type: 'dialogue', lines: [{ name: '🦋 蝴蝶姐姐', text: '小蜗牛，我带你飞去远处的彩虹湖吧！只要一分钟！' }] },
+        { type: 'dialogue', lines: [{ name: '🐌 慢慢', text: '谢谢你，蝴蝶姐姐。可是，如果我飞过去，就没办法认识从家到湖边路上的朋友们啦。而且，我的小壳是我的家，它不能飞呀。' }] },
+        { type: 'text', content: '蝴蝶点点头，陪着慢慢爬了一小段路，给他讲了每朵花的名字。' }
+      ]
+    },
+    {
+      emoji: '🐜',
+      title: '第三站：小蚂蚁的搬家队',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '一条小路上，一群小蚂蚁正忙着搬面包屑。' },
+        { type: 'dialogue', lines: [{ name: '🐜 蚂蚁队长', text: '小蜗牛，你的壳真漂亮，能借我们当小仓库吗？' }] },
+        { type: 'dialogue', lines: [{ name: '🐌 慢慢', text: '这个壳是我的家，不能借走。但是，如果你们需要歇一歇，可以来我的壳底下乘凉哦！' }] },
+        { type: 'text', content: '小蚂蚁们高兴地轮流去慢慢壳下的阴影里休息，还给慢慢送来了甜甜的蜂蜜作为感谢。' }
+      ]
+    },
+    {
+      emoji: '🌈',
+      title: '第四站：雨后的彩虹',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '傍晚，天空突然下起了小雨。慢慢赶紧缩进壳里，等雨停了再出来。这时，他看见蚯蚓伯伯在松土，雨后的空气特别清新。' },
+        { type: 'text', content: '一道彩虹慢慢爬上了天空，像一座七彩的桥。' },
+        { type: 'dialogue', lines: [{ name: '🐌 慢慢', text: '真美啊！' }] },
+        { type: 'text', content: '虽然他爬得慢，可是他看到了雨滴怎样洗亮每一片叶子，看到了彩虹怎样一点点从云里钻出来。' }
+      ]
+    },
+    {
+      emoji: '🌙',
+      title: '回家',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '月亮升起来了，像一只弯弯的小船。慢慢沿着原路慢慢爬回了家。他有点累，心里却满满的都是今天的故事。' },
+        { type: 'dialogue', lines: [
+          { name: '🐌 妈妈', text: '慢慢，今天玩得开心吗？' },
+          { name: '🐌 慢慢', text: '开心！我看到了蘑菇森林、蝴蝶花园，还帮助了小蚂蚁，看到了彩虹！妈妈，原来只要慢慢走，也能看到很多美好的东西呢。' },
+          { name: '🐌 妈妈', text: '是呀，慢慢。每个人都有自己的节奏。快有快的精彩，慢有慢的风景。重要的是，你在用心感受每一步的旅程。' }
+        ] }
+      ]
+    },
+    {
+      emoji: '✨',
+      title: '晚安，慢慢',
+      type: 'text',
+      content: '那天晚上，慢慢做了一个梦。梦里他还是爬得慢慢的，但每一步都开出了小小的花朵。他知道，明天的太阳升起时，他又会背上小壳，慢慢地、快乐地，去发现世界里新的温柔。<br><br><strong>（完）</strong>'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

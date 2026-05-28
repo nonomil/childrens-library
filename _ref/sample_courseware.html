@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>样例课件 - 齿轮传动</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(135deg,#FFF8F0,#FFF0E0);min-height:100vh;padding:16px}
+.container{max-width:480px;margin:0 auto}
+.cover{background:#fff;border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,107,53,.15);margin-bottom:16px}
+.cover-title{font-size:28px;font-weight:800;color:#FF6B35;margin-bottom:8px}
+.section{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-bottom:16px}
+.section-title{font-size:18px;font-weight:700;color:#FF6B35;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:#FFFCF5;border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid #FFE0B2}
+.btn{background:#FF6B35;color:#fff;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer}
+.btn:hover{background:#E85D2C}
+.btn-secondary{background:#2196F3}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">⚙️</div>
+    <h1 class="cover-title">齿轮传动王国</h1>
+    <p style="color:#8D6E63;margin-bottom:20px">动手玩转机械传动</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div class="section" id="content">
+    <div class="section-title">⚙️ 齿轮转转转</div>
+    <div class="interact-area">
+      <canvas id="gearCanvas" width="300" height="300"></canvas>
+      <p style="margin-top:12px;color:#5D4037">拖动齿轮让它转起来！</p>
+    </div>
+    <button class="btn">了解更多</button>
+  </div>
+</div>
+<script>
+// Canvas齿轮绘制示例
+const canvas = document.getElementById('gearCanvas');
+const ctx = canvas.getContext('2d');
+function drawGear(x, y, r, teeth, angle) {
+  ctx.clearRect(0, 0, 300, 300);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  for (let i = 0; i < teeth; i++) {
+    const a1 = (i / teeth) * Math.PI * 2;
+    const a2 = ((i + 0.5) / teeth) * Math.PI * 2;
+    ctx.lineTo(Math.cos(a1) * r, Math.sin(a1) * r);
+    ctx.lineTo(Math.cos(a2) * (r * 0.85), Math.sin(a2) * (r * 0.85));
+  }
+  ctx.closePath();
+  ctx.fillStyle = '#FF6B35';
+  ctx.fill();
+  ctx.restore();
+}
+let angle = 0;
+function animate() {
+  drawGear(150, 150, 80, 12, angle);
+  angle += 0.02;
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>

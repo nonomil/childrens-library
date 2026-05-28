@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>会变色的兔子</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#2A1B3D 0%,#6A3093 50%,#2A1B3D 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(255,183,77,0.2);margin-bottom:16px;border:1px solid rgba(255,183,77,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#FFB74D;margin-bottom:8px;text-shadow:0 2px 10px rgba(255,183,77,0.5)}
+.cover-subtitle{color:#CE93D8;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#FFB74D;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(255,183,77,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(255,183,77,0.3)}
+.btn{background:linear-gradient(135deg,#FFB74D,#FF9800);color:#2A1B3D;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(255,183,77,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#CE93D8,#9C27B0);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFB74D}
+.dialogue-name{font-weight:700;color:#FFB74D;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#FFB74D;background:rgba(255,183,77,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.poem-line{font-size:20px;text-align:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.1);color:#FFB74D}
+.poem-explain{font-size:14px;color:#CE93D8;padding:8px 0}
+.sparkle{position:fixed;pointer-events:none;animation:sparkle 1.5s ease-in-out infinite}
+@keyframes sparkle{0%,100%{opacity:0;transform:scale(0.5)}50%{opacity:1;transform:scale(1.2)}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🐰</div>
+    <h1 class="cover-title">会变色的兔子</h1>
+    <p class="cover-subtitle">特别的能力不是为了让自己了不起，而是为了帮助别人</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'fairy',
+  title: '会变色的兔子',
+  subtitle: '特别的能力不是为了让自己了不起，而是为了帮助别人',
+  colors: {
+    primary: '#2A1B3D',
+    secondary: '#6A3093',
+    accent: '#FFB74D',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🐰', '🌸', '🍃', '❄️', '🎨', '💛']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">👑 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#CE93D8">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#CE93D8">特别的能力不是为了让自己看起来了不起，而是为了能帮助需要帮助的人。</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '棉棉的毛会变成什么颜色？',
+      options: ['只会是白色', '会随季节和环境变化颜色', '只会变成红色', '不会变色'],
+      answer: 1
+    },
+    {
+      question: '棉棉用变色能力做了什么好事？',
+      options: ['变色去偷草莓', '变色保护小兔子不被狐狸抓', '变色去参加舞会', '变色去捉迷藏'],
+      answer: 1
+    },
+    {
+      question: '兔妈妈告诉棉棉什么道理？',
+      options: ['变色能力没有用', '任何能力都有好处和烦恼，重要的是怎么用它', '不应该变色', '变色能力是坏事'],
+      answer: 1
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 20; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.innerHTML = ['✨', '⭐', '💫'][i % 3];
+    sparkle.style.left = Math.random() * 100 + '%';
+    sparkle.style.top = Math.random() * 100 + '%';
+    sparkle.style.fontSize = (Math.random() * 12 + 8) + 'px';
+    sparkle.style.animationDelay = Math.random() * 1.5 + 's';
+    container.appendChild(sparkle);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '🌸',
+      title: '会变色的棉棉',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '春天来了，森林里嫩芽点点，像撒了一地绿色的小星星。在森林边的一个小土坡上，住着一只特别的兔子，名叫棉棉。棉棉有一身雪白雪白的毛，就像天上的云朵掉下来一样。但最特别的是——棉棉的毛会变色！' },
+        { type: 'text', content: '当春天的花儿盛开时，棉棉跑过郁金香花丛，白色的毛就变成了橙红色；夏天躺在草地上晒太阳，毛又变成了清新的嫩绿色；秋天踩过铺满金黄落叶的小路，毛就染上了温暖的橘黄色；冬天雪花飘落，棉棉又变回了雪白的模样，和白雪融为一体。' },
+        { type: 'dialogue', lines: [{ name: '🐰 棉棉', text: '你们看，我会变色！森林里就我一个有这么棒的本领！' }] }
+      ]
+    },
+    {
+      emoji: '🍓',
+      title: '变色的烦恼',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '可是渐渐地，棉棉发现了一个问题。一天，朋友们约好一起去采草莓。棉棉兴冲冲地答应了，可当他来到草莓地时，他突然变成了草莓的红色，完全融进了红色的草莓丛中。' },
+        { type: 'dialogue', lines: [
+          { name: '🐿️ 小松鼠点点', text: '棉棉？棉棉，你在哪里呀？' },
+          { name: '🐰 棉棉', text: '我在这里呀！我就在你们面前！' }
+        ] },
+        { type: 'text', content: '可朋友们就是看不见他。因为一只红色的兔子躺在红色的草莓中间，实在太难分辨了！还有一次更尴尬——朋友们举办森林舞会，棉棉穿上蓝色小衬衫，可他的毛立刻变成了天蓝色，朋友们以为他没穿衣服。' }
+      ]
+    },
+    {
+      emoji: '💭',
+      title: '妈妈的智慧',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '回到家，棉棉趴在妈妈身边，闷闷不乐。' },
+        { type: 'dialogue', lines: [
+          { name: '🐰 棉棉', text: '妈妈，变色一点都不好。朋友们都看不见我真正的样子。' },
+          { name: '🐰 兔妈妈', text: '孩子，任何能力都有它的好处和烦恼。重要的是你怎么用它。你的变色能力不是为了让你看起来与众不同，而是可以用来帮助别人呀。' }
+        ] },
+        { type: 'text', content: '棉棉的眼睛慢慢亮了起来。' }
+      ]
+    },
+    {
+      emoji: '🤝',
+      title: '帮助朋友',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '第二天，棉棉决定试试妈妈的方法。森林里有一只小刺猬叫球球，他总是很害羞，因为害怕自己的刺会扎到朋友。棉棉悄悄靠近球球，变出了温暖的土黄色，就像一小块阳光照在球球身边。' },
+        { type: 'dialogue', lines: [
+          { name: '🦔 球球', text: '咦？好暖和呀。棉棉，你怎么……' },
+          { name: '🐰 棉棉', text: '嘘，我只是想陪你坐一会儿，不会扎到你的。' }
+        ] },
+        { type: 'text', content: '球球感动极了，第一次和朋友靠得这么近。' }
+      ]
+    },
+    {
+      emoji: '🛡️',
+      title: '守护大家',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '又过了一周，森林里传来消息：狐狸阿灰在傍晚时总会悄悄靠近小兔子们玩耍的地方。大家都很害怕，傍晚都不敢出门玩了。' },
+        { type: 'dialogue', lines: [{ name: '🐰 棉棉', text: '我能帮忙！' }] },
+        { type: 'text', content: '傍晚时分，棉棉躺在草地上，毛慢慢变成了和暮色一样的灰蓝色。狐狸阿灰仔细看了又看，只看到一块灰蓝色的草地，没看到任何小兔子。一连三天，棉棉都用变色能力保护了小兔子们。' }
+      ]
+    },
+    {
+      emoji: '🌈',
+      title: '最美的秘密',
+      type: 'text',
+      content: '从那以后，棉棉明白了：特别的能力不是为了让自己看起来了不起，而是为了能帮助需要帮助的人。<br><br>现在，棉棉还是会变色，但他不再急着告诉每个人"我会变色"。他只是静静地用这份能力，在朋友需要时提供帮助，在森林需要时默默守护。<br><br>而真正的朋友，不管棉棉是什么颜色，都依然喜欢他，因为他们知道，最重要的不是毛的颜色，而是那颗温暖善良的心。<br><br><strong>（完）</strong>'
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

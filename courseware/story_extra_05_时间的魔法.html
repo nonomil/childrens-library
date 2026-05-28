@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时间的魔法</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#0A1628 0%,#1565C0 50%,#0A1628 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(77,182,172,0.2);margin-bottom:16px;border:1px solid rgba(77,182,172,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#4DD4AC;margin-bottom:8px;text-shadow:0 2px 10px rgba(77,182,172,0.5)}
+.cover-subtitle{color:#80DEEA;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#4DD4AC;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(77,182,172,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(77,182,172,0.3)}
+.btn{background:linear-gradient(135deg,#4DD4AC,#00897B);color:#0A1628;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(77,182,172,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#4FC3F7,#0277BD);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #4DD4AC}
+.dialogue-name{font-weight:700;color:#4DD4AC;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#4DD4AC;background:rgba(77,182,172,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.bubble{position:fixed;pointer-events:none;animation:rise 3s ease-in infinite}
+@keyframes rise{0%{transform:translateY(100%) scale(1);opacity:0.7}100%{transform:translateY(-100%) scale(0.5);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">⏰</div>
+    <h1 class="cover-title">时间的魔法</h1>
+    <p class="cover-subtitle">时间的魔法，就是爱的魔法</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'ocean',
+  title: '时间的魔法',
+  subtitle: '时间的魔法，就是爱的魔法',
+  colors: {
+    primary: '#0A1628',
+    secondary: '#1565C0',
+    accent: '#4DD4AC',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['⏰', '✨', '👵', '👦', '👴', '🌈']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">🐚 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#80DEEA">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#80DEEA">记住：每一刻，都是施展爱的魔法的好时机！</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '时间精灵滴答给苗苗展示了哪三种颜色的时间？',
+      options: ['金色、蓝色、彩虹色', '红色、绿色、黄色', '白色、黑色、灰色', '粉色、紫色、橙色'],
+      answer: 0
+    },
+    {
+      question: '金色的时间代表什么？',
+      options: ['和喜欢的人在一起的快乐时光', '等待的时间', '生气的时间', '睡觉的时间'],
+      answer: 0
+    },
+    {
+      question: '苗苗用什么魔法帮助了等待妈妈的小弟弟？',
+      options: ['蓝色魔法——一起做有趣的事让等待变得有意义', '金色魔法——给他讲故事', '彩虹魔法——让他哭出来', '银色魔法——让他飞起来'],
+      answer: 0
+    },
+    {
+      question: '时间精灵说时间是什么？',
+      options: ['可以分享的礼物', '敌人', '主人', '不重要的东西'],
+      answer: 0
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 15; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = '○';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDelay = Math.random() * 3 + 's';
+    bubble.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    bubble.style.color = 'rgba(77,182,172,0.5)';
+    container.appendChild(bubble);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '⏰',
+      title: '嘀嗒嘀嗒的秘密',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '小女孩苗苗今年六岁，她最喜欢做的事情，就是盯着厨房墙上那个老式挂钟看。挂钟有一张圆圆的脸，两根细细的针像腿一样一刻不停地走着，发出"嘀嗒嘀嗒"的声音。' },
+        { type: 'text', content: '今天，当苗苗又像往常一样趴在窗台上看挂钟时，奇怪的事情发生了。' },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '因为时间是要往前走的呀！' }] },
+        { type: 'dialogue', lines: [{ name: '👧 苗苗', text: '你……你是谁？' }] },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '我是时间精灵，名叫滴答。你一直这么关心我们时间家族，所以我想让你看看时间的魔法。' }] }
+      ]
+    },
+    {
+      emoji: '🌈',
+      title: '三种颜色的时间',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '滴答挥了挥手，苗苗眼前出现了三团漂浮的光。' },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '这是金色的时间——当你和喜欢的人在一起时，时间就会变成金色。' }] },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '这是蓝色的时间——当你耐心等待、认真做事的时候，时间会变成蓝色。' }] },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '这是彩虹色的时间——当你希望时间快点或慢点时，它就会变成彩虹色。但魔法时间有自己的节奏。' }] }
+      ]
+    },
+    {
+      emoji: '👵',
+      title: '老奶奶的回忆钟',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '滴答带着苗苗飞到公园。一位白发老奶奶正孤独地坐着，手里摩挲着一块老怀表。奶奶的时间，现在是灰色的。' },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '用你的时间魔法。去陪陪奶奶，和她聊聊天，这就是最强大的时间魔法。' }] },
+        { type: 'dialogue', lines: [{ name: '👧 苗苗', text: '奶奶，我能听您讲讲这块怀表的故事吗？' }] },
+        { type: 'text', content: '老奶奶开始讲述孙女小时候的故事。渐渐地，老奶奶周围的灰色变成了温暖的金色。' },
+        { type: 'dialogue', lines: [{ name: '👵 老奶奶', text: '谢谢你，小姑娘，我的时间又变得温暖了。' }] }
+      ]
+    },
+    {
+      emoji: '👦',
+      title: '小弟弟的等待',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '他们来到幼儿园门口，一个三四岁的小男孩正焦急地跺着脚。妈妈还没来接他，他周围是闪烁不定的彩虹色。' },
+        { type: 'dialogue', lines: [{ name: '👧 苗苗', text: '小弟弟，我们一起来玩"时间探险"游戏好不好？我们数从这里到那棵树有多少步……' }] },
+        { type: 'text', content: '他们数了47步到大树，发现那片叶子有23条纹路，还找到3颗圆圆的小石子。当小男孩数完最后一样东西时，妈妈终于出现了。' },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '你教会了他如何让等待的时间变得有意义。' }] }
+      ]
+    },
+    {
+      emoji: '👴',
+      title: '爷爷的工作室',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '他们来到一个小木屋前。一位老爷爷正对着未完成的木雕发呆，觉得自己没时间完成送给孙辈们的礼物了。' },
+        { type: 'dialogue', lines: [{ name: '👧 苗苗', text: '爷爷，您能教我怎么打磨这块木头吗？我想学。' }] },
+        { type: 'text', content: '他们一起工作了整整一个下午，木雕在两人手中渐渐成形——那是一只展翅的小鸟。' },
+        { type: 'dialogue', lines: [{ name: '👴 老爷爷', text: '奇怪，我感觉时间好像变多了。' }] },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '不是时间变多了，是你们共享的时间有了魔法。一个人需要一小时的事情，两个人分享，感觉像只有半小时。' }] }
+      ]
+    },
+    {
+      emoji: '✨',
+      title: '时间的真谛',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '太阳快要落山了，滴答准备离开。' },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '记住三个魔法咒语：用"金色魔法"珍惜和爱的人在一起的时光；用"蓝色魔法"让等待变得有意义；用"彩虹魔法"接纳所有时间本来的样子。' }] },
+        { type: 'dialogue', lines: [{ name: '✨ 滴答', text: '当你全心投入当下这一刻时，你就创造了属于自己的时间魔法。' }] },
+        { type: 'text', content: '挂钟依旧"嘀嗒嘀嗒"地走着，但苗苗现在觉得，那声音不再单调了。那是时间在唱歌，唱着一首关于珍惜、耐心和分享的歌。' },
+        { type: 'dialogue', lines: [{ name: '📖 寓意', text: '时间不是敌人，也不是主人，它是可以分享的礼物。每一刻，都是施展爱的魔法的好时机。' }] }
+      ]
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

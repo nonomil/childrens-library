@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学游戏：分类整理</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#1A3A2A 0%,#2E7D32 50%,#1A3A2A 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(139,195,74,0.2);margin-bottom:16px;border:1px solid rgba(139,195,74,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#8BC34A;margin-bottom:8px;text-shadow:0 2px 10px rgba(139,195,74,0.5)}
+.cover-subtitle{color:#A5D6A7;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#8BC34A;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(139,195,74,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(139,195,74,0.3)}
+.btn{background:linear-gradient(135deg,#8BC34A,#689F38);color:#1A3A2A;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(139,195,74,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#81C784,#388E3C);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #8BC34A}
+.dialogue-name{font-weight:700;color:#8BC34A;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#8BC34A;background:rgba(139,195,74,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.leaf{position:fixed;pointer-events:none;animation:fall 4s linear infinite}
+@keyframes fall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🧩</div>
+    <h1 class="cover-title">数学游戏：分类整理</h1>
+    <p class="cover-subtitle">3-6岁儿童数学游戏活动方案</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探索</button>
+  </div>
+  <div id="content">
+    <div class="section">
+      <div class="section-title">🎯 活动目标</div>
+      <div class="story-text">
+        <p><strong>知识目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>理解分类的基本概念（按颜色、形状、大小、种类等属性归类）</li>
+          <li>掌握简单的计数方法（1-10以内的数数）</li>
+          <li>初步认识集合概念</li>
+          <li>能根据指定标准进行二重分类</li>
+        </ul>
+        <p><strong>能力目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>发展观察力与比较能力</li>
+          <li>培养逻辑思维能力（制定分类规则并执行）</li>
+          <li>提升动手操作能力</li>
+          <li>增强语言表达能力</li>
+        </ul>
+        <p><strong>情感目标：</strong></p>
+        <ul style="margin-left:16px">
+          <li>体验分类整理带来的秩序感和成就感</li>
+          <li>培养做事有条理、爱整洁的良好习惯</li>
+          <li>激发对数学活动的兴趣和探索欲望</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📦 材料准备</div>
+      <div class="story-text">
+        <p><strong>分类物品：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>彩色积木/塑料块（红、黄、蓝、绿4色，圆形、方形、三角形3种形状）</li>
+          <li>纽扣（不同颜色、大小、孔数）</li>
+          <li>水果模型（苹果、香蕉、橙子、葡萄等）</li>
+          <li>动物模型（家禽、宠物、野生动物）</li>
+        </ul>
+        <p><strong>容器工具：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>彩色分类盘/托盘（4-6个）</li>
+          <li>透明收纳盒（带标签位）</li>
+          <li>小篮子/小碗</li>
+        </ul>
+        <p><strong>记录工具：</strong></p>
+        <ul style="margin-left:16px">
+          <li>分类记录表（带图示）</li>
+          <li>彩色贴纸</li>
+          <li>数字卡片（1-10）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📋 详细步骤</div>
+      <div class="story-text">
+        <p><strong>第一阶段：趣味导入（10分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">📖 故事引入</div>
+          <div>"小朋友们，今天我们的活动室变成了'混乱王国'！所有的玩具都找不到家了，他们好伤心啊。我们需要帮助他们找到自己的家，你们愿意当'分类小警察'吗？"</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">❓ 问题情境</div>
+          <div>展示一个装满混杂物品的箱子："看看这个魔法箱子里有什么？怎么让它们变得整齐呢？"</div>
+        </div>
+
+        <p><strong>第二阶段：探索学习（20分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">👨‍🏫 教师示范</div>
+          <div>选择一种物品（如彩色积木），大声说出分类标准："我决定按颜色分！红色的放这里，蓝色的放那里..."边分边数。</div>
+        </div>
+        <ul style="margin-left:16px;margin-bottom:12px">
+          <li>每组发放一套分类物品和分类盘</li>
+          <li>幼儿自由探索，尝试不同分类方法</li>
+          <li>请幼儿演示："你是怎么分的？为什么这样分？"</li>
+          <li>讨论不同分法："同样的物品，我们可以按颜色分，也可以按形状分"</li>
+        </ul>
+
+        <p><strong>第三阶段：游戏实践（25分钟）</strong></p>
+        <ul style="margin-left:16px;margin-bottom:12px">
+          <li><strong>游戏1：超级市场理货员</strong> —— 将混杂商品按类别摆放，完成后用数字标签标出数量</li>
+          <li><strong>游戏2：分类寻宝记</strong> —— 根据任务卡（如"找出所有圆形物品"）寻找并分类</li>
+          <li><strong>游戏3：垃圾分类小卫士</strong> —— 用图片卡片模拟垃圾分类，讨论为什么要分类</li>
+          <li><strong>游戏4：双重分类挑战</strong> —— 第一次按颜色分，第二次在每种颜色里再按形状分</li>
+        </ul>
+
+        <p><strong>第四阶段：总结展示（10分钟）</strong></p>
+        <ul style="margin-left:16px">
+          <li>各组展示整理成果，讲解分类方法</li>
+          <li>回顾今天学到了什么分类方法</li>
+          <li>颁发"分类小达人"贴纸</li>
+          <li>引导幼儿一起将材料分类收回</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🌟 延伸活动</div>
+      <div class="story-text">
+        <p><strong>日常生活延伸：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>整理自己的书包/玩具箱</li>
+          <li>衣柜分类：按季节或衣物类型整理</li>
+          <li>帮厨活动：整理蔬菜、水果，按种类摆放</li>
+        </ul>
+        <p><strong>跨学科活动：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>艺术活动：按颜色分类收集自然物，制作拼贴画</li>
+          <li>科学活动：观察树叶按形状、颜色分类</li>
+          <li>音乐活动：按乐器材质分类，感受不同音色</li>
+        </ul>
+        <p><strong>进阶数学活动：</strong></p>
+        <ul style="margin-left:16px">
+          <li>制作统计图：用贴纸制作简单的分类统计图</li>
+          <li>分类数学谜题：设计需要分类思维的逻辑谜题</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">⚠️ 注意事项</div>
+      <div class="story-text">
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li><strong>安全方面：</strong>确保所有物品无尖锐边角、无毒无害，小物品需防误吞</li>
+          <li><strong>尊重个体差异：</strong>允许不同发展水平的幼儿使用不同的分类标准</li>
+          <li><strong>保持趣味性：</strong>游戏化语言，适时加入音乐、故事元素</li>
+          <li><strong>引导而非替代：</strong>通过提问引导思考，不直接纠正</li>
+          <li><strong>关注持续性：</strong>分类能力需要长期培养，将活动融入日常生活</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💡 核心理念</div>
+      <div class="story-text">
+        <p>通过系统而有趣的分类整理活动，孩子们不仅能够获得数学启蒙，更能在实践中培养良好的生活习惯和思维能力，为未来的学习和生活打下坚实基础。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'forest',
+  title: '数学游戏：分类整理',
+  subtitle: '3-6岁儿童数学游戏活动方案',
+  colors: { primary: '#1A3A2A', secondary: '#2E7D32', accent: '#8BC34A', text: '#FFFFFF', card: 'rgba(255,255,255,0.1)' },
+  decorations: ['🍄', '🦋', '🌿', '🌲', '🦊', '🐿️']
+};
+function createLeaves() { const container = document.querySelector('.container'); const leafEmojis = ['🍃', '🍂', '🌿']; for (let i = 0; i < 10; i++) { const leaf = document.createElement('div'); leaf.className = 'leaf'; leaf.innerHTML = leafEmojis[i % leafEmojis.length]; leaf.style.left = Math.random() * 100 + '%'; leaf.style.animationDelay = Math.random() * 4 + 's'; leaf.style.fontSize = (Math.random() * 16 + 12) + 'px'; container.appendChild(leaf); } }
+document.addEventListener('DOMContentLoaded', () => { createLeaves(); });
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

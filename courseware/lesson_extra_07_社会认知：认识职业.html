@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>社会认知：认识职业</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#1A3A2A 0%,#2E7D32 50%,#1A3A2A 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(139,195,74,0.2);margin-bottom:16px;border:1px solid rgba(139,195,74,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#8BC34A;margin-bottom:8px;text-shadow:0 2px 10px rgba(139,195,74,0.5)}
+.cover-subtitle{color:#A5D6A7;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#8BC34A;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(139,195,74,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(139,195,74,0.3)}
+.btn{background:linear-gradient(135deg,#8BC34A,#689F38);color:#1A3A2A;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(139,195,74,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#81C784,#388E3C);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #8BC34A}
+.dialogue-name{font-weight:700;color:#8BC34A;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#8BC34A;background:rgba(139,195,74,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.leaf{position:fixed;pointer-events:none;animation:fall 4s linear infinite}
+@keyframes fall{0%{transform:translateY(-100%) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">👷</div>
+    <h1 class="cover-title">社会认知：认识职业</h1>
+    <p class="cover-subtitle">3-6岁儿童社会认知活动方案</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探索</button>
+  </div>
+  <div id="content">
+    <div class="section">
+      <div class="section-title">🎯 活动目标</div>
+      <div class="story-text">
+        <p><strong>知识目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>认识5种以上常见职业，了解其基本工作内容</li>
+          <li>理解职业与社会的关系，感知"分工合作"的概念</li>
+          <li>认识职业工具与标志，能说出典型工具或制服特征</li>
+        </ul>
+        <p><strong>能力目标：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>通过观察描述职业特征，用语言表达发现</li>
+          <li>在模拟场景中模仿职业动作，发展创造性思维</li>
+          <li>在小组活动中学习分工、合作与轮流</li>
+        </ul>
+        <p><strong>情感目标：</strong></p>
+        <ul style="margin-left:16px">
+          <li>萌发对各行各业劳动者的尊重与感谢之情</li>
+          <li>通过体验激发对不同职业的好奇心与探索欲</li>
+          <li>初步建立"我长大后也能为社会做贡献"的积极自我概念</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📦 材料准备</div>
+      <div class="story-text">
+        <p><strong>教具材料：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>职业图片卡：清晰展示不同职业的工作场景</li>
+          <li>职业工具实物或模型：玩具听诊器、厨师帽、纸制警徽等</li>
+          <li>职业服装/配角服：简易版医护服、消防服、厨师服等</li>
+        </ul>
+        <p><strong>场景布置：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>职业体验角：划分"小医院""消防站""美食厨房""学校教室"</li>
+          <li>背景音乐：各职业相关的轻快音乐</li>
+        </ul>
+        <p><strong>手工材料：</strong></p>
+        <ul style="margin-left:16px">
+          <li>白纸、彩笔、贴纸、安全剪刀、胶棒</li>
+          <li>空白职业名牌、自制"工具"</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">📋 详细步骤</div>
+      <div class="story-text">
+        <p><strong>第一环节：职业猜猜看（10分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">🎤 情景引入</div>
+          <div>教师提问："你们知道爸爸妈妈每天出门是去做什么吗？"播放混合职业声音的音频，让孩子猜测是什么职业。</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">🖼️ 图片揭秘</div>
+          <div>出示职业图片卡，引导孩子观察并讨论："这个人穿着什么？手里拿着什么？可能在做什么？"</div>
+        </div>
+
+        <p><strong>第二环节：职业工具探秘（10分钟）</strong></p>
+        <div class="dialogue">
+          <div class="dialogue-name">🔧 实物观察</div>
+          <div>分组传递职业工具实物（听诊器、计算器、打蛋器），让孩子触摸、观察并猜测用途。</div>
+        </div>
+        <div class="dialogue">
+          <div class="dialogue-name">🧩 工具配对游戏</div>
+          <div>将工具图片与职业图片混放，请孩子进行配对，并说明理由。</div>
+        </div>
+
+        <p><strong>第三环节：职业小镇体验（20分钟）</strong></p>
+        <ul style="margin-left:16px;margin-bottom:12px">
+          <li><strong>医院区：</strong>用玩具器械为布娃娃"看病"，学习说"请躺下，我帮你检查一下"</li>
+          <li><strong>消防站区：</strong>穿戴简易消防服，模拟接警、滑杆、灭火动作</li>
+          <li><strong>餐厅区：</strong>用橡皮泥制作"食物"，学习"欢迎光临""请问需要点什么"</li>
+        </ul>
+
+        <p><strong>第四环节：我的职业画（10分钟）</strong></p>
+        <ul style="margin-left:16px;margin-bottom:12px">
+          <li>请孩子画出自己最喜欢的职业，并画出该职业的典型工具或场景</li>
+          <li>每位孩子用1-2句话介绍自己的画</li>
+        </ul>
+
+        <p><strong>第五环节：总结与感恩（5分钟）</strong></p>
+        <ul style="margin-left:16px">
+          <li>集体讨论："如果没有这些职业，我们的生活会变成什么样？"</li>
+          <li>带领孩子对"虚拟职业角色"说谢谢</li>
+          <li>颁发"职业小勋章"贴纸奖励</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">🌟 延伸活动</div>
+      <div class="story-text">
+        <p><strong>家庭任务：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>职业采访：让孩子回家采访一位家人或邻居的职业</li>
+          <li>职业日记：用图画记录一周内观察到的职业</li>
+        </ul>
+        <p><strong>主题区角延伸：</strong></p>
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li>美工区：制作职业工具手工</li>
+          <li>阅读区：投放职业相关绘本</li>
+          <li>建构区：搭建"职业小镇"</li>
+        </ul>
+        <p><strong>跨领域融合：</strong></p>
+        <ul style="margin-left:16px">
+          <li>数学区：职业相关分类游戏</li>
+          <li>音乐区：学唱职业儿歌（如《我是一个粉刷匠》）</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">⚠️ 注意事项</div>
+      <div class="story-text">
+        <ul style="margin-left:16px;margin-bottom:8px">
+          <li><strong>安全管理：</strong>确保所有道具无尖锐边缘，避免使用细小零件</li>
+          <li><strong>儿童差异：</strong>尊重内向孩子的参与方式，可通过小组合作减少压力</li>
+          <li><strong>价值观引导：</strong>避免职业性别刻板印象，强调"所有职业都值得尊重"</li>
+          <li><strong>活动弹性：</strong>若孩子对某一职业特别感兴趣，可延长体验时间</li>
+          <li><strong>评价方式：</strong>以过程性评价为主，关注参与度和合作行为</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">💡 核心理念</div>
+      <div class="story-text">
+        <p>本方案以"体验式学习"为核心，通过多感官参与、情景模拟和社会互动，帮助儿童在具象化场景中建构对职业的认知，同时滋养社会情感与自我成长。活动设计注重游戏化、生活化与渐进性，适应幼儿的认知发展特点。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'forest',
+  title: '社会认知：认识职业',
+  subtitle: '3-6岁儿童社会认知活动方案',
+  colors: { primary: '#1A3A2A', secondary: '#2E7D32', accent: '#8BC34A', text: '#FFFFFF', card: 'rgba(255,255,255,0.1)' },
+  decorations: ['🍄', '🦋', '🌿', '🌲', '🦊', '🐿️']
+};
+function createLeaves() { const container = document.querySelector('.container'); const leafEmojis = ['🍃', '🍂', '🌿']; for (let i = 0; i < 10; i++) { const leaf = document.createElement('div'); leaf.className = 'leaf'; leaf.innerHTML = leafEmojis[i % leafEmojis.length]; leaf.style.left = Math.random() * 100 + '%'; leaf.style.animationDelay = Math.random() * 4 + 's'; leaf.style.fontSize = (Math.random() * 16 + 12) + 'px'; container.appendChild(leaf); } }
+document.addEventListener('DOMContentLoaded', () => { createLeaves(); });
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>

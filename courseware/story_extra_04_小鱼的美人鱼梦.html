@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小鱼的美人鱼梦</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#0A1628 0%,#1565C0 50%,#0A1628 100%);min-height:100vh;padding:16px;color:#fff}
+.container{max-width:480px;margin:0 auto}
+.cover{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:24px;padding:32px;text-align:center;box-shadow:0 8px 40px rgba(77,182,172,0.2);margin-bottom:16px;border:1px solid rgba(77,182,172,0.3)}
+.cover-title{font-size:28px;font-weight:800;color:#4DD4AC;margin-bottom:8px;text-shadow:0 2px 10px rgba(77,182,172,0.5)}
+.cover-subtitle{color:#80DEEA;margin-bottom:20px}
+.section{background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.3);margin-bottom:16px;border:1px solid rgba(255,255,255,0.1)}
+.section-title{font-size:18px;font-weight:700;color:#4DD4AC;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.interact-area{background:rgba(77,182,172,0.1);border-radius:12px;padding:20px;text-align:center;margin-bottom:12px;border:2px solid rgba(77,182,172,0.3)}
+.btn{background:linear-gradient(135deg,#4DD4AC,#00897B);color:#0A1628;border:none;padding:12px 24px;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(77,182,172,0.4)}
+.btn-secondary{background:linear-gradient(135deg,#4FC3F7,#0277BD);color:#fff}
+.story-text{line-height:1.8;font-size:16px;color:#E0E0E0}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #4DD4AC}
+.dialogue-name{font-weight:700;color:#4DD4AC;margin-bottom:4px}
+.quiz-option{background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;transition:all 0.3s;text-align:left}
+.quiz-option:hover{border-color:#4DD4AC;background:rgba(77,182,172,0.1)}
+.quiz-option.correct{border-color:#4CAF50;background:rgba(76,175,80,0.2)}
+.quiz-option.wrong{border-color:#F44336;background:rgba(244,67,54,0.2)}
+.bubble{position:fixed;pointer-events:none;animation:rise 3s ease-in infinite}
+@keyframes rise{0%{transform:translateY(100%) scale(1);opacity:0.7}100%{transform:translateY(-100%) scale(0.5);opacity:0}}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.dialogue:active{background:rgba(255,255,255,0.15)}
+.dialogue.speaking{animation:pulse 1.2s ease-in-out infinite;border-left-color:#FFA500}
+@media (max-width:360px){
+  body{padding:8px}
+  .cover{padding:20px 16px;border-radius:18px}
+  .cover-title{font-size:22px}
+  .section{padding:16px;border-radius:16px}
+  .section-title{font-size:16px}
+  .story-text{font-size:14px;line-height:1.6}
+  .dialogue{padding:10px 12px;font-size:14px}
+  .quiz-option{padding:10px;font-size:14px}
+  .poem-line{font-size:17px;padding:8px 0}
+  .btn{padding:10px 18px;font-size:13px}
+  .cover-subtitle{font-size:13px}
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0.4)}
+  50%{box-shadow:0 0 0 8px rgba(255,215,0,0)}
+}
+.story-text.speaking{background:rgba(255,215,0,0.15);animation:pulse 1.2s ease-in-out infinite}
+.dialogue{background:rgba(255,255,255,0.1);border-radius:12px;padding:12px 16px;margin:12px 0;border-left:4px solid #FFD700;cursor:pointer;transition:background 0.2s}
+.page-section.swipe-active{opacity:1;transform:translateX(0)}
+
+
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="cover">
+    <div style="font-size:64px;margin-bottom:12px">🐠</div>
+    <h1 class="cover-title">小鱼的美人鱼梦</h1>
+    <p class="cover-subtitle">最闪亮的鳞片，是善良的心</p>
+    <button class="btn" onclick="document.getElementById('content').scrollIntoView()">开始探险</button>
+  </div>
+  <div id="content"></div>
+  <div id="quiz-container"></div>
+</div>
+
+<script>
+const TEMPLATE_CONFIG = {
+  theme: 'ocean',
+  title: '小鱼的美人鱼梦',
+  subtitle: '最闪亮的鳞片，是善良的心',
+  colors: {
+    primary: '#0A1628',
+    secondary: '#1565C0',
+    accent: '#4DD4AC',
+    text: '#FFFFFF',
+    card: 'rgba(255,255,255,0.1)'
+  },
+  decorations: ['🐠', '🧜‍♀️', '🐚', '🌊', '⭐', '🪸']
+};
+
+class QuizEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.questions = [];
+    this.current = 0;
+    this.score = 0;
+  }
+  init(questions) {
+    this.questions = questions;
+    this.current = 0;
+    this.score = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.questions[this.current]) return;
+    const q = this.questions[this.current];
+    this.container.innerHTML = `
+      <div class="section">
+        <div class="section-title">🐚 第${this.current + 1}题</div>
+        <p style="margin-bottom:16px">${q.question}</p>
+        ${q.options.map((opt, i) => `
+          <div class="quiz-option" data-index="${i}" onclick="quizEngine.check(${i})">${opt}</div>
+        `).join('')}
+        <p style="margin-top:12px;color:#80DEEA">得分: ${this.score}/${this.questions.length}</p>
+      </div>
+    `;
+  }
+  check(index) {
+    const q = this.questions[this.current];
+    const options = this.container.querySelectorAll('.quiz-option');
+    options.forEach((opt, i) => {
+      opt.style.pointerEvents = 'none';
+      if (i === q.answer) opt.classList.add('correct');
+      else if (i === index && i !== q.answer) opt.classList.add('wrong');
+    });
+    if (index === q.answer) this.score++;
+    setTimeout(() => {
+      this.current++;
+      if (this.current < this.questions.length) this.render();
+      else {
+        this.container.innerHTML = `
+          <div class="section">
+            <div class="section-title">🎉 完成!</div>
+            <p>最终得分: ${this.score}/${this.questions.length}</p>
+            <p style="margin-top:12px;color:#80DEEA">记住：每条鱼都有自己的闪光方式，最闪亮的鳞片是善良的心！</p>
+          </div>
+        `;
+      }
+    }, 1000);
+  }
+}
+
+class StoryEngine {
+  constructor(containerId) {
+    this.container = document.getElementById(containerId);
+    this.sections = [];
+    this.current = 0;
+  }
+  init(sections) {
+    this.sections = sections;
+    this.current = 0;
+  }
+  mount() { this.render(); }
+  unmount() { if (this.container) this.container.innerHTML = ''; }
+  render() {
+    if (!this.container || !this.sections[this.current]) return;
+    const s = this.sections[this.current];
+    let html = `<div class="section"><div class="section-title">${s.emoji || '📖'} ${s.title}</div>`;
+    if (s.type === 'text') {
+      html += `<div class="story-text">${s.content}</div>`;
+    } else if (s.type === 'dialogue') {
+      s.lines.forEach(line => {
+        html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+      });
+    } else if (s.type === 'mixed') {
+      s.blocks.forEach(block => {
+        if (block.type === 'text') {
+          html += `<div class="story-text">${block.content}</div>`;
+        } else if (block.type === 'dialogue') {
+          block.lines.forEach(line => {
+            html += `<div class="dialogue"><div class="dialogue-name">${line.name}</div><div>${line.text}</div></div>`;
+          });
+        }
+      });
+    }
+    if (this.current < this.sections.length - 1) {
+      html += `<button class="btn" style="margin-top:16px" onclick="storyEngine.next()">下一页</button>`;
+    } else {
+      html += `<button class="btn btn-secondary" style="margin-top:16px" onclick="startQuiz()">进入互动问答</button>`;
+    }
+    html += `</div>`;
+    this.container.innerHTML = html;
+  }
+  next() {
+    this.current++;
+    if (this.current < this.sections.length) this.render();
+  }
+}
+
+function startQuiz() {
+  document.getElementById('quiz-container').scrollIntoView({ behavior: 'smooth' });
+  quizEngine.init([
+    {
+      question: '闪闪为什么想成为美人鱼？',
+      options: ['想用歌声帮助别人', '想长得漂亮', '想游得更快', '想离开大海'],
+      answer: 0
+    },
+    {
+      question: '美人鱼海月告诉闪闪什么秘密？',
+      options: ['帮助别人不需要特别的外表', '要先把尾巴变成腿', '只有美人鱼才能唱歌', '海底没有珊瑚礁'],
+      answer: 0
+    },
+    {
+      question: '闪闪发现自己的尾巴有什么力量？',
+      options: ['能带节奏地扇动海水', '能发光', '能变长', '能飞起来'],
+      answer: 0
+    },
+    {
+      question: '故事最后，闪闪明白了什么道理？',
+      options: ['美人鱼是一种心意，不是外表', '要变成别人才能帮助别人', '鱼不应该有梦想', '只有漂亮的鱼才能唱歌'],
+      answer: 0
+    }
+  ]);
+  quizEngine.mount();
+}
+
+const storyEngine = new StoryEngine('content');
+const quizEngine = new QuizEngine('quiz-container');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.querySelector('.container');
+  for (let i = 0; i < 15; i++) {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = '○';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDelay = Math.random() * 3 + 's';
+    bubble.style.fontSize = (Math.random() * 20 + 10) + 'px';
+    bubble.style.color = 'rgba(77,182,172,0.5)';
+    container.appendChild(bubble);
+  }
+
+  storyEngine.init([
+    {
+      emoji: '🐠',
+      title: '闪闪的小秘密',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '在蓝宝石海湾的珊瑚丛里，住着一条名叫闪闪的小鱼。她有一身橘红色的鳞片，在阳光下游动时，就像一团燃烧的小火焰。' },
+        { type: 'text', content: '闪闪每天和其他小鱼一起玩耍，但她心里藏着一个特别的秘密——她梦想成为一名美人鱼。' },
+        { type: 'dialogue', lines: [{ name: '🐡 阿圆', text: '可是美人鱼都有腿，我们只有尾巴。' }] },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '但美人鱼也生活在海里呀！我觉得我也可以！' }] }
+      ]
+    },
+    {
+      emoji: '💪',
+      title: '奇怪的练习',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '从那天起，闪闪开始了奇怪的练习。每天早晨，她都躲在摇曳的海草后面，努力练习"站立"。她把尾巴紧紧蜷缩起来，试图用尾鳍尖触碰海底——当然，每次都会摔倒。' },
+        { type: 'text', content: '更难的是学唱歌。美人鱼的歌声要像海浪轻轻拍打礁石，可闪闪一唱歌，总会吓跑附近的小虾米。' },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '也许……也许我根本不是当美人鱼的料。' }] }
+      ]
+    },
+    {
+      emoji: '🌙',
+      title: '月光下的相遇',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '那天晚上，月光像银色的纱巾铺在海面上。闪闪独自浮到海面下层，看着月亮发呆。' },
+        { type: 'text', content: '突然，一阵空灵的歌声随海浪传来。闪闪看见一位美人鱼——她有着月光般的银色长发，鱼尾闪烁着珍珠般的光芒。' },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '你……你是美人鱼公主吗？' }] },
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '我叫海月。而你，是那条在练习"站立"的小鱼吧？' }] }
+      ]
+    },
+    {
+      emoji: '💎',
+      title: '美人鱼的礼物',
+      type: 'mixed',
+      blocks: [
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '为什么想成为美人鱼呢？' }] },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '因为想用歌声帮助别人。就像你以前治愈珊瑚礁那样。' }] },
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '我治愈珊瑚礁，不是因为我有美人鱼的外表，而是因为我用心感受了珊瑚礁的痛苦。' }] },
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '你知道吗？你每天练习时，尾巴拍打水波的声音，其实一直在安慰那些被海浪吓到的小贝壳。' }] }
+      ]
+    },
+    {
+      emoji: '✨',
+      title: '小鱼的新发现',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '第二天，闪闪不再练习站立了。她游向生病的珊瑚礁，用尾巴轻轻扇动，把干净的海水带到珊瑚身边。' },
+        { type: 'text', content: '她发现自己的尾鳍摆动得特别有节奏——那是她练习时自然形成的节奏。' },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '原来我的尾巴有这样的力量！' }] },
+        { type: 'text', content: '她唱起妈妈教她的《海洋摇篮曲》。奇妙的是，那些小贝壳真的随着她的歌声慢慢舒展开来。' }
+      ]
+    },
+    {
+      emoji: '🧜‍♀️',
+      title: '真正的美人鱼',
+      type: 'mixed',
+      blocks: [
+        { type: 'text', content: '一个月后，生病的珊瑚礁重新焕发了色彩。闪闪成了海底最受欢迎的小鱼。' },
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '你现在还想成为美人鱼吗？' }] },
+        { type: 'dialogue', lines: [{ name: '🐠 闪闪', text: '我想……我已经知道美人鱼的秘密了。美人鱼不是一种外表，而是一种心意。' }] },
+        { type: 'dialogue', lines: [{ name: '🧜‍♀️ 海月', text: '那么，你已经是真正的美人鱼了——用你自己的方式。' }] },
+        { type: 'text', content: '从那天起，蓝宝石海湾多了一条特别的小鱼。她不再羡慕别人，因为她明白了：每条鱼都有自己的闪光方式，而最闪亮的鳞片，是善良的心。' },
+        { type: 'dialogue', lines: [{ name: '📖 寓意', text: '真正的美丽来自内心的善良与坚持。用自己独特的方式去帮助别人，就是最了不起的"魔法"。' }] }
+      ]
+    }
+  ]);
+  storyEngine.mount();
+});
+function launchConfetti() {
+  let box = document.querySelector('.confetti-container');
+  if (!box) {
+    box = document.createElement('div');
+    box.className = 'confetti-container';
+    document.body.appendChild(box);
+  }
+const Speech = {
+  _speaking: false,
+  detectLang(text) {
+    const cjk = /[\u4e00-\u9fff\u3400-\u4dbf]/;
+    const latin = /[a-zA-Z]/;
+    let cn = 0, en = 0;
+    for (let i = 0; i < text.length; i++) {
+      if (cjk.test(text[i])) cn++;
+      else if (latin.test(text[i])) en++;
+    }
+    return cn > en ? 'zh-CN' : 'en-US';
+  },
+  speak(text, lang) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    if (!text || !text.trim()) return;
+    const u = new SpeechSynthesisUtterance(text.trim());
+    u.lang = lang || this.detectLang(text);
+    u.rate = 0.9;
+    u.pitch = 1.05;
+    this._speaking = true;
+    u.onend = () => { this._speaking = false; };
+    u.onerror = () => { this._speaking = false; };
+    window.speechSynthesis.speak(u);
+  },
+  stop() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    this._speaking = false;
+  }
+};
+
+function initSwipe() {
+  contentEl.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  contentEl.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    const sections = getSections();
+    if (sections.length < 2) return;
+    if (dx < 0 && currentPage < sections.length - 1) {
+      swipePage(currentPage, currentPage + 1);
+    } else if (dx > 0 && currentPage > 0) {
+      swipePage(currentPage, currentPage - 1);
+    }
+  }, { passive: true });
+}
+
+</script>
+</body>
+</html>
