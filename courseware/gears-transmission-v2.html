@@ -5,117 +5,153 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>咕噜咕噜传动王国 ⚙️</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
+
 /* ===== GLOBAL RESET ===== */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 html{scroll-behavior:smooth}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#FFF8F0 0%,#FFF0E0 100%);min-height:100vh;color:#333;overflow-x:hidden}
+body{font-family:'Source Sans 3',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#faf5f0;min-height:100vh;color:#334155;overflow-x:hidden;line-height:1.7;font-size:16px}
 canvas{display:block;touch-action:none;cursor:grab}
 canvas:active{cursor:grabbing}
 
-/* ===== CONFIG-DRIVEN COLORS (overridden by JS) ===== */
-:root{--primary:#FF6B35;--secondary:#2196F3;--bg-start:#FFF8F0;--bg-end:#FFF0E0;--hero-color:#FF6B35}
+/* ===== CONFIG-DRIVEN COLORS ===== */
+:root{
+  --primary:#1a365d;--primary-light:#2d4a7a;--primary-dark:#0f2340;
+  --accent:#d97706;--accent-light:#f59e0b;
+  --sage:#4a7c59;--sage-light:#6b9e7a;
+  --cream:#faf5f0;--cream-dark:#f0ebe3;
+  --slate:#334155;--slate-light:#64748b;--slate-lighter:#94a3b8;
+  --hero-color:#1a365d;
+  --card-bg:#faf5f0;--card-border:rgba(0,0,0,0.06);
+  --shadow-sm:0 1px 3px rgba(30,20,10,0.06);
+  --shadow-md:0 2px 8px rgba(30,20,10,0.08);
+  --shadow-lg:0 4px 16px rgba(30,20,10,0.1);
+  --radius:8px;--radius-lg:12px;
+}
 
 /* ===== NAVIGATION DOTS ===== */
-.nav-dots{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:8px}
-.nav-dot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.15);cursor:pointer;transition:all .25s;border:none;padding:0}
-.nav-dot.active{background:var(--primary);transform:scale(1.4)}
-.nav-dot:hover{background:var(--primary);opacity:0.7}
+.nav-dots{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:10px}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:rgba(26,54,93,0.15);cursor:pointer;transition:all .4s ease;border:none;padding:0}
+.nav-dot.active{background:var(--accent);transform:scale(1.5)}
+.nav-dot:hover{background:var(--primary);opacity:0.6}
 
 /* ===== SECTION BASE ===== */
-.section{min-height:100vh;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .6s ease}
-.section.visible{opacity:1;transform:translateY(0)}
-.section-inner{width:100%;max-width:800px}
+.section{min-height:100vh;padding:40px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:1;transform:translateY(0);transition:opacity .8s ease,transform .8s ease}
+.section.scrolled-in{opacity:1;transform:translateY(0)}
+.section-inner{width:100%;max-width:760px}
 
 /* ===== HERO COVER ===== */
-#hero{background:linear-gradient(135deg,var(--hero-color),#FF8E53);color:#fff;text-align:center;overflow:hidden;position:relative}
-.hero-gears{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;opacity:0.15}
-.hero-content{position:relative;z-index:2}
-.hero-emoji{font-size:clamp(60px,15vw,120px);animation:hero-float 3s ease-in-out infinite}
-.hero-title{font-size:clamp(28px,8vw,56px);font-weight:800;text-shadow:3px 3px 0 rgba(0,0,0,0.15);margin:8px 0}
-.hero-subtitle{font-size:clamp(14px,4vw,22px);opacity:0.9;margin-bottom:20px}
-.hero-btn{background:#fff;color:var(--primary);border:none;padding:14px 36px;border-radius:40px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);transition:all .2s;font-family:inherit}
-.hero-btn:hover{transform:scale(1.05);box-shadow:0 8px 28px rgba(0,0,0,0.25)}
-.hero-btn:active{transform:scale(0.96)}
+#hero{background:linear-gradient(160deg,#0f2340 0%,#1a365d 35%,#2d4a7a 60%,#4a3f2a 85%,#d97706 100%);color:#fff;text-align:center;overflow:hidden;position:relative;min-height:100vh}
+#hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(217,119,6,0.12) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(74,124,89,0.08) 0%,transparent 50%);pointer-events:none}
+#hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,#faf5f0,transparent);pointer-events:none;z-index:1}
+.hero-gears{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;opacity:0.08}
+.hero-content{position:relative;z-index:2;padding:20px}
+.hero-icon{width:clamp(64px,12vw,100px);height:clamp(64px,12vw,100px);margin:0 auto 24px;opacity:0.85;animation:hero-breathe 6s ease-in-out infinite}
+.hero-icon svg{width:100%;height:100%}
+.hero-title{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:clamp(32px,8vw,60px);font-weight:700;letter-spacing:0.02em;text-shadow:0 2px 20px rgba(0,0,0,0.3);margin:0 0 12px;line-height:1.2}
+.hero-subtitle{font-size:clamp(13px,3.5vw,18px);font-weight:300;opacity:0.75;letter-spacing:0.15em;text-transform:uppercase;margin-bottom:36px}
+.hero-btn{background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.25);padding:14px 40px;border-radius:40px;font-size:15px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px);transition:all .4s ease;font-family:'Source Sans 3',sans-serif;letter-spacing:0.08em;text-transform:uppercase}
+.hero-btn:hover{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.4);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+.hero-btn:active{transform:translateY(0);background:rgba(255,255,255,0.25)}
+.hero-particles{position:absolute;inset:0;pointer-events:none;z-index:1}
 
-/* ===== SECTION TITLES ===== */
-.sec-title{font-size:clamp(22px,6vw,36px);color:var(--primary);text-align:center;margin-bottom:6px;font-weight:800}
-.sec-icon{font-size:clamp(36px,10vw,56px);text-align:center;margin-bottom:4px}
-.sec-desc{font-size:clamp(13px,3.5vw,17px);color:#666;text-align:center;margin-bottom:16px;line-height:1.5}
+/* ===== SECTION HEADERS ===== */
+.sec-number{font-family:'Playfair Display',Georgia,serif;font-size:13px;font-weight:500;color:var(--accent);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;text-align:center}
+.sec-title{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-size:clamp(24px,5vw,34px);color:var(--primary);text-align:center;margin-bottom:8px;font-weight:600;line-height:1.3}
+.sec-icon{width:36px;height:36px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center}
+.sec-icon svg{width:100%;height:100%;opacity:0.7}
+.sec-desc{font-size:clamp(14px,3.5vw,16px);color:var(--slate-light);text-align:center;margin-bottom:20px;line-height:1.8;font-weight:400}
 
 /* ===== CARD ===== */
-.card{background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:16px;margin-bottom:16px}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);padding:20px;margin-bottom:16px}
 
 /* ===== SLIDER ===== */
-.slider-row{display:flex;align-items:center;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
-.slider-row label{font-size:14px;color:#555;font-weight:600}
-.slider-row input[type=range]{-webkit-appearance:none;width:140px;height:6px;border-radius:3px;background:#e0e0e0;outline:none}
-.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.2)}
-.slider-val{font-size:15px;font-weight:700;color:var(--primary);min-width:28px;text-align:center}
+.slider-row{display:flex;align-items:center;gap:10px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.slider-row label{font-size:14px;color:var(--slate-light);font-weight:500}
+.slider-row input[type=range]{-webkit-appearance:none;width:140px;height:4px;border-radius:2px;background:var(--cream-dark);outline:none}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.15);transition:transform .2s}
+.slider-row input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.slider-val{font-size:14px;font-weight:600;color:var(--primary);min-width:28px;text-align:center;font-family:'Playfair Display',Georgia,serif}
 
 /* ===== BUTTONS ===== */
-.btn{border:none;padding:10px 22px;border-radius:24px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;color:#fff}
-.btn:active{transform:scale(0.94)}
+.btn{border:none;padding:10px 24px;border-radius:var(--radius);font-size:14px;font-weight:600;cursor:pointer;transition:all .25s ease;font-family:'Source Sans 3',sans-serif;color:#fff;letter-spacing:0.02em}
+.btn:active{transform:scale(0.97)}
 .btn-primary{background:var(--primary)}
-.btn-secondary{background:var(--secondary)}
-.btn-success{background:#4CAF50}
-.btn-warning{background:#FF9800}
+.btn-primary:hover{background:var(--primary-light);box-shadow:var(--shadow-md)}
+.btn-secondary{background:var(--sage)}
+.btn-secondary:hover{background:var(--sage-light)}
+.btn-success{background:var(--sage)}
+.btn-success:hover{background:var(--sage-light)}
+.btn-warning{background:var(--accent)}
+.btn-warning:hover{background:var(--accent-light)}
 
 /* ===== GAME AREA ===== */
-.game-area{position:relative;width:100%;border-radius:16px;overflow:hidden;background:#f5f5f5;min-height:300px}
-.game-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(255,255,255,0.9);border-bottom:1px solid #eee;flex-wrap:wrap;gap:6px}
-.game-score{font-size:18px;font-weight:700;color:var(--primary)}
-.game-progress{font-size:14px;color:#888}
-.game-goal{font-size:16px;font-weight:600;color:#333;text-align:center;padding:12px;background:#fff8f0;border-radius:12px;margin:8px}
+.game-area{position:relative;width:100%;border-radius:var(--radius-lg);overflow:hidden;background:var(--cream);min-height:300px;border:1px solid var(--card-border)}
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(250,245,240,0.95);border-bottom:1px solid var(--card-border);flex-wrap:wrap;gap:6px}
+.game-score{font-size:15px;font-weight:600;color:var(--primary);font-family:'Playfair Display',Georgia,serif}
+.game-progress{font-size:13px;color:var(--slate-lighter);font-weight:400}
+.game-goal{font-size:15px;font-weight:500;color:var(--slate);text-align:center;padding:12px 16px;background:rgba(255,255,255,0.6);border-radius:var(--radius);margin:8px;border:1px solid var(--card-border)}
 .game-canvas-wrap{width:100%;position:relative}
-.game-feedback{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:10}
+.game-feedback{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .5s ease;z-index:10;font-size:14px;font-weight:600;color:var(--sage);letter-spacing:0.05em;text-transform:uppercase;background:rgba(250,245,240,0.95);padding:8px 20px;border-radius:var(--radius);border:1px solid var(--card-border)}
 .game-feedback.show{opacity:1}
 .game-palette{display:flex;gap:8px;justify-content:center;padding:10px;flex-wrap:wrap}
-.game-palette-item{width:60px;height:60px;border-radius:12px;background:#fff;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:all .15s}
-.game-palette-item:active{transform:scale(0.9);border-color:var(--primary)}
+.game-palette-item{width:56px;height:56px;border-radius:var(--radius);background:#fff;border:1px solid var(--card-border);display:flex;align-items:center;justify-content:center;font-size:24px;cursor:pointer;transition:all .2s ease;box-shadow:var(--shadow-sm)}
+.game-palette-item:hover{border-color:var(--primary);box-shadow:var(--shadow-md)}
+.game-palette-item:active{transform:scale(0.95);border-color:var(--primary)}
 .game-buckets{display:flex;gap:12px;justify-content:center;padding:12px;flex-wrap:wrap}
-.game-bucket{width:120px;min-height:80px;border:2px dashed #ccc;border-radius:16px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s}
-.game-bucket.highlight{border-color:var(--primary);background:rgba(255,107,53,0.05)}
-.game-bucket-label{font-size:22px}
-.game-bucket-text{font-size:11px;color:#888}
+.game-bucket{width:120px;min-height:80px;border:1px dashed var(--slate-lighter);border-radius:var(--radius);padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .3s ease;background:rgba(255,255,255,0.4)}
+.game-bucket.highlight{border-color:var(--primary);background:rgba(26,54,93,0.04);border-style:solid}
+.game-bucket-label{font-size:18px}
+.game-bucket-text{font-size:11px;color:var(--slate-lighter);font-weight:400}
 .game-bucket-items{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
 .game-options{display:flex;gap:10px;justify-content:center;padding:12px;flex-wrap:wrap}
-.game-option{padding:10px 20px;border-radius:16px;border:2px solid #ddd;background:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
-.game-option:active{transform:scale(0.95)}
-.game-option.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
-.game-option.wrong{border-color:#f44336;background:#FFEBEE;color:#C62828}
-.game-option.selected{border-color:var(--primary);background:rgba(255,107,53,0.1)}
+.game-option{padding:10px 20px;border-radius:var(--radius);border:1px solid var(--card-border);background:#fff;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s ease;color:var(--slate)}
+.game-option:hover{border-color:var(--slate-lighter);box-shadow:var(--shadow-sm)}
+.game-option:active{transform:scale(0.97)}
+.game-option.correct{border-color:var(--sage);background:rgba(74,124,89,0.08);color:#2d5a3a}
+.game-option.wrong{border-color:#b91c1c;background:rgba(185,28,28,0.06);color:#991b1b}
+.game-option.selected{border-color:var(--primary);background:rgba(26,54,93,0.06)}
 
 /* ===== SUMMARY CARDS ===== */
-.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
-.summary-card{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,0.06)}
-.summary-card .icon{font-size:36px;margin-bottom:6px}
-.summary-card .label{font-size:14px;color:#666;font-weight:600}
-.summary-card .value{font-size:18px;font-weight:800;color:var(--primary)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.summary-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-lg);padding:16px;text-align:center;box-shadow:var(--shadow-sm);transition:transform .3s ease,box-shadow .3s ease}
+.summary-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.summary-card .icon{font-size:28px;margin-bottom:6px;opacity:0.8}
+.summary-card .label{font-size:13px;color:var(--slate-light);font-weight:500;margin-bottom:4px}
+.summary-card .value{font-size:15px;font-weight:600;color:var(--primary);font-family:'Playfair Display',Georgia,serif}
 
 /* ===== QUIZ ===== */
-.quiz-q{font-size:17px;font-weight:700;text-align:center;margin:12px 0;padding:12px;background:#f8f4ff;border-radius:12px}
+.quiz-q{font-size:16px;font-weight:600;text-align:center;margin:12px 0;padding:16px;background:rgba(255,255,255,0.5);border-radius:var(--radius);color:var(--slate);line-height:1.6;border:1px solid var(--card-border)}
 .quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
-.quiz-opt{padding:14px;border-radius:14px;border:2px solid #e0e0e0;background:#fff;font-size:15px;cursor:pointer;text-align:center;transition:all .15s;font-weight:600}
-.quiz-opt:active{transform:scale(0.96)}
-.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9}
-.quiz-opt.wrong{border-color:#f44336;background:#FFEBEE}
-.quiz-result{text-align:center;font-size:20px;font-weight:700;margin:12px 0}
+.quiz-opt{padding:14px;border-radius:var(--radius);border:1px solid var(--card-border);background:#fff;font-size:14px;cursor:pointer;text-align:center;transition:all .2s ease;font-weight:500;color:var(--slate)}
+.quiz-opt:hover{border-color:var(--slate-lighter);box-shadow:var(--shadow-sm)}
+.quiz-opt:active{transform:scale(0.97)}
+.quiz-opt.correct{border-color:var(--sage);background:rgba(74,124,89,0.08)}
+.quiz-opt.wrong{border-color:#b91c1c;background:rgba(185,28,28,0.06)}
+.quiz-result{text-align:center;font-size:18px;font-weight:600;margin:12px 0;color:var(--primary);font-family:'Playfair Display',Georgia,serif}
 
-/* ===== SPARKLE EFFECT ===== */
-@keyframes sparkle-pop{0%{transform:scale(0) rotate(0deg);opacity:1}50%{transform:scale(1.2) rotate(180deg);opacity:1}100%{transform:scale(0) rotate(360deg);opacity:0}}
-.sparkle{position:absolute;pointer-events:none;font-size:24px;animation:sparkle-pop .6s ease-out forwards}
+/* ===== SUBTLE FEEDBACK EFFECT ===== */
+@keyframes gentle-pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.gentle-pulse{animation:gentle-pulse .4s ease}
 
 /* ===== ANIMATIONS ===== */
-@keyframes hero-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes spin-cw{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes spin-ccw{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-@keyframes confetti-fall{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes hero-breathe{0%,100%{transform:scale(1);opacity:0.85}50%{transform:scale(1.03);opacity:1}}
+@keyframes float-particle{0%,100%{transform:translateY(0) rotate(0deg);opacity:0.15}50%{transform:translateY(-20px) rotate(180deg);opacity:0.25}}
+@keyframes fade-in-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes gentle-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+/* ===== DECORATIVE PAPER TEXTURE ===== */
+.section::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
 /* ===== RESPONSIVE ===== */
-@media(max-width:480px){.section{padding:16px 10px}.card{padding:12px}.game-header{padding:8px 12px}}
+@media(max-width:480px){
+  .section{padding:24px 14px}
+  .card{padding:14px}
+  .game-header{padding:8px 12px}
+  .hero-title{letter-spacing:0}
+  .nav-dots{right:10px;gap:8px}
+  .nav-dot{width:6px;height:6px}
+}
 </style>
 </head>
 <body>
@@ -126,11 +162,28 @@ canvas:active{cursor:grabbing}
 <!-- ===== HERO COVER ===== -->
 <section class="section" id="hero">
   <canvas class="hero-gears" id="heroGearsCanvas"></canvas>
+  <div class="hero-particles" id="heroParticles"></div>
   <div class="hero-content">
-    <div class="hero-emoji" id="heroEmoji">⚙️</div>
-    <h1 class="hero-title" id="heroTitle">咕噜咕噜传动王国</h1>
+    <div class="hero-icon" id="heroIcon">
+      <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="28" stroke="rgba(255,255,255,0.6)" stroke-width="2" fill="none"/>
+        <circle cx="50" cy="50" r="8" fill="rgba(255,255,255,0.4)"/>
+        <g stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round">
+          <line x1="50" y1="18" x2="50" y2="10"/>
+          <line x1="50" y1="90" x2="50" y2="82"/>
+          <line x1="18" y1="50" x2="10" y2="50"/>
+          <line x1="90" y1="50" x2="82" y2="50"/>
+          <line x1="27.3" y1="27.3" x2="21.7" y2="21.7"/>
+          <line x1="78.3" y1="78.3" x2="72.7" y2="72.7"/>
+          <line x1="27.3" y1="72.7" x2="21.7" y2="78.3"/>
+          <line x1="78.3" y1="21.7" x2="72.7" y2="27.3"/>
+        </g>
+        <circle cx="50" cy="50" r="36" stroke="rgba(255,255,255,0.2)" stroke-width="1" stroke-dasharray="4 6" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="hero-title" id="heroTitle">传动王国</h1>
     <p class="hero-subtitle" id="heroSubtitle">齿轮 · 链条 · 连杆 · 传动带</p>
-    <button class="hero-btn" onclick="scrollToSection(1)">🚀 开始探险</button>
+    <button class="hero-btn" onclick="scrollToSection(0)">开始探索</button>
   </div>
 </section>
 
@@ -143,9 +196,14 @@ canvas:active{cursor:grabbing}
 <!-- ===== SUMMARY SECTION ===== -->
 <section class="section" id="summarySection">
   <div class="section-inner">
-    <div class="sec-icon">🏆</div>
+    <div class="sec-number">07</div>
+    <div class="sec-icon">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 3l4.5 9.5L33 14l-7.5 7 2 10L18 27l-9.5 4 2-10L3 14l10.5-1.5z" stroke="#d97706" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
     <h2 class="sec-title">知识总结</h2>
-    <p class="sec-desc">你已经学完了传动的所有知识！来做个小测验吧</p>
+    <p class="sec-desc">你已经学完了传动的所有知识，来做个小测验吧</p>
     <div class="summary-grid" id="summaryGrid"></div>
     <div class="card" id="finalQuiz"></div>
   </div>
@@ -167,8 +225,7 @@ const TEMPLATE_CONFIG = {
       { id: "chain-drive", icon: "⛓️", title: "链条传动", type: "chain-drive", desc: "自行车是怎么把脚踏的力量传到轮子的？" },
       { id: "linkage", icon: "🔗", title: "连杆机构", type: "linkage", desc: "一根杆子能变出各种运动！" },
       { id: "belt-drive", icon: "🏗️", title: "传动带", type: "belt-drive", desc: "软软的皮带也能传递力量" },
-      { id: "gear-lab", icon: "🧪", title: "齿轮实验室", type: "gear-lab", desc: "自由调整参数，探索齿轮的物理世界" },
-      { id: "summary", icon: "🏆", title: "知识总结", type: "summary", desc: "回顾你学到的所有传动知识" }
+      { id: "gear-lab", icon: "🧪", title: "齿轮实验室", type: "gear-lab", desc: "自由调整参数，探索齿轮的物理世界" }
     ]
   },
   games: [
@@ -203,16 +260,13 @@ function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = ran
 
 // --- Sparkle Effect ---
 function createSparkle(x, y, container) {
-  const emojis = ['✨','⭐','🌟','💫','🎉'];
-  for (let i = 0; i < 6; i++) {
+  const symbols = ['·','·','·'];
+  for (let i = 0; i < 4; i++) {
     const s = document.createElement('div');
-    s.className = 'sparkle';
-    s.textContent = emojis[randInt(0, emojis.length - 1)];
-    s.style.left = (x + randInt(-30, 30)) + 'px';
-    s.style.top = (y + randInt(-30, 30)) + 'px';
-    s.style.animationDelay = (i * 0.08) + 's';
+    s.style.cssText = `position:absolute;pointer-events:none;width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:0;transition:all .6s ease;left:${x + randInt(-20, 20)}px;top:${y + randInt(-20, 20)}px;z-index:20`;
     (container || document.body).appendChild(s);
-    setTimeout(() => s.remove(), 800);
+    requestAnimationFrame(() => { s.style.opacity = '0.5'; s.style.transform = `translateY(-${randInt(10, 30)}px)`; });
+    setTimeout(() => { s.style.opacity = '0'; setTimeout(() => s.remove(), 300); }, 400 + i * 80);
   }
 }
 
@@ -220,7 +274,8 @@ function showFeedback(canvas, emoji) {
   const wrap = canvas.parentElement;
   let fb = wrap.querySelector('.game-feedback');
   if (!fb) { fb = document.createElement('div'); fb.className = 'game-feedback'; wrap.appendChild(fb); }
-  fb.textContent = emoji;
+  fb.textContent = emoji === '✅' ? 'Correct' : 'Try again';
+  fb.style.color = emoji === '✅' ? 'var(--sage)' : '#991b1b';
   fb.classList.add('show');
   setTimeout(() => fb.classList.remove('show'), 800);
 }
@@ -369,13 +424,24 @@ function setupCanvas(canvas, heightRatio) {
 function buildKnowledgeSections() {
   const container = $('#knowledgeSections');
   const secs = TEMPLATE_CONFIG.topic.sections;
+  const sectionIcons = {
+    'gear-basics': '<svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="10" stroke="#1a365d" stroke-width="1.5"/><circle cx="18" cy="18" r="3" fill="#1a365d"/><line x1="18" y1="4" x2="18" y2="8" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><line x1="18" y1="28" x2="18" y2="32" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><line x1="4" y1="18" x2="8" y2="18" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><line x1="28" y1="18" x2="32" y2="18" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'gear-pair': '<svg viewBox="0 0 36 36" fill="none"><circle cx="13" cy="18" r="8" stroke="#1a365d" stroke-width="1.5"/><circle cx="13" cy="18" r="2.5" fill="#1a365d"/><circle cx="25" cy="18" r="5.5" stroke="#d97706" stroke-width="1.5"/><circle cx="25" cy="18" r="1.8" fill="#d97706"/></svg>',
+    'chain-drive': '<svg viewBox="0 0 36 36" fill="none"><ellipse cx="12" cy="18" rx="6" ry="8" stroke="#1a365d" stroke-width="1.5"/><ellipse cx="26" cy="18" rx="4" ry="6" stroke="#d97706" stroke-width="1.5"/><line x1="12" y1="10" x2="26" y2="12" stroke="#4a7c59" stroke-width="1" stroke-dasharray="2 2"/><line x1="12" y1="26" x2="26" y2="24" stroke="#4a7c59" stroke-width="1" stroke-dasharray="2 2"/></svg>',
+    'linkage': '<svg viewBox="0 0 36 36" fill="none"><circle cx="8" cy="18" r="2.5" fill="#1a365d"/><circle cx="28" cy="18" r="2.5" fill="#d97706"/><line x1="8" y1="18" x2="18" y2="10" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><line x1="18" y1="10" x2="28" y2="18" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="10" r="2" fill="#4a7c59"/></svg>',
+    'belt-drive': '<svg viewBox="0 0 36 36" fill="none"><circle cx="10" cy="18" r="6" stroke="#1a365d" stroke-width="1.5"/><circle cx="26" cy="18" r="4" stroke="#d97706" stroke-width="1.5"/><path d="M10 12 L26 14 M10 24 L26 22" stroke="#4a7c59" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'gear-lab': '<svg viewBox="0 0 36 36" fill="none"><rect x="6" y="6" width="24" height="24" rx="3" stroke="#1a365d" stroke-width="1.5"/><line x1="6" y1="14" x2="30" y2="14" stroke="#1a365d" stroke-width="1" opacity="0.3"/><line x1="6" y1="22" x2="30" y2="22" stroke="#1a365d" stroke-width="1" opacity="0.3"/><line x1="14" y1="6" x2="14" y2="30" stroke="#1a365d" stroke-width="1" opacity="0.3"/><line x1="22" y1="6" x2="22" y2="30" stroke="#1a365d" stroke-width="1" opacity="0.3"/><circle cx="18" cy="18" r="4" stroke="#d97706" stroke-width="1.5"/><circle cx="18" cy="18" r="1.5" fill="#d97706"/></svg>'
+  };
   secs.forEach((sec, idx) => {
+    const num = String(idx + 1).padStart(2, '0');
+    const icon = sectionIcons[sec.id] || '';
     const el = document.createElement('section');
     el.className = 'section';
     el.id = 'sec-' + sec.id;
     el.innerHTML = `
       <div class="section-inner">
-        <div class="sec-icon">${sec.icon}</div>
+        <div class="sec-number">${num}</div>
+        <div class="sec-icon">${icon}</div>
         <h2 class="sec-title">${sec.title}</h2>
         <p class="sec-desc">${sec.desc}</p>
         <div class="card" id="canvas-${sec.id}">
@@ -390,18 +456,33 @@ function buildKnowledgeSections() {
 
 function buildGameSections() {
   const container = $('#gameSections');
+  const gameIcons = {
+    'game-match': '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#1a365d" stroke-width="1.5"/><circle cx="12" cy="12" r="3" fill="#d97706"/></svg>',
+    'game-fix': '<svg viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    'game-chain': '<svg viewBox="0 0 24 24" fill="none"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'game-sort': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1" stroke="#1a365d" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke="#d97706" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke="#4a7c59" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke="#1a365d" stroke-width="1.5"/></svg>',
+    'game-speed': '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="3" stroke="#d97706" stroke-width="1.5"/></svg>',
+    'game-puzzle': '<svg viewBox="0 0 24 24" fill="none"><path d="M4 7h3a1 1 0 011 1v3a1 1 0 001 1h3a1 1 0 011 1v3" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/><path d="M20 17h-3a1 1 0 01-1-1v-3a1 1 0 00-1-1h-3a1 1 0 01-1-1V7" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'game-find': '<svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#1a365d" stroke-width="1.5"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#1a365d" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    'game-build': '<svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="10" rx="1" stroke="#1a365d" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="#d97706" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="#1a365d"/></svg>'
+  };
+  const difficultyColors = { Easy: 'var(--sage)', Medium: 'var(--accent)', Hard: 'var(--primary)' };
   TEMPLATE_CONFIG.games.forEach((game, idx) => {
+    const num = String(idx + 9).padStart(2, '0');
+    const icon = gameIcons[game.id] || '';
+    const diffColor = difficultyColors[game.difficulty] || 'var(--slate-light)';
     const el = document.createElement('section');
     el.className = 'section';
     el.id = 'sec-' + game.id;
     el.innerHTML = `
       <div class="section-inner">
-        <div class="sec-icon">${game.icon}</div>
+        <div class="sec-number">${num}</div>
+        <div class="sec-icon">${icon}</div>
         <h2 class="sec-title">${game.title}</h2>
-        <p class="sec-desc">${game.desc} <span style="color:#999;font-size:12px">[${game.difficulty}]</span></p>
+        <p class="sec-desc">${game.desc} <span style="color:${diffColor};font-size:12px;font-weight:500;letter-spacing:0.05em">${game.difficulty}</span></p>
         <div class="card game-area" id="area-${game.id}">
           <div class="game-header">
-            <span class="game-score" id="score-${game.id}">⭐ 0</span>
+            <span class="game-score" id="score-${game.id}">0</span>
             <span class="game-progress" id="progress-${game.id}">1 / 5</span>
           </div>
           <div class="game-goal" id="goal-${game.id}"></div>
@@ -415,7 +496,6 @@ function buildGameSections() {
     container.appendChild(el);
     allSections.push(el);
   });
-  // Add summary section
   allSections.push($('#summarySection'));
 }
 
@@ -467,7 +547,7 @@ function initGearBasics() {
     drawGear(ctx, W / 2, H / 2, r, teeth, angle, '#FF6B35', '#fff');
     drawGearEyes(ctx, W / 2, H / 2, r, blinkPhase);
     drawLabel(ctx, `${teeth} 齿`, W / 2, H / 2 + r + 24, '#E8751A');
-    drawLabel(ctx, '拖拽旋转齿轮 ✨', W / 2, H - 16, '#999');
+    drawLabel(ctx, '拖拽旋转齿轮', W / 2, H - 16, '#999');
     requestAnimationFrame(render);
   }
   requestAnimationFrame(render);
@@ -807,11 +887,11 @@ function initGameMatch() {
   const targets = [2, 3, 0.5, 1.5, 4];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 游戏结束！得分: ${score}/${total}`; return; }
+    if (round >= total) {       goalEl.textContent = `游戏结束！得分: ${score}/${total}`; return; }
     target = targets[round];
     current = 12;
-    goalEl.textContent = `🎯 目标速比: ${target}:1  ←  调整滑块!`;
-    scoreEl.textContent = `⭐ ${score}`;
+    goalEl.textContent = `目标速比: ${target}:1  ←  调整滑块!`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
   }
 
@@ -841,7 +921,7 @@ function initGameMatch() {
       cv.parentElement.style.animation = 'shake .3s';
       setTimeout(() => cv.parentElement.style.animation = '', 300);
     }
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     round++;
     setTimeout(newRound, 800);
   });
@@ -886,13 +966,13 @@ function initGameFix() {
   const nameMap = { gear: '齿轮', chain: '链条', belt: '传动带', rod: '连杆' };
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 修理完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
+    if (round >= total) {       goalEl.textContent = `修理完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
     const lv = levels[round];
     goalEl.textContent = lv.text;
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
     extra.innerHTML = `<div class="game-options">${shuffle([...lv.options]).map(o =>
-      `<button class="game-option" data-val="${o}">${emojiMap[o]} ${nameMap[o]}</button>`
+      `<button class="game-option" data-val="${o}">${nameMap[o]}</button>`
     ).join('')}</div>`;
     extra.querySelectorAll('.game-option').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -905,7 +985,7 @@ function initGameFix() {
           btn.classList.add('wrong');
           showFeedback(cv, '❌');
         }
-        scoreEl.textContent = `⭐ ${score}`;
+        scoreEl.textContent = `${score}`;
         extra.querySelectorAll('.game-option').forEach(b => b.style.pointerEvents = 'none');
         round++;
         setTimeout(newRound, 900);
@@ -942,11 +1022,11 @@ function initGameChain() {
   let placed = [];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
+    if (round >= total) { goalEl.textContent = `完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
     const lv = levels[round];
     placed = [];
-    goalEl.textContent = `🐲 ${lv.goal}`;
-    scoreEl.textContent = `⭐ ${score}`;
+    goalEl.textContent = lv.goal;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
     extra.innerHTML = `<div class="game-palette" id="chainPalette"></div>
       <div style="text-align:center;margin:6px 0;font-size:13px;color:#888">点击齿轮按顺序放入（从左到右）</div>
@@ -981,7 +1061,7 @@ function initGameChain() {
       const ok = placed[0] === lv.answer[0] && placed[1] === lv.answer[1] && placed[2] === lv.answer[2];
       if (ok) { score++; showFeedback(cv, '✅'); createSparkle(W / 2, H / 2, cv.parentElement); }
       else { showFeedback(cv, '❌'); }
-      scoreEl.textContent = `⭐ ${score}`;
+      scoreEl.textContent = `${score}`;
       round++;
       setTimeout(newRound, 900);
     });
@@ -1021,8 +1101,8 @@ function initGameSort() {
   let remaining = shuffle([...items]);
 
   function renderSort() {
-    goalEl.textContent = `📦 把每个物品拖到正确的传动类型!`;
-    scoreEl.textContent = `⭐ ${score}`;
+    goalEl.textContent = `把每个物品拖到正确的传动类型`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `剩余: ${remaining.length}`;
     extra.innerHTML = `
       <div class="game-buckets">
@@ -1059,10 +1139,10 @@ function initGameSort() {
         } else {
           showFeedback(cv, '❌');
         }
-        scoreEl.textContent = `⭐ ${score}`;
+        scoreEl.textContent = `${score}`;
         remaining.shift();
         if (remaining.length > 0) setTimeout(renderSort, 500);
-        else { goalEl.textContent = `🎉 分类完成！得分: ${score}/${total}`; extra.innerHTML = ''; }
+        else { goalEl.textContent = `分类完成！得分: ${score}/${total}`; extra.innerHTML = ''; }
       });
     });
   }
@@ -1096,10 +1176,10 @@ function initGameSpeed() {
   ];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
+    if (round >= total) { goalEl.textContent = `完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
     const lv = levels[round];
     goalEl.textContent = lv.text;
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
     extra.innerHTML = `<div class="game-options">
       <button class="game-option" data-val="small">🔴 小齿轮<br><small>高转速</small></button>
@@ -1117,7 +1197,7 @@ function initGameSpeed() {
           btn.classList.add('wrong');
           showFeedback(cv, '❌');
         }
-        scoreEl.textContent = `⭐ ${score}`;
+        scoreEl.textContent = `${score}`;
         extra.querySelectorAll('.game-option').forEach(b => b.style.pointerEvents = 'none');
         round++;
         setTimeout(newRound, 900);
@@ -1154,11 +1234,11 @@ function initGamePuzzle() {
   let filled = [];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 拼图完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
+    if (round >= total) { goalEl.textContent = `拼图完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
     const lv = levels[round];
     filled = lv.grid.map(row => row.map(v => v));
-    goalEl.textContent = `🧩 填满空缺(0)，让所有齿轮能转动`;
-    scoreEl.textContent = `⭐ ${score}`;
+    goalEl.textContent = `填满空缺(0)，让所有齿轮能转动`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
     extra.innerHTML = `<div class="game-palette" id="puzzlePalette"></div>
       <div style="text-align:center;margin-top:8px"><button class="btn btn-primary" id="puzzleCheck">检查 ✓</button> <button class="btn btn-warning" id="puzzleReset">重置</button></div>`;
@@ -1211,7 +1291,7 @@ function initGamePuzzle() {
       } else {
         showFeedback(cv, '❌');
       }
-      scoreEl.textContent = `⭐ ${score}`;
+      scoreEl.textContent = `${score}`;
       round++;
       setTimeout(newRound, 900);
     });
@@ -1275,9 +1355,9 @@ function initGameFind() {
   ];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 找完了！得分: ${score}/${total}`; return; }
+    if (round >= total) { goalEl.textContent = `找完了！得分: ${score}/${total}`; return; }
     goalEl.textContent = levels[round].text;
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
   }
 
@@ -1298,7 +1378,7 @@ function initGameFind() {
     } else {
       showFeedback(cv, '❌');
     }
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     round++;
     setTimeout(newRound, 700);
   };
@@ -1389,11 +1469,11 @@ function initGameBuild() {
   let placedParts = [];
 
   function newRound() {
-    if (round >= total) { goalEl.textContent = `🎉 创造完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
+    if (round >= total) { goalEl.textContent = `创造完成！得分: ${score}/${total}`; extra.innerHTML = ''; return; }
     const lv = levels[round];
     placedParts = [];
     goalEl.textContent = lv.text + `\n💡 ${lv.hint}`;
-    scoreEl.textContent = `⭐ ${score}`;
+    scoreEl.textContent = `${score}`;
     progressEl.textContent = `${round + 1} / ${total}`;
     extra.innerHTML = `<div class="game-palette" id="buildPalette"></div>
       <div style="text-align:center;margin:6px 0;font-size:13px;color:#888">点击零件添加到机器中</div>
@@ -1433,7 +1513,7 @@ function initGameBuild() {
         showFeedback(cv, '❌');
         goalEl.textContent = `❌ 还不对！需要: ${lv.required.map(id => parts.find(p => p.id === id).name).join(', ')}\n💡 ${lv.hint}`;
       }
-      scoreEl.textContent = `⭐ ${score}`;
+      scoreEl.textContent = `${score}`;
       round++;
       setTimeout(newRound, 1200);
     });
@@ -1539,11 +1619,11 @@ function initHeroGears() {
   window.addEventListener('resize', resize);
 
   const gears = [
-    { x: 0.1, y: 0.2, r: 40, t: 10, speed: 0.01, color: 'rgba(255,255,255,0.3)' },
-    { x: 0.85, y: 0.15, r: 30, t: 8, speed: -0.015, color: 'rgba(255,255,255,0.2)' },
-    { x: 0.15, y: 0.8, r: 50, t: 12, speed: 0.008, color: 'rgba(255,255,255,0.15)' },
-    { x: 0.9, y: 0.75, r: 35, t: 9, speed: -0.012, color: 'rgba(255,255,255,0.2)' },
-    { x: 0.5, y: 0.1, r: 25, t: 7, speed: 0.02, color: 'rgba(255,255,255,0.15)' }
+    { x: 0.1, y: 0.2, r: 40, t: 10, speed: 0.006, color: 'rgba(255,255,255,0.12)' },
+    { x: 0.85, y: 0.15, r: 30, t: 8, speed: -0.009, color: 'rgba(255,255,255,0.08)' },
+    { x: 0.15, y: 0.8, r: 50, t: 12, speed: 0.005, color: 'rgba(255,255,255,0.06)' },
+    { x: 0.9, y: 0.75, r: 35, t: 9, speed: -0.007, color: 'rgba(255,255,255,0.08)' },
+    { x: 0.5, y: 0.1, r: 25, t: 7, speed: 0.012, color: 'rgba(217,119,6,0.06)' }
   ];
   let angles = gears.map(() => 0);
 
@@ -1556,6 +1636,31 @@ function initHeroGears() {
     requestAnimationFrame(render);
   }
   render();
+}
+
+// ====================================================================
+// ===== HERO FLOATING PARTICLES =====
+// ====================================================================
+
+function initHeroParticles() {
+  const container = $('#heroParticles');
+  if (!container) return;
+  const count = 12;
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    const size = 2 + Math.random() * 3;
+    const x = Math.random() * 100;
+    const delay = Math.random() * 8;
+    const duration = 6 + Math.random() * 6;
+    p.style.cssText = `
+      position:absolute;width:${size}px;height:${size}px;border-radius:50%;
+      background:rgba(255,255,255,${0.1 + Math.random() * 0.15});
+      left:${x}%;top:${20 + Math.random() * 60}%;
+      animation:float-particle ${duration}s ease-in-out ${delay}s infinite;
+      pointer-events:none;
+    `;
+    container.appendChild(p);
+  }
 }
 
 // ====================================================================
@@ -1583,7 +1688,7 @@ function initScrollObserver() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+        entry.target.classList.add('scrolled-in');
         const idx = allSections.indexOf(entry.target);
         if (idx >= 0) {
           currentSection = idx;
@@ -1591,7 +1696,7 @@ function initScrollObserver() {
         }
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
   allSections.forEach(sec => observer.observe(sec));
 }
 
@@ -1600,13 +1705,12 @@ function initScrollObserver() {
 // ====================================================================
 
 function boot() {
-  // Apply config
-  document.documentElement.style.setProperty('--primary', TEMPLATE_CONFIG.topic.heroColor);
-  document.documentElement.style.setProperty('--hero-color', TEMPLATE_CONFIG.topic.heroColor);
+  // Apply config - use storybook palette
+  document.documentElement.style.setProperty('--primary', '#1a365d');
+  document.documentElement.style.setProperty('--hero-color', '#1a365d');
   document.getElementById('heroTitle').textContent = TEMPLATE_CONFIG.topic.title;
   document.getElementById('heroSubtitle').textContent = TEMPLATE_CONFIG.topic.subtitle;
-  document.getElementById('heroEmoji').textContent = TEMPLATE_CONFIG.topic.emoji;
-  document.title = TEMPLATE_CONFIG.topic.title + ' ' + TEMPLATE_CONFIG.topic.emoji;
+  document.title = TEMPLATE_CONFIG.topic.title;
 
   // Build DOM
   buildKnowledgeSections();
@@ -1618,6 +1722,7 @@ function boot() {
 
   // Init hero
   initHeroGears();
+  initHeroParticles();
 
   // Init knowledge sections
   initGearBasics();
@@ -1639,9 +1744,6 @@ function boot() {
 
   // Summary
   buildSummary();
-
-  // Mark hero visible
-  setTimeout(() => $('#hero').classList.add('visible'), 100);
 }
 
 document.addEventListener('DOMContentLoaded', boot);
