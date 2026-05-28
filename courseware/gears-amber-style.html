@@ -47,6 +47,9 @@
             justify-content: center;
             align-items: center;
             text-align: center;
+            overflow-y: auto;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         .page-number {
@@ -394,7 +397,25 @@
             .gear-svg { width: 80px; height: 80px; }
             .gear-comparison { gap: 10px; }
             .gear-label { font-size: 12px; }
-            .arrow { font-size: 24px; }
+            .arrow { font-size: 24px; 
+            .interactive-area { height: min(220px, 40vh); }
+            .drop-zone { width: 60px; height: 60px; }
+            .draggable-gear { width: 56px; height: 56px; }
+            .gear-palette { gap: 12px; margin-top: 6px; }
+            .quiz-nav { margin-top: 10px; }
+            .review-item { padding: 8px 10px; margin-bottom: 10px; }
+            .review-icon { font-size: 22px; }
+            .review-list { max-width: 100%; }
+            .celebration-emoji { font-size: 48px; }
+            .completion-badge { width: 80px; height: 80px; font-size: 40px; margin: 10px 0; }
+            .celebration-title { margin-bottom: 10px; }
+            .dict-item { padding: 8px 10px; }
+            .dict-zh { font-size: 18px; }
+            .dict-en { font-size: 13px; }
+            .dict-example { font-size: 11px; }
+            .gear-large { width: 80px; height: 80px; }
+            .gear-small { width: 55px; height: 55px; }
+        }
         }
 </style>
 </head>
