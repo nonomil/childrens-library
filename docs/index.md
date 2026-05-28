@@ -355,26 +355,26 @@
 </div>
 <div class="scroll-row">
 
-<a href="courseware/poem_explain_01.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 01</span></a>
-<a href="courseware/poem_explain_02.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 02</span></a>
-<a href="courseware/poem_explain_03.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 03</span></a>
-<a href="courseware/poem_explain_04.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 04</span></a>
-<a href="courseware/poem_explain_05.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 05</span></a>
-<a href="courseware/poem_explain_06.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 06</span></a>
-<a href="courseware/poem_explain_07.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 07</span></a>
-<a href="courseware/poem_explain_08.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 08</span></a>
-<a href="courseware/poem_explain_09.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 09</span></a>
-<a href="courseware/poem_explain_10.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 10</span></a>
-<a href="courseware/poem_explain_11.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 11</span></a>
-<a href="courseware/poem_explain_12.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 12</span></a>
-<a href="courseware/poem_explain_13.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 13</span></a>
-<a href="courseware/poem_explain_14.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 14</span></a>
-<a href="courseware/poem_explain_15.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 15</span></a>
-<a href="courseware/poem_explain_16.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 16</span></a>
-<a href="courseware/poem_explain_17.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 17</span></a>
-<a href="courseware/poem_explain_18.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 18</span></a>
-<a href="courseware/poem_explain_19.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 19</span></a>
-<a href="courseware/poem_explain_20.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 20</span></a>
+<a href="courseware/poem_explain_01_咏鹅.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 01</span></a>
+<a href="courseware/poem_explain_02_春晓.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 02</span></a>
+<a href="courseware/poem_explain_03_静夜思.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 03</span></a>
+<a href="courseware/poem_explain_04_悯农.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 04</span></a>
+<a href="courseware/poem_explain_05_登鹳雀楼.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 05</span></a>
+<a href="courseware/poem_explain_06_望庐山瀑布.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 06</span></a>
+<a href="courseware/poem_explain_07_江雪.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 07</span></a>
+<a href="courseware/poem_explain_08_游子吟.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 08</span></a>
+<a href="courseware/poem_explain_09_相思.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 09</span></a>
+<a href="courseware/poem_explain_10_鹿柴.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 10</span></a>
+<a href="courseware/poem_explain_11_鸟鸣涧.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 11</span></a>
+<a href="courseware/poem_explain_12_竹里馆.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 12</span></a>
+<a href="courseware/poem_explain_13_送别.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 13</span></a>
+<a href="courseware/poem_explain_14_杂诗.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 14</span></a>
+<a href="courseware/poem_explain_15_山中送别.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 15</span></a>
+<a href="courseware/poem_explain_16_书事.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 16</span></a>
+<a href="courseware/poem_explain_17_辛夷坞.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 17</span></a>
+<a href="courseware/poem_explain_18_漆园.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 18</span></a>
+<a href="courseware/poem_explain_19_辋川闲居.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 19</span></a>
+<a href="courseware/poem_explain_20_田园乐.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 20</span></a>
 
 </div>
 </div>
