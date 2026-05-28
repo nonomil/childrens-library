@@ -285,6 +285,11 @@
   <span class="tag-sm tag-yellow">🌱 科学</span>
 </div></a>
 
+<a href="gears-transmission-v2.html" class="wf-item"><div class="wf-card card-red card-new">
+  <div class="icon">🎮</div><div class="name">传动王国大冒险</div>
+  <span class="tag-sm tag-red">🌱 科学</span>
+</div></a>
+
 <a href="gears-interactive.html" class="wf-item"><div class="wf-card card-orange card-new">
   <div class="icon">🕹️</div><div class="name">齿轮互动实验室</div>
   <span class="tag-sm tag-orange">🌱 科学</span>
