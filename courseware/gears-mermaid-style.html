@@ -3,22 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>齿轮传动的秘密 / The Secret of Gears</title>
-    <!-- Google Fonts with Chinese-friendly mirror fallback -->
+    <title>齿轮传动的秘密 / The Secret of Gears - Mermaid Style</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%2C.%3F" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet"></noscript>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Nunito', 'ZCOOL KuaiLe', sans-serif;
-            background: linear-gradient(135deg, #fdf6e3 0%, #f5e6d3 50%, #e8d5b7 100%);
+            background: linear-gradient(135deg, #fdf6e3 0%, #f5e6d3 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -34,23 +29,17 @@
             margin: 20px auto;
         }
 
-        #book {
-            width: 100%;
-            height: 100%;
-        }
+        #book { width: 100%; height: 100%; }
 
         .page {
-            background: #fefefe;
             overflow: hidden;
             position: relative;
+            border-radius: 4px;
         }
 
         .page-content {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             padding: 30px;
             display: flex;
             flex-direction: column;
@@ -61,58 +50,52 @@
 
         .page-number {
             position: absolute;
-            bottom: 15px;
-            left: 20px;
+            bottom: 15px; left: 20px;
             font-size: 14px;
-            color: #8b7355;
+            color: rgba(255,255,255,0.7);
             font-weight: 600;
+            z-index: 2;
         }
 
         .lang-toggle {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(139, 115, 85, 0.2);
-            border: none;
+            top: 15px; right: 15px;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             font-family: inherit;
             font-size: 14px;
-            color: #5d4e37;
+            color: white;
             transition: all 0.3s;
             z-index: 100;
         }
 
-        .lang-toggle:hover {
-            background: rgba(139, 115, 85, 0.4);
-        }
+        .lang-toggle:hover { background: rgba(255,255,255,0.5); }
 
         .narrate-btn {
             position: absolute;
-            bottom: 15px;
-            right: 20px;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            border: none;
-            width: 45px;
-            height: 45px;
+            bottom: 15px; right: 20px;
+            background: rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            width: 45px; height: 45px;
             border-radius: 50%;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s;
             z-index: 100;
         }
 
-        .narrate-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.6);
-        }
+        .narrate-btn:hover { transform: scale(1.1); background: rgba(255,255,255,0.5); }
 
         .narrate-btn.playing {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            background: rgba(231, 76, 60, 0.8);
             animation: pulse 1s infinite;
         }
 
@@ -121,60 +104,43 @@
             50% { transform: scale(1.05); }
         }
 
-        .narrate-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
+        .narrate-btn svg { width: 24px; height: 24px; fill: white; }
 
-        /* Cover Page */
+        /* Cover */
         .cover {
             background: linear-gradient(135deg, #87ceeb 0%, #98d8c8 30%, #7bc67e 60%, #a8d5ba 100%);
+            box-shadow: inset 0 0 100px rgba(255,255,255,0.3);
         }
 
         .cover::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 40%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 0%, transparent 30%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.4) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.3) 0%, transparent 30%),
+                radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 60%);
         }
 
         .cover-title {
             font-size: clamp(28px, 5vw, 48px);
             font-weight: 800;
-            color: #2c5530;
-            text-shadow: 3px 3px 0 rgba(255,255,255,0.5);
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
             margin-bottom: 10px;
             z-index: 1;
         }
 
         .cover-subtitle {
             font-size: clamp(16px, 3vw, 24px);
-            color: #3d7a42;
+            color: rgba(255,255,255,0.9);
             margin-bottom: 30px;
             z-index: 1;
         }
 
-        .characters {
-            display: flex;
-            gap: 40px;
-            margin: 20px 0;
-            z-index: 1;
-        }
-
-        .character {
-            font-size: 60px;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        .character:nth-child(2) {
-            animation-delay: 0.3s;
-        }
+        .characters { display: flex; gap: 40px; margin: 20px 0; z-index: 1; }
+        .character { font-size: 60px; animation: bounce 2s ease-in-out infinite; }
+        .character:nth-child(2) { animation-delay: 0.3s; }
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
@@ -186,88 +152,66 @@
             padding: 15px 40px;
             font-size: 20px;
             font-weight: 700;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
+            background: rgba(255,255,255,0.9);
             border: none;
             border-radius: 30px;
-            color: white;
+            color: #2c5530;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.5);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
             transition: all 0.3s;
             z-index: 1;
         }
 
         .start-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(243, 156, 18, 0.7);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
         }
 
         /* Story Pages */
         .story-page {
-            background: linear-gradient(180deg, #fef9f0 0%, #fdf2e6 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .story-page::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(ellipse at 10% 90%, rgba(139, 115, 85, 0.1) 0%, transparent 50%),
-                radial-gradient(ellipse at 90% 10%, rgba(107, 142, 35, 0.1) 0%, transparent 50%);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 10% 90%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 10%, rgba(255,255,255,0.15) 0%, transparent 50%);
         }
 
         .illustration {
-            width: 200px;
-            height: 200px;
+            width: 200px; height: 200px;
             margin-bottom: 20px;
             position: relative;
             z-index: 1;
         }
 
         .gear-svg {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             animation: spin 8s linear infinite;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
 
-        .gear-svg.reverse {
-            animation: spin-reverse 6s linear infinite;
-        }
+        .gear-svg.reverse { animation: spin-reverse 6s linear infinite; }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes spin-reverse {
-            from { transform: rotate(360deg); }
-            to { transform: rotate(0deg); }
-        }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
 
         .story-text {
             font-size: clamp(18px, 3vw, 28px);
-            color: #4a3728;
+            color: white;
             line-height: 1.6;
             max-width: 90%;
             z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .story-text .zh {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
+        .story-text .zh { display: block; margin-bottom: 10px; font-weight: 700; }
+        .story-text .en { display: block; font-size: 0.7em; opacity: 0.9; font-weight: 600; }
 
-        .story-text .en {
-            display: block;
-            font-size: 0.7em;
-            color: #6b5344;
-            font-weight: 600;
-        }
-
-        /* Gear comparison page */
+        /* Gear comparison */
         .gear-comparison {
             display: flex;
             align-items: center;
@@ -276,36 +220,23 @@
             margin: 20px 0;
         }
 
-        .gear-group {
-            text-align: center;
-        }
-
-        .gear-large {
-            width: 120px;
-            height: 120px;
-        }
-
-        .gear-small {
-            width: 80px;
-            height: 80px;
-        }
-
-        .arrow {
-            font-size: 40px;
-            color: #f39c12;
-        }
+        .gear-group { text-align: center; }
+        .gear-large { width: 120px; height: 120px; }
+        .gear-small { width: 80px; height: 80px; }
+        .arrow { font-size: 40px; color: white; }
 
         /* Interactive Page */
         .interactive-page {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
         }
 
         .interactive-area {
             width: 100%;
             height: 300px;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 3px dashed #4caf50;
+            border: 3px dashed rgba(255,255,255,0.5);
             position: relative;
             margin: 20px 0;
             display: flex;
@@ -314,20 +245,19 @@
         }
 
         .drop-zone {
-            width: 100px;
-            height: 100px;
-            border: 3px dashed #2196f3;
+            width: 100px; height: 100px;
+            border: 3px dashed rgba(255,255,255,0.6);
             border-radius: 50%;
             position: absolute;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(33, 150, 243, 0.1);
+            background: rgba(255,255,255,0.1);
         }
 
         .drop-zone.filled {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4caf50;
+            background: rgba(255,255,255,0.3);
+            border-color: white;
             border-style: solid;
         }
 
@@ -336,56 +266,39 @@
         .drop-zone:nth-child(3) { right: 20%; }
 
         .draggable-gear {
-            width: 80px;
-            height: 80px;
+            width: 80px; height: 80px;
             cursor: grab;
             position: absolute;
             transition: transform 0.2s;
             z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
 
-        .draggable-gear:hover {
-            transform: scale(1.1);
-        }
+        .draggable-gear:hover { transform: scale(1.1); }
+        .draggable-gear:active { cursor: grabbing; }
 
-        .draggable-gear:active {
-            cursor: grabbing;
-        }
-
-        .gear-palette {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-        }
+        .gear-palette { display: flex; gap: 20px; margin-top: 10px; }
 
         /* Quiz Page */
         .quiz-page {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
         }
 
-        .quiz-container {
-            width: 100%;
-            max-width: 600px;
-        }
+        .quiz-container { width: 100%; max-width: 600px; }
 
         .quiz-question {
-            font-size: 20px;
-            font-weight: 700;
-            color: #5d4037;
+            font-size: 20px; font-weight: 700;
+            color: white;
             margin-bottom: 20px;
             text-align: center;
         }
 
-        .quiz-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
 
         .quiz-option {
             padding: 15px 20px;
-            background: white;
-            border: 2px solid #ffcc80;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid rgba(255,255,255,0.5);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s;
@@ -393,10 +306,7 @@
             text-align: left;
         }
 
-        .quiz-option:hover {
-            background: #fff8e1;
-            border-color: #ffa726;
-        }
+        .quiz-option:hover { background: white; transform: translateX(5px); }
 
         .quiz-option.correct {
             background: #c8e6c9;
@@ -422,17 +332,14 @@
         }
 
         .quiz-feedback {
-            margin-top: 15px;
-            padding: 10px;
+            margin-top: 15px; padding: 10px;
             border-radius: 10px;
             text-align: center;
             font-weight: 700;
             display: none;
         }
 
-        .quiz-feedback.show {
-            display: block;
-        }
+        .quiz-feedback.show { display: block; }
 
         .quiz-nav {
             display: flex;
@@ -450,23 +357,13 @@
             transition: all 0.3s;
         }
 
-        .quiz-nav-btn.prev {
-            background: #9e9e9e;
-            color: white;
-        }
-
-        .quiz-nav-btn.next {
-            background: #4caf50;
-            color: white;
-        }
-
-        .quiz-nav-btn:hover {
-            transform: translateY(-2px);
-        }
+        .quiz-nav-btn.prev { background: rgba(255,255,255,0.5); color: white; }
+        .quiz-nav-btn.next { background: white; color: #f5576c; }
+        .quiz-nav-btn:hover { transform: translateY(-2px); }
 
         /* Dictionary Page */
         .dict-page {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         }
 
         .dict-grid {
@@ -478,15 +375,14 @@
         }
 
         .dict-item {
-            background: white;
+            background: rgba(255,255,255,0.9);
             padding: 15px;
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .dict-zh {
-            font-size: 22px;
-            font-weight: 700;
+            font-size: 22px; font-weight: 700;
             color: #1565c0;
             margin-bottom: 5px;
         }
@@ -505,13 +401,10 @@
 
         /* Review Page */
         .review-page {
-            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
         }
 
-        .review-list {
-            list-style: none;
-            max-width: 500px;
-        }
+        .review-list { list-style: none; max-width: 500px; }
 
         .review-item {
             display: flex;
@@ -519,21 +412,16 @@
             gap: 15px;
             margin-bottom: 20px;
             padding: 15px;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.9);
             border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .review-icon {
-            font-size: 30px;
-        }
-
-        .review-text {
-            text-align: left;
-        }
+        .review-icon { font-size: 30px; }
+        .review-text { text-align: left; }
 
         .review-text .zh {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 18px; font-weight: 700;
             color: #4a148c;
             margin-bottom: 5px;
         }
@@ -545,33 +433,26 @@
 
         /* Celebration Page */
         .celebration-page {
-            background: linear-gradient(135deg, #fff9c4 0%, #fff176 50%, #ffee58 100%);
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
             overflow: hidden;
         }
 
         .confetti {
             position: absolute;
-            width: 10px;
-            height: 10px;
+            width: 10px; height: 10px;
             top: -10px;
             animation: confettiFall 3s linear infinite;
         }
 
         @keyframes confettiFall {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
 
         .celebration-title {
             font-size: clamp(24px, 4vw, 40px);
             font-weight: 800;
-            color: #f57f17;
+            color: #e65100;
             text-shadow: 2px 2px 0 rgba(255,255,255,0.8);
             margin-bottom: 20px;
             z-index: 1;
@@ -589,8 +470,7 @@
         }
 
         .completion-badge {
-            width: 120px;
-            height: 120px;
+            width: 120px; height: 120px;
             background: linear-gradient(135deg, #ffd700, #ffb300);
             border-radius: 50%;
             display: flex;
@@ -602,73 +482,54 @@
             z-index: 1;
         }
 
-        /* Navigation hint */
         .nav-hint {
             position: absolute;
-            bottom: 50px;
-            left: 50%;
+            bottom: 50px; left: 50%;
             transform: translateX(-50%);
             font-size: 12px;
-            color: rgba(0,0,0,0.4);
+            color: rgba(255,255,255,0.5);
             z-index: 1;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            #book-container {
-                width: 95vw;
-            }
-
-            .page-content {
-                padding: 20px;
-            }
-
-            .illustration {
-                width: 150px;
-                height: 150px;
-            }
-
-            .gear-comparison {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .dict-grid {
-                grid-template-columns: 1fr;
-            }
+            #book-container { width: 95vw; }
+            .page-content { padding: 20px; }
+            .illustration { width: 150px; height: 150px; }
+            .gear-comparison { flex-direction: column; gap: 15px; }
+            .dict-grid { grid-template-columns: 1fr; }
         }
 
-        /* Loading state */
+        /* Loading */
         .loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-                .loading {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fdf6e3;
+            background: linear-gradient(135deg, #87ceeb 0%, #98d8c8 100%);
             z-index: 9999;
         }
 
         .loading-spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #f39c12;
+            width: 50px; height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+
+        /* Decorative elements */
+        .star-deco {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.3;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.2); }
         }
     </style>
 </head>
@@ -678,13 +539,17 @@
             <!-- Page 1: Cover -->
             <div class="page cover">
                 <div class="page-content">
+                    <span class="star-deco" style="top:10%;left:15%;">⭐</span>
+                    <span class="star-deco" style="top:20%;right:10%;animation-delay:0.5s;">✨</span>
+                    <span class="star-deco" style="bottom:30%;left:10%;animation-delay:1s;">⭐</span>
+                    <span class="star-deco" style="bottom:20%;right:15%;animation-delay:1.5s;">✨</span>
                     <div class="cover-title">齿轮传动的秘密</div>
                     <div class="cover-subtitle">The Secret of Gears</div>
                     <div class="characters">
                         <div class="character">🧑‍🦰</div>
                         <div class="character">👩</div>
                     </div>
-                    <div style="font-size: 14px; color: #5d4e37; margin-bottom: 10px;">Steve & Alex</div>
+                    <div style="font-size: 14px; color: rgba(255,255,255,0.9); margin-bottom: 10px;">Steve & Alex</div>
                     <button class="start-btn" onclick="$('#book').turn('next')">开始阅读 Start Reading</button>
                 </div>
                 <span class="page-number">1</span>
@@ -701,13 +566,13 @@
                         <svg class="gear-svg" viewBox="0 0 100 100">
                             <defs>
                                 <linearGradient id="gearGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" style="stop-color:#f39c12"/>
-                                    <stop offset="100%" style="stop-color:#e67e22"/>
+                                    <stop offset="0%" style="stop-color:#ffd700"/>
+                                    <stop offset="100%" style="stop-color:#ff8c00"/>
                                 </linearGradient>
                             </defs>
                             <path fill="url(#gearGrad1)" d="M50 10 L55 25 L65 15 L60 30 L75 25 L65 35 L80 35 L68 42 L82 48 L68 50 L82 55 L68 58 L80 65 L65 65 L75 75 L60 70 L65 85 L55 75 L50 90 L45 75 L35 85 L40 70 L25 75 L35 65 L20 65 L32 58 L18 55 L32 50 L18 48 L32 42 L20 35 L35 35 L25 25 L40 30 L35 15 L45 25 Z"/>
-                            <circle cx="50" cy="50" r="15" fill="#fff3e0"/>
-                            <circle cx="50" cy="50" r="8" fill="#f39c12"/>
+                            <circle cx="50" cy="50" r="15" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="50" cy="50" r="8" fill="#ffd700"/>
                         </svg>
                     </div>
                     <div class="story-text">
@@ -725,25 +590,25 @@
             </div>
 
             <!-- Page 3: Big and Small Gears -->
-            <div class="page story-page">
+            <div class="page story-page" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
                 <div class="page-content">
                     <div class="gear-comparison">
                         <div class="gear-group">
                             <svg class="gear-large gear-svg" viewBox="0 0 100 100">
                                 <path fill="#4caf50" d="M50 5 L56 22 L68 12 L62 28 L80 22 L68 32 L85 35 L70 42 L88 50 L70 58 L85 65 L68 68 L80 78 L62 72 L68 88 L56 78 L50 95 L44 78 L32 88 L38 72 L20 78 L32 68 L15 65 L30 58 L12 50 L30 42 L15 35 L32 32 L20 22 L38 28 L32 12 L44 22 Z"/>
-                                <circle cx="50" cy="50" r="18" fill="#c8e6c9"/>
+                                <circle cx="50" cy="50" r="18" fill="rgba(255,255,255,0.9)"/>
                                 <circle cx="50" cy="50" r="10" fill="#4caf50"/>
                             </svg>
-                            <div style="font-size: 14px; color: #2e7d32; margin-top: 10px;">大齿轮 Big</div>
+                            <div style="font-size: 14px; color: white; margin-top: 10px;">大齿轮 Big</div>
                         </div>
                         <div class="arrow">⟷</div>
                         <div class="gear-group">
                             <svg class="gear-small gear-svg reverse" viewBox="0 0 100 100">
                                 <path fill="#2196f3" d="M50 15 L55 28 L65 20 L62 33 L78 30 L68 38 L85 42 L72 48 L85 55 L72 58 L85 65 L68 62 L78 70 L62 67 L65 80 L55 72 L50 85 L45 72 L35 80 L38 67 L22 70 L32 62 L15 65 L28 58 L15 55 L28 48 L15 42 L32 38 L22 30 L38 33 L35 20 L45 28 Z"/>
-                                <circle cx="50" cy="50" r="15" fill="#bbdefb"/>
+                                <circle cx="50" cy="50" r="15" fill="rgba(255,255,255,0.9)"/>
                                 <circle cx="50" cy="50" r="8" fill="#2196f3"/>
                             </svg>
-                            <div style="font-size: 14px; color: #1565c0; margin-top: 10px;">小齿轮 Small</div>
+                            <div style="font-size: 14px; color: white; margin-top: 10px;">小齿轮 Small</div>
                         </div>
                     </div>
                     <div class="story-text">
@@ -758,35 +623,39 @@
                 </button>
             </div>
 
-            <!-- Page 4: Interactive - Drag Gears -->
-            <div class="page interactive-page">
+            <!-- Page 4: How Gears Work Together -->
+            <div class="page story-page" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
                 <div class="page-content">
-                    <h2 style="color: #2e7d32; margin-bottom: 10px;">🧩 拼装齿轮传动链 / Build the Gear Chain</h2>
-                    <p style="color: #558b2f; font-size: 14px; margin-bottom: 10px;">拖动齿轮到空位上 / Drag gears to the empty spots</p>
-                    <div class="interactive-area" id="gearArea">
-                        <div class="drop-zone" data-index="0"></div>
-                        <div class="drop-zone" data-index="1"></div>
-                        <div class="drop-zone" data-index="2"></div>
+                    <div class="illustration">
+                        <svg viewBox="0 0 200 120">
+                            <defs>
+                                <linearGradient id="linkGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ffd700"/>
+                                    <stop offset="100%" style="stop-color:#ff8c00"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Big gear -->
+                            <g transform="translate(50,60)">
+                                <path fill="#e91e63" d="M0 -35 L4 -22 L14 -30 L10 -17 L25 -22 L14 -12 L30 -8 L16 0 L30 8 L14 12 L25 22 L10 17 L14 30 L4 22 L0 35 L-4 22 L-14 30 L-10 17 L-25 22 L-14 12 L-30 8 L-16 0 L-30 -8 L-14 -12 L-25 -22 L-10 -17 L-14 -30 L-4 -22 Z"/>
+                                <circle cx="0" cy="0" r="12" fill="rgba(255,255,255,0.9)"/>
+                                <circle cx="0" cy="0" r="6" fill="#e91e63"/>
+                            </g>
+                            <!-- Small gear -->
+                            <g transform="translate(140,60)">
+                                <path fill="#9c27b0" d="M0 -22 L3 -14 L9 -19 L7 -11 L16 -14 L9 -7 L19 -5 L10 0 L19 5 L9 7 L16 14 L7 11 L9 19 L3 14 L0 22 L-3 14 L-9 19 L-7 11 L-16 14 L-9 7 L-19 5 L-10 0 L-19 -5 L-9 -7 L-16 -14 L-7 -11 L-9 -19 L-3 -14 Z"/>
+                                <circle cx="0" cy="0" r="8" fill="rgba(255,255,255,0.9)"/>
+                                <circle cx="0" cy="0" r="4" fill="#9c27b0"/>
+                            </g>
+                            <!-- Connection arrow -->
+                            <line x1="85" y1="60" x2="115" y2="60" stroke="white" stroke-width="3" stroke-dasharray="5,3"/>
+                            <polygon points="115,55 125,60 115,65" fill="white"/>
+                        </svg>
                     </div>
-                    <div class="gear-palette" id="gearPalette">
-                        <svg class="draggable-gear" data-gear="1" viewBox="0 0 100 100">
-                            <path fill="#e91e63" d="M50 10 L55 25 L65 15 L60 30 L75 25 L65 35 L80 35 L68 42 L82 48 L68 50 L82 55 L68 58 L80 65 L65 65 L75 75 L60 70 L65 85 L55 75 L50 90 L45 75 L35 85 L40 70 L25 75 L35 65 L20 65 L32 58 L18 55 L32 50 L18 48 L32 42 L20 35 L35 35 L25 25 L40 30 L35 15 L45 25 Z"/>
-                            <circle cx="50" cy="50" r="15" fill="#fce4ec"/>
-                            <circle cx="50" cy="50" r="8" fill="#e91e63"/>
-                        </svg>
-                        <svg class="draggable-gear" data-gear="2" viewBox="0 0 100 100">
-                            <path fill="#9c27b0" d="M50 12 L54 26 L64 18 L60 31 L76 26 L66 36 L82 38 L70 44 L84 50 L70 56 L82 62 L66 64 L76 74 L60 69 L64 82 L54 74 L50 88 L46 74 L36 82 L40 69 L24 74 L34 64 L18 62 L30 56 L16 50 L30 44 L18 38 L34 36 L24 26 L40 31 L36 18 L46 26 Z"/>
-                            <circle cx="50" cy="50" r="15" fill="#f3e5f5"/>
-                            <circle cx="50" cy="50" r="8" fill="#9c27b0"/>
-                        </svg>
-                        <svg class="draggable-gear" data-gear="3" viewBox="0 0 100 100">
-                            <path fill="#00bcd4" d="M50 8 L56 24 L68 14 L62 30 L80 24 L68 34 L86 38 L72 44 L88 52 L72 58 L86 64 L68 66 L80 76 L62 70 L68 86 L56 76 L50 92 L44 76 L32 86 L38 70 L20 76 L32 66 L14 64 L28 58 L12 52 L28 44 L14 38 L32 34 L20 24 L38 30 L32 14 L44 24 Z"/>
-                            <circle cx="50" cy="50" r="15" fill="#e0f7fa"/>
-                            <circle cx="50" cy="50" r="8" fill="#00bcd4"/>
-                        </svg>
-                    </div>
-                    <div id="gearMessage" style="margin-top: 15px; font-weight: 700; color: #2e7d32; display: none;">
-                        🎉 太棒了！传动链完成！/ Great! Chain complete!
+                    <div class="story-text">
+                        <span class="zh">两个齿轮咬合在一起</span>
+                        <span class="zh">一个转动，另一个也会跟着转！</span>
+                        <span class="en">Two gears mesh together</span>
+                        <span class="en">When one turns, the other follows!</span>
                     </div>
                 </div>
                 <span class="page-number">4</span>
@@ -796,11 +665,49 @@
                 </button>
             </div>
 
-            <!-- Page 5: Quiz -->
+            <!-- Page 5: Interactive - Drag Gears -->
+            <div class="page interactive-page">
+                <div class="page-content">
+                    <h2 style="color: white; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">🧩 拼装齿轮传动链 / Build the Gear Chain</h2>
+                    <p style="color: rgba(255,255,255,0.9); font-size: 14px; margin-bottom: 10px;">拖动齿轮到空位上 / Drag gears to the empty spots</p>
+                    <div class="interactive-area" id="gearArea">
+                        <div class="drop-zone" data-index="0"></div>
+                        <div class="drop-zone" data-index="1"></div>
+                        <div class="drop-zone" data-index="2"></div>
+                    </div>
+                    <div class="gear-palette" id="gearPalette">
+                        <svg class="draggable-gear" data-gear="1" viewBox="0 0 100 100">
+                            <path fill="#e91e63" d="M50 10 L55 25 L65 15 L60 30 L75 25 L65 35 L80 35 L68 42 L82 48 L68 50 L82 55 L68 58 L80 65 L65 65 L75 75 L60 70 L65 85 L55 75 L50 90 L45 75 L35 85 L40 70 L25 75 L35 65 L20 65 L32 58 L18 55 L32 50 L18 48 L32 42 L20 35 L35 35 L25 25 L40 30 L35 15 L45 25 Z"/>
+                            <circle cx="50" cy="50" r="15" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="50" cy="50" r="8" fill="#e91e63"/>
+                        </svg>
+                        <svg class="draggable-gear" data-gear="2" viewBox="0 0 100 100">
+                            <path fill="#9c27b0" d="M50 12 L54 26 L64 18 L60 31 L76 26 L66 36 L82 38 L70 44 L84 50 L70 56 L82 62 L66 64 L76 74 L60 69 L64 82 L54 74 L50 88 L46 74 L36 82 L40 69 L24 74 L34 64 L18 62 L30 56 L16 50 L30 44 L18 38 L34 36 L24 26 L40 31 L36 18 L46 26 Z"/>
+                            <circle cx="50" cy="50" r="15" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="50" cy="50" r="8" fill="#9c27b0"/>
+                        </svg>
+                        <svg class="draggable-gear" data-gear="3" viewBox="0 0 100 100">
+                            <path fill="#00bcd4" d="M50 8 L56 24 L68 14 L62 30 L80 24 L68 34 L86 38 L72 44 L88 52 L72 58 L86 64 L68 66 L80 76 L62 70 L68 86 L56 76 L50 92 L44 76 L32 86 L38 70 L20 76 L32 66 L14 64 L28 58 L12 52 L28 44 L14 38 L32 34 L20 24 L38 30 L32 14 L44 24 Z"/>
+                            <circle cx="50" cy="50" r="15" fill="rgba(255,255,255,0.9)"/>
+                            <circle cx="50" cy="50" r="8" fill="#00bcd4"/>
+                        </svg>
+                    </div>
+                    <div id="gearMessage" style="margin-top: 15px; font-weight: 700; color: white; display: none; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
+                        🎉 太棒了！传动链完成！/ Great! Chain complete!
+                    </div>
+                </div>
+                <span class="page-number">5</span>
+                <button class="lang-toggle" onclick="toggleLang()">中/EN</button>
+                <button class="narrate-btn" onclick="narrate(this, 'page5')" data-voice="alex">
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                </button>
+            </div>
+
+            <!-- Page 6: Quiz -->
             <div class="page quiz-page">
                 <div class="page-content">
                     <div class="quiz-container">
-                        <h2 style="color: #e65100; margin-bottom: 20px;">📝 小测验 / Quiz Time!</h2>
+                        <h2 style="color: white; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">📝 小测验 / Quiz Time!</h2>
                         <div id="quizContent">
                             <div class="quiz-question" id="quizQuestion"></div>
                             <div class="quiz-options" id="quizOptions"></div>
@@ -812,22 +719,22 @@
                         </div>
                         <div id="quizResult" style="display: none; text-align: center;">
                             <div style="font-size: 60px; margin-bottom: 20px;">🏆</div>
-                            <div style="font-size: 24px; font-weight: 700; color: #e65100;">测验完成！/ Quiz Complete!</div>
-                            <div id="quizScore" style="font-size: 18px; margin-top: 10px; color: #bf360c;"></div>
+                            <div style="font-size: 24px; font-weight: 700; color: white;">测验完成！/ Quiz Complete!</div>
+                            <div id="quizScore" style="font-size: 18px; margin-top: 10px; color: rgba(255,255,255,0.9);"></div>
                         </div>
                     </div>
                 </div>
-                <span class="page-number">5</span>
+                <span class="page-number">6</span>
                 <button class="lang-toggle" onclick="toggleLang()">中/EN</button>
-                <button class="narrate-btn" onclick="narrate(this, 'page5')" data-voice="narrator">
+                <button class="narrate-btn" onclick="narrate(this, 'page6')" data-voice="narrator">
                     <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
             </div>
 
-            <!-- Page 6: Dictionary -->
+            <!-- Page 7: Dictionary -->
             <div class="page dict-page">
                 <div class="page-content">
-                    <h2 style="color: #1565c0; margin-bottom: 20px;">📖 词汇表 / Vocabulary</h2>
+                    <h2 style="color: white; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">📖 词汇表 / Vocabulary</h2>
                     <div class="dict-grid">
                         <div class="dict-item">
                             <div class="dict-zh">齿轮</div>
@@ -861,17 +768,17 @@
                         </div>
                     </div>
                 </div>
-                <span class="page-number">6</span>
+                <span class="page-number">7</span>
                 <button class="lang-toggle" onclick="toggleLang()">中/EN</button>
-                <button class="narrate-btn" onclick="narrate(this, 'page6')" data-voice="narrator">
+                <button class="narrate-btn" onclick="narrate(this, 'page7')" data-voice="narrator">
                     <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
             </div>
 
-            <!-- Page 7: Review -->
+            <!-- Page 8: Review -->
             <div class="page review-page">
                 <div class="page-content">
-                    <h2 style="color: #6a1b9a; margin-bottom: 20px;">📋 知识回顾 / Key Points</h2>
+                    <h2 style="color: white; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">📋 知识回顾 / Key Points</h2>
                     <ul class="review-list">
                         <li class="review-item">
                             <span class="review-icon">⚙️</span>
@@ -896,30 +803,30 @@
                         </li>
                     </ul>
                 </div>
-                <span class="page-number">7</span>
+                <span class="page-number">8</span>
                 <button class="lang-toggle" onclick="toggleLang()">中/EN</button>
-                <button class="narrate-btn" onclick="narrate(this, 'page7')" data-voice="steve">
+                <button class="narrate-btn" onclick="narrate(this, 'page8')" data-voice="steve">
                     <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
             </div>
 
-            <!-- Page 8: Celebration -->
+            <!-- Page 9: Celebration -->
             <div class="page celebration-page">
                 <div class="page-content">
                     <div class="celebration-emoji">🎉</div>
                     <div class="celebration-title">恭喜你！</div>
                     <div class="completion-badge">🏆</div>
-                    <div style="font-size: 24px; color: #f57f17; font-weight: 700; z-index: 1;">
+                    <div style="font-size: 24px; color: #e65100; font-weight: 700; z-index: 1;">
                         你学会了齿轮传动！<br>
-                        <span style="font-size: 18px; color: #ff8f00;">You learned gear transmission!</span>
+                        <span style="font-size: 18px; color: #bf360c;">You learned gear transmission!</span>
                     </div>
-                    <div style="margin-top: 20px; font-size: 14px; color: #9e9d24; z-index: 1;">
+                    <div style="margin-top: 20px; font-size: 14px; color: #e65100; z-index: 1;">
                         Steve 🧑‍🦰 & Alex 👩 为你骄傲！
                     </div>
                 </div>
-                <span class="page-number">8</span>
+                <span class="page-number">9</span>
                 <button class="lang-toggle" onclick="toggleLang()">中/EN</button>
-                <button class="narrate-btn" onclick="narrate(this, 'page8')" data-voice="happy">
+                <button class="narrate-btn" onclick="narrate(this, 'page9')" data-voice="happy">
                     <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 </button>
             </div>
@@ -932,7 +839,6 @@
     </div>
 
     <script>
-        // Audio cache
         const audioCache = {};
         let currentAudio = null;
         let currentPlayingBtn = null;
@@ -942,26 +848,26 @@
             cover: 'cover',
             page2: 'intro',
             page3: 'speed',
-            page4: 'drag',
-            page5: 'quiz',
-            page6: 'vocab',
-            page7: 'review',
-            page8: 'celebrate'
+            page4: 'mesh',
+            page5: 'drag',
+            page6: 'quiz',
+            page7: 'vocab',
+            page8: 'review',
+            page9: 'celebrate'
         };
 
-        // Page content for narration
         const pageContent = {
             cover: '齿轮传动的秘密',
             page2: '齿轮是什么？轮子上长了牙齿！',
             page3: '大齿轮转得慢，小齿轮转得快',
-            page4: '请拖动齿轮到空位上，拼装传动链',
-            page5: '小测验时间！',
-            page6: '词汇表：齿轮、传动、旋转、齿',
-            page7: '知识回顾：齿轮是带齿的轮子，大齿轮转得慢，小齿轮转得快，齿轮传动可以把动力从一个地方传到另一个地方',
-            page8: '恭喜你！你学会了齿轮传动！'
+            page4: '两个齿轮咬合在一起，一个转动，另一个也会跟着转！',
+            page5: '请拖动齿轮到空位上，拼装传动链',
+            page6: '小测验时间！',
+            page7: '词汇表：齿轮、传动、旋转、齿',
+            page8: '知识回顾：齿轮是带齿的轮子，大齿轮转得慢，小齿轮转得快，齿轮传动可以把动力从一个地方传到另一个地方',
+            page9: '恭喜你！你学会了齿轮传动！'
         };
 
-        // Quiz data
         const quizData = [
             {
                 question: { zh: '齿轮是什么？', en: 'What is a gear?' },
@@ -993,9 +899,7 @@
         let quizScore = 0;
         let answered = [];
 
-        // Initialize
         $(document).ready(function() {
-            // Initialize Turn.js
             $('#book').turn({
                 width: 800,
                 height: 600,
@@ -1006,20 +910,12 @@
                 elevation: 50
             });
 
-            // Hide loading
             $('#loading').hide();
-
-            // Create confetti for celebration page
             createConfetti();
-
-            // Initialize quiz
             loadQuestion(0);
-
-            // Initialize drag and drop
             initDragDrop();
         });
 
-        // Toggle language
         let showChinese = true;
         function toggleLang() {
             showChinese = !showChinese;
@@ -1031,22 +927,16 @@
             $('.review-text .en').toggle(!showChinese);
         }
 
-        // Narrate: play pre-generated local audio files
         function narrate(btn, pageId) {
             // Stop current audio if playing
             if (currentAudio) {
                 currentAudio.pause();
                 currentAudio = null;
-                if (currentPlayingBtn) {
-                    currentPlayingBtn.classList.remove('playing');
-                }
+                if (currentPlayingBtn) currentPlayingBtn.classList.remove('playing');
             }
 
             // If clicking the same button that was playing, just stop
-            if (currentPlayingBtn === btn) {
-                currentPlayingBtn = null;
-                return;
-            }
+            if (currentPlayingBtn === btn) { currentPlayingBtn = null; return; }
 
             const voice = btn.dataset.voice || 'narrator';
 
@@ -1056,39 +946,28 @@
             const audioId = audioFileMap[pageId] || pageId;
             const audioUrl = `audio/gears/${audioId}_${voice}.wav`;
             currentAudio = new Audio(audioUrl);
-            currentAudio.onended = function() {
-                btn.classList.remove('playing');
-                currentPlayingBtn = null;
-            };
+            currentAudio.onended = function() { btn.classList.remove('playing'); currentPlayingBtn = null; };
             currentAudio.onerror = function() {
-                // Fallback: use browser TTS
                 btn.classList.remove('playing');
                 const text = pageContent[pageId];
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'zh-CN';
-                utterance.onend = function() {
-                    currentPlayingBtn = null;
-                };
+                utterance.onend = function() { currentPlayingBtn = null; };
                 speechSynthesis.speak(utterance);
             };
             currentAudio.play().catch(function() {
-                // Autoplay blocked, try browser TTS
                 btn.classList.remove('playing');
                 const text = pageContent[pageId];
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'zh-CN';
-                utterance.onend = function() {
-                    currentPlayingBtn = null;
-                };
+                utterance.onend = function() { currentPlayingBtn = null; };
                 speechSynthesis.speak(utterance);
             });
         }
 
-        // Create confetti
         function createConfetti() {
             const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#00bcd4', '#009688', '#4caf50', '#8bc34a', '#cddc39', '#ffeb3b', '#ffc107', '#ff9800', '#ff5722'];
             const container = document.querySelector('.celebration-page');
-            
             for (let i = 0; i < 50; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
@@ -1101,18 +980,16 @@
             }
         }
 
-        // Quiz functions
         function loadQuestion(index) {
             if (index < 0 || index >= quizData.length) return;
-            
             currentQuestion = index;
             const q = quizData[index];
-            
+
             $('#quizQuestion').html(`
                 <div class="zh">${q.question.zh}</div>
-                <div class="en" style="font-size: 16px; color: #795548;">${q.question.en}</div>
+                <div class="en" style="font-size: 16px; color: rgba(255,255,255,0.8);">${q.question.en}</div>
             `);
-            
+
             let optionsHtml = '';
             q.options.forEach((opt, i) => {
                 optionsHtml += `
@@ -1122,11 +999,10 @@
                     </div>
                 `;
             });
-            
+
             $('#quizOptions').html(optionsHtml);
             $('#quizFeedback').removeClass('show').html('');
-            
-            // Highlight answered questions
+
             if (answered[index] !== undefined) {
                 const options = $('#quizOptions .quiz-option');
                 options.eq(answered[index]).addClass(quizData[index].options[answered[index]].correct ? 'correct' : 'incorrect');
@@ -1135,26 +1011,20 @@
 
         function checkAnswer(questionIndex, optionIndex) {
             if (answered[questionIndex] !== undefined) return;
-            
             answered[questionIndex] = optionIndex;
             const correct = quizData[questionIndex].options[optionIndex].correct;
-            
+
             const options = $('#quizOptions .quiz-option');
             options.eq(optionIndex).addClass(correct ? 'correct' : 'incorrect');
-            
+
             if (correct) {
                 quizScore++;
-                $('#quizFeedback').html('✅ 正确！/ Correct!').css('background', '#c8e6c9').css('color', '#2e7d32');
+                $('#quizFeedback').html('✅ 正确！/ Correct!').css('background', 'rgba(200,230,201,0.9)').css('color', '#2e7d32');
             } else {
-                // Show correct answer
-                quizData[questionIndex].options.forEach((opt, i) => {
-                    if (opt.correct) {
-                        options.eq(i).addClass('correct');
-                    }
-                });
-                $('#quizFeedback').html('❌ 再想想！/ Try again!').css('background', '#ffcdd2').css('color', '#c62828');
+                quizData[questionIndex].options.forEach((opt, i) => { if (opt.correct) options.eq(i).addClass('correct'); });
+                $('#quizFeedback').html('❌ 再想想！/ Try again!').css('background', 'rgba(255,205,210,0.9)').css('color', '#c62828');
             }
-            
+
             $('#quizFeedback').addClass('show');
         }
 
@@ -1162,7 +1032,6 @@
             if (currentQuestion < quizData.length - 1) {
                 loadQuestion(currentQuestion + 1);
             } else {
-                // Show results
                 $('#quizContent').hide();
                 $('#quizResult').show();
                 $('#quizScore').html(`得分：${quizScore}/${quizData.length}<br>Score: ${quizScore}/${quizData.length}`);
@@ -1170,24 +1039,18 @@
         }
 
         function prevQuestion() {
-            if (currentQuestion > 0) {
-                loadQuestion(currentQuestion - 1);
-            }
+            if (currentQuestion > 0) loadQuestion(currentQuestion - 1);
         }
 
-        // Drag and drop
         let draggedGear = null;
         let filledZones = 0;
 
         function initDragDrop() {
             const gears = document.querySelectorAll('.draggable-gear');
-            const zones = document.querySelectorAll('.drop-zone');
-            
             gears.forEach(gear => {
                 gear.addEventListener('mousedown', startDrag);
                 gear.addEventListener('touchstart', startDrag);
             });
-            
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('touchmove', onDrag);
             document.addEventListener('mouseup', endDrag);
@@ -1198,11 +1061,9 @@
             e.preventDefault();
             draggedGear = e.target.closest('.draggable-gear');
             if (!draggedGear) return;
-            
             const rect = draggedGear.getBoundingClientRect();
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
             draggedGear.dataset.offsetX = clientX - rect.left;
             draggedGear.dataset.offsetY = clientY - rect.top;
             draggedGear.style.zIndex = '100';
@@ -1211,19 +1072,14 @@
         function onDrag(e) {
             if (!draggedGear) return;
             e.preventDefault();
-            
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            
             const container = document.getElementById('gearArea');
             const containerRect = container.getBoundingClientRect();
-            
             let x = clientX - containerRect.left - parseFloat(draggedGear.dataset.offsetX);
             let y = clientY - containerRect.top - parseFloat(draggedGear.dataset.offsetY);
-            
             x = Math.max(0, Math.min(x, containerRect.width - draggedGear.offsetWidth));
             y = Math.max(0, Math.min(y, containerRect.height - draggedGear.offsetHeight));
-            
             draggedGear.style.position = 'absolute';
             draggedGear.style.left = x + 'px';
             draggedGear.style.top = y + 'px';
@@ -1231,44 +1087,33 @@
 
         function endDrag(e) {
             if (!draggedGear) return;
-            
             const zones = document.querySelectorAll('.drop-zone');
             let dropped = false;
-            
+
             zones.forEach(zone => {
                 if (zone.classList.contains('filled')) return;
-                
                 const zoneRect = zone.getBoundingClientRect();
                 const gearRect = draggedGear.getBoundingClientRect();
-                
-                // Check overlap
-                if (gearRect.left < zoneRect.right &&
-                    gearRect.right > zoneRect.left &&
-                    gearRect.top < zoneRect.bottom &&
-                    gearRect.bottom > zoneRect.top) {
-                    
-                    // Snap to zone
+
+                if (gearRect.left < zoneRect.right && gearRect.right > zoneRect.left &&
+                    gearRect.top < zoneRect.bottom && gearRect.bottom > zoneRect.top) {
                     draggedGear.style.left = (zoneRect.left - document.getElementById('gearArea').getBoundingClientRect().left + zoneRect.width/2 - draggedGear.offsetWidth/2) + 'px';
                     draggedGear.style.top = (zoneRect.top - document.getElementById('gearArea').getBoundingClientRect().top + zoneRect.height/2 - draggedGear.offsetHeight/2) + 'px';
                     draggedGear.style.transform = 'scale(0.8)';
                     draggedGear.style.pointerEvents = 'none';
-                    
                     zone.classList.add('filled');
                     filledZones++;
                     dropped = true;
-                    
-                    if (filledZones === 3) {
-                        $('#gearMessage').show();
-                    }
+                    if (filledZones === 3) $('#gearMessage').show();
                 }
             });
-            
+
             if (!dropped) {
                 draggedGear.style.position = 'relative';
                 draggedGear.style.left = '';
                 draggedGear.style.top = '';
             }
-            
+
             draggedGear.style.zIndex = '10';
             draggedGear = null;
         }
