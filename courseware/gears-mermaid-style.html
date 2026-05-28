@@ -25,7 +25,6 @@
             position: relative;
             width: 90vw;
             max-width: 800px;
-            aspect-ratio: 4/3;
             margin: 20px auto;
         }
 
@@ -966,7 +965,8 @@
         $(document).ready(function() {
             function initBook() {
                 var w = $('#book-container').width();
-                var h = w * 3 / 4;
+                var isMobile = window.innerWidth < 480;
+                var h = Math.max(Math.round(w / (isMobile ? 1.6 : 1.33)), 280);
                 if (window._bookInited) {
                     $('#book').turn('size', w, h);
                 } else {
