@@ -270,6 +270,26 @@
   <span class="tag-sm tag-orange">🌱 科学</span>
 </div></a>
 
+<a href="gears-picturebook.html" class="wf-item"><div class="wf-card card-orange card-new">
+  <div class="icon">📖</div><div class="name">齿轮绘本 原版</div>
+  <span class="tag-sm tag-orange">🌱 科学</span>
+</div></a>
+
+<a href="gears-mermaid-style.html" class="wf-item"><div class="wf-card card-purple card-new">
+  <div class="icon">🌊</div><div class="name">齿轮绘本 梦幻</div>
+  <span class="tag-sm tag-purple">🌱 科学</span>
+</div></a>
+
+<a href="gears-watercolor.html" class="wf-item"><div class="wf-card card-yellow card-new">
+  <div class="icon">🎨</div><div class="name">齿轮绘本 水彩</div>
+  <span class="tag-sm tag-yellow">🌱 科学</span>
+</div></a>
+
+<a href="gears-amber-style.html" class="wf-item"><div class="wf-card card-red card-new">
+  <div class="icon">🏜️</div><div class="name">齿轮绘本 琥珀</div>
+  <span class="tag-sm tag-red">🌱 科学</span>
+</div></a>
+
 <a href="rainforest-adventure.html" class="wf-item"><div class="wf-card card-green">
   <div class="icon">🌴</div><div class="name">雨林大冒险</div>
   <span class="tag-sm tag-green">🌱 科学</span>
