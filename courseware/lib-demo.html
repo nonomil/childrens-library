@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>CEC Library Demo ⚙️</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:linear-gradient(180deg,#FFF8F0 0%,#FFF0E0 100%);min-height:100vh;color:#333;overflow-x:hidden}
+canvas{display:block;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+:root{--primary:#FF6B35;--secondary:#2196F3}
+.nav-dots{position:fixed;right:12px;top:50%;transform:translateY(-50%);z-index:999;display:flex;flex-direction:column;gap:8px}
+.nav-dot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.15);cursor:pointer;transition:all .25s;border:none;padding:0}
+.nav-dot.active{background:var(--primary);transform:scale(1.4)}
+.nav-dot:hover{background:var(--primary);opacity:0.7}
+.section{min-height:100vh;padding:20px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:0;transform:translateY(40px);transition:opacity .6s ease,transform .6s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.section-inner{width:100%;max-width:800px}
+#hero{background:linear-gradient(135deg,var(--primary),#FF8E53);color:#fff;text-align:center;overflow:hidden;position:relative}
+.hero-gears{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;opacity:0.15}
+.hero-content{position:relative;z-index:2}
+.hero-emoji{font-size:clamp(60px,15vw,120px);animation:hero-float 3s ease-in-out infinite}
+.hero-title{font-size:clamp(28px,8vw,56px);font-weight:800;text-shadow:3px 3px 0 rgba(0,0,0,0.15);margin:8px 0}
+.hero-subtitle{font-size:clamp(14px,4vw,22px);opacity:0.9;margin-bottom:20px}
+.hero-btn{background:#fff;color:var(--primary);border:none;padding:14px 36px;border-radius:40px;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,0.2);transition:all .2s;font-family:inherit}
+.hero-btn:hover{transform:scale(1.05);box-shadow:0 8px 28px rgba(0,0,0,0.25)}
+.hero-btn:active{transform:scale(0.96)}
+.sec-title{font-size:clamp(22px,6vw,36px);color:var(--primary);text-align:center;margin-bottom:6px;font-weight:800}
+.sec-icon{font-size:clamp(36px,10vw,56px);text-align:center;margin-bottom:4px}
+.sec-desc{font-size:clamp(13px,3.5vw,17px);color:#666;text-align:center;margin-bottom:16px;line-height:1.5}
+.card{background:#fff;border-radius:20px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:16px;margin-bottom:16px}
+.slider-row{display:flex;align-items:center;gap:8px;justify-content:center;margin:10px 0;flex-wrap:wrap}
+.slider-row label{font-size:14px;color:#555;font-weight:600}
+.slider-row input[type=range]{-webkit-appearance:none;width:140px;height:6px;border-radius:3px;background:#e0e0e0;outline:none}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--primary);cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.2)}
+.slider-val{font-size:15px;font-weight:700;color:var(--primary);min-width:28px;text-align:center}
+.btn{border:none;padding:10px 22px;border-radius:24px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;color:#fff}
+.btn:active{transform:scale(0.94)}
+.btn-primary{background:var(--primary)}
+.btn-secondary{background:var(--secondary)}
+.btn-success{background:#4CAF50}
+.btn-warning{background:#FF9800}
+.game-area{position:relative;width:100%;border-radius:16px;overflow:hidden;background:#f5f5f5;min-height:300px}
+.game-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(255,255,255,0.9);border-bottom:1px solid #eee;flex-wrap:wrap;gap:6px}
+.game-score{font-size:18px;font-weight:700;color:var(--primary)}
+.game-progress{font-size:14px;color:#888}
+.game-goal{font-size:16px;font-weight:600;color:#333;text-align:center;padding:12px;background:#fff8f0;border-radius:12px;margin:8px}
+.game-canvas-wrap{width:100%;position:relative}
+.game-feedback{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:48px;pointer-events:none;opacity:0;transition:opacity .3s;z-index:10}
+.game-feedback.show{opacity:1}
+.game-palette{display:flex;gap:8px;justify-content:center;padding:10px;flex-wrap:wrap}
+.game-palette-item{width:60px;height:60px;border-radius:12px;background:#fff;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:all .15s}
+.game-palette-item:active{transform:scale(0.9);border-color:var(--primary)}
+.game-buckets{display:flex;gap:12px;justify-content:center;padding:12px;flex-wrap:wrap}
+.game-bucket{width:120px;min-height:80px;border:2px dashed #ccc;border-radius:16px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s}
+.game-bucket.highlight{border-color:var(--primary);background:rgba(255,107,53,0.05)}
+.game-bucket-label{font-size:22px}
+.game-bucket-text{font-size:11px;color:#888}
+.game-bucket-items{display:flex;gap:4px;flex-wrap:wrap;justify-content:center}
+.game-options{display:flex;gap:10px;justify-content:center;padding:12px;flex-wrap:wrap}
+.game-option{padding:10px 20px;border-radius:16px;border:2px solid #ddd;background:#fff;font-size:15px;font-weight:600;cursor:pointer;transition:all .15s}
+.game-option:active{transform:scale(0.95)}
+.game-option.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
+.game-option.wrong{border-color:#f44336;background:#FFEBEE;color:#C62828}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:16px 0}
+.summary-card{background:#fff;border-radius:16px;padding:16px;text-align:center;box-shadow:0 3px 12px rgba(0,0,0,0.06)}
+.summary-card .icon{font-size:36px;margin-bottom:6px}
+.summary-card .label{font-size:14px;color:#666;font-weight:600}
+.summary-card .value{font-size:18px;font-weight:800;color:var(--primary)}
+.quiz-q{font-size:17px;font-weight:700;text-align:center;margin:12px 0;padding:12px;background:#f8f4ff;border-radius:12px}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.quiz-opt{padding:14px;border-radius:14px;border:2px solid #e0e0e0;background:#fff;font-size:15px;cursor:pointer;text-align:center;transition:all .15s;font-weight:600}
+.quiz-opt:active{transform:scale(0.96)}
+.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9}
+.quiz-opt.wrong{border-color:#f44336;background:#FFEBEE}
+.quiz-result{text-align:center;font-size:20px;font-weight:700;margin:12px 0}
+@keyframes sparkle-pop{0%{transform:scale(0) rotate(0deg);opacity:1}50%{transform:scale(1.2) rotate(180deg);opacity:1}100%{transform:scale(0) rotate(360deg);opacity:0}}
+.sparkle{position:absolute;pointer-events:none;font-size:24px;animation:sparkle-pop .6s ease-out forwards}
+@keyframes hero-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@media(max-width:480px){.section{padding:16px 10px}.card{padding:12px}.game-header{padding:8px 12px}}
+</style>
+</head>
+<body>
+
+<div class="nav-dots" id="navDots"></div>
+
+<section class="section" id="hero">
+  <canvas class="hero-gears" id="heroGearsCanvas"></canvas>
+  <div class="hero-content">
+    <div class="hero-emoji">⚙️</div>
+    <h1 class="hero-title">CEC 组件库演示</h1>
+    <p class="hero-subtitle">ChildrenComponentEngine - 零依赖可复用组件</p>
+    <button class="hero-btn" onclick="document.getElementById('sec-gear-basics').scrollIntoView({behavior:'smooth'})">🚀 开始探索</button>
+  </div>
+</section>
+
+<div id="knowledgeSections"></div>
+<div id="gameSections"></div>
+
+<section class="section" id="summarySection">
+  <div class="section-inner">
+    <div class="sec-icon">🏆</div>
+    <h2 class="sec-title">组件库总结</h2>
+    <p class="sec-desc">所有组件均通过 CEC.create / CEC.createGame 工厂方法实例化</p>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </div>
+</section>
+
+<script src="children-component-engine.js"></script>
+<script>
+(function() {
+  // Use CEC library to build everything
+  var allSections = [];
+
+  // Knowledge sections
+  var kContainer = document.getElementById('knowledgeSections');
+  var kSections = CEC.sections.buildKnowledgeSections(kContainer, [
+    { id: 'gear-basics', icon: '⚙️', title: '齿轮转转转', type: 'interactive-gear', desc: '拖拽齿轮让它旋转！改变齿数看看有什么变化' },
+    { id: 'gear-pair', icon: '🔄', title: '大小齿轮配对', type: 'gear-pair', desc: '两个齿轮咬合在一起，转动一个，另一个也跟着转' },
+    { id: 'chain-drive', icon: '⛓️', title: '链条传动', type: 'chain-drive', desc: '自行车是怎么把脚踏的力量传到轮子的？' },
+    { id: 'linkage', icon: '🔗', title: '连杆机构', type: 'linkage', desc: '一根杆子能变出各种运动！' },
+    { id: 'belt-drive', icon: '🏗️', title: '传动带', type: 'belt-drive', desc: '软软的皮带也能传递力量' },
+    { id: 'gear-lab', icon: '🧪', title: '齿轮实验室', type: 'gear-lab', desc: '自由调整参数，探索齿轮的物理世界' }
+  ]);
+  allSections = allSections.concat(kSections);
+
+  // Init interactive components into the canvases
+  CEC.create('InteractiveGear', document.getElementById('canvas-gear-basics'));
+  CEC.create('GearPair', document.getElementById('canvas-gear-pair'));
+  CEC.create('ChainDrive', document.getElementById('canvas-chain-drive'));
+  CEC.create('Linkage', document.getElementById('canvas-linkage'));
+  CEC.create('BeltDrive', document.getElementById('canvas-belt-drive'));
+  CEC.create('GearLab', document.getElementById('canvas-gear-lab'));
+
+  // Game sections
+  var gContainer = document.getElementById('gameSections');
+  var gSections = CEC.sections.buildGameSections(gContainer, [
+    { id: 'game-match', title: '齿轮配对', icon: '🎯', difficulty: 'Easy', desc: '调整齿轮比到目标值' },
+    { id: 'game-fix', title: '修理机器', icon: '🔧', difficulty: 'Medium', desc: '把正确的传动零件放进去' },
+    { id: 'game-chain', title: '齿轮接龙', icon: '🐲', difficulty: 'Medium', desc: '按顺序排列齿轮达到目标速度' },
+    { id: 'game-sort', title: '传动分类', icon: '📦', difficulty: 'Easy', desc: '把物品拖到正确的传动类型' },
+    { id: 'game-speed', title: '速度与力量', icon: '💪', difficulty: 'Medium', desc: '选择合适的齿轮完成任务' },
+    { id: 'game-puzzle', title: '齿轮拼图', icon: '🧩', difficulty: 'Hard', desc: '填满空缺让所有齿轮转动' },
+    { id: 'game-find', title: '找找传动', icon: '🔍', difficulty: 'Easy', desc: '在图中找到指定的传动部件' },
+    { id: 'game-build', title: '创造机器', icon: '🏭', difficulty: 'Hard', desc: '用零件组装能完成任务的机器' }
+  ]);
+  allSections = allSections.concat(gSections);
+
+  // Init games
+  CEC.createGame('Match', document.getElementById('area-game-match'));
+  CEC.createGame('Fix', document.getElementById('area-game-fix'));
+  CEC.createGame('Chain', document.getElementById('area-game-chain'));
+  CEC.createGame('Sort', document.getElementById('area-game-sort'));
+  CEC.createGame('Speed', document.getElementById('area-game-speed'));
+  CEC.createGame('Puzzle', document.getElementById('area-game-puzzle'));
+  CEC.createGame('Find', document.getElementById('area-game-find'));
+  CEC.createGame('Build', document.getElementById('area-game-build'));
+
+  // Summary
+  CEC.sections.buildSummary(document.getElementById('summaryGrid'), [
+    { icon: '⚙️', label: 'InteractiveGear', value: '齿轮绘制+交互' },
+    { icon: '🔄', label: 'GearPair', value: '双齿轮啮合' },
+    { icon: '⛓️', label: 'ChainDrive', value: '链条传动' },
+    { icon: '🔗', label: 'Linkage', value: '连杆机构' },
+    { icon: '🏗️', label: 'BeltDrive', value: '皮带传动' },
+    { icon: '🎯', label: 'GameMatch', value: '滑块匹配游戏' },
+    { icon: '🔧', label: 'GameFix', value: '选择修理游戏' },
+    { icon: '📦', label: 'GameSort', value: '分类排序游戏' }
+  ]);
+
+  // Hero gears
+  CEC.initHeroGears(document.getElementById('heroGearsCanvas'));
+
+  // Nav dots + scroll observer
+  allSections.push(document.getElementById('summarySection'));
+  var dots = CEC.nav.initNavDots(document.getElementById('navDots'), allSections, function (i) {
+    allSections[i].scrollIntoView({ behavior: 'smooth' });
+  });
+  CEC.nav.initScrollObserver(allSections, dots);
+
+  // Mark hero visible
+  setTimeout(function () { document.getElementById('hero').classList.add('visible'); }, 100);
+})();
+</script>
+</body>
+</html>
