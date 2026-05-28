@@ -7,8 +7,8 @@
     <!-- Google Fonts with Chinese-friendly mirror fallback -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%2C.%3F" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet"></noscript>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/turn.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -641,21 +641,8 @@
         /* Loading state */
         .loading {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255,255,255,0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-                .loading {
-            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             background: #fdf6e3;
@@ -992,6 +979,9 @@
         let currentQuestion = 0;
         let quizScore = 0;
         let answered = [];
+
+        // Show loading before page init
+        document.getElementById('loading').style.display = 'flex';
 
         // Initialize
         $(document).ready(function() {

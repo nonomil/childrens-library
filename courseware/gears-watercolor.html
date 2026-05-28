@@ -6,8 +6,8 @@
     <title>齿轮传动的秘密 - 水彩风 / The Secret of Gears</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!%2C.%3F" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet"></noscript>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+    <script src="lib/jquery.min.js"></script>
+    <script src="lib/turn.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -334,7 +334,7 @@
         .loading {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             background: #fff8e7;
@@ -621,6 +621,9 @@
 
     <div class="loading" id="loading">
         <div class="loading-spinner"></div>
+    <script>
+        (function(){var l=document.getElementById("loading");if(l) l.style.display="flex";})();
+    </script>
     </div>
 
     <script>
