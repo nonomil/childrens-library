@@ -55,12 +55,16 @@
   <h1>🎪 小朋友的互动学习乐园</h1>
   <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
   <div class="stats">
-    <span class="stat-item">📚 共 <strong>73</strong> 堂课</span>
+    <span class="stat-item">📚 共 <strong>123</strong> 堂课</span>
     <span class="stat-item">🎵 <strong>27</strong> 首童谣</span>
     <span class="stat-item">🔤 <strong>24</strong> 个英语课</span>
     <span class="stat-item">🀄 <strong>24</strong> 个语文课</span>
     <span class="stat-item">🧮 <strong>24</strong> 个数学课</span>
     <span class="stat-item">📖 <strong>8</strong> 本绘本</span>
+    <span class="stat-item">📚 <strong>10</strong> 个中文故事</span>
+    <span class="stat-item">📖 <strong>10</strong> 个英文故事</span>
+    <span class="stat-item">🎓 <strong>10</strong> 个教案</span>
+    <span class="stat-item">🏯 <strong>20</strong> 个古诗</span>
   </div>
 </div>
 
@@ -269,6 +273,108 @@
 <a href="courseware/rainforest-adventure.html" class="scroll-card card-green"><span class="sc-icon">🌴</span><span class="sc-name">雨林大冒险</span></a>
 <a href="courseware/gears-transmission.html" class="scroll-card card-orange"><span class="sc-icon">⚙️</span><span class="sc-name">齿轮传动</span></a>
 <a href="courseware/nature-lesson-4.html" class="scroll-card card-blue"><span class="sc-icon">🌿</span><span class="sc-name">大自然识字</span></a>
+
+</div>
+</div>
+
+<!-- ===== 📚 中文绘本故事 (新) ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">📚</span>
+  <span class="sh-name">中文绘本故事</span>
+  <span class="sh-count">10 个</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/story_extra_01_小蜗牛慢慢游历记.html" class="scroll-card card-purple card-new"><span class="sc-icon">🐌</span><span class="sc-name">小蜗牛慢慢游历记</span></a>
+<a href="courseware/story_extra_02_会唱歌的石头.html" class="scroll-card card-purple card-new"><span class="sc-icon">🎵</span><span class="sc-name">会唱歌的石头</span></a>
+<a href="courseware/story_extra_03_森林里的圣诞节.html" class="scroll-card card-purple card-new"><span class="sc-icon">🎄</span><span class="sc-name">森林里的圣诞节</span></a>
+<a href="courseware/story_extra_04_小鱼的美人鱼梦.html" class="scroll-card card-purple card-new"><span class="sc-icon">🧜</span><span class="sc-name">小鱼的美人鱼梦</span></a>
+<a href="courseware/story_extra_05_时间的魔法.html" class="scroll-card card-purple card-new"><span class="sc-icon">⏰</span><span class="sc-name">时间的魔法</span></a>
+<a href="courseware/story_extra_06_彩虹尽头的宝藏.html" class="scroll-card card-purple card-new"><span class="sc-icon">🌈</span><span class="sc-name">彩虹尽头的宝藏</span></a>
+<a href="courseware/story_extra_07_小象的超级长鼻子.html" class="scroll-card card-purple card-new"><span class="sc-icon">🐘</span><span class="sc-name">小象的超级长鼻子</span></a>
+<a href="courseware/story_extra_08_会变色的兔子.html" class="scroll-card card-purple card-new"><span class="sc-icon">🐰</span><span class="sc-name">会变色的兔子</span></a>
+<a href="courseware/story_extra_09_图书馆里的龙.html" class="scroll-card card-purple card-new"><span class="sc-icon">🐉</span><span class="sc-name">图书馆里的龙</span></a>
+<a href="courseware/story_extra_10_太空小探险家.html" class="scroll-card card-purple card-new"><span class="sc-icon">🚀</span><span class="sc-name">太空小探险家</span></a>
+
+</div>
+</div>
+
+<!-- ===== 📖 英文故事 (新) ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">📖</span>
+  <span class="sh-name">英文故事</span>
+  <span class="sh-count">10 个</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/english_story_01_The_Talkative_Tortoise.html" class="scroll-card card-green card-new"><span class="sc-icon">🐢</span><span class="sc-name">Talkative Tortoise</span></a>
+<a href="courseware/english_story_02_The_Lion_and_the_Mouse.html" class="scroll-card card-green card-new"><span class="sc-icon">🦁</span><span class="sc-name">Lion and Mouse</span></a>
+<a href="courseware/english_story_03_The_Ugly_Duckling.html" class="scroll-card card-green card-new"><span class="sc-icon">🦢</span><span class="sc-name">Ugly Duckling</span></a>
+<a href="courseware/english_story_04_The_Boy_Who_Cried_Wolf.html" class="scroll-card card-green card-new"><span class="sc-icon">🐺</span><span class="sc-name">Boy Cried Wolf</span></a>
+<a href="courseware/english_story_05_The_Three_Little_Pigs.html" class="scroll-card card-green card-new"><span class="sc-icon">🐷</span><span class="sc-name">Three Little Pigs</span></a>
+<a href="courseware/english_story_06_Goldilocks_and_the_Three_Bears.html" class="scroll-card card-green card-new"><span class="sc-icon">🐻</span><span class="sc-name">Goldilocks Bears</span></a>
+<a href="courseware/english_story_07_The_Ant_and_the_Grasshopper.html" class="scroll-card card-green card-new"><span class="sc-icon">🦗</span><span class="sc-name">Ant Grasshopper</span></a>
+<a href="courseware/english_story_08_Little_Red_Riding_Hood.html" class="scroll-card card-green card-new"><span class="sc-icon">🧣</span><span class="sc-name">Little Red Hood</span></a>
+<a href="courseware/english_story_09_The_Tortoise_and_the_Hare.html" class="scroll-card card-green card-new"><span class="sc-icon">🐇</span><span class="sc-name">Tortoise Hare</span></a>
+<a href="courseware/english_story_10_Jack_and_the_Beanstalk.html" class="scroll-card card-green card-new"><span class="sc-icon">🌱</span><span class="sc-name">Jack Beanstalk</span></a>
+
+</div>
+</div>
+
+<!-- ===== 🎓 教案活动 (新) ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">🎓</span>
+  <span class="sh-name">教案活动</span>
+  <span class="sh-count">10 个</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/lesson_extra_01_数学启蒙：比大小.html" class="scroll-card card-orange card-new"><span class="sc-icon">🔢</span><span class="sc-name">比大小</span></a>
+<a href="courseware/lesson_extra_02_科学实验：吹泡泡.html" class="scroll-card card-orange card-new"><span class="sc-icon">🫧</span><span class="sc-name">吹泡泡</span></a>
+<a href="courseware/lesson_extra_03_艺术创作：手指画.html" class="scroll-card card-orange card-new"><span class="sc-icon">🎨</span><span class="sc-name">手指画</span></a>
+<a href="courseware/lesson_extra_04_语言游戏：绕口令.html" class="scroll-card card-orange card-new"><span class="sc-icon">🗣️</span><span class="sc-name">绕口令</span></a>
+<a href="courseware/lesson_extra_05_户外活动：观察昆虫.html" class="scroll-card card-orange card-new"><span class="sc-icon">🐛</span><span class="sc-name">观察昆虫</span></a>
+<a href="courseware/lesson_extra_06_音乐活动：打击乐器.html" class="scroll-card card-orange card-new"><span class="sc-icon">🥁</span><span class="sc-name">打击乐器</span></a>
+<a href="courseware/lesson_extra_07_社会认知：认识职业.html" class="scroll-card card-orange card-new"><span class="sc-icon">👨‍⚕️</span><span class="sc-name">认识职业</span></a>
+<a href="courseware/lesson_extra_08_健康教育：正确洗手.html" class="scroll-card card-orange card-new"><span class="sc-icon">🧼</span><span class="sc-name">正确洗手</span></a>
+<a href="courseware/lesson_extra_09_数学游戏：分类整理.html" class="scroll-card card-orange card-new"><span class="sc-icon">📦</span><span class="sc-name">分类整理</span></a>
+<a href="courseware/lesson_extra_10_创意构建：纸杯搭建.html" class="scroll-card card-orange card-new"><span class="sc-icon">🥤</span><span class="sc-name">纸杯搭建</span></a>
+
+</div>
+</div>
+
+<!-- ===== 🏯 古诗讲解 (新) ===== -->
+<div class="section">
+<div class="section-header">
+  <span class="sh-icon">🏯</span>
+  <span class="sh-name">古诗讲解</span>
+  <span class="sh-count">20 个</span>
+</div>
+<div class="scroll-row">
+
+<a href="courseware/poem_explain_01.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 01</span></a>
+<a href="courseware/poem_explain_02.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 02</span></a>
+<a href="courseware/poem_explain_03.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 03</span></a>
+<a href="courseware/poem_explain_04.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 04</span></a>
+<a href="courseware/poem_explain_05.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 05</span></a>
+<a href="courseware/poem_explain_06.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 06</span></a>
+<a href="courseware/poem_explain_07.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 07</span></a>
+<a href="courseware/poem_explain_08.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 08</span></a>
+<a href="courseware/poem_explain_09.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 09</span></a>
+<a href="courseware/poem_explain_10.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 10</span></a>
+<a href="courseware/poem_explain_11.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 11</span></a>
+<a href="courseware/poem_explain_12.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 12</span></a>
+<a href="courseware/poem_explain_13.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 13</span></a>
+<a href="courseware/poem_explain_14.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 14</span></a>
+<a href="courseware/poem_explain_15.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 15</span></a>
+<a href="courseware/poem_explain_16.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 16</span></a>
+<a href="courseware/poem_explain_17.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 17</span></a>
+<a href="courseware/poem_explain_18.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 18</span></a>
+<a href="courseware/poem_explain_19.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 19</span></a>
+<a href="courseware/poem_explain_20.html" class="scroll-card card-red card-new"><span class="sc-icon">📜</span><span class="sc-name">古诗讲解 20</span></a>
 
 </div>
 </div>
