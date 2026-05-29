@@ -1,0 +1,6 @@
+settings.local.json
+state/.gate-approved
+state/.gate-denied-log
+backups/
+scripts/__pycache__/
+scripts/tests/__pycache__/

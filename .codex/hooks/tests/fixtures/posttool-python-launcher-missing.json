@@ -1,0 +1,9 @@
+{
+  "session_id": "shell-session",
+  "shell": "powershell",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "py -3 script.py"
+  },
+  "tool_response": "No installed Python found"
+}

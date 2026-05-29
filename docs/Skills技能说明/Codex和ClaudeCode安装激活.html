@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Workspace Launchpad - Install</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body data_page="install">
+  <div class="site_shell">
+    <aside class="sidebar_nav">
+      <a class="brand_link" href="./index.html">
+        <span class="brand_mark">AW</span>
+        <span class="brand_text">
+          <strong>AI Workspace</strong>
+          <small>Launchpad</small>
+        </span>
+      </a>
+
+      <nav class="nav_group">
+        <a class="nav_link" data_nav_page="install" href="./index.html">Install</a>
+        <a class="nav_link" data_nav_page="activation" href="./activation.html">Activation</a>
+        <a class="nav_link" data_nav_page="superpowers" href="./superpowers.html">Superpowers</a>
+        <a class="nav_link" data_nav_page="skills" href="./skills.html">Skills</a>
+      </nav>
+
+      <div class="sidebar_note">
+        <p class="sidebar_label">Local Entry</p>
+        <strong>..\update_codex_config.bat</strong>
+        <p>先安装需要的工具，再运行激活脚本写入配置；如果只是想看说明，也可以直接在菜单里打开本地网页。</p>
+      </div>
+    </aside>
+
+    <main class="page_main">
+      <header class="hero_banner">
+        <p class="eyebrow">Install</p>
+        <h1>Install Only What You Need</h1>
+        <p class="hero_intro">
+          这一页只讲安装。你可以只装 Codex，也可以只装 Claude Code；如果两者都要用，再一起装。
+          页面里顺手也把 superpowers 初始化和本项目的安装说明整合进来了，方便拷贝到新电脑后直接照着做。
+        </p>
+      </header>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Portable Copy</p>
+          <h2>方便拷贝到新电脑</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card accent_warm">
+            <h3>建议一起带走的最小目录</h3>
+            <p>如果你准备把这套工具复制到另一台电脑，建议至少保留下面这些内容放在同一个根目录里。脚本会依赖相对路径找到网页和配置模板。</p>
+            <ul class="plain_list">
+              <li>`update_codex_config.bat`</li>
+              <li>`update_codex_config.ps1`</li>
+              <li>`update_codex_config.json`</li>
+              <li>`docs 文件夹`</li>
+            </ul>
+          </article>
+
+          <article class="info_card">
+            <h3>复制之后怎么开始</h3>
+            <p>复制到任意目录都可以，不需要固定用户名，也不需要固定盘符。双击 `update_codex_config.bat` 后，如果想先看文档，就在菜单里选 `4` 打开本地说明网页；准备激活时再选 `1`、`2` 或 `3`。</p>
+            <p class="helper_text">网页入口、配置模板和 PowerShell 辅助脚本都会从当前文件夹自动定位。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Shared Prerequisites</p>
+          <h2>共同前置条件</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>1. Install Node.js</h3>
+            <p>无论装 Codex 还是 Claude Code，第一步都先装 Node.js。建议先确认 `node` 和 `npm` 已经能在终端里运行。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Download</span>
+                <button type="button" class="copy_button" data_copy_text="https://nodejs.org/dist/v24.12.0/node-v24.12.0-x64.msi">Copy</button>
+              </div>
+              <pre>https://nodejs.org/dist/v24.12.0/node-v24.12.0-x64.msi</pre>
+            </div>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Verify</span>
+                <button type="button" class="copy_button" data_copy_text="node -v&#10;npm -v">Copy</button>
+              </div>
+              <pre>node -v
+npm -v</pre>
+            </div>
+          </article>
+
+          <article class="info_card">
+            <h3>2. Fix PowerShell policy if needed</h3>
+            <p>如果 PowerShell 阻止脚本执行，可以先放开当前用户的执行策略。只需要做一次。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>PowerShell</span>
+                <button type="button" class="copy_button" data_copy_text="Set-ExecutionPolicy RemoteSigned -Scope CurrentUser">Copy</button>
+              </div>
+              <pre>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</pre>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Tool Paths</p>
+          <h2>按需求选择安装路线</h2>
+        </div>
+
+        <div class="card_grid three_cols">
+          <article class="info_card accent_warm">
+            <p class="card_eyebrow">Option A</p>
+            <h3>Codex CLI</h3>
+            <p>如果你只打算使用 Codex，那只装 Codex CLI 就够了。当前这套文档默认考虑 `OpenAI Codex 使用 智谱 API` 的场景，所以建议直接用镜像源安装。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Install Codex</span>
+                <button type="button" class="copy_button" data_copy_text="npm install -g @openai/codex --registry=https://registry.npmmirror.com/&#10;codex --version">Copy</button>
+              </div>
+              <pre>npm install -g @openai/codex --registry=https://registry.npmmirror.com/
+codex --version</pre>
+            </div>
+          </article>
+
+          <article class="info_card accent_cool">
+            <p class="card_eyebrow">Option B</p>
+            <h3>Claude Code CLI</h3>
+            <p>如果你只打算使用 Claude Code，那只装 Claude Code CLI 就行。后面的激活页里，用模式 `2`。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Install Claude Code</span>
+                <button type="button" class="copy_button" data_copy_text="npm install -g @anthropic-ai/claude-code&#10;claude --version">Copy</button>
+              </div>
+              <pre>npm install -g @anthropic-ai/claude-code
+claude --version</pre>
+            </div>
+          </article>
+
+          <article class="info_card">
+            <p class="card_eyebrow">Option C</p>
+            <h3>Install Both</h3>
+            <p>如果你要在同一台机器上切换使用两个工具，推荐一次装齐，后续只需要切换激活模式。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Install Both</span>
+                <button type="button" class="copy_button" data_copy_text="npm install -g @anthropic-ai/claude-code&#10;npm install -g @openai/codex --registry=https://registry.npmmirror.com/&#10;claude --version&#10;codex --version">Copy</button>
+              </div>
+              <pre>npm install -g @anthropic-ai/claude-code
+npm install -g @openai/codex --registry=https://registry.npmmirror.com/
+claude --version
+codex --version</pre>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Next Step</p>
+          <h2>See the dedicated Superpowers tab</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Why it moved</h3>
+            <p>
+              Superpowers 的内容已经从安装页里单独拆出去了。这样安装页只管环境准备，
+              Superpowers 页则可以更完整地讲它的设计理念、工作流、核心 skills 和正确安装方式。
+            </p>
+            <a class="text_link" href="./superpowers.html">Open Superpowers tab</a>
+          </article>
+
+          <article class="info_card">
+            <h3>What stays here</h3>
+            <p>这一页只保留基础安装：Node.js、Codex CLI、Claude Code CLI、PowerShell 执行策略，以及本地项目文档入口。智谱 GLM 注册入口可以直接看 `bigmodel.cn`。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Local Docs</p>
+          <h2>项目内现成文档</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>INSTALL.md</h3>
+            <p>如果你更喜欢看命令清单，可以继续参考本地安装文档。</p>
+            <a class="text_link" href="../INSTALL.md">Open INSTALL.md</a>
+          </article>
+
+          <article class="info_card">
+            <h3>01-AI软件开发全流程-需求到发布.md</h3>
+            <p>这篇是本项目中最系统的流程说明，适合在环境装好之后继续阅读。</p>
+            <a class="text_link" href="./01-AI软件开发全流程-需求到发布.md">Open workflow doc</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>

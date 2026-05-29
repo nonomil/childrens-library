@@ -1,0 +1,43 @@
+{
+  "topic": "full-project-scan",
+  "mode": "M4",
+  "scope": [".claude/workflows", ".claude/rules", ".claude/scripts", ".claude/skills", "docs"],
+  "reference_docs": ["docs/CODEBASE_MAP.md"],
+  "generated_at": "2026-04-02T19:30:00Z",
+  "scan_date": "2026-04-02T19:29:26",
+  "stats": {
+    "modules": 6,
+    "entry_points": 4,
+    "public_apis": 15,
+    "core_data_structures": 4,
+    "data_flows": 4,
+    "constraints": 6,
+    "impact_items": 7,
+    "total_functions": 60,
+    "total_skill_definitions": 24,
+    "total_workflow_files": 10,
+    "total_rule_files": 8,
+    "total_script_files": 8,
+    "total_docs_files": 112,
+    "total_loc_scripts": 1576
+  },
+  "scope_stats": {
+    "total_files": 130,
+    "files_by_module": {
+      ".claude/workflows": 10,
+      ".claude/rules": 8,
+      ".claude/scripts": 8,
+      ".claude/skills": 24,
+      "docs": 112,
+      "image-merger/src": 5
+    }
+  },
+  "high_risk_modules": [
+    ".claude/workflows (constants.md changes affect all workflows)",
+    ".claude/scripts (hook changes affect all git operations)",
+    "scan.py (schema changes affect all scan operations)"
+  ],
+  "cartographer_map_used": false,
+  "extraction_method": "local_ast_regex",
+  "ai_tokens_used": 0
+}

@@ -1,0 +1,54 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack security --event PreToolUse --platform codex --mode enforce",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack quality --event PreToolUse --platform codex --mode warn",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack quality --event PostToolUse --platform codex --mode warn",
+            "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack security --event PostToolUse --platform codex --mode warn",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack resilience --event PostToolUse --platform codex --mode warn",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .codex/hooks/runtime/runner.py --pack resilience --event Stop --platform codex --mode warn",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

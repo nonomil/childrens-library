@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Code Graph Viewer</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#c9d1d9;--text-dim:#8b949e;--accent:#58a6ff;--green:#3fb950;--orange:#f0883e;--purple:#d2a8ff;--red:#f85149}
+html,body{width:100%;height:100%;overflow:hidden;font-family:system-ui,-apple-system,sans-serif;font-size:13px;background:var(--bg);color:var(--text)}
+
+/* Layout */
+#app{display:flex;flex-direction:column;height:100vh}
+#toolbar{display:flex;align-items:center;gap:12px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+#toolbar input{flex:1;max-width:300px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px;outline:none}
+#toolbar input:focus{border-color:var(--accent)}
+#toolbar button{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:6px;color:var(--text);cursor:pointer;font-size:12px}
+#toolbar button:hover{background:var(--border)}
+#toolbar button.active{background:#1f6feb;border-color:var(--accent);color:#fff}
+#toolbar .stats{color:var(--text-dim);font-size:12px;margin-left:auto}
+
+#main{display:flex;flex:1;overflow:hidden}
+
+/* Left panel - tree */
+#tree-panel{width:280px;min-width:200px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+#tree-panel .panel-header{padding:10px 14px;font-weight:700;font-size:12px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2}
+.tree-item{padding:4px 14px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree-item:hover{background:rgba(88,166,255,0.1)}
+.tree-item.selected{background:rgba(88,166,255,0.2);color:var(--accent)}
+.tree-item .icon{width:14px;text-align:center;flex-shrink:0;font-size:11px}
+.tree-project{padding:6px 14px;font-weight:700;font-size:13px;color:var(--accent);cursor:pointer;border-bottom:1px solid var(--border)}
+.tree-project:hover{background:rgba(88,166,255,0.08)}
+.tree-dir{padding:3px 14px 3px 24px;color:var(--text-dim);font-size:11px;cursor:pointer;font-weight:600}
+.tree-dir:hover{background:rgba(88,166,255,0.08)}
+.tree-file{padding:3px 14px 3px 36px;color:var(--text);font-size:12px;cursor:pointer;font-weight:500}
+.tree-file:hover{background:rgba(88,166,255,0.1)}
+.tree-node{padding:2px 14px 2px 48px;font-size:12px;cursor:pointer;color:var(--text-dim)}
+.tree-node:hover{background:rgba(88,166,255,0.1);color:var(--text)}
+.tree-node.selected{color:var(--accent);background:rgba(88,166,255,0.15)}
+.tree-node .badge{font-size:9px;padding:1px 5px;border-radius:3px;margin-left:4px;font-weight:700}
+.badge-function{background:#1f6feb33;color:var(--accent)}
+.badge-class{background:#3fb95033;color:var(--green)}
+.badge-test{background:#d2a8ff33;color:var(--purple)}
+
+/* Center - graph */
+#graph-panel{flex:1;position:relative;overflow:hidden}
+#graph-panel svg{width:100%;height:100%}
+#graph-tooltip{position:absolute;pointer-events:none;background:rgba(22,27,34,0.97);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;box-shadow:0 8px 32px rgba(0,0,0,0.6);max-width:340px;line-height:1.6;opacity:0;transition:opacity 0.12s;z-index:100}
+#graph-tooltip.visible{opacity:1}
+.tt-name{font-weight:700;font-size:14px;color:#e6edf3}
+.tt-badge{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;margin-left:6px;text-transform:uppercase}
+.tt-file{color:var(--accent);font-size:11px;margin-top:2px}
+.tt-sig{color:var(--text-dim);font-size:11px;margin-top:4px;font-family:monospace;white-space:pre-wrap}
+.tt-calls{margin-top:4px;font-size:11px;color:var(--text-dim)}
+
+/* Bottom - detail */
+#detail-panel{height:180px;min-height:100px;background:var(--surface);border-top:1px solid var(--border);display:flex;overflow:hidden}
+#detail-panel.hidden{display:none}
+.detail-main{flex:1;padding:12px 18px;overflow-y:auto}
+.detail-main h3{font-size:14px;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.detail-main h3 .kind-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700}
+.detail-meta{display:flex;gap:16px;font-size:11px;color:var(--text-dim);margin-bottom:8px}
+.detail-meta span{display:flex;align-items:center;gap:4px}
+.detail-sig{font-family:monospace;font-size:11px;color:var(--text-dim);background:var(--bg);padding:6px 10px;border-radius:6px;margin-bottom:8px;white-space:pre-wrap}
+.detail-cols{display:flex;gap:16px}
+.detail-col{flex:1}
+.detail-col h4{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.call-item{font-size:11px;padding:2px 6px;border-radius:4px;cursor:pointer;display:flex;align-items:center;gap:4px}
+.call-item:hover{background:rgba(88,166,255,0.15);color:var(--accent)}
+.call-item .call-kind{font-size:9px;color:var(--text-dim)}
+.detail-actions{width:160px;padding:12px;border-left:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.btn-open{padding:8px 12px;background:#1f6feb;border:1px solid var(--accent);border-radius:6px;color:#fff;cursor:pointer;font-size:12px;font-weight:600;text-align:center}
+.btn-open:hover{background:#388bfd}
+
+/* Community colors */
+.comm-0{fill:#58a6ff;stroke:#58a6ff}
+.comm-1{fill:#3fb950;stroke:#3fb950}
+.comm-2{fill:#f0883e;stroke:#f0883e}
+.comm-3{fill:#d2a8ff;stroke:#d2a8ff}
+.comm-4{fill:#f85149;stroke:#f85149}
+.comm-5{fill:#79c0ff;stroke:#79c0ff}
+.comm-6{fill:#56d364;stroke:#56d364}
+.comm-7{fill:#e3b341;stroke:#e3b341}
+.comm-8{fill:#ff7b72;stroke:#ff7b72}
+.comm-9{fill:#a5d6ff;stroke:#a5d6ff}
+
+/* Resize handle */
+.resize-handle{width:4px;cursor:col-resize;background:var(--border);transition:background 0.2s}
+.resize-handle:hover{background:var(--accent)}
+
+/* Loading */
+.loading{display:flex;justify-content:center;align-items:center;height:100%;color:var(--text-dim);font-size:14px}
+</style>
+</head>
+<body>
+<div id="app">
+  <!-- Toolbar -->
+  <div id="toolbar">
+    <span style="font-weight:700;color:var(--accent);white-space:nowrap">Code Graph Viewer</span>
+    <input id="search" type="text" placeholder="Search functions, classes..." autocomplete="off">
+    <button id="btn-all" class="active" title="Show all">All</button>
+    <button id="btn-calls" title="Show only call edges">Calls</button>
+    <button id="btn-reset" title="Reset zoom">Reset</button>
+    <span class="stats" id="stats"></span>
+  </div>
+
+  <div id="main">
+    <!-- Left: module tree -->
+    <div id="tree-panel">
+      <div class="panel-header">Modules</div>
+      <div id="tree-content"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- Resize handle -->
+    <div class="resize-handle" id="resize-handle"></div>
+
+    <!-- Center: graph -->
+    <div id="graph-panel">
+      <div id="graph-tooltip"></div>
+    </div>
+  </div>
+
+  <!-- Bottom: detail panel -->
+  <div id="detail-panel" class="hidden">
+    <div class="detail-main" id="detail-main">
+      <p style="color:var(--text-dim)">Click a node to see details</p>
+    </div>
+    <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<script>
+// ========== State ==========
+let allNodes = [], allLinks = [], communityColors = {};
+let selectedNode = null, simulation = null, svgNodes = null, svgLinks = null;
+const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+
+// ========== Tree ==========
+async function loadTree() {
+  const resp = await fetch('/api/tree');
+  const tree = await resp.json();
+  const container = document.getElementById('tree-content');
+  container.innerHTML = '';
+
+  for (const [project, dirs] of Object.entries(tree)) {
+    const projEl = document.createElement('div');
+    projEl.className = 'tree-project';
+    projEl.textContent = '📁 ' + project;
+    projEl.onclick = () => toggleChildren(projEl);
+    container.appendChild(projEl);
+
+    for (const [dir, files] of Object.entries(dirs)) {
+      const dirEl = document.createElement('div');
+      dirEl.className = 'tree-dir';
+      dirEl.textContent = '📂 ' + (dir.split('/').pop() || dir);
+      dirEl.onclick = () => toggleChildren(dirEl);
+      container.appendChild(dirEl);
+
+      for (const [file, nodes] of Object.entries(files)) {
+        const fileEl = document.createElement('div');
+        fileEl.className = 'tree-file';
+        fileEl.textContent = '📄 ' + file;
+        fileEl.onclick = () => toggleChildren(fileEl);
+        container.appendChild(fileEl);
+
+        for (const node of nodes) {
+          const nodeEl = document.createElement('div');
+          nodeEl.className = 'tree-node';
+          const kindClass = node.kind === 'Class' ? 'badge-class' : node.kind === 'Test' ? 'badge-test' : 'badge-function';
+          nodeEl.innerHTML = `<span class="icon">${node.kind === 'Class' ? '◆' : node.kind === 'Test' ? '✔' : '▸'}</span>${node.name}${node.parent_name ? ' <span style="color:var(--text-dim)">' + node.parent_name + '</span>' : ''}<span class="badge ${kindClass}">${node.kind}</span>`;
+          nodeEl.dataset.nodeId = node.id;
+          nodeEl.onclick = (e) => {
+            e.stopPropagation();
+            selectNodeById(node.id, node);
+          };
+          container.appendChild(nodeEl);
+        }
+      }
+    }
+  }
+}
+
+function toggleChildren(el) {
+  const next = el.nextElementSibling;
+  let showing = false;
+  while (next && next.className !== 'tree-project' && next.className !== 'tree-dir' && next.className !== 'tree-file') {
+    // skip
+    break;
+  }
+  // Simple toggle: hide/show siblings of same level
+  let sib = el.nextElementSibling;
+  while (sib) {
+    const cls = sib.className;
+    if (cls === el.className || (el.className === 'tree-project' && cls === 'tree-project')) break;
+    if (cls === 'tree-project' && el.className !== 'tree-project') break;
+    if (sib.style.display === 'none') {
+      sib.style.display = '';
+      showing = true;
+    } else {
+      sib.style.display = 'none';
+    }
+    sib = sib.nextElementSibling;
+  }
+}
+
+function selectNodeById(id, data) {
+  document.querySelectorAll('.tree-node.selected').forEach(e => e.classList.remove('selected'));
+  document.querySelectorAll(`.tree-node[data-node-id="${id}"]`).forEach(e => e.classList.add('selected'));
+  showDetail(data);
+  highlightGraphNode(id);
+}
+
+// ========== Graph ==========
+async function loadGraph() {
+  const resp = await fetch('/api/graph');
+  const data = await resp.json();
+  allNodes = data.nodes;
+  allLinks = data.links;
+
+  // Assign community colors
+  const commIds = [...new Set(allNodes.map(n => n.community_id).filter(Boolean))];
+  commIds.forEach((id, i) => { communityColors[id] = colorScale(i); });
+
+  document.getElementById('stats').textContent = `${allNodes.length} nodes · ${allLinks.length} edges`;
+  renderGraph();
+}
+
+function renderGraph() {
+  const panel = document.getElementById('graph-panel');
+  panel.querySelector('svg')?.remove();
+
+  const width = panel.clientWidth;
+  const height = panel.clientHeight;
+
+  const svg = d3.select('#graph-panel').append('svg')
+    .attr('width', width).attr('height', height);
+
+  // Zoom
+  const g = svg.append('g');
+  const zoom = d3.zoom().scaleExtent([0.1, 8]).on('zoom', (e) => g.attr('transform', e.transform));
+  svg.call(zoom);
+
+  document.getElementById('btn-reset').onclick = () => svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+
+  // Links
+  svgLinks = g.append('g').selectAll('line')
+    .data(allLinks).join('line')
+    .attr('stroke', 'rgba(139,148,158,0.15)')
+    .attr('stroke-width', 0.5);
+
+  // Nodes
+  svgNodes = g.append('g').selectAll('circle')
+    .data(allNodes, d => d.id)
+    .join('circle')
+    .attr('r', d => d.kind === 'Class' ? 6 : d.kind === 'Test' ? 4 : 3)
+    .attr('fill', d => communityColors[d.community_id] || '#8b949e')
+    .attr('stroke', d => communityColors[d.community_id] || '#8b949e')
+    .attr('stroke-width', 1)
+    .attr('stroke-opacity', 0.4)
+    .attr('fill-opacity', 0.8)
+    .on('click', (e, d) => {
+      e.stopPropagation();
+      selectNodeById(d.id, d);
+    })
+    .on('mouseenter', (e, d) => showTooltip(e, d))
+    .on('mouseleave', hideTooltip)
+    .call(d3.drag()
+      .on('start', dragStart)
+      .on('drag', dragging)
+      .on('end', dragEnd));
+
+  // Force simulation
+  simulation = d3.forceSimulation(allNodes)
+    .force('link', d3.forceLink(allLinks).id(d => d.id).distance(30))
+    .force('charge', d3.forceManyBody().strength(-40))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide(4))
+    .on('tick', () => {
+      svgLinks.attr('x1', d => d.source.x).attr('y1', d => d.source.y)
+              .attr('x2', d => d.target.x).attr('y2', d => d.target.y);
+      svgNodes.attr('cx', d => d.x).attr('cy', d => d.y);
+    });
+}
+
+function dragStart(e, d) { if (!e.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; }
+function dragging(e, d) { d.fx = e.x; d.fy = e.y; }
+function dragEnd(e, d) { if (!e.active) simulation.alphaTarget(0); d.fx = null; d.fy = null; }
+
+function highlightGraphNode(id) {
+  if (!svgNodes) return;
+  svgNodes.attr('fill-opacity', d => d.id == id ? 1 : 0.2)
+          .attr('stroke-width', d => d.id == id ? 3 : 1);
+  svgLinks.attr('stroke', d => (d.source.id == id || d.target.id == id) ? 'var(--accent)' : 'rgba(139,148,158,0.08)')
+          .attr('stroke-width', d => (d.source.id == id || d.target.id == id) ? 2 : 0.5);
+}
+
+// ========== Tooltip ==========
+function showTooltip(event, d) {
+  const tt = document.getElementById('graph-tooltip');
+  const kindColor = d.kind === 'Class' ? 'var(--green)' : d.kind === 'Test' ? 'var(--purple)' : 'var(--accent)';
+  tt.innerHTML = `<div class="tt-name">${d.parent_name ? d.parent_name + '.' : ''}${d.name} <span class="tt-badge" style="background:${kindColor}33;color:${kindColor}">${d.kind}</span></div>
+    <div class="tt-file">${d.rel_path}${d.line_start ? ':' + d.line_start : ''}</div>
+    ${d.signature ? '<div class="tt-sig">' + escapeHtml(d.signature) + '</div>' : ''}`;
+  tt.classList.add('visible');
+  const rect = document.getElementById('graph-panel').getBoundingClientRect();
+  tt.style.left = (event.clientX - rect.left + 12) + 'px';
+  tt.style.top = (event.clientY - rect.top + 12) + 'px';
+}
+function hideTooltip() { document.getElementById('graph-tooltip').classList.remove('visible'); }
+function escapeHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ========== Detail Panel ==========
+function showDetail(node) {
+  const panel = document.getElementById('detail-panel');
+  panel.classList.remove('hidden');
+
+  const kindColor = node.kind === 'Class' ? 'var(--green)' : node.kind === 'Test' ? 'var(--purple)' : 'var(--accent)';
+  const main = document.getElementById('detail-main');
+  main.innerHTML = `<h3>${node.parent_name ? node.parent_name + '::' : ''}${node.name} <span class="kind-badge" style="background:${kindColor}33;color:${kindColor}">${node.kind}</span></h3>
+    <div class="detail-meta">
+      <span>📄 ${node.rel_path || 'unknown'}</span>
+      ${node.line_start ? `<span>📍 L${node.line_start}${node.line_end ? '-' + node.line_end : ''}</span>` : ''}
+      ${node.community_name ? `<span>🏷️ ${node.community_name}</span>` : ''}
+    </div>
+    ${node.signature ? '<div class="detail-sig">' + escapeHtml(node.signature) + '</div>' : ''}
+    <div class="detail-cols">
+      <div class="detail-col"><h4>Calls (outgoing)</h4><div id="calls-out"><span style="color:var(--text-dim)">Loading...</span></div></div>
+      <div class="detail-col"><h4>Called by (incoming)</h4><div id="calls-in"><span style="color:var(--text-dim)">Loading...</span></div></div>
+    </div>`;
+
+  const actions = document.getElementById('detail-actions');
+  actions.innerHTML = `<button class="btn-open" onclick="openInEditor('${encodeURIComponent(node.rel_path || '')}', ${node.line_start || 1})">Open in VS Code</button>`;
+
+  // Load edges
+  loadEdges(node);
+}
+
+async function loadEdges(node) {
+  const resp = await fetch('/api/edges?node=' + node.id);
+  const edges = await resp.json();
+
+  const outDiv = document.getElementById('calls-out');
+  const inDiv = document.getElementById('calls-in');
+
+  const outgoing = edges.filter(e => e.source_id == node.id && e.kind === 'CALLS');
+  const incoming = edges.filter(e => e.target_id == node.id && e.kind === 'CALLS');
+
+  outDiv.innerHTML = outgoing.length ? outgoing.map(e =>
+    `<div class="call-item" onclick="openInEditor('${encodeURIComponent(e.target_file || '')}', ${e.target_line || 1})">
+      <span class="call-kind">${e.kind}</span> ${e.target_name}
+    </div>`).join('') : '<span style="color:var(--text-dim)">None</span>';
+
+  inDiv.innerHTML = incoming.length ? incoming.map(e =>
+    `<div class="call-item" onclick="openInEditor('${encodeURIComponent(e.source_file || '')}', ${e.source_line || 1})">
+      <span class="call-kind">${e.kind}</span> ${e.source_name}
+    </div>`).join('') : '<span style="color:var(--text-dim)">None</span>';
+}
+
+async function openInEditor(file, line) {
+  await fetch(`/open?file=${file}&line=${line}`);
+}
+
+// ========== Search ==========
+let searchTimeout;
+document.getElementById('search').addEventListener('input', (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const q = e.target.value.trim();
+    if (!q) {
+      svgNodes?.attr('fill-opacity', 0.8).attr('stroke-width', 1);
+      svgLinks?.attr('stroke', 'rgba(139,148,158,0.15)').attr('stroke-width', 0.5);
+      return;
+    }
+    const ql = q.toLowerCase();
+    svgNodes?.attr('fill-opacity', d => {
+      const match = d.name.toLowerCase().includes(ql) ||
+                    (d.parent_name || '').toLowerCase().includes(ql) ||
+                    (d.rel_path || '').toLowerCase().includes(ql);
+      return match ? 1 : 0.1;
+    }).attr('stroke-width', d => {
+      const match = d.name.toLowerCase().includes(ql) ||
+                    (d.parent_name || '').toLowerCase().includes(ql) ||
+                    (d.rel_path || '').toLowerCase().includes(ql);
+      return match ? 2 : 0.5;
+    });
+  }, 200);
+});
+
+// ========== Resize Handle ==========
+const resizeHandle = document.getElementById('resize-handle');
+let isResizing = false;
+resizeHandle.addEventListener('mousedown', (e) => {
+  isResizing = true;
+  document.body.style.cursor = 'col-resize';
+  e.preventDefault();
+});
+document.addEventListener('mousemove', (e) => {
+  if (!isResizing) return;
+  const treePanel = document.getElementById('tree-panel');
+  const newWidth = Math.max(150, Math.min(500, e.clientX));
+  treePanel.style.width = newWidth + 'px';
+});
+document.addEventListener('mouseup', () => {
+  isResizing = false;
+  document.body.style.cursor = '';
+});
+
+// ========== Init ==========
+async function init() {
+  await Promise.all([loadTree(), loadGraph()]);
+}
+init();
+</script>
+</body>
+</html>

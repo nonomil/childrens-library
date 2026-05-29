@@ -1,0 +1,9 @@
+{
+  "session_id": "shell-session",
+  "shell": "powershell",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "python scan.py"
+  },
+  "tool_response": "UnicodeDecodeError: 'gbk' codec can't decode byte 0xff in position 0"
+}

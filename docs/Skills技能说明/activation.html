@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Workspace Launchpad - Activation</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body data_page="activation">
+  <div class="site_shell">
+    <aside class="sidebar_nav">
+      <a class="brand_link" href="./index.html">
+        <span class="brand_mark">AW</span>
+        <span class="brand_text">
+          <strong>AI Workspace</strong>
+          <small>Launchpad</small>
+        </span>
+      </a>
+
+      <nav class="nav_group">
+        <a class="nav_link" data_nav_page="install" href="./index.html">Install</a>
+        <a class="nav_link" data_nav_page="activation" href="./activation.html">Activation</a>
+        <a class="nav_link" data_nav_page="superpowers" href="./superpowers.html">Superpowers</a>
+        <a class="nav_link" data_nav_page="skills" href="./skills.html">Skills</a>
+      </nav>
+
+      <div class="sidebar_note">
+        <p class="sidebar_label">Main Script</p>
+        <strong>..\update_codex_config.bat</strong>
+        <p>这个脚本会根据模式写入不同配置文件；如果你只想先阅读说明，也可以直接在菜单里打开本地网页。</p>
+      </div>
+    </aside>
+
+    <main class="page_main">
+      <header class="hero_banner">
+        <p class="eyebrow">Activation</p>
+        <h1>只做配置切换，不再手改文件</h1>
+        <p class="hero_intro">
+          这一页只讲激活。直接 Double-click `update_codex_config.bat`，然后 choose option 1, 2, or 3。
+          No command typing required。脚本会优先自动读取 `update_codex_config.json`，只有缺少值时才会提示输入。
+          如果你只是先想看文档，可以在同一个菜单里选择 `4` 打开本地说明网页。
+          激活成功后，脚本还会自动打开 `Codex` 和 `Claude` 命令窗口，方便你马上测试。
+        </p>
+      </header>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Codex Activation</p>
+          <h2>Codex Activation</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card accent_warm">
+            <h3>Mode 1: Codex-ChatGPT</h3>
+            <p>适合直接连接 OpenAI。脚本会写入 `~/.codex/auth.json` 和 `~/.codex/config.toml`。</p>
+            <ul class="plain_list">
+              <li>Target file: `~/.codex/auth.json`</li>
+              <li>Target file: `~/.codex/config.toml`</li>
+              <li>Provider: `openai`</li>
+              <li>适合有标准 OpenAI Key 的场景</li>
+            </ul>
+            <p class="helper_text">操作方式：双击 `update_codex_config.bat` 后，在菜单中选择 `1`。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>Mode 3: Codex-Zhipu</h3>
+            <p>也是 Codex，但这里已经改成直接使用智谱 API 的配置写法，而不是旧的代理模式。仍然写入 Codex 的配置文件。</p>
+            <ul class="plain_list">
+              <li>Target file: `~/.codex/auth.json`，内容是 `{"OPENAI_API_KEY": null}`</li>
+              <li>Target file: `~/.codex/config.toml`</li>
+              <li>Provider: `BigModel`</li>
+              <li>Model: `GLM-5.1`</li>
+              <li>Base URL: `https://open.bigmodel.cn/api/coding/paas/v4`</li>
+              <li>智谱 GLM 注册入口：`bigmodel.cn`</li>
+            </ul>
+            <p class="helper_text">操作方式：双击 `update_codex_config.bat` 后，在菜单中选择 `3`。如果 `update_codex_config.json` 里已经填好智谱 key，通常不需要再手动输入。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Docs Shortcut</p>
+          <h2>菜单里的网页入口</h2>
+        </div>
+
+        <div class="card_grid one_col">
+          <article class="info_card accent_cool">
+            <h3>Mode 4: 打开本地说明网页</h3>
+            <p>如果你把整个文件夹复制到了新电脑，还没决定先装哪一个工具，可以先双击脚本，在菜单中选择 `4`，直接打开 `docs/index.html`。这样不用先找 Markdown，也不用手动输命令。</p>
+            <p class="helper_text">脚本会自动按当前用户目录和脚本所在目录识别路径，所以用户名变化、文件夹改名或换盘符时，通常都不需要手改脚本。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Quick Test</p>
+          <h2>激活后立刻测试</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card accent_warm">
+            <h3>自动打开两个命令窗口</h3>
+            <p>脚本在完成激活后，会自动打开两个命令窗口：一个运行 `Codex`，一个运行 `Claude`。这样你不用自己再去找终端，也不用手动再敲启动命令。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>输入这一句测试</h3>
+            <p>窗口打开后，直接输入：`你是什么模型`。这样能最快确认当前 CLI 已经接入了哪一个模型、是不是已经切到了你刚刚配置的线路。</p>
+            <p class="helper_text">如果某个命令还没有安装，脚本会提示未检测到该命令，对应窗口不会强行打开。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Claude</p>
+          <h2>Claude Code Activation</h2>
+        </div>
+
+        <div class="card_grid one_col">
+          <article class="info_card accent_cool">
+            <h3>Mode 2: ClaudeCode-Zhipu</h3>
+            <p>这个模式只服务 Claude Code。脚本会写入 `~/.claude/settings.json`，把 Anthropic 兼容环境变量一并配置好。</p>
+            <ul class="plain_list">
+              <li>Target file: `~/.claude/settings.json`</li>
+              <li>Writes `ANTHROPIC_AUTH_TOKEN`</li>
+              <li>Writes `ANTHROPIC_BASE_URL`</li>
+              <li>适合 Claude Code 走智谱 Anthropic 兼容接口</li>
+            </ul>
+            <p class="helper_text">操作方式：双击 `update_codex_config.bat` 后，在菜单中选择 `2`。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Interactive Usage</p>
+          <h2>交互模式怎么用</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Double-click</h3>
+            <p>Double-click `update_codex_config.bat`，脚本会弹出中文菜单。你只需要选择模式。只要 `update_codex_config.json` 填好了，对应模式会直接自动读取。</p>
+            <p class="helper_text">No command typing required。只有在配置文件里缺值时，脚本才会退回到交互输入；如果只是想看说明，就在菜单中选择 `4`。激活后还会自动打开 Codex 和 Claude 命令窗口。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>What happens after activation</h3>
+            <p>脚本会自动识别当前用户目录，按模式覆盖对应文件，并自动按当前用户目录和脚本所在目录识别路径。用户名变化时，不需要修改脚本路径。写入完成后，还会自动打开 Codex 和 Claude 命令窗口，方便你马上输入 `你是什么模型` 做检查。</p>
+            <a class="text_link" href="../update_codex_config.bat">Open update_codex_config.bat</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>

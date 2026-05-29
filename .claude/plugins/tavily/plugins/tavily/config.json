@@ -1,0 +1,13 @@
+{
+  "api_key": "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",
+  "npm_package": "tavily-mcp",
+  "version": "0.2.18",
+  "install_date": "2026-04-17",
+  "tools": [
+    {"name": "tavily_search", "description": "实时网页搜索，支持 basic/advanced/fast/ultra-fast 模式"},
+    {"name": "tavily_extract", "description": "从 URL 提取内容，支持 basic/advanced 模式"},
+    {"name": "tavily_crawl", "description": "网站爬取，可配置深度/广度/域名过滤"},
+    {"name": "tavily_map", "description": "生成网站结构地图"},
+    {"name": "tavily_research", "description": "深度研究，多源综合分析（mini/pro/auto）"}
+  ]
+}

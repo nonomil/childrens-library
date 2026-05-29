@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CC+Codex 协作框架 — 快速上手指南</title>
+  <link rel="stylesheet" href="guide/assets/guide.css">
+</head>
+<body>
+  <div class="site_shell">
+
+    <aside class="sidebar">
+      <a class="sidebar_brand" href="guide.html">
+        <span class="hero_logo">CC</span>
+        <span class="sidebar_brand_text"><strong>CC+Codex</strong><small>协作框架</small></span>
+      </a>
+      <nav class="sidebar_pages">
+        <a href="guide.html" class="active">快速上手</a>
+        <a href="guide/guide-workflows.html">工作流</a>
+        <a href="guide/guide-skills.html">技能</a>
+      </nav>
+      <div class="sidebar_tabs">
+        <p class="sidebar_section_label">Tabs</p>
+        <button type="button" class="tab_btn active" data-tab="intro">项目介绍</button>
+        <button type="button" class="tab_btn" data-tab="cheatsheet">功能速查</button>
+        <button type="button" class="tab_btn" data-tab="customize">个性化定制</button>
+        <button type="button" class="tab_btn" data-tab="troubleshoot">故障排查</button>
+      </div>
+      <div class="sidebar_note">
+        <p>纯 HTML + 外部 CSS，零外部依赖，离线可用</p>
+      </div>
+    </aside>
+
+    <main class="content_area">
+      <div class="hero_banner">
+        <h1>快速上手指南</h1>
+        <p>让两个 AI 一个出主意一个写代码，配合门禁和审查，安全高效地完成开发任务</p>
+      </div>
+
+      <div class="tab_panel content_panel active" id="panel-intro">
+<h2>这是什么？</h2>
+        <p>想象一家餐厅：<b>主厨</b>尝味道、定菜单、检查出品质量，但不下厨；<b>副厨</b>按食谱炒菜，手脚快、出品稳定。这个项目就是让两个 AI 扮演这两个角色：</p>
+        <div class="card_grid two_cols">
+          <article class="info_card accent_warm">
+            <h3>Claude Code（主厨）</h3>
+            <p>理解需求、制定计划、搜索资料、审查代码质量</p>
+          </article>
+          <article class="info_card accent_cool">
+            <h3>Codex / GPT-5.4（副厨）</h3>
+            <p>根据指令写代码、做重构、修 bug</p>
+          </article>
+        </div>
+        <p>两者通过一套<b>协作规范</b>配合工作——Claude Code 决定做什么、怎么做，Codex 负责实际写代码。整个过程中，<b>门禁系统</b>确保不跳步，<b>审查机制</b>确保不出错。</p>
+        <p>简单说：这是一个<b>多 AI 协作开发框架模板</b>，你把它复制到自己的项目里，Claude Code 和 Codex 就会按照既定规则协同工作。</p>
+
+        <h2>为什么需要它？</h2>
+        <table>
+          <tr><th>痛点</th><th>具体表现</th></tr>
+          <tr><td><b>理解偏差</b></td><td>你说"优化性能"，AI 把所有函数重写了一遍，但其实只需要改一个索引</td></tr>
+          <tr><td><b>没有安全网</b></td><td>AI 一把梭改了 20 个文件，git diff 500 行，你不知道它改了什么</td></tr>
+          <tr><td><b>跳过讨论</b></td><td>你刚说完需求，AI 已经开始写代码了，方向对不对不知道</td></tr>
+          <tr><td><b>质量失控</b></td><td>AI 写的代码能跑，但没有测试、没有类型标注、不符合项目风格</td></tr>
+          <tr><td><b>不可复现</b></td><td>上次 AI 帮你修了一个 bug，但没记录原因，下次遇到类似问题又从头来</td></tr>
+        </table>
+
+        <h2>它怎么工作？（30 秒版）</h2>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>门禁检查</b>：Claude Code 先复述你的需求，列出歧义点，<b>等你确认后才动手</b></div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>场景路由</b>：根据任务类型（debug/调研/大重构/简单改动），自动匹配对应工作流</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>规划拆分</b>：复杂任务拆成小步骤，每步标注谁来做（CC 还是 Codex）</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">4</div><div class="label"><b>Codex 执行</b>：Codex 按计划写代码，每次改动不超过 200 行</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">5</div><div class="label"><b>两轮审查</b>：Claude Code 先自查，Codex 再深度审查，通过后才提交</div></div>
+
+        <h2>快速上手</h2>
+        <h3>前置条件</h3>
+        <table>
+          <tr><th>条件</th><th>说明</th></tr>
+          <tr><td>Claude Code</td><td>Anthropic 的 CLI 工具，已安装并可用</td></tr>
+          <tr><td>Codex</td><td>OpenAI Codex CLI 或 MCP 插件（二选一）</td></tr>
+          <tr><td>Git</td><td>项目必须是一个 Git 仓库</td></tr>
+          <tr><td>Python 3.10+</td><td>Hook 脚本和扫描工具的运行环境</td></tr>
+        </table>
+
+        <h3>5 分钟体验</h3>
+        <div class="info_card accent_warm">
+          <p><code>git clone &lt;repo-url&gt; my-project &amp;&amp; cd my-project</code><br><code>rm -rf image-merger/</code> <small># 删除演示应用（可选）</small><br><br><code>claude</code> <small># 启动 Claude Code，自动读取 CLAUDE.md 并启动门禁流程</small><br><br>你说：<code>帮我给项目加一个用户登录功能</code><br>AI 会：复述需求 → 列出歧义 → 等你确认 → 制定计划 → 调 Codex 写代码</p>
+        </div>
+
+        <h3>项目结构速览</h3>
+        <table>
+          <tr><th>路径</th><th>分类</th><th>一句话用途</th></tr>
+          <tr><td><code>CLAUDE.md</code></td><td><span class="badge badge_cool">入口</span></td><td>门禁规则 + 场景路由表（CC 读取）</td></tr>
+          <tr><td><code>AGENTS.md</code></td><td><span class="badge badge_cool">入口</span></td><td>Codex 侧约束（Codex 读取）</td></tr>
+          <tr><td><code>.claude/workflows/</code></td><td><span class="badge badge_cool">核心</span></td><td>8 种场景工作流（按需加载）</td></tr>
+          <tr><td><code>.claude/rules/</code></td><td><span class="badge badge_cool">核心</span></td><td>按需加载的编码/安全/测试规范</td></tr>
+          <tr><td><code>.claude/skills/</code></td><td><span class="badge badge_purple">能力</span></td><td>27 个可复用 AI 技能</td></tr>
+          <tr><td><code>.claude/scripts/</code></td><td><span class="badge badge_gold">安全</span></td><td>Hook 脚本（自动触发）</td></tr>
+          <tr><td><code>.claude/memory/</code></td><td><span class="badge badge_purple">记忆</span></td><td>跨会话记忆（经验/教训/约束）</td></tr>
+          <tr><td><code>image-merger/</code></td><td><span class="badge badge_warm">演示</span></td><td>Python 图片合并应用（可替换为你自己的项目）</td></tr>
+          <tr>
+            <td>
+              <div class="command_block">
+                <div class="command_head">
+                  <span></span>
+                  <button type="button" class="copy_button" data_copy_text="docs/scan/">复制</button>
+                </div>
+                <pre>docs/scan/</pre>
+              </div>
+            </td>
+            <td><span class="badge badge_purple">分析</span></td>
+            <td>代码库扫描报告</td>
+          </tr>
+          <tr><td><code>tasks/lessons.md</code></td><td><span class="badge badge_gold">经验</span></td><td>历史教训（AI 每次启动自动读取）</td></tr>
+        </table>
+
+        <h2>核心概念（深入版）</h2>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>门禁系统</b> — 手术前必须消毒，不是限制你，是保护病人
+        </div>
+        <div class="collapsible_content">
+          <p>每次收到新任务，Claude Code 强制执行检查序列——复述需求、列出歧义、判断复杂度、搜索历史记忆。<b>用户说"确认"之前，不允许写任何代码。</b></p>
+          <p><small>具体体现：<code>CLAUDE.md</code> 开头的"⛔ 强制门禁"节</small></p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>场景路由</b> — 医院分诊台，不是所有病人都走同一个科室
+        </div>
+        <div class="collapsible_content">
+          <p>8 种场景按优先级匹配：Debug > Code Review > C++ 编译 > C++ 测试 > 研究调研 > 大型代码库 > 并行开发 > 复杂开发 > 简单开发。<b>匹配即停止</b>，不走多余流程。</p>
+          <p><small>具体体现：<code>CLAUDE.md</code> 的场景路由表</small></p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Context 按需加载</b> — 自助餐模式，点什么上什么，桌子就那么大
+        </div>
+        <div class="collapsible_content">
+          <p><code>.claude/rules/</code> 下的规则文件有 <code>paths</code> frontmatter，声明它适用于哪些文件类型。Claude Code 根据当前操作只加载匹配的规则，不全量注入。</p>
+          <p><small>具体体现：<code>security.md</code> 的 frontmatter 写 <code>paths: ["**/*.py"]</code></small></p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>两轮独立审查</b> — 两个老师独立打分，不是一个老师看两遍
+        </div>
+        <div class="collapsible_content">
+          <p>diff > 100 行或涉及核心逻辑时，必须执行两轮审查。第一轮 Claude Code 检查逻辑正确性、安全性；第二轮 Codex 检查边界条件、兼容性。有分歧就修复后重来。</p>
+          <p><small>具体体现：<code>claude-workflow-complex.md</code> Phase 5</small></p>
+        </div>
+
+        <h2>关键设计决策</h2>
+        <table>
+          <tr><th>决策</th><th>选择了什么</th><th>为什么这样选</th><th>放弃了什么</th></tr>
+          <tr><td>AI 角色分工</td><td>CC 规划 + Codex 写代码</td><td>CC 搜索规划强，Codex 代码生成稳定</td><td>让 CC 写代码 / 让 Codex 规划</td></tr>
+          <tr><td>门禁强制执行</td><td>CLAUDE.md 硬约束，违反重启</td><td>AI 容易"兴奋"直接写代码</td><td>柔性提醒（AI 会忽略）</td></tr>
+          <tr><td>diff ≤ 200 行</td><td>单次提交硬限制</td><td>大 diff 无法有效审查</td><td>允许大 diff（审查流于形式）</td></tr>
+          <tr><td>规则按需加载</td><td>paths frontmatter 过滤</td><td>全量注入占满 Context 窗口</td><td>全量注入（简单但浪费）</td></tr>
+          <tr><td>Hook 脚本拦截</td><td>PreToolUse 钩子</td><td>最后防线，防止危险操作</td><td>纯靠 Prompt 约束（可能被忽略）</td></tr>
+          <tr><td>演示应用分离</td><td>image-merger 独立目录</td><td>模板和业务代码隔离</td><td>演示代码混在框架里（难剥离）</td></tr>
+        </table>
+
+        <h2>常见场景指南</h2>
+        <table>
+          <tr><th>我想做...</th><th>操作路径</th></tr>
+          <tr><td>修改一个已有的 Python 函数</td><td>门禁 → 判断复杂度 → &lt;20 行 CC 直接做 / ≥20 行 Codex → 审查 → 提交</td></tr>
+          <tr><td>重构一个大模块（10+ 文件）</td><td>触发"大型代码库"路由 → 扫描 → 拆分任务 → 可并行用 parallel 工作流</td></tr>
+          <tr><td>调试一个 bug</td><td>触发 Debug 路由（最高优先级）→ 最小复现 → 定位根因 → 先写回归测试再修复</td></tr>
+          <tr><td>了解项目里有什么</td><td>查看 <code>docs/CODEBASE_MAP.md</code> 或运行 largebase-scan</td></tr>
+          <tr><td>把框架用在自己项目上</td><td>Clone → 删除 image-merger/ → 放入你的代码 → 改 <code>.claude/rules/project.md</code> → 运行 Cartographer</td></tr>
+        </table>
+      </div>
+      <div class="tab_panel content_panel" id="panel-cheatsheet">
+<h2>功能速查表</h2>
+<div class="info_card accent_warm">复制提示词，粘贴到 Claude Code 对话框，回车执行。每条附一句话说明。<br><span class="badge badge_cool">CC</span> = Claude Code 直接执行 &nbsp; <span class="badge badge_cool">CX</span> = 调用 Codex 执行 &nbsp; <span class="badge badge_purple">扫描</span> = 结构化分析</div>
+
+<h3>项目初始化</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="初始化项目">复制</button>
+  </div>
+  <pre>初始化项目</pre>
+</div></td><td>创建必要目录结构，检查 Git 状态，第一次使用必做</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="查看项目结构">复制</button>
+  </div>
+  <pre>查看项目结构</pre>
+</div></td><td>读取 CLAUDE.md 和 CODEBASE_MAP.md，输出当前项目模块概况</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="生成项目结构地图">复制</button>
+  </div>
+  <pre>生成项目结构地图</pre>
+</div></td><td><span class="badge badge_purple">扫描</span> 运行 Cartographer，生成 docs/CODEBASE_MAP.md</td></tr>
+</table>
+
+<h3>日常开发</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="给 [模块] 加 [功能]">复制</button>
+  </div>
+  <pre>给 [模块] 加 [功能]</pre>
+</div></td><td>标准入口：门禁讨论 → 复杂度判断 → 自动路由到对应工作流</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="直接改 [文件] 的 [函数]，[描述改动]">复制</button>
+  </div>
+  <pre>直接改 [文件] 的 [函数]，[描述改动]</pre>
+</div></td><td>跳过复杂流程，进入简单模式（≤3 文件、≤200 行）</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="复杂需求：[描述]">复制</button>
+  </div>
+  <pre>复杂需求：[描述]</pre>
+</div></td><td>强制进入六阶段流程：扫描 → Plan → 审查 → Steps → 开发 → Review</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="并行开发 [任务A] 和 [任务B]">复制</button>
+  </div>
+  <pre>并行开发 [任务A] 和 [任务B]</pre>
+</div></td><td>创建独立 worktree，两个任务同时推进互不干扰</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="用 worktree 隔离开发 [功能]">复制</button>
+  </div>
+  <pre>用 worktree 隔离开发 [功能]</pre>
+</div></td><td>在独立 Git worktree 中开发，改动完全不影响主分支</td></tr>
+</table>
+
+<h3>调试</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="bug：[错误现象]">复制</button>
+  </div>
+  <pre>bug：[错误现象]</pre>
+</div></td><td><span class="badge badge_cool">CC</span> Debug 工作流：最小复现 → 定位根因 → 写回归测试 → 修复</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="测试失败：[粘贴错误]">复制</button>
+  </div>
+  <pre>测试失败：[粘贴错误]</pre>
+</div></td><td><span class="badge badge_cool">CC</span> 自动分析失败用例并修复</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="P0 bug：[描述]">复制</button>
+  </div>
+  <pre>P0 bug：[描述]</pre>
+</div></td><td><span class="badge badge_cool">CX</span> Debug Full 模式，跨模块分析 + Codex 全局扫描</td></tr>
+</table>
+
+<h3>代码扫描与分析</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="扫描代码库，再 [后续任务]">复制</button>
+  </div>
+  <pre>扫描代码库，再 [后续任务]</pre>
+</div></td><td><span class="badge badge_purple">扫描</span> 结构化扫描，生成扫描包和 scan.db</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="全量扫描 scope [src/ docs/]">复制</button>
+  </div>
+  <pre>全量扫描 scope [src/ docs/]</pre>
+</div></td><td><span class="badge badge_purple">扫描</span> M4 全量扫描，输出完整分析产物</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="查 [关键词] 的影响范围">复制</button>
+  </div>
+  <pre>查 [关键词] 的影响范围</pre>
+</div></td><td><span class="badge badge_purple">扫描</span> 查询 scan.db：影响分析、调用链、高风险点</td></tr>
+</table>
+
+<h3>代码审查</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="review 当前改动">复制</button>
+  </div>
+  <pre>review 当前改动</pre>
+</div></td><td><span class="badge badge_cool">CC</span> 审查当前 diff：逻辑正确性、安全性、向后兼容性</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="Codex 深度 review">复制</button>
+  </div>
+  <pre>Codex 深度 review</pre>
+</div></td><td><span class="badge badge_cool">CX</span> 独立审查，专注边界条件、长尾情况、兼容性</td></tr>
+</table>
+
+<h3>Git 提交</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="/commit">复制</button>
+  </div>
+  <pre>/commit</pre>
+</div></td><td>自动生成 Conventional Commits 格式的 commit message 并提交</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="/git status">复制</button>
+  </div>
+  <pre>/git status</pre>
+</div></td><td>查看未提交改动、当前分支、worktree 信息</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="/git save">复制</button>
+  </div>
+  <pre>/git save</pre>
+</div></td><td>创建 checkpoint 提交保存当前进度（不推送）</td></tr>
+</table>
+
+<h3>文档生成</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="解释 [模块/文件] 怎么工作的">复制</button>
+  </div>
+  <pre>解释 [模块/文件] 怎么工作的</pre>
+</div></td><td>架构图 + 流程图 + 概念解释文档</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="写 [模块] 设计文档">复制</button>
+  </div>
+  <pre>写 [模块] 设计文档</pre>
+</div></td><td>方案对比 + 架构设计 + 接口定义文档</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="总结最近代码变更">复制</button>
+  </div>
+  <pre>总结最近代码变更</pre>
+</div></td><td>变更点 + 影响传播图 + 验证清单</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="更新 CHANGELOG">复制</button>
+  </div>
+  <pre>更新 CHANGELOG</pre>
+</div></td><td>基于近期 git 提交自动生成或更新</td></tr>
+</table>
+
+<h3>技术调研</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="调研 [技术/库/方案]">复制</button>
+  </div>
+  <pre>调研 [技术/库/方案]</pre>
+</div></td><td>联网搜索 + 文档分析 + 对比结论</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="对比 [方案A] 和 [方案B]">复制</button>
+  </div>
+  <pre>对比 [方案A] 和 [方案B]</pre>
+</div></td><td>含四象限图和雷达图的结构化对比文档</td></tr>
+</table>
+
+<h3>C++ 专用</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="编译项目">复制</button>
+  </div>
+  <pre>编译项目</pre>
+</div></td><td>检测 CMake/MSBuild，编译并输出报告</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="运行 gtest">复制</button>
+  </div>
+  <pre>运行 gtest</pre>
+</div></td><td>编译 + 运行 Google Test，输出测试报告</td></tr>
+</table>
+      </div>
+      <div class="tab_panel content_panel" id="panel-customize">
+<h2>个性化工作流定制</h2>
+<div class="info_card accent_warm">所有提示词直接发给 Claude Code 即可自动修改配置。<br><span class="badge badge_cool">&#128269; 搜索式</span> = 让 AI 搜索后给建议，适合不确定怎么选的场景<br><span class="badge badge_cool">&#128172; 直接式</span> = 明确需求直接落地</div>
+
+<h3><span class="badge badge_cool">&#128269; 搜索式</span> 让 AI 搜索后给你建议，再决定要不要改</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 [Python/C++/Go/TS] 2024 主流代码风格规范，对比几种方案，给我推荐一个适合中小型团队的">复制</button>
+  </div>
+  <pre>搜索 [Python/C++/Go/TS] 2024 主流代码风格规范，对比几种方案，给我推荐一个适合中小型团队的</pre>
+</div></td><td>不知道选哪种风格时，让 AI 调研后给选项</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索当前主流 git commit 规范，对比 Conventional Commits、Gitmoji、Angular 的优劣">复制</button>
+  </div>
+  <pre>搜索当前主流 git commit 规范，对比 Conventional Commits、Gitmoji、Angular 的优劣</pre>
+</div></td><td>让 AI 搜索 commit 规范选项，帮你在落地前做决策</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 [你的技术栈] 项目常见的 CI/CD 方案，对比 GitHub Actions、GitLab CI、Jenkins">复制</button>
+  </div>
+  <pre>搜索 [你的技术栈] 项目常见的 CI/CD 方案，对比 GitHub Actions、GitLab CI、Jenkins</pre>
+</div></td><td>搜索后根据你的项目情况给具体建议</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 C++ 内存安全检查工具的最新实践，对比 ASAN、Valgrind、Sanitizers">复制</button>
+  </div>
+  <pre>搜索 C++ 内存安全检查工具的最新实践，对比 ASAN、Valgrind、Sanitizers</pre>
+</div></td><td>给出可直接落地的工具组合</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 [你用的框架] 的最新性能优化实践，扫描我的代码库，指出可以优化的地方">复制</button>
+  </div>
+  <pre>搜索 [你用的框架] 的最新性能优化实践，扫描我的代码库，指出可以优化的地方</pre>
+</div></td><td>联网搜索 + 结合你的代码做定向推荐</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 Python/C++ 单元测试覆盖率的行业标准，结合我的项目告诉我差在哪">复制</button>
+  </div>
+  <pre>搜索 Python/C++ 单元测试覆盖率的行业标准，结合我的项目告诉我差在哪</pre>
+</div></td><td>搜索规范后给出量化的改进方向</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 [依赖库名] 是否有安全漏洞或更新，给出升级建议">复制</button>
+  </div>
+  <pre>搜索 [依赖库名] 是否有安全漏洞或更新，给出升级建议</pre>
+</div></td><td>实时查询依赖安全状态</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="搜索 [语言] 静态分析工具现状，推荐适合集成到 Hook 里的">复制</button>
+  </div>
+  <pre>搜索 [语言] 静态分析工具现状，推荐适合集成到 Hook 里的</pre>
+</div></td><td>给出可以直接挂到 PreToolUse Hook 的方案</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> Git 与提交流程</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="改成手动 git 提交：每次提交前展示 diff，等我确认并手动输入 commit message，不自动提交">复制</button>
+  </div>
+  <pre>改成手动 git 提交：每次提交前展示 diff，等我确认并手动输入 commit message，不自动提交</pre>
+</div></td><td>关闭自动 checkpoint，提交流程完全由你掌控</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="commit message 统一加前缀 [feat/fix/chore]，不符合格式的提交自动阻断">复制</button>
+  </div>
+  <pre>commit message 统一加前缀 [feat/fix/chore]，不符合格式的提交自动阻断</pre>
+</div></td><td>强制 commit 规范，不合格直接拦截</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="push 前自动跑测试，测试失败则阻断">复制</button>
+  </div>
+  <pre>push 前自动跑测试，测试失败则阻断</pre>
+</div></td><td>Hook 里加测试门禁，防止破坏性改动推上去</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="每次 review 通过后自动打 tag，格式为 v[日期]-[模块名]">复制</button>
+  </div>
+  <pre>每次 review 通过后自动打 tag，格式为 v[日期]-[模块名]</pre>
+</div></td><td>给通过审查的改动自动打版本标签</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> 代码规范</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="把代码风格规范改成：[粘贴你的团队规范]">复制</button>
+  </div>
+  <pre>把代码风格规范改成：[粘贴你的团队规范]</pre>
+</div></td><td>替换 .claude/rules/code-style.md</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：已有代码保持原风格不动，新规范只对新增文件和新增函数生效">复制</button>
+  </div>
+  <pre>加规则：已有代码保持原风格不动，新规范只对新增文件和新增函数生效</pre>
+</div></td><td>防止 AI 把整个项目翻新，老代码零打扰</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：函数超过 [N] 行必须拆分，变量名不允许单字母（循环变量除外）">复制</button>
+  </div>
+  <pre>加规则：函数超过 [N] 行必须拆分，变量名不允许单字母（循环变量除外）</pre>
+</div></td><td>在代码风格规则里加硬性约束</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="所有新增代码必须有类型标注，不允许出现 any">复制</button>
+  </div>
+  <pre>所有新增代码必须有类型标注，不允许出现 any</pre>
+</div></td><td>在风格规则里加类型安全约束</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="注释必须用英文，函数注释必须包含参数说明和返回值说明">复制</button>
+  </div>
+  <pre>注释必须用英文，函数注释必须包含参数说明和返回值说明</pre>
+</div></td><td>统一注释规范</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> 测试规范</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：每个新函数必须附带至少一个单元测试，否则 review 不通过">复制</button>
+  </div>
+  <pre>加规则：每个新函数必须附带至少一个单元测试，否则 review 不通过</pre>
+</div></td><td>把写测试变成硬性门禁</td></tr>
+<tr><td><code>测试文件命名规范改成 [test_*.py / *.test.ts / *_test.go]</code></td><td>统一测试文件命名，方便 CI 自动发现</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：涉及数据库/网络的测试必须用 mock，不允许真实请求">复制</button>
+  </div>
+  <pre>加规则：涉及数据库/网络的测试必须用 mock，不允许真实请求</pre>
+</div></td><td>防止测试依赖外部环境</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> Debug 与编译</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="Debug 流程改成 C++ 方式：编译优先、ASAN/UBSAN 复现、gdb 回溯，不用 print 调试">复制</button>
+  </div>
+  <pre>Debug 流程改成 C++ 方式：编译优先、ASAN/UBSAN 复现、gdb 回溯，不用 print 调试</pre>
+</div></td><td>让 Debug 工作流用 C++ 正确姿势调试</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="编译失败时自动提取错误摘要，只展示关键报错，过滤掉无关 warning">复制</button>
+  </div>
+  <pre>编译失败时自动提取错误摘要，只展示关键报错，过滤掉无关 warning</pre>
+</div></td><td>大型 C++ 项目编译错误太多时聚焦真正的问题</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：编译 warning 视为 error，CI 不通过">复制</button>
+  </div>
+  <pre>加规则：编译 warning 视为 error，CI 不通过</pre>
+</div></td><td>强制零 warning 标准</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> Codex 调用方式与时机</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="切换到 Codex-First 模式：所有代码改动都交给 Codex，CC 只做需求讨论、计划拆解、审查验收">复制</button>
+  </div>
+  <pre>切换到 Codex-First 模式：所有代码改动都交给 Codex，CC 只做需求讨论、计划拆解、审查验收</pre>
+</div></td><td>CC 不写任何代码，只做大脑</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="把 Codex 调用路径改为默认走 MCP">复制</button>
+  </div>
+  <pre>把 Codex 调用路径改为默认走 MCP</pre>
+</div></td><td>日常开发用 MCP 路径，延迟低</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：diff 超过 [N] 行时自动调用 Codex MCP 做第二轮 review">复制</button>
+  </div>
+  <pre>加规则：diff 超过 [N] 行时自动调用 Codex MCP 做第二轮 review</pre>
+</div></td><td>大改动自动升级为双轮审查</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：涉及 [安全/算法/核心模块] 的改动，强制走 Codex Plugin 审查">复制</button>
+  </div>
+  <pre>加规则：涉及 [安全/算法/核心模块] 的改动，强制走 Codex Plugin 审查</pre>
+</div></td><td>对高风险模块强制用独立沙箱审查</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="Debug 时加一步：CC 定位根因后，自动调用 Codex 头脑风暴更多可能的原因">复制</button>
+  </div>
+  <pre>Debug 时加一步：CC 定位根因后，自动调用 Codex 头脑风暴更多可能的原因</pre>
+</div></td><td>防止 Debug 思路局限</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="算法设计时加一步：CC 给出方案后，自动调用 Codex 提供至少 2 个替代方向">复制</button>
+  </div>
+  <pre>算法设计时加一步：CC 给出方案后，自动调用 Codex 提供至少 2 个替代方向</pre>
+</div></td><td>避免第一个想到的方案就直接上</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="重构任务开始前，自动调用 Codex MCP 扫描目标模块，输出依赖关系和潜在断点">复制</button>
+  </div>
+  <pre>重构任务开始前，自动调用 Codex MCP 扫描目标模块，输出依赖关系和潜在断点</pre>
+</div></td><td>让 Codex 先做影响分析</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="把单次 diff 上限从 200 行改成 [N] 行">复制</button>
+  </div>
+  <pre>把单次 diff 上限从 200 行改成 [N] 行</pre>
+</div></td><td>调整任务拆分粒度</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="审查策略改为分级：≤50 行 CC 自查，51-200 行一轮，&gt;200 行或核心逻辑两轮，安全模块三轮">复制</button>
+  </div>
+  <pre>审查策略改为分级：≤50 行 CC 自查，51-200 行一轮，>200 行或核心逻辑两轮，安全模块三轮</pre>
+</div></td><td>按改动量和风险等级匹配审查力度</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> 自动文档</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：引入新函数/类/算法、或改动超过 5 个文件、或 diff 超过 100 行时，自动在 docs/changes/ 生成变更说明">复制</button>
+  </div>
+  <pre>加规则：引入新函数/类/算法、或改动超过 5 个文件、或 diff 超过 100 行时，自动在 docs/changes/ 生成变更说明</pre>
+</div></td><td>大改动自动留档</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：新增公开 API 必须同步更新 docs/api/ 下的对应文档">复制</button>
+  </div>
+  <pre>加规则：新增公开 API 必须同步更新 docs/api/ 下的对应文档</pre>
+</div></td><td>API 文档和代码保持同步</td></tr>
+<tr><td><code>每次 Codex 执行完后，自动生成一份"做了什么"的简报写入 .claude/memory/</code></td><td>把每次 AI 操作记录下来，方便复盘和审计</td></tr>
+</table>
+
+<h3><span class="badge badge_cool">&#128172; 直接式</span> 性能与安全</h3>
+<table>
+<tr><th>提示词</th><th>说明</th></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：新增 SQL 查询必须走 review，不允许拼接字符串构造 SQL">复制</button>
+  </div>
+  <pre>加规则：新增 SQL 查询必须走 review，不允许拼接字符串构造 SQL</pre>
+</div></td><td>安全规则里加 SQL 注入防护门禁</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：secrets 和 API key 不允许出现在代码文件里，检测到则阻断提交">复制</button>
+  </div>
+  <pre>加规则：secrets 和 API key 不允许出现在代码文件里，检测到则阻断提交</pre>
+</div></td><td>Hook 里加 secrets 泄漏检测</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="加规则：新增网络请求必须有超时设置，不允许无限等待">复制</button>
+  </div>
+  <pre>加规则：新增网络请求必须有超时设置，不允许无限等待</pre>
+</div></td><td>防止引入没有超时保护的网络调用</td></tr>
+<tr><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="删掉路由表里 C++ 和调研相关的场景，我用不到">复制</button>
+  </div>
+  <pre>删掉路由表里 C++ 和调研相关的场景，我用不到</pre>
+</div></td><td>精简路由判断，加快每次任务的场景匹配</td></tr>
+</table>
+
+<div class="section_divider"></div>
+
+<h2>文件速查：想改什么找哪里</h2>
+<table>
+<tr><th>想改什么</th><th>文件</th></tr>
+<tr><td>任务门禁、场景路由</td><td><code>CLAUDE.md</code></td></tr>
+<tr><td>Codex 参数、diff 限制、审查规则</td><td><code>.claude/workflows/claude-workflow-constants.md</code></td></tr>
+<tr><td>复杂开发六阶段流程</td><td><code>.claude/workflows/claude-workflow-complex.md</code></td></tr>
+<tr><td>并行开发流程</td><td><code>.claude/workflows/claude-workflow-parallel.md</code></td></tr>
+<tr><td>Debug 流程</td><td><code>.claude/workflows/claude-workflow-debug.md</code></td></tr>
+<tr><td>技术调研流程</td><td><code>.claude/workflows/claude-workflow-research.md</code></td></tr>
+<tr><td>代码审查流程</td><td><code>.claude/workflows/claude-workflow-review.md</code></td></tr>
+<tr><td>Python 代码风格</td><td><code>.claude/rules/code-style.md</code></td></tr>
+<tr><td>C++ 代码风格</td><td><code>.claude/rules/code-style-cpp.md</code></td></tr>
+<tr><td>Python/C++ 安全规范</td><td><code>.claude/rules/security.md</code> / <code>security-cpp.md</code></td></tr>
+<tr><td>Python/C++ 测试规范</td><td><code>.claude/rules/testing.md</code> / <code>testing-cpp.md</code></td></tr>
+<tr><td>Hook 脚本配置</td><td><code>.claude/settings.local.json</code></td></tr>
+<tr><td>自动提交脚本</td><td><code>.claude/scripts/auto_checkpoint_commit.py</code></td></tr>
+<tr><td>Git 安全拦截脚本</td><td><code>.claude/scripts/git_safety_check.py</code></td></tr>
+<tr><td>代码库扫描工具</td><td><code>.claude/skills/largebase-structured-scan/</code></td></tr>
+<tr><td>文档生成工具</td><td><code>.claude/skills/doc-gen/</code></td></tr>
+<tr><td>跨会话记忆</td><td><code>.claude/memory/</code></td></tr>
+<tr><td>Codex 侧约束</td><td><code>AGENTS.md</code></td></tr>
+<tr><td>Codex 全局配置</td><td><code>~/.codex/config.toml</code></td></tr>
+</table>
+      </div>
+      <div class="tab_panel content_panel" id="panel-troubleshoot">
+<h2>Codex Windows 兼容说明</h2>
+<div class="info_card accent_cool">以下问题已通过工程配置自动预防，无需手动处理。Codex 启动时会自动检测环境并使用正确的路径。</div>
+
+<h3>自动预防机制</h3>
+<table>
+<tr><th>问题</th><th>预防方式</th><th>涉及文件</th></tr>
+<tr><td>Bootstrap <code>ResourceUnavailable</code></td><td>AGENTS.md 用 <code>node</code> + <code>os.homedir()</code> 动态路径</td><td><code>AGENTS.md</code>（项目根目录）</td></tr>
+<tr><td>Codex 启动卡 1-2 分钟</td><td>不再触发失败→自愈循环</td><td><code>~/.codex/AGENTS.md</code></td></tr>
+<tr><td><code>python</code> 不可用</td><td>Shell 优先级：<code>node > powershell > python</code></td><td><code>.codex/skills/windows-shell-fallback/SKILL.md</code></td></tr>
+<tr><td>GBK 乱码</td><td>强制 UTF-8 编码，node 替代方案</td><td>同上</td></tr>
+<tr><td><code>rg</code> 不可用</td><td><code>Get-ChildItem</code> + <code>Select-String</code> 替代</td><td>同上</td></tr>
+</table>
+
+<h3>Codex 配置文件位置</h3>
+<table>
+<tr><th>配置</th><th>位置</th><th>说明</th></tr>
+<tr><td>项目级指令</td><td><code>AGENTS.md</code>（项目根目录）</td><td>Codex 在本项目的行为约束 + Windows 预防规则</td></tr>
+<tr><td>全局指令</td><td><code>~/.codex/AGENTS.md</code></td><td>Codex 全局启动约束</td></tr>
+<tr><td>全局配置</td><td><code>~/.codex/config.toml</code></td><td>模型、API、sandbox 设置</td></tr>
+<tr><td>Superpowers</td><td><code>~/.codex/superpowers/</code></td><td>技能包（brainstorm/TDD/debug 等）</td></tr>
+<tr><td>项目 Shell 预防</td><td><code>.codex/skills/windows-shell-fallback/</code></td><td>本项目的 Windows 预防规则</td></tr>
+<tr><td>全局 Shell 回退</td><td><code>~/.codex/skills/handling-windows-shell-failures/</code></td><td>全局 Windows 回退策略</td></tr>
+</table>
+
+<h3>Codex 与 Claude Code 能力对比</h3>
+<table>
+<tr><th>能力</th><th>Claude Code</th><th>Codex</th></tr>
+<tr><td>规划 / 搜索 / 审查</td><td>&#10004; 强</td><td>&#10008; 弱</td></tr>
+<tr><td>代码生成</td><td>&#10008; 弱</td><td>&#10004; 强</td></tr>
+<tr><td>大文件读取</td><td>&#10004; 强</td><td>&#10004; 强</td></tr>
+<tr><td>Shell 执行</td><td>&#10004; 强</td><td>&#10004; 强</td></tr>
+<tr><td>子 Agent</td><td>&#10004; 支持</td><td>&#10008; 有限</td></tr>
+<tr><td>MCP 协议</td><td>&#10004; 支持</td><td>&#10008; 不支持</td></tr>
+</table>
+
+<h3>Shell 命令优先级（Windows）</h3>
+<table>
+<tr><th>优先级</th><th>工具</th><th>适用场景</th><th>何时跳过</th></tr>
+<tr><td><span class="badge badge_cool">1</span></td><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="node -e">复制</button>
+  </div>
+  <pre>node -e</pre>
+</div></td><td>文件读取、JSON 解析、路径操作</td><td>—</td></tr>
+<tr><td><span class="badge badge_cool">2</span></td><td>PowerShell 原生</td><td>目录遍历、文件搜索</td><td>需跨平台时</td></tr>
+<tr><td><span class="badge badge_gold">3</span></td><td><div class="command_block">
+  <div class="command_head">
+    <span></span>
+    <button type="button" class="copy_button" data_copy_text="python">复制</button>
+  </div>
+  <pre>python</pre>
+</div></td><td>仅当需要 Python 生态</td><td>PATH 中无 python</td></tr>
+</table>
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+document.querySelectorAll('.tab_btn').forEach(function(tab){
+tab.addEventListener('click',function(){
+document.querySelectorAll('.tab_btn').forEach(function(t){t.classList.remove('active')});
+document.querySelectorAll('.tab_panel').forEach(function(p){p.classList.remove('active')});
+this.classList.add('active');
+document.getElementById('panel-'+this.dataset.tab).classList.add('active');
+window.scrollTo(0,0);
+});
+});
+document.addEventListener('click',function(e){
+var btn=e.target.closest('.copy_button');
+if(!btn||!btn.dataset.copy_text)return;
+navigator.clipboard.writeText(btn.dataset.copy_text).then(function(){
+btn.textContent='已复制';btn.classList.add('copied');
+setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied');},1500);
+});
+});
+function toggleCollapsible(el){
+el.classList.toggle('open');
+var content=el.nextElementSibling;
+content.classList.toggle('show');
+}
+</script>
+</body>
+</html>

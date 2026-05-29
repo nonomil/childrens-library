@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Workspace Launchpad - Superpowers</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body data_page="superpowers">
+  <div class="site_shell">
+    <aside class="sidebar_nav">
+      <a class="brand_link" href="./index.html">
+        <span class="brand_mark">AW</span>
+        <span class="brand_text">
+          <strong>AI Workspace</strong>
+          <small>Launchpad</small>
+        </span>
+      </a>
+
+      <nav class="nav_group">
+        <a class="nav_link" data_nav_page="install" href="./index.html">Install</a>
+        <a class="nav_link" data_nav_page="activation" href="./activation.html">Activation</a>
+        <a class="nav_link" data_nav_page="superpowers" href="./superpowers.html">Superpowers</a>
+        <a class="nav_link" data_nav_page="skills" href="./skills.html">Skills</a>
+      </nav>
+
+      <div class="sidebar_note">
+        <p class="sidebar_label">Source</p>
+        <strong>Superpowers guide</strong>
+        <p>这一页主要参考本地的 superpowers 完整上手攻略，并结合当前项目的 Codex 工作流整理。</p>
+      </div>
+    </aside>
+
+    <main class="page_main">
+      <header class="hero_banner">
+        <p class="eyebrow">Superpowers</p>
+        <h1>What is Superpowers</h1>
+        <p class="hero_intro">
+          Superpowers 不是一个普通 skill，也不应该用“安装单个 skill”的思路来理解。
+          它更像一套给 AI 编程工具用的工程化开发框架：把需求澄清、计划拆解、测试驱动开发、
+          子智能体执行、代码审查和完成前验证串成一套完整工作流。
+        </p>
+      </header>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Overview</p>
+          <h2>Why it matters</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Why it matters</h3>
+            <p>
+              很多人把 AI 当成“直接写代码”的工具，但真正复杂的项目并不是少了几行代码，而是少了结构化流程。
+              Superpowers 的价值就在这里：它让 AI 先想清楚，再动手；先写计划，再执行；先验证，再宣称完成。
+            </p>
+          </article>
+
+          <article class="info_card">
+            <h3>What problems it solves</h3>
+            <p>
+              它主要解决三类问题：需求不清就开始写、上下文越来越乱导致质量下降、任务完成了却缺少验证。
+              对复杂功能、多人协作和持续迭代项目尤其有帮助。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Architecture</p>
+          <h2>Layered architecture</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Layered architecture</h3>
+            <p>
+              从你提供的攻略看，Superpowers 采用分层结构：用户层负责接入不同 AI 编程工具，框架层负责自动注入技能上下文，
+              执行层负责子智能体调度，输出层则把设计、代码、测试等结果统一落到 Git 管理中。
+            </p>
+          </article>
+
+          <article class="info_card">
+            <h3>Skills are the core abstraction</h3>
+            <p>
+              它的核心抽象是 skills。每个 skill 都描述一种任务场景和执行流程，所以它更像“流程模板系统”，
+              而不是简单的命令别名集合。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Execution</p>
+          <h2>Subagent-Driven Development</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card accent_cool">
+            <h3>Subagent-Driven Development</h3>
+            <p>
+              这是 Superpowers 里很关键的思路。它让每个任务尽量交给全新上下文的子智能体去做，避免长会话上下文越来越乱。
+              配合两阶段审查，能把“实现正确”和“代码质量好”分开检查。
+            </p>
+          </article>
+
+          <article class="info_card">
+            <h3>Two-phase review</h3>
+            <p>
+              第一阶段看规范是否满足，第二阶段看代码质量是否达标。这样不会因为“代码看起来挺整齐”就忽略需求缺漏，
+              也不会因为风格争论掩盖功能问题。
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Workflow</p>
+          <h2>Common workflow and core skills</h2>
+        </div>
+
+        <div class="card_grid three_cols">
+          <article class="info_card">
+            <h3>brainstorming</h3>
+            <p>先澄清需求，再形成设计方案，避免一上来就写代码。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>writing-plans</h3>
+            <p>把复杂任务拆成可以执行和验证的小步骤，适合作为开发前置阶段。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>test-driven-development</h3>
+            <p>要求先写失败测试，再写最小实现，适合功能开发和 bug 修复。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>subagent-driven-development</h3>
+            <p>把明确任务交给新的子智能体执行，并通过审查循环快速迭代。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>verification-before-completion</h3>
+            <p>在声称“完成”之前强制做 fresh verification，避免只靠感觉交付。</p>
+          </article>
+
+          <article class="info_card">
+            <h3>using-git-worktrees</h3>
+            <p>适合需要隔离工作区、并行尝试多个实现方向时使用。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Install</p>
+          <h2>Correct install routes</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card accent_warm">
+            <h3>Claude Code plugin route</h3>
+            <p>
+              如果你是在 Claude Code 里使用 Superpowers，按你给的攻略，正确路线是先加 marketplace，再安装插件。
+              这才是适合 Claude Code 的主路径，不是用 `skill-installer` 去装它。
+            </p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Claude Code</span>
+                <button type="button" class="copy_button" data_copy_text="/plugin marketplace add obra/superpowers-marketplace&#10;/plugin install superpowers@superpowers-marketplace">Copy</button>
+              </div>
+              <pre>/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace</pre>
+            </div>
+          </article>
+
+          <article class="info_card">
+            <h3>Codex local bootstrap route</h3>
+            <p>
+              如果你是在当前这套本地 Codex 环境里使用 Superpowers，这个项目保留的是 clone + bootstrap 路线，
+              更贴近当前 Windows 工作流。
+            </p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Codex Local</span>
+                <button type="button" class="copy_button" data_copy_text="node C:/Users/Administrator/.codex/superpowers/.codex/superpowers-codex bootstrap">Copy</button>
+              </div>
+              <pre>node C:/Users/Administrator/.codex/superpowers/.codex/superpowers-codex bootstrap</pre>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Reading</p>
+          <h2>Further reading</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Local article</h3>
+            <p>完整原文在本地也保留了一份，适合继续深读架构、执行模式和最佳实践。</p>
+            <a class="text_link" href="./simpread-开源 Claude Code 工程级开发插件 Superpowers 完整上手攻略.md">Open source article</a>
+          </article>
+
+          <article class="info_card">
+            <h3>GitHub</h3>
+            <p>如果你想看项目本体，直接去官方仓库看最新说明和 skill 列表。</p>
+            <a class="text_link" href="https://github.com/obra/superpowers">Open GitHub repo</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>

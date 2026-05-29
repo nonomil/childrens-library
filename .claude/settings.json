@@ -1,0 +1,166 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__codex__codex",
+      "mcp__codex__codex-reply",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git fetch*)",
+      "Bash(git switch*)",
+      "Bash(git rebase*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git push*)",
+      "Bash(git merge*)",
+      "Bash(pytest*)",
+      "Bash(python -m pytest*)"
+    ],
+    "deny": [],
+    "ask": []
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__codex__codex",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/gate_guard.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__codex__codex-reply",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/gate_guard.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/delete_safety_guard.cjs",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/git_safety_check.py",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/task_scope_guard.py",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/revision_auto_sync_hook.py",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/doc_conflict_guard.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/queue_guard.py",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/pre_merge_scope_guard.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/gate_exit_check.py",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/auto_checkpoint_commit.py",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/back_pressure.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/append_changelog_draft.py",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/scripts/run_python_hook.cjs E:/Project_LM/Label_Defect/.claude/scripts/revision_read_audit.py",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node E:/Project_LM/Label_Defect/.claude/hooks/drift-check.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

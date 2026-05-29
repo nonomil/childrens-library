@@ -1,0 +1,8 @@
+{
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "python api_call.py"
+  },
+  "tool_response": "HTTP 429 rate limit exceeded",
+  "session_id": "fixture-session"
+}

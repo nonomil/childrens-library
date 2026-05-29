@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CC+Codex 协作框架 — 工作流详解</title>
+  <link rel="stylesheet" href="assets/guide.css">
+</head>
+<body>
+  <div class="site_shell">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar">
+      <a class="sidebar_brand" href="guide-workflows.html">
+        <span class="hero_logo">CC</span>
+        <span class="sidebar_brand_text"><strong>CC+Codex</strong><small>协作框架</small></span>
+      </a>
+      <nav class="sidebar_pages">
+        <a href="../guide.html">快速上手</a>
+        <a href="guide-workflows.html" class="active">工作流</a>
+        <a href="guide-skills.html">技能</a>
+      </nav>
+      <div class="sidebar_tabs">
+        <p class="sidebar_section_label">Tabs</p>
+        <button type="button" class="tab_btn active" data-tab="overview">路由总览</button>
+        <button type="button" class="tab_btn" data-tab="core">核心工作流</button>
+        <button type="button" class="tab_btn" data-tab="special">专项工作流</button>
+        <button type="button" class="tab_btn" data-tab="constants">全局常量</button>
+      </div>
+      <div class="sidebar_note">
+        <p>纯 HTML + 外部 CSS，零外部依赖，离线可用</p>
+      </div>
+    </aside>
+
+    <!-- RIGHT CONTENT -->
+    <main class="content_area">
+      <div class="hero_banner">
+        <h1>工作流详解</h1>
+        <p>8 种场景工作流 + 全局常量，按优先级自动路由，匹配即停止</p>
+      </div>
+
+      <!-- ==================== TAB 1: 路由总览 ==================== -->
+      <div class="tab_panel active content_panel" id="panel-overview">
+
+        <h2>工作流路由机制</h2>
+        <p>收到任务后，Claude Code 按<b>固定优先级</b>逐条匹配场景路由表。匹配即停止，不会同时走两个工作流。</p>
+
+        <div class="info_card accent_cool">
+          <p><b>路由优先级</b>（从高到低）：Debug &gt; Code Review &gt; C++ Build &gt; C++ Test &gt; Research &gt; Largebase &gt; Parallel &gt; Complex &gt; Simple<br>
+          <b>匹配规则</b>：用户描述中命中触发词 → 读取对应工作流文档 → 按文档执行</p>
+        </div>
+
+        <h2>路由优先级表</h2>
+        <table>
+          <tr><th>优先级</th><th>场景</th><th>触发条件（用户说了什么）</th><th>读取文档</th></tr>
+          <tr><td><span class="badge badge_warm">1</span></td><td>Debug</td><td>描述 bug/错误/测试失败/异常行为</td><td><code>claude-workflow-debug.md</code></td></tr>
+          <tr><td><span class="badge badge_warm">2</span></td><td>Code Review</td><td>"review/审查/检查代码质量"</td><td><code>claude-workflow-review.md</code></td></tr>
+          <tr><td><span class="badge badge_gold">3</span></td><td>C++ 编译</td><td>"编译/build/CMake" + 涉及 C++</td><td><code>claude-workflow-cpp-build.md</code></td></tr>
+          <tr><td><span class="badge badge_gold">4</span></td><td>C++ 测试</td><td>"运行测试/gtest/单元测试" + 涉及 C++</td><td><code>claude-workflow-cpp-test.md</code></td></tr>
+          <tr><td><span class="badge badge_cool">5</span></td><td>研究调研</td><td>"调研/对比/选型/搜索/研究/怎么实现"</td><td><code>claude-workflow-research.md</code></td></tr>
+          <tr><td><span class="badge badge_cool">6</span></td><td>大型代码库</td><td>代码 &gt;20 文件 / 跨 3+ 模块 / "重构迁移影响分析"</td><td><code>claude-workflow-largebase.md</code></td></tr>
+          <tr><td><span class="badge badge_cool">7</span></td><td>并行开发</td><td>任务 ≥2 且可解耦</td><td><code>claude-workflow-parallel.md</code></td></tr>
+          <tr><td><span class="badge badge_cool">8</span></td><td>复杂开发</td><td>不满足简单标准且未命中上述路由</td><td><code>claude-workflow-complex.md</code></td></tr>
+          <tr><td><span class="badge badge_purple">9</span></td><td>简单开发</td><td>满足全部 5 条简单标准（见下方）</td><td>无需读文档</td></tr>
+        </table>
+
+        <h2>简单模式 vs 复杂模式</h2>
+        <div class="card_grid two_cols">
+          <article class="info_card accent_cool">
+            <h3>简单模式</h3>
+            <p>（5 条全满足）<br>
+            ✓ 涉及文件 ≤ 3 个<br>
+            ✓ 预估 diff ≤ 200 行<br>
+            ✓ 需求明确，无歧义<br>
+            ✓ 单模块内，不跨模块<br>
+            ✓ 不触及高风险文件</p>
+            <p><b>流程</b>：讨论 → 实现 → 单轮自查 → 提交</p>
+          </article>
+          <article class="info_card accent_warm">
+            <h3>复杂模式</h3>
+            <p>（任意 1 条不满足）<br>
+            触发对应工作流，走完整流程</p>
+            <p><b>流程</b>：扫描 → Plan → 审查 → Steps → 开发 → Review</p>
+            <p><b>模式升级触发</b>（全程检查）：<br>
+            diff &gt;200 行 / 需修改 &gt;3 文件 / 跨模块依赖 / Review &gt;3 轮仍有问题</p>
+          </article>
+        </div>
+
+        <h2>工作流文件结构</h2>
+        <table>
+          <tr><th>文件</th><th>类型</th><th>一句话用途</th></tr>
+          <tr><td><code>claude-workflow-constants.md</code></td><td><span class="badge badge_warm">全局</span></td><td>Codex 参数、安全约束、角色边界等所有工作流共享的常量</td></tr>
+          <tr><td><code>claude-workflow-init.md</code></td><td><span class="badge badge_cool">初始化</span></td><td>首次使用时的项目初始化配置</td></tr>
+          <tr><td><code>claude-workflow-debug.md</code></td><td><span class="badge badge_warm">核心</span></td><td>Debug 六阶段流程：症状收集 → 定位根因 → 修复 → 复盘</td></tr>
+          <tr><td><code>claude-workflow-review.md</code></td><td><span class="badge badge_warm">核心</span></td><td>三场景 Review：Spec/Code/PR，P0-P3 分级</td></tr>
+          <tr><td><code>claude-workflow-complex.md</code></td><td><span class="badge badge_warm">核心</span></td><td>复杂开发六阶段：扫描 → Plan → 审查 → Steps → 开发 → Review</td></tr>
+          <tr><td><code>claude-workflow-research.md</code></td><td><span class="badge badge_cool">核心</span></td><td>技术调研五阶段：问题定义 → 搜索 → 深读 → 验证 → 报告</td></tr>
+          <tr><td><code>claude-workflow-largebase.md</code></td><td><span class="badge badge_gold">专项</span></td><td>大型代码库结构化扫描（M1-M4 四种模式）</td></tr>
+          <tr><td><code>claude-workflow-parallel.md</code></td><td><span class="badge badge_gold">专项</span></td><td>多任务并行开发，worktree 隔离 + 冲突管理</td></tr>
+          <tr><td><code>claude-workflow-cpp-build.md</code></td><td><span class="badge badge_purple">C++</span></td><td>C++ 编译（CMake / MSBuild）</td></tr>
+          <tr><td><code>claude-workflow-cpp-test.md</code></td><td><span class="badge badge_purple">C++</span></td><td>C++ 单元测试（Google Test / CTest）</td></tr>
+        </table>
+
+      </div>
+
+      <!-- ==================== TAB 2: 核心工作流 ==================== -->
+      <div class="tab_panel content_panel" id="panel-core">
+
+        <h2>Debug 工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_warm">优先级 1</span> 描述 bug/错误/测试失败 → 强制走此流程。先写回归测试再修复，防止修了旧 bug 引新 bug。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 0：症状收集</b> — 把"不好使"翻译成可操作信息
+        </div>
+        <div class="collapsible_content">
+          <p>创建 Bug 卡片，包含：现象描述、稳定复现步骤、预期行为、实际行为、环境信息（OS/版本/数据量）。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 1：快速排查</b>（≤5 分钟）
+        </div>
+        <div class="collapsible_content">
+          <p>git 检查（最近改动）、环境问题排查（依赖/配置/端口）。5 分钟内能定位则直接修，不进后续流程。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 2：Codex 扫描定位根因</b>
+        </div>
+        <div class="collapsible_content">
+          <p>调用 Codex 长上下文分析，扫描代码库定位根因。输出：疑似根因、影响范围、置信度。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 3：CC 制定修复方案</b>
+        </div>
+        <div class="collapsible_content">
+          <p>CC 交叉验证 Codex 结论，制定修复方案。严重程度 ≥P1 或跨 3+ 模块时进入 Full 模式。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 4：Codex 执行修复 + Review</b>
+        </div>
+        <div class="collapsible_content">
+          <p>先写复现测试（确保 bug 能触发）→ Codex 执行修复 → 两轮 Review（CC 快速 + Codex 深度）→ 全量测试无回归。</p>
+        </div>
+
+        <div class="collapsible" onclick="toggleCollapsible(this)">
+          <b>Phase 5：根因文档记录与复盘</b>
+        </div>
+        <div class="collapsible_content">
+          <p>记录 debug 过程到 <code>debug/[feature].md</code>，提炼教训写入 <code>tasks/lessons.md</code>，追加到 <code>.claude/memory/</code> 记忆系统。</p>
+        </div>
+
+        <div class="section_divider"></div>
+
+        <h2>Code Review 工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_warm">优先级 2</span> "review/审查/检查代码质量" → 三种场景，P0-P3 四级分类。</p>
+        </div>
+
+        <h3>三种 Review 场景</h3>
+        <table>
+          <tr><th>场景</th><th>时机</th><th>关注点</th></tr>
+          <tr><td><span class="badge badge_cool">Spec Review</span></td><td>计划阶段，代码生成前</td><td>方案可行性、遗漏需求、架构合理性</td></tr>
+          <tr><td><span class="badge badge_cool">Code Review</span></td><td>代码生成后</td><td>P0(阻塞) / P1(修完再合) / P2(下轮) / P3(可选)</td></tr>
+          <tr><td><span class="badge badge_gold">PR Review</span></td><td>准备合并 PR 前</td><td>完整 diff 审查、兼容性、文档同步</td></tr>
+        </table>
+
+        <h3>Review 执行方式</h3>
+        <p><b>diff ≤ 100 行</b>：CC 单轮快速自查（逻辑正确性、安全性、YAGNI）</p>
+        <p><b>diff &gt; 100 行或涉及核心逻辑</b>：两轮独立审查</p>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>CC 快速审查</b>：逻辑正确性、安全性、YAGNI、向后兼容</div></div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>Codex 深度审查</b>：边界条件、长尾情况、兼容性</div></div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>CC 综合仲裁</b>：有分歧 → 修复后从轮次 1 重来（最多 3 轮）</div></div>
+
+        <div class="section_divider"></div>
+
+        <h2>复杂开发工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_cool">优先级 8</span> 不满足简单标准且未命中其他路由 → 六阶段流程，最常用的工作流。</p>
+        </div>
+
+        <div class="flow_step"><div class="num">0</div><div class="label"><b>扫描路由判断</b>：判断是否需要 largebase 扫描或轻量扫描</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>CC 生成 Plan</b>：需求理解、技术方案、验收标准（docs/plan/）</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>Codex 审查 Plan</b>：可行性、遗漏细节、边界条件</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>交叉 Review</b>：CC ↔ Codex，≥3 轮，连续 2 轮无新问题才收敛</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">4</div><div class="label"><b>生成 Step-by-Step 计划</b>：每个 worktree 独立 steps.md，标注谁来做</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">5</div><div class="label"><b>任务解耦审查</b>：独立边界、DAG 依赖、测试隔离</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">6</div><div class="label"><b>用户确认"开始开发"→ 执行代码任务</b></div></div>
+
+        <div class="section_divider"></div>
+
+        <h2>研究调研工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_cool">优先级 5</span> "调研/对比/选型/搜索" → 联网搜索 + 文档分析 + Linus 三问验证。</p>
+        </div>
+
+        <div class="flow_step"><div class="num">0</div><div class="label"><b>问题定义</b>：CC 制定研究卡片（问题、范围、输出预期）</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>CC 快速搜索</b>：WebSearch 基础认知，了解技术全景</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>Codex 深度读取</b>：官方文档、README、配置文件、源码</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>CC 整合 + 交叉验证</b>：对比矩阵、Linus 三问（是真实问题？有更简单的？会破坏什么？）</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">4</div><div class="label"><b>输出调研报告</b>（可选 docs/research/）：结论、对比、推荐、风险</div></div>
+
+        <h3>搜索深度选择</h3>
+        <table>
+          <tr><th>深度</th><th>适用</th><th>耗时</th></tr>
+          <tr><td><span class="badge badge_cool">快速</span></td><td>只需了解概念或确认某个用法</td><td>~1 小时</td></tr>
+          <tr><td><span class="badge badge_cool">标准</span></td><td>需要对比 2-3 种方案</td><td>~半天</td></tr>
+          <tr><td><span class="badge badge_gold">深度</span></td><td>技术选型、架构决策</td><td>~1 天</td></tr>
+        </table>
+
+      </div>
+
+      <!-- ==================== TAB 3: 专项工作流 ==================== -->
+      <div class="tab_panel content_panel" id="panel-special">
+
+        <h2>大型代码库工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_cool">优先级 6</span> 代码 &gt;20 文件 / 跨 3+ 模块 → 结构化扫描，生成 00-06 扫描包。</p>
+        </div>
+
+        <h3>四种扫描模式</h3>
+        <table>
+          <tr><th>模式</th><th>范围</th><th>输出</th></tr>
+          <tr><td><span class="badge badge_cool">M1 架构</span></td><td>目录结构、模块关系、入口点</td><td>01-arch 扫描包</td></tr>
+          <tr><td><span class="badge badge_cool">M2 数据</span></td><td>数据流、存储层、序列化</td><td>02-dataflow 扫描包</td></tr>
+          <tr><td><span class="badge badge_gold">M3 接口</span></td><td>API 签名、公共接口、依赖关系</td><td>03-api 扫描包</td></tr>
+          <tr><td><span class="badge badge_warm">M4 全量</span></td><td>以上全部 + 参考文档融合</td><td>00-06 完整扫描包 + scan.db</td></tr>
+        </table>
+
+        <h3>执行步骤</h3>
+        <div class="flow_step"><div class="num">0</div><div class="label">可选增强：Cartographer 生成 CODEBASE_MAP.md</div></div>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>强制 API 成本提示</b>（Token &gt; 500k 预警）</div></div>
+        <div class="flow_step"><div class="num">2</div><div class="label">定义扫描范围（目录、分支、主题）</div></div>
+        <div class="flow_step"><div class="num">3</div><div class="label">代码结构扫描（目录职责、模块清单、入口点）</div></div>
+        <div class="flow_step"><div class="num">4</div><div class="label">数据与 API 扫描（按模式 M1-M4）</div></div>
+        <div class="flow_step"><div class="num">5</div><div class="label">参考文档融合（冲突矩阵、约束汇总）</div></div>
+        <div class="flow_step"><div class="num">6</div><div class="label">影响矩阵与执行摘要（风险 TopN、建议拆任务数）</div></div>
+
+        <div class="section_divider"></div>
+
+        <h2>并行开发工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_cool">优先级 7</span> 任务 ≥2 且可解耦 → worktree 隔离，互不干扰。</p>
+        </div>
+
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>解耦确认</b>：验证任务间无共享文件依赖，每个任务边界清晰</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>创建 Worktree + 分配任务</b>：按 BRANCH_MODE 选择 temporary/bare 模式</div></div>
+        <div class="arrow_down">&#8595;</div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>监控 + 合并</b>：进度监控、按依赖顺序合并、冲突处理</div></div>
+
+        <h3>并行规则</h3>
+        <table>
+          <tr><th>规则</th><th>说明</th></tr>
+          <tr><td>文件边界即任务边界</td><td>同一文件只能由一个任务修改</td></tr>
+          <tr><td>共享文件唯一 owner</td><td>必须跨任务共享的文件，指定一个任务负责</td></tr>
+          <tr><td>合并顺序控制</td><td>按 DAG 依赖顺序合并，基础模块先合</td></tr>
+          <tr><td>确认后合并</td><td>合并前必须输出变更摘要，用户说"确认合并"才执行</td></tr>
+        </table>
+
+        <div class="section_divider"></div>
+
+        <h2>C++ 编译工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_gold">优先级 3</span> "编译/build" + C++ 项目 → 自动检测 CMake/MSBuild。</p>
+        </div>
+
+        <div class="flow_step"><div class="num">0</div><div class="label"><b>编译方式选择</b>：CMake（跨平台）vs MSBuild（纯 Windows）二选一</div></div>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>编译前检查</b>：依赖、git 状态、配置、平台</div></div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>执行编译</b>：cmake 配置/编译 或 msbuild</div></div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>结果检查</b>：成功/警告/产物路径</div></div>
+        <div class="flow_step"><div class="num">4</div><div class="label"><b>可选操作</b>：运行测试、查看警告详情、生成报告</div></div>
+
+        <div class="section_divider"></div>
+
+        <h2>C++ 单元测试工作流</h2>
+        <div class="info_card accent_cool">
+          <p><span class="badge badge_gold">优先级 4</span> "gtest/单元测试" + C++ 项目 → Google Test / CTest。</p>
+        </div>
+
+        <div class="flow_step"><div class="num">0</div><div class="label"><b>任务难度评估</b>：轻量模式（仅受影响模块）vs 完整模式（全量+覆盖率）</div></div>
+        <div class="flow_step"><div class="num">1</div><div class="label"><b>测试范围确定</b>：受影响模块 vs 全量</div></div>
+        <div class="flow_step"><div class="num">2</div><div class="label"><b>执行测试</b>：CTest / 直接运行 GTest / 已有二进制</div></div>
+        <div class="flow_step"><div class="num">3</div><div class="label"><b>结果分析</b>：总测试数、通过率、失败详情</div></div>
+        <div class="flow_step"><div class="num">4</div><div class="label"><b>失败处理</b>：根因分析 → 修复策略 → 重新运行</div></div>
+        <div class="flow_step"><div class="num">5</div><div class="label"><b>报告输出</b>：test_report.md</div></div>
+
+      </div>
+
+      <!-- ==================== TAB 4: 全局常量 ==================== -->
+      <div class="tab_panel content_panel" id="panel-constants">
+
+        <h2>全局常量参考</h2>
+        <div class="info_card accent_cool">
+          <p>所有工作流共享的约束和参数，定义在 <code>.claude/workflows/claude-workflow-constants.md</code> 中。</p>
+        </div>
+
+        <h3>Codex 调用参数（必填）</h3>
+        <table>
+          <tr><th>参数</th><th>值</th><th>说明</th></tr>
+          <tr><td><code>model</code></td><td><code>gpt-5.4</code></td><td>Codex 使用的模型</td></tr>
+          <tr><td><code>sandbox</code></td><td><code>danger-full-access</code></td><td>Codex 沙箱权限</td></tr>
+          <tr><td><code>approval-policy</code></td><td><code>on-failure</code></td><td>自动确认策略</td></tr>
+        </table>
+        <p><b>这三个参数每次 Codex 调用都必须包含，缺一不可。</b></p>
+
+        <h3>关键约束</h3>
+        <table>
+          <tr><th>约束</th><th>值</th><th>说明</th></tr>
+          <tr><td>单次 diff 上限</td><td>≤ 200 行</td><td>硬约束，超过必须拆分任务</td></tr>
+          <tr><td>简单模式标准</td><td>5 条全满足</td><td>≤3 文件、≤200 行、明确、单模块、不高危</td></tr>
+          <tr><td>Review 升级线</td><td>diff &gt; 100 行</td><td>超过则从单轮自查升级为两轮审查</td></tr>
+          <tr><td>Review 最大轮次</td><td>3 轮</td><td>超过仍有分歧则升级复杂模式</td></tr>
+          <tr><td>Debug 快速排查时限</td><td>5 分钟</td><td>超时未定位则进入完整 Debug 流程</td></tr>
+        </table>
+
+        <h3>Codex 调用路径</h3>
+        <table>
+          <tr><th>路径</th><th>适用环境</th><th>调用方式</th></tr>
+          <tr><td><span class="badge badge_cool">插件路径</span></td><td>CLI / VS Code 终端</td><td><code>/codex:review</code>、<code>/codex:rescue</code></td></tr>
+          <tr><td><span class="badge badge_cool">MCP 路径</span></td><td>VS Code 扩展 / Desktop</td><td><code>mcp__codex__codex({model, sandbox, ...})</code></td></tr>
+          <tr><td><span class="badge badge_gold">CLI 兜底</span></td><td>插件和 MCP 均不可用</td><td><code>codex exec -m gpt-5.4 "..."</code></td></tr>
+        </table>
+
+        <h3>推理强度选择</h3>
+        <table>
+          <tr><th>强度</th><th>适用场景</th><th>Token 消耗</th></tr>
+          <tr><td><code>high</code></td><td>架构决策、复杂 debug、跨模块分析</td><td>高</td></tr>
+          <tr><td><code>medium</code></td><td>常规开发、代码审查、测试编写</td><td>中</td></tr>
+          <tr><td><code>low</code></td><td>简单修改、格式化、注释</td><td>低</td></tr>
+        </table>
+
+        <h3>角色边界（CC vs Codex）</h3>
+        <table>
+          <tr><th>能力</th><th style="text-align:center">Claude Code</th><th style="text-align:center">Codex</th></tr>
+          <tr><td>规划 / 搜索 / 审查</td><td style="text-align:center">&#10004; 强</td><td style="text-align:center">&#10008; 弱</td></tr>
+          <tr><td>代码生成 / 重构</td><td style="text-align:center">&#10008; 弱</td><td style="text-align:center">&#10004; 强</td></tr>
+          <tr><td>Shell 执行</td><td style="text-align:center">&#10004; 强</td><td style="text-align:center">&#10004; 强</td></tr>
+          <tr><td>子 Agent</td><td style="text-align:center">&#10004; 支持</td><td style="text-align:center">&#10008; 有限</td></tr>
+          <tr><td>MCP 协议</td><td style="text-align:center">&#10004; 支持</td><td style="text-align:center">&#10008; 不支持</td></tr>
+        </table>
+
+        <h3>Git 安全约束</h3>
+        <div class="info_card accent_warm">
+          <p><b>禁止操作</b>（无论什么理由）：<br>
+          <code>rm -rf</code>、<code>git reset --hard</code>、<code>git clean -f</code>、<code>del</code>、<code>rd /s</code><br>
+          <code>git push --force</code>（除非用户明确要求）<br>
+          <b>删除文件</b>：一律改为移动到 <code>tmp/</code> 目录，不直接删除</p>
+        </div>
+
+        <h3>文件操作边界</h3>
+        <table>
+          <tr><th>规则</th><th>说明</th></tr>
+          <tr><td>Scope 限制</td><td>只操作 Prompt 中 Scope 指定的目录</td></tr>
+          <tr><td>禁止删除</td><td>不删除任何文件/目录，需要清理则移动到 tmp/</td></tr>
+          <tr><td>禁止移动/重命名</td><td>需重组目录时停下报告，等用户确认</td></tr>
+          <tr><td>UTF-8 强制</td><td>所有文本文件读写必须显式指定 UTF-8 编码</td></tr>
+        </table>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script>
+  document.querySelectorAll('.tab_btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tab_btn').forEach(function(t){t.classList.remove('active')});
+      document.querySelectorAll('.tab_panel').forEach(function(p){p.classList.remove('active')});
+      this.classList.add('active');
+      document.getElementById('panel-'+this.dataset.tab).classList.add('active');
+      window.scrollTo(0,0);
+    });
+  });
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('.copy_button');
+    if(!btn)return;
+    var text=btn.getAttribute('data_copy_text');
+    if(!text)return;
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent='已复制';btn.classList.add('copied');
+      setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied');},1500);
+    });
+  });
+  function toggleCollapsible(el){
+    el.classList.toggle('open');
+    var content=el.nextElementSibling;
+    content.classList.toggle('show');
+  }
+  </script>
+</body>
+</html>

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CC+Codex 协作框架 — 技能详解</title>
+<link rel="stylesheet" href="assets/guide.css">
+</head>
+<body>
+<div class="site_shell">
+
+  <aside class="sidebar">
+    <a class="sidebar_brand" href="guide-skills.html">
+      <span class="hero_logo">CC</span>
+      <span class="sidebar_brand_text"><strong>CC+Codex</strong><small>协作框架</small></span>
+    </a>
+    <nav class="sidebar_pages">
+      <a href="../guide.html">快速上手</a>
+      <a href="guide-workflows.html">工作流</a>
+      <a href="guide-skills.html" class="active">技能</a>
+    </nav>
+    <div class="sidebar_tabs">
+      <p class="sidebar_section_label">Tabs</p>
+      <button type="button" class="tab_btn active" data-tab="overview">技能总览</button>
+      <button type="button" class="tab_btn" data-tab="details">技能详解</button>
+      <button type="button" class="tab_btn" data-tab="create">技能制作</button>
+      <button type="button" class="tab_btn" data-tab="superpowers">Superpowers</button>
+      <button type="button" class="tab_btn" data-tab="recommended">推荐技能</button>
+    </div>
+    <div class="sidebar_note">
+      <p>纯 HTML + 外部 CSS，零外部依赖，离线可用</p>
+    </div>
+  </aside>
+
+  <div class="content_area">
+
+    <!-- ==================== TAB 1: 技能总览 ==================== -->
+    <section class="tab_panel content_panel active" id="panel-overview">
+
+      <h2>技能是什么？</h2>
+      <p>技能（Skill）是<b>一个 Markdown 文件</b>，描述了 AI 在特定场景下应该怎么做。它相当于给 AI 装上了一个"专业能力包"——有了 UI 设计技能，AI 就知道怎么做漂亮的界面；有了 Debug 技能，AI 就知道先写回归测试再修复。</p>
+
+      <div class="info_card accent_cool">
+        <p><b>技能文件格式</b>：YAML frontmatter（name + description）+ Markdown正文<br>
+        <b>触发方式</b>：用户说匹配的关键词，AI 自动加载对应技能<br>
+        <b>存放位置</b>：<code>.claude/skills/</code>（Claude Code 侧）<code>.codex/skills/</code>（Codex 侧）</p>
+      </div>
+
+      <h2>本项目的 23 个技能</h2>
+
+      <h3><span class="badge badge_cool">流水线核心</span> 9 个</h3>
+      <table>
+        <tr><th>技能</th><th>触发关键词</th><th>一句话说明</th></tr>
+        <tr><td><code>orchestrate</code></td><td>"跑流水线" / "orchestrate"</td><td>7 步流水线总调度：规划→审查→实现→审核→测试→报告→完成</td></tr>
+        <tr><td><code>pipeline-init</code></td><td>"初始化 pipeline"</td><td>创建 pipeline/ 目录 + state.json，检测 Codex 可用性</td></tr>
+        <tr><td><code>plan</code></td><td>"生成计划" / "拆任务"</td><td>需求拆解为独立任务单元，标注负责 agent 和依赖关系</td></tr>
+        <tr><td><code>plan-checklist</code></td><td>"给我总计划和分计划"</td><td>讨论结论沉淀为可执行计划文档和打钩清单</td></tr>
+        <tr><td><code>review</code></td><td>"审查当前改动" / "review"</td><td>审核代码逻辑、安全性、向后兼容，输出 PASS/FAIL</td></tr>
+        <tr><td><code>report</code></td><td>"生成测试报告"</td><td>汇总任务状态、审核记录、测试结果，生成最终报告</td></tr>
+        <tr><td><code>changelog</code></td><td>"更新 CHANGELOG"</td><td>基于近期 git 提交生成或更新 CHANGELOG</td></tr>
+        <tr><td><code>commit</code></td><td>"/commit"</td><td>规范化 git commit，生成 Conventional Commits 消息</td></tr>
+        <tr><td><code>smoke-test</code></td><td>"联通自检" / "smoke test"</td><td>验证 Codex 插件/MCP 连通性</td></tr>
+      </table>
+
+      <h3><span class="badge badge_cool">扫描与文档</span> 7 个</h3>
+      <table>
+        <tr><th>技能</th><th>触发关键词</th><th>一句话说明</th></tr>
+        <tr><td><code>largebase-structured-scan</code></td><td>"先扫描" / "结构化扫描"</td><td>大型代码库结构化扫描（8 子命令），输出扫描包 + scan.db</td></tr>
+        <tr><td><code>doc-gen</code></td><td>"解释/总结/报告/方案/变更"</td><td>结构化文档生成，5 种模式：explain·report·change·design·scan</td></tr>
+        <tr><td><code>doc-sync</code></td><td>"文档同步"</td><td>代码变更后系统性同步文档</td></tr>
+        <tr><td><code>doc-ref</code></td><td>"参考 [库名] 文档"</td><td>本地 SDK/API 文档库检索，离线可用</td></tr>
+        <tr><td><code>project-init</code></td><td>"/project-init"</td><td>分析项目结构，生成 claude-template.md</td></tr>
+        <tr><td><code>algorithm-spec-review</code></td><td>"审查方案" / "核对文档和代码"</td><td>算法规格包审查，核对规格与实现一致性</td></tr>
+        <tr><td><code>ui-screenshot-audit</code></td><td>"截图审查" / "UI 审计"</td><td>Web 应用截图审查，生成带证据的 Markdown 报告</td></tr>
+      </table>
+
+      <h3><span class="badge badge_gold">日常工具</span> 5 个</h3>
+      <table>
+        <tr><th>技能</th><th>触发关键词</th><th>一句话说明</th></tr>
+        <tr><td><code>git</code></td><td>"/git"</td><td>Git 版本管理（save/checkpoint/history/restore/status）</td></tr>
+        <tr><td><code>cpp-build</code></td><td>"编译" / "build"</td><td>C++ 项目编译（CMake / MSBuild）</td></tr>
+        <tr><td><code>cpp-unit-test</code></td><td>"运行测试" / "gtest"</td><td>C++ 单元测试（Google Test）</td></tr>
+        <tr><td><code>windows-shell-fallback</code></td><td>Windows 环境自动加载</td><td>Windows 下 shell 命令失败的预防与回退</td></tr>
+        <tr><td><code>memory</code></td><td>"记忆/回忆/remember"</td><td>跨会话 Markdown 记忆系统（CC 原生，零外部依赖）</td></tr>
+      </table>
+
+      <h3><span class="badge badge_purple">专项领域</span> 3 个</h3>
+      <table>
+        <tr><th>技能</th><th>触发关键词</th><th>一句话说明</th></tr>
+        <tr><td><code>ui-ux-design-guide</code></td><td>"UI/UX 设计" / "设计指南"</td><td>UI/UX 设计指南（配色、字体、图表、UX 规范）</td></tr>
+        <tr><td><code>industrial-ui-design</code></td><td>"工业设计" / "机器视觉 UI"</td><td>工业 UI 设计（Qt/PySide/PyQt），含参考手册</td></tr>
+        <tr><td><code>career.skill</code></td><td>"帮我规划 XX 职业的 Skill"</td><td>职业 Skill 规划器，输出工作流分解 + 制作指南</td></tr>
+      </table>
+
+    </section>
+
+    <!-- ==================== TAB 2: 技能详解 ==================== -->
+    <section class="tab_panel content_panel" id="panel-details">
+
+      <h2>流水线核心技能</h2>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>orchestrate</b> — 7 步流水线总调度
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："跑流水线" / "orchestrate" / 用户提出需要完整流水线处理的需求</p>
+        <p><b>流程</b>：规划(plan) → 审查(review plan) → 实现(execute) → 审核(review code) → 测试(test) → 报告(report) → 完成</p>
+        <p><b>产出</b>：pipeline/state.json 全程跟踪，每个阶段自动更新状态</p>
+        <p><b>适用</b>：端到端完整开发任务，从需求到交付全自动</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>pipeline-init</b> — Pipeline 初始化
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："初始化 pipeline" / 用户首次提出开发需求且 pipeline 不存在</p>
+        <p><b>做什么</b>：创建 <code>pipeline/</code> 目录 + <code>state.json</code>，检测 Codex 可用性（插件/MCP/CLI 三路检测）</p>
+        <p><b>状态协议</b>：idle → planning → reviewing_plan → executing → reviewing_code → testing → reporting → done</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>plan</b> — 需求拆解为可执行任务
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："生成计划" / "拆任务" / "写 plan"</p>
+        <p><b>做什么</b>：将需求拆解为独立任务单元，每个任务标注：负责 agent（CC/Codex）、依赖关系、预估 diff、文件范围</p>
+        <p><b>产出</b>：<code>docs/plan/plan-YYYY-MM-DD-[feature].md</code></p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>plan-checklist</b> — 可打钩的执行清单
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："给我总计划和分计划" / "重新梳理计划" / "生成可打钩文档"</p>
+        <p><b>做什么</b>：将讨论结论沉淀为两部分——可执行计划文档 + 带 checkbox 的反馈文档</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>review</b> — 代码审查
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："审查当前改动" / "review"</p>
+        <p><b>做什么</b>：审核 Codex 产出的代码和设计，检查逻辑正确性、一致性、安全性、向后兼容</p>
+        <p><b>输出</b>：PASS（通过）或 FAIL（附具体修改意见）</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>report</b> — 最终报告
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："生成测试报告" / "汇总结果"</p>
+        <p><b>做什么</b>：汇总所有任务状态、审核记录、测试结果，生成最终综合报告</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>commit / changelog / smoke-test</b> — 辅助工具
+      </div>
+      <div class="collapsible_content">
+        <p><b>commit</b>：完成一个任务单元后，更新任务文档 checkbox 并执行规范化提交（Conventional Commits 格式）</p>
+        <p><b>changelog</b>：基于近期 git 提交自动生成或更新 CHANGELOG 文档</p>
+        <p><b>smoke-test</b>：验证 Codex 插件/MCP 连通性，确认协作流程可用</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>扫描与文档技能</h2>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>largebase-structured-scan</b> — 大型代码库结构化扫描
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："先扫描" / "结构化扫描" / "大型代码库"</p>
+        <p><b>8 个子命令</b>：init / scan / query / analyze / brief / full-scan / update / clean</p>
+        <p><b>四种扫描模式</b>：M1(架构) / M2(数据流) / M3(API接口) / M4(全量)</p>
+        <p><b>产出</b>：00-06 扫描包 + scan.db（SQLite 可查询）+ 项目综述文档</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>doc-gen</b> — 结构化文档生成
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>：自动匹配关键词（"解释/总结/报告/方案/变更/扫描报告"）</p>
+        <p><b>5 种模式</b>：explain（解释）、report（报告）、change（变更）、design（设计）、scan（扫描）</p>
+        <p><b>特色</b>：图表优先排版，自动生成 Mermaid 流程图、架构图、数据流图</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>doc-sync</b> — 代码变更后文档同步
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："文档同步" / "接口说明要更新"</p>
+        <p><b>做什么</b>：确认变更源 → 变更-文档映射 → 最小化更新受影响文档</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>doc-ref</b> — 本地 SDK 文档检索
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："参考 [库名] 文档" / "索引 [SDK]"</p>
+        <p><b>做什么</b>：查/建 <code>docs/api/</code> 索引，替代 Context7，离线可用</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>project-init / algorithm-spec-review / ui-screenshot-audit</b>
+      </div>
+      <div class="collapsible_content">
+        <p><b>project-init</b>：分析项目结构，生成项目和模块的 claude-template.md</p>
+        <p><b>algorithm-spec-review</b>：审查算法规格包，核对规格文档与代码实现的一致性</p>
+        <p><b>ui-screenshot-audit</b>：本地 Web 应用截图审查，生成带证据的 Markdown 报告</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>日常工具技能</h2>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>git</b> — Git 版本管理
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："/git" / "git 操作" / "版本控制"</p>
+        <p><b>子命令</b>：save（checkpoint 提交）/ checkpoint（带消息的保存）/ history（查看提交历史）/ restore（回退到指定提交）/ status（当前状态）</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>cpp-build</b> — C++ 编译
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："编译" / "build" / "C++ 构建"</p>
+        <p><b>支持</b>：CMake（跨平台）和 MSBuild（Windows），自动检测编译系统</p>
+        <p><b>产出</b>：编译报告（成功/警告/产物路径）</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>cpp-unit-test</b> — C++ 单元测试
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："运行测试" / "跑单测" / "gtest"</p>
+        <p><b>支持</b>：直接运行 GTest 二进制、CTest 运行、编译后运行</p>
+        <p><b>产出</b>：test_report.md（总测试数、通过率、失败详情）</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>windows-shell-fallback</b> — Windows 环境预防
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>：Windows 环境启动时自动加载</p>
+        <p><b>做什么</b>：预防 ResourceUnavailable / GBK 乱码 / python 缺失等常见问题</p>
+        <p><b>Shell 优先级</b>：node(1) &gt; PowerShell(2) &gt; python(3)</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>memory</b> — 跨会话记忆系统
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："记忆" / "回忆" / "remember"</p>
+        <p><b>做什么</b>：用 CC 原生工具（Read/Write/Grep）管理 Markdown 记忆文件</p>
+        <p><b>目录</b>：<code>.claude/memory/</code>（decisions/constraints/patterns/lessons/context）</p>
+        <p><b>特点</b>：零外部依赖，纯 Markdown，跨会话持久化</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>专项领域技能</h2>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>ui-ux-design-guide</b> — UI/UX 设计指南
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："UI/UX 设计" / "界面设计" / "设计指南"</p>
+        <p><b>包含</b>：可搜索的风格数据库、配色方案、字体推荐、图表规范、UX 最佳实践、框架特定指南</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>industrial-ui-design</b> — 工业 UI 设计
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："工业设计" / "机器视觉 UI" / "桌面应用界面"</p>
+        <p><b>适用</b>：机器视觉、工业检测、设备控制、Qt/PySide/PyQt 桌面项目</p>
+        <p><b>包含</b>：工业 UI 设计规范 + 参考手册</p>
+      </div>
+
+      <div class="collapsible" onclick="toggleCollapsible(this)">
+        <b>career.skill</b> — 职业 Skill 规划器
+      </div>
+      <div class="collapsible_content">
+        <p><b>触发</b>："帮我规划 XX 职业的 Skill" / "我是 XX，帮我拆 Skill"</p>
+        <p><b>做什么</b>：输入职业名称 → 输出 5-8 个核心工作流 Skill 的制作指南（提示词可直接复制给 Agent）</p>
+        <p><b>防呆机制</b>：职业清晰→直接输出 / 过于宽泛→问一个问题→输出 / 不清楚→给填空模板</p>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 3: 技能制作 ==================== -->
+    <section class="tab_panel content_panel" id="panel-create">
+
+      <h2>为什么需要自制技能？</h2>
+      <div class="info_card accent_warm">
+        <p>"最牛逼的 Skill，永远是下一个，你自己造的那个。" —— 通用的 Skill 解决通用问题，但只有你自己知道你的工作流里哪个环节最痛、最值得自动化。</p>
+      </div>
+
+      <h2>四种技能制作方法</h2>
+      <div class="card_grid two_cols">
+        <div class="method_card">
+          <h4><span class="badge badge_cool">1</span> 样板法</h4>
+          <p>拿最满意的交付物当模板，让 AI 提炼标准封装成 Skill。</p>
+          <p><b>适合</b>：你已经有做得很好的产出物（报告、方案、代码）</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_cool">2</span> 流程法</h4>
+          <p>把固定工作步骤的输入输出写清楚，串成自动化 Skill。</p>
+          <p><b>适合</b>：每天重复的工作流程（日报、部署、检查）</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_gold">3</span> 归纳法</h4>
+          <p>回看聊天记录，找出反复让 AI 做的事，补成 Skill。</p>
+          <p><b>适合</b>：发现某些指令你每周都要重复输入</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_purple">4</span> 经验法</h4>
+          <p>把脑子里"只可意会"的隐性知识写成文档绑进 Skill。</p>
+          <p><b>适合</b>：你有丰富的行业经验，但每次都要从头跟 AI 解释</p>
+        </div>
+      </div>
+
+      <p><b>共同点</b>：都是从已有经验出发。你做过的事、踩过的坑、积累的模板，有了才能提炼。</p>
+
+      <div class="section_divider"></div>
+
+      <h2>Skill-Creator 教程</h2>
+      <div class="info_card accent_warm">
+        <p><b>Skill-Creator</b> 是 Anthropic 官方提供的技能生成工具。你只需描述想要的场景，它会自动分析需求、生成完整的 <code>SKILL.md</code> + <code>references/</code> 目录。长期来看，这是把个人经验转化为 AI 能力的最高效路径。</p>
+      </div>
+
+      <h3>核心工作流</h3>
+      <div class="flow_step"><div class="num">1</div><div class="label"><b>描述场景</b>：用一句话说明你想要什么技能（如"帮我画高颜值流程图"）</div></div>
+      <div class="flow_step"><div class="num">2</div><div class="label"><b>深度思考</b>：AI 在动手前先写"草稿"——骨架、逻辑、图表类型，逼迫自己先想清楚</div></div>
+      <div class="flow_step"><div class="num">3</div><div class="label"><b>生成技能</b>：输出 <code>skill.md</code> + <code>references/</code> 目录（颜色规范、布局规则等）</div></div>
+      <div class="flow_step"><div class="num">4</div><div class="label"><b>Evals 测试</b>：自动 A/B 对比（开 Skill vs 不开），量化验证效果</div></div>
+      <div class="flow_step"><div class="num">5</div><div class="label"><b>迭代打磨</b>：生成→比对→找茬→修改，反复微调直到稳定</div></div>
+
+      <h3>实战案例：流程图 Skill</h3>
+      <p>参考《手搓了一个 Skill，让 AI 画出我心目中的流程图》的核心经验：</p>
+
+      <div class="card_grid two_cols">
+        <div class="method_card">
+          <h4><span class="badge badge_cool">痛点拆解</span></h4>
+          <p>基础模型不是"做不到"，而是做得<b>不够稳定、不够一致</b>。Skill 的价值是"定向增强"，而非"从零创造"。</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_cool">颜色体系</span></h4>
+          <p>颜色基于<b>语义角色</b>分配（不是为好看而填色）。一张图最多 2-3 种主题色。整理了十套严格配色方案。</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_gold">固定流程</span></h4>
+          <p>加"深度思考"前置步骤 + 收敛图表类型为 6 类：workflow / architecture / comparison / swimlane / venn / chart。</p>
+        </div>
+        <div class="method_card">
+          <h4><span class="badge badge_purple">文件结构</span></h4>
+          <p><code>skill.md</code>（主控）+ <code>references/color-palette.md</code>（视觉标准）+ <code>references/pattern-library.md</code>（布局规则）。</p>
+        </div>
+      </div>
+
+      <div class="info_card accent_cool" style="margin-top:16px">
+        <p><b>核心洞察</b>："模型只是执行者，真正决定上限的，是你自己对细节的理解。什么样的箭头更合适、什么颜色更克制、什么间距更舒服——这些判断，AI 不会凭空替你建立。"</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>技能文件结构</h2>
+
+      <div class="info_card accent_cool">
+        <p><b>最小结构</b>（一个文件搞定）：</p>
+        <pre>
+---
+name: my-skill-name
+description: |
+  一句话说明这个技能做什么。
+  触发场景：用户说"XXX" / "YYY" / "ZZZ"。
+---
+
+# 技能标题
+
+## 你的角色
+你是一位...
+
+## 核心工作流
+1. 步骤一
+2. 步骤二
+3. 输出
+
+## 质量检查
+- [ ] 检查项1
+- [ ] 检查项2</pre>
+      </div>
+
+      <h3>关键要素</h3>
+      <table>
+        <tr><th>要素</th><th>说明</th><th>为什么重要</th></tr>
+        <tr><td><code>name</code></td><td>技能英文标识</td><td>AI 通过名称匹配技能</td></tr>
+        <tr><td><code>description</code></td><td>包含触发关键词的描述</td><td>AI 根据描述决定是否激活此技能</td></tr>
+        <tr><td>角色定义</td><td>AI 应该扮演什么专家</td><td>限定 AI 的行为范围</td></tr>
+        <tr><td>工作流步骤</td><td>具体的执行步骤</td><td>AI 按步骤执行，不会跳步</td></tr>
+        <tr><td>质量检查</td><td>完成前的自查清单</td><td>防止 AI 遗漏关键步骤</td></tr>
+        <tr><td>防呆机制</td><td>用户输入不完整时怎么处理</td><td>不卡住、不追问、基于假设兜底</td></tr>
+      </table>
+
+      <div class="section_divider"></div>
+
+      <h2>按职业拆技能：career.skill</h2>
+      <p>按职业拆是最不容易遗漏的方式——每个职业都有固定的工作流、反复出现的输出物、永远踩不完的坑。</p>
+
+      <div class="info_card accent_warm">
+        <p><b>用法</b>：在 Claude Code 里说 <code>我是 [职业]，帮我拆 Skill</code>，它会输出 5-8 个核心工作流 Skill 的制作指南，每条提示词可直接复制给 Agent 生成对应的 Skill 文件。</p>
+      </div>
+
+      <h3>已验证的职业示例</h3>
+      <table>
+        <tr><th>职业</th><th>拆出 Skill 数</th><th>覆盖范围</th></tr>
+        <tr><td>产品经理</td><td>13 个</td><td>需求 → 评审 → 数据 → 实验 → 复盘</td></tr>
+        <tr><td>UI 设计师</td><td>6 个</td><td>设计交付 → 风格指南 → 原型</td></tr>
+        <tr><td>内容运营</td><td>6 个</td><td>内容规划 → 生产 → 分发 → 分析</td></tr>
+      </table>
+
+      <h3>五维度分析框架</h3>
+      <table>
+        <tr><th>维度</th><th>问什么</th><th>对应什么 Skill</th></tr>
+        <tr><td>高频输出物</td><td>最常产出什么文档/报告/代码？</td><td>每类输出物 → 一个 Skill</td></tr>
+        <tr><td>反复判断</td><td>哪些决策高频出现？</td><td>判断框架 → Skill</td></tr>
+        <tr><td>易遗漏检查项</td><td>老手不漏、新手容易漏的？</td><td>检查清单 → Skill</td></tr>
+        <tr><td>跨系统整合</td><td>需要从多个地方收集信息？</td><td>自动化 → Skill</td></tr>
+        <tr><td>固定格式输出</td><td>每次都要重新排版的东西？</td><td>格式固化 → Skill</td></tr>
+      </table>
+
+      <div class="section_divider"></div>
+
+      <h2>推荐的社区技能</h2>
+      <p>以下技能来自社区推荐，可按需安装（把链接发给 Claude Code，说"帮我安装"即可）。</p>
+
+      <table>
+        <tr><th>技能</th><th>来源</th><th>解决什么问题</th></tr>
+        <tr><td><b>Frontend Design</b></td><td>Anthropic 官方</td><td>解决 AI 做前端的审美问题，禁止 Inter/Roboto 等烂大街字体，禁止紫色渐变配白底</td></tr>
+        <tr><td><b>办公四件套</b>（docx/xlsx/pdf/pptx）</td><td>Anthropic 官方</td><td>专业格式处理，不用每次从零摸索排版</td></tr>
+        <tr><td><b>Web Access</b></td><td>@一泽</td><td>联网搜索 + 浏览器操控，可访问站内内容（小红书/B站/飞书）</td></tr>
+        <tr><td><b>PUA</b></td><td>@tanweai</td><td>专治 AI 摆烂，四级压力升级，强制换思路</td></tr>
+        <tr><td><b>Claude-mem</b></td><td>@thedotmack</td><td>跨会话持久记忆，自动记录关键信息</td></tr>
+        <tr><td><b>Skill-Creator</b></td><td>Anthropic 官方</td><td>帮你创建一切自定义 Skill 的 Skill</td></tr>
+      </table>
+
+      <div class="section_divider"></div>
+
+      <h2>Superpowers 技能体系</h2>
+      <p><a href="https://github.com/obra/superpowers">Superpowers</a> 是一个面向 AI 编程的工程化开发插件，提供 20+ 个可组合 Skills，覆盖需求梳理到代码审查的完整流程。</p>
+
+      <h3>标准开发工作流</h3>
+      <div class="flow_step"><div class="num">1</div><div class="label"><b>Brainstorming</b>：通过问答澄清需求 → 分块展示设计方案 → 人工确认</div></div>
+      <div class="flow_step"><div class="num">2</div><div class="label"><b>Git Worktree</b>：创建独立的 Git 工作树，隔离开发环境</div></div>
+      <div class="flow_step"><div class="num">3</div><div class="label"><b>Writing Plans</b>：将任务拆分为 2-5 分钟的小步骤</div></div>
+      <div class="flow_step"><div class="num">4</div><div class="label"><b>Subagent Development</b>：每个任务启动独立子智能体，两阶段审查</div></div>
+      <div class="flow_step"><div class="num">5</div><div class="label"><b>TDD</b>：RED → GREEN → REFACTOR 循环</div></div>
+      <div class="flow_step"><div class="num">6</div><div class="label"><b>Code Review</b>：最终质量检查</div></div>
+      <div class="flow_step"><div class="num">7</div><div class="label"><b>Finish Branch</b>：合并完成</div></div>
+
+      <h3>核心创新：子 Agent 驱动开发</h3>
+      <table>
+        <tr><th>维度</th><th>Subagent-Driven</th><th>Executing Plans</th></tr>
+        <tr><td>会话模型</td><td>当前会话内创建子智能体</td><td>并行独立会话</td></tr>
+        <tr><td>审查机制</td><td>自动两阶段审查循环</td><td>人工检查点</td></tr>
+        <tr><td>失败处理</td><td>自动重试（创建新子智能体）</td><td>需要人工介入</td></tr>
+        <tr><td>适用场景</td><td>需求明确 + 测试完整</td><td>探索性开发 + 频繁调整</td></tr>
+      </table>
+
+      <h3>安装方式</h3>
+      <div class="info_card accent_cool">
+        <p><code>/plugin marketplace add obra/superpowers-marketplace</code><br>
+        <code>/plugin install superpowers@superpowers-marketplace</code><br>
+        重启 Claude Code 即可使用。</p>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: Superpowers ==================== -->
+    <section class="tab_panel content_panel" id="panel-superpowers">
+
+      <div class="section_header">
+        <p class="section_kicker">Superpowers</p>
+        <h2>What is Superpowers</h2>
+      </div>
+
+      <div class="info_card accent_warm">
+        <p>Superpowers 不是一个普通 skill，也不应该用"安装单个 skill"的思路来理解。它更像一套给 AI 编程工具用的<b>工程化开发框架</b>：把需求澄清、计划拆解、测试驱动开发、子智能体执行、代码审查和完成前验证串成一套完整工作流。</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>Why it matters + What problems it solves</h2>
+      <div class="card_grid two_cols">
+        <article class="info_card">
+          <h3>Why it matters</h3>
+          <p>很多人把 AI 当成"直接写代码"的工具，但真正复杂的项目并不是少了几行代码，而是少了结构化流程。Superpowers 的价值就在这里：它让 AI 先想清楚，再动手；先写计划，再执行；先验证，再宣称完成。</p>
+        </article>
+        <article class="info_card">
+          <h3>What problems it solves</h3>
+          <p>它主要解决三类问题：需求不清就开始写、上下文越来越乱导致质量下降、任务完成了却缺少验证。对复杂功能、多人协作和持续迭代项目尤其有帮助。</p>
+        </article>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>Layered architecture</h2>
+      <p>Superpowers 采用分层结构：用户层负责接入不同 AI 编程工具，框架层负责自动注入技能上下文，执行层负责子智能体调度，输出层则把设计、代码、测试等结果统一落到 Git 管理中。</p>
+      <div class="flow_step"><div class="num">1</div><div class="label"><b>用户层</b>：负责接入不同 AI 编程工具，接收你的自然语言需求。</div></div>
+      <div class="arrow_down">&#8595;</div>
+      <div class="flow_step"><div class="num">2</div><div class="label"><b>框架层</b>：负责自动注入技能上下文、组织规划与验证流程。</div></div>
+      <div class="arrow_down">&#8595;</div>
+      <div class="flow_step"><div class="num">3</div><div class="label"><b>技能层</b>：skills 是核心抽象。每个 skill 都描述一种任务场景和执行流程，所以它更像"流程模板系统"，而不是简单的命令别名集合。</div></div>
+
+      <div class="section_divider"></div>
+
+      <h2>Subagent-Driven Development</h2>
+      <div class="card_grid two_cols">
+        <article class="info_card accent_cool">
+          <h3>Subagent-Driven Development</h3>
+          <p>这是 Superpowers 里很关键的思路。它让每个任务尽量交给全新上下文的子智能体去做，避免长会话上下文越来越乱。配合两阶段审查，能把"实现正确"和"代码质量好"分开检查。</p>
+        </article>
+        <article class="info_card">
+          <h3>Two-phase review</h3>
+          <p>第一阶段看规范是否满足，第二阶段看代码质量是否达标。这样不会因为"代码看起来挺整齐"就忽略需求缺漏，也不会因为风格争论掩盖功能问题。</p>
+        </article>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>Common workflow and core skills</h2>
+      <div class="card_grid three_cols">
+        <article class="info_card">
+          <h3>brainstorming</h3>
+          <p>先澄清需求，再形成设计方案，避免一上来就写代码。</p>
+        </article>
+        <article class="info_card">
+          <h3>writing-plans</h3>
+          <p>把复杂任务拆成可以执行和验证的小步骤，适合作为开发前置阶段。</p>
+        </article>
+        <article class="info_card">
+          <h3>test-driven-development</h3>
+          <p>要求先写失败测试，再写最小实现，适合功能开发和 bug 修复。</p>
+        </article>
+        <article class="info_card">
+          <h3>subagent-driven-development</h3>
+          <p>把明确任务交给新的子智能体执行，并通过审查循环快速迭代。</p>
+        </article>
+        <article class="info_card">
+          <h3>verification-before-completion</h3>
+          <p>在声称"完成"之前强制做 fresh verification，避免只靠感觉交付。</p>
+        </article>
+        <article class="info_card">
+          <h3>using-git-worktrees</h3>
+          <p>适合需要隔离工作区、并行尝试多个实现方向时使用。</p>
+        </article>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>Correct install routes</h2>
+      <div class="card_grid two_cols">
+        <article class="info_card accent_warm">
+          <h3>Claude Code plugin route</h3>
+          <p>如果你是在 Claude Code 里使用 Superpowers，正确路线是先加 marketplace，再安装插件。这才是适合 Claude Code 的主路径，不是用 <code>skill-installer</code> 去装它。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Claude Code</span>
+              <button type="button" class="copy_button" data_copy_text="/plugin marketplace add obra/superpowers-marketplace&#10;/plugin install superpowers@superpowers-marketplace">复制</button>
+            </div>
+            <pre>/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace</pre>
+          </div>
+        </article>
+        <article class="info_card">
+          <h3>Codex local bootstrap route</h3>
+          <p>如果你是在当前这套本地 Codex 环境里使用 Superpowers，这个项目保留的是 clone + bootstrap 路线，更贴近当前 Windows 工作流。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Codex Local</span>
+              <button type="button" class="copy_button" data_copy_text="node C:/Users/Administrator/.codex/superpowers/.codex/superpowers-codex bootstrap">复制</button>
+            </div>
+            <pre>node C:/Users/Administrator/.codex/superpowers/.codex/superpowers-codex bootstrap</pre>
+          </div>
+        </article>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 5: 推荐技能 ==================== -->
+    <section class="tab_panel content_panel" id="panel-recommended">
+
+      <div class="section_header">
+        <p class="section_kicker">Recommended Skills</p>
+        <h2>六个值得优先了解的 skills</h2>
+      </div>
+
+      <div class="info_card accent_cool">
+        <p>每个卡片都写了用途、适合谁用，以及 How to install。不强调你自己敲安装命令，而是提示你直接复制下面的话给 AI。</p>
+      </div>
+
+      <div class="section_divider"></div>
+
+      <div class="card_grid two_cols">
+
+        <article class="info_card">
+          <h3>Frontend Design</h3>
+          <p>用来解决前端页面"AI 味太重"的问题，强制模型在排版、字体、色彩和动效上做出更明确的设计选择。</p>
+          <p class="helper_text">How to install：复制下面的话给 AI，让它帮你安装。适合经常做页面、数据看板、小工具界面的人。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请帮我安装 Frontend Design skill。如果它在官方 curated skills 里，请直接安装；如果不在，请从对应 GitHub 仓库安装。安装完成后提醒我重启 Codex。">复制</button>
+            </div>
+            <pre>请帮我安装 Frontend Design skill。
+如果它在官方 curated skills 里，请直接安装；
+如果不在，请从对应 GitHub 仓库安装。
+安装完成后提醒我重启 Codex。</pre>
+          </div>
+          <a class="text_link" href="https://github.com/anthropics/skills/tree/main/skills/frontend-design">Open repo</a>
+        </article>
+
+        <article class="info_card">
+          <h3>Office Four-Pack</h3>
+          <p>把 <code>docx</code>、<code>xlsx</code>、<code>pdf</code>、<code>pptx</code> 作为一组文档处理能力来看，能显著提升办公文档生成和修改质量。</p>
+          <p class="helper_text">How to install：建议让 AI 按需安装，不一定一次装满四个。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请帮我安装办公文档相关 skills，包括 docx、xlsx、pdf、pptx。请优先使用 skill-installer，如果某个 skill 需要 GitHub 仓库安装，也请一并处理。">复制</button>
+            </div>
+            <pre>请帮我安装办公文档相关 skills，包括 docx、xlsx、pdf、pptx。
+请优先使用 skill-installer，
+如果某个 skill 需要 GitHub 仓库安装，也请一并处理。</pre>
+          </div>
+          <a class="text_link" href="https://github.com/anthropics/skills/tree/main/skills">Open repo</a>
+        </article>
+
+        <article class="info_card">
+          <h3>Web Access</h3>
+          <p>适合需要真实联网、浏览器操作和带登录态读取站内内容的场景，比普通搜索更强。</p>
+          <p class="helper_text">How to install：这是第三方 skill，更适合直接把 GitHub 地址复制给 AI。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/eze-is/web-access/ 安装 Web Access skill。安装完成后提醒我重启 Codex。">复制</button>
+            </div>
+            <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/eze-is/web-access/ 安装 Web Access skill。
+安装完成后提醒我重启 Codex。</pre>
+          </div>
+          <a class="text_link" href="https://github.com/eze-is/web-access/">Open repo</a>
+        </article>
+
+        <article class="info_card">
+          <h3>PUA</h3>
+          <p>适合在 Agent 明显摆烂、陷入重复尝试却不愿继续推进时使用，核心作用是强制它换策略。</p>
+          <p class="helper_text">How to install：第三方 skill，直接复制给 AI 让它处理更省心。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/tanweai/pua 安装 PUA skill。安装完成后提醒我重启 Codex。">复制</button>
+            </div>
+            <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/tanweai/pua 安装 PUA skill。
+安装完成后提醒我重启 Codex。</pre>
+          </div>
+          <a class="text_link" href="https://github.com/tanweai/pua">Open repo</a>
+        </article>
+
+        <article class="info_card">
+          <h3>Claude-mem</h3>
+          <p>提供长期记忆和跨会话检索，适合上下文很长、项目持续时间很久的任务。</p>
+          <p class="helper_text">How to install：第三方 skill，推荐直接把仓库和需求一起交给 AI。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/thedotmack/claude-mem 安装 Claude-mem。安装完成后提醒我重启 Codex。">复制</button>
+            </div>
+            <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/thedotmack/claude-mem 安装 Claude-mem。
+安装完成后提醒我重启 Codex。</pre>
+          </div>
+          <a class="text_link" href="https://github.com/thedotmack/claude-mem">Open repo</a>
+        </article>
+
+        <article class="info_card">
+          <h3>Skill-Creator</h3>
+          <p>它不只是一个可安装 skill，更是把你自己的流程沉淀成 skill 的入口，长期价值最高。</p>
+          <p class="helper_text">How to install：很多环境里它已经内置；如果没有，再让 AI 判断是否需要补装。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Copy this to your AI</span>
+              <button type="button" class="copy_button" data_copy_text="请帮我检查当前环境里是否已经有 skill-creator。如果没有，请用合适的来源帮我安装；如果已经有，请告诉我怎么开始使用它。">复制</button>
+            </div>
+            <pre>请帮我检查当前环境里是否已经有 skill-creator。
+如果没有，请用合适的来源帮我安装；
+如果已经有，请告诉我怎么开始使用它。</pre>
+          </div>
+          <a class="text_link" href="https://claude.com/plugins/skill-creator">Open reference</a>
+        </article>
+
+      </div>
+
+      <div class="section_divider"></div>
+
+      <h2>Skill-Creator 详细教程</h2>
+      <div class="card_grid two_cols">
+        <article class="info_card accent_cool">
+          <h3>Skill-Creator workflow</h3>
+          <p>最直接的用法就是把你要解决的场景、输入、输出和检查清单说清楚，让它直接生成完整 <code>SKILL.md</code> 初稿。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>Describe what you need</span>
+              <button type="button" class="copy_button" data_copy_text="请使用 skill-creator，帮我生成一个用于[场景]的自定义 skill。我会提供目标、输入、输出和检查清单，你直接生成完整 SKILL.md 初稿。">复制</button>
+            </div>
+            <pre>请使用 skill-creator，帮我生成一个用于[场景]的自定义 skill。
+我会提供目标、输入、输出和检查清单，
+你直接生成完整 SKILL.md 初稿。</pre>
+          </div>
+        </article>
+        <article class="info_card accent_warm">
+          <h3>career.skill method</h3>
+          <p>按职业拆是最不容易遗漏的方式——每个职业都有固定的工作流、反复出现的输出物、永远踩不完的坑。</p>
+          <p><b>用法</b>：在 Claude Code 里说 <code>我是 [职业]，帮我拆 Skill</code>，它会输出 5-8 个核心工作流 Skill 的制作指南。</p>
+          <div class="command_block">
+            <div class="command_head">
+              <span>career.skill</span>
+              <button type="button" class="copy_button" data_copy_text="我是 [职业]，帮我拆 Skill">复制</button>
+            </div>
+            <pre>我是 [职业]，帮我拆 Skill</pre>
+          </div>
+        </article>
+      </div>
+
+      <h3>已验证的职业示例</h3>
+      <table>
+        <tr><th>职业</th><th>拆出 Skill 数</th><th>覆盖范围</th></tr>
+        <tr><td>产品经理</td><td>13 个</td><td>需求 → 评审 → 数据 → 实验 → 复盘</td></tr>
+        <tr><td>UI 设计师</td><td>6 个</td><td>设计交付 → 风格指南 → 原型</td></tr>
+        <tr><td>内容运营</td><td>6 个</td><td>内容规划 → 生产 → 分发 → 分析</td></tr>
+      </table>
+
+      <h3>五维度分析框架</h3>
+      <table>
+        <tr><th>维度</th><th>问什么</th><th>对应什么 Skill</th></tr>
+        <tr><td>高频输出物</td><td>最常产出什么文档/报告/代码？</td><td>每类输出物 → 一个 Skill</td></tr>
+        <tr><td>反复判断</td><td>哪些决策高频出现？</td><td>判断框架 → Skill</td></tr>
+        <tr><td>易遗漏检查项</td><td>老手不漏、新手容易漏的？</td><td>检查清单 → Skill</td></tr>
+        <tr><td>跨系统整合</td><td>需要从多个地方收集信息？</td><td>自动化 → Skill</td></tr>
+        <tr><td>固定格式输出</td><td>每次都要重新排版的东西？</td><td>格式固化 → Skill</td></tr>
+      </table>
+
+    </section>
+
+  </div>
+
+  <style>
+  .flow_step { display:flex; align-items:center; gap:12px; padding:10px 16px; margin:6px 0; background:rgba(255,255,255,0.6); border-radius:var(--radius_s); border:1px solid rgba(20,41,63,0.08); }
+  .flow_step .num { width:28px; height:28px; background:linear-gradient(135deg,var(--cool) 0%,#2d8780 100%); color:#f7fffd; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; font-family:"Bahnschrift",sans-serif; flex-shrink:0; }
+  .flow_step .label { font-size:0.9rem; color:var(--muted); }
+  .accent_cool { background:linear-gradient(160deg,rgba(30,106,103,0.12),rgba(255,255,255,0.9) 54%); }
+  </style>
+
+  <script>
+  document.querySelectorAll('.tab_btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('.tab_btn').forEach(function(t){t.classList.remove('active')});
+      document.querySelectorAll('.tab_panel').forEach(function(p){p.classList.remove('active')});
+      this.classList.add('active');
+      document.getElementById('panel-'+this.dataset.tab).classList.add('active');
+      window.scrollTo(0,0);
+    });
+  });
+  document.addEventListener('click',function(e){
+    var btn=e.target.closest('.copy_button');
+    if(!btn)return;
+    var text=btn.getAttribute('data_copy_text');
+    if(!text)return;
+    navigator.clipboard.writeText(text).then(function(){
+      btn.textContent='已复制';btn.classList.add('copied');
+      setTimeout(function(){btn.textContent='复制';btn.classList.remove('copied');},1500);
+    });
+  });
+  function toggleCollapsible(el){
+    el.classList.toggle('open');
+    var content=el.nextElementSibling;
+    content.classList.toggle('show');
+  }
+  </script>
+
+</div>
+</body>
+</html>

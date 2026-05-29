@@ -1,0 +1,535 @@
+{
+  "scan_meta": {
+    "scan_date": "2026-04-02T19:29:26.722738",
+    "scan_mode": "extract",
+    "scan_scope": [
+      ".claude/workflows",
+      ".claude/rules",
+      ".claude/scripts",
+      ".claude/skills",
+      "docs"
+    ],
+    "scan_topic": "full-project-scan",
+    "extraction_method": "local_ast_regex",
+    "ai_tokens_used": 0
+  },
+  "modules": [
+    {
+      "name": ".claude",
+      "path": ".claude",
+      "responsibility": "包含 8 个文件，60 个函数",
+      "exported_symbols": [
+        "run_command",
+        "get_project_dir",
+        "get_last_commit",
+        "build_draft_line",
+        "main",
+        "run_git",
+        "get_project_dir",
+        "is_git_repo",
+        "detect_worktree",
+        "get_current_branch",
+        "get_changed_files",
+        "get_recent_commits_authors",
+        "get_oldest_unstaged_age_minutes",
+        "analyze_workspace",
+        "create_backup_branch",
+        "create_zip_backup",
+        "do_commit",
+        "main",
+        "run_git",
+        "is_git_write_op"
+      ],
+      "dependencies": [],
+      "file_count": 8,
+      "loc": 1576
+    }
+  ],
+  "functions": [
+    {
+      "name": "run_command",
+      "module_id": "mod:.claude",
+      "signature": "run_command(command_args, workdir)",
+      "file_path": ".claude/scripts/append_changelog_draft.py",
+      "line_number": 13,
+      "is_public": true
+    },
+    {
+      "name": "get_project_dir",
+      "module_id": "mod:.claude",
+      "signature": "get_project_dir()",
+      "file_path": ".claude/scripts/append_changelog_draft.py",
+      "line_number": 26,
+      "is_public": true
+    },
+    {
+      "name": "get_last_commit",
+      "module_id": "mod:.claude",
+      "signature": "get_last_commit(project_dir)",
+      "file_path": ".claude/scripts/append_changelog_draft.py",
+      "line_number": 34,
+      "is_public": true
+    },
+    {
+      "name": "build_draft_line",
+      "module_id": "mod:.claude",
+      "signature": "build_draft_line(commit_hash, commit_subject)",
+      "file_path": ".claude/scripts/append_changelog_draft.py",
+      "line_number": 47,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/append_changelog_draft.py",
+      "line_number": 53,
+      "is_public": true
+    },
+    {
+      "name": "run_git",
+      "module_id": "mod:.claude",
+      "signature": "run_git()",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 29,
+      "is_public": true
+    },
+    {
+      "name": "get_project_dir",
+      "module_id": "mod:.claude",
+      "signature": "get_project_dir()",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 41,
+      "is_public": true
+    },
+    {
+      "name": "is_git_repo",
+      "module_id": "mod:.claude",
+      "signature": "is_git_repo(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 48,
+      "is_public": true
+    },
+    {
+      "name": "detect_worktree",
+      "module_id": "mod:.claude",
+      "signature": "detect_worktree(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 53,
+      "is_public": true
+    },
+    {
+      "name": "get_current_branch",
+      "module_id": "mod:.claude",
+      "signature": "get_current_branch(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 85,
+      "is_public": true
+    },
+    {
+      "name": "get_changed_files",
+      "module_id": "mod:.claude",
+      "signature": "get_changed_files(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 90,
+      "is_public": true
+    },
+    {
+      "name": "get_recent_commits_authors",
+      "module_id": "mod:.claude",
+      "signature": "get_recent_commits_authors(d, count)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 103,
+      "is_public": true
+    },
+    {
+      "name": "get_oldest_unstaged_age_minutes",
+      "module_id": "mod:.claude",
+      "signature": "get_oldest_unstaged_age_minutes(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 110,
+      "is_public": true
+    },
+    {
+      "name": "analyze_workspace",
+      "module_id": "mod:.claude",
+      "signature": "analyze_workspace(d, wt_info)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 128,
+      "is_public": true
+    },
+    {
+      "name": "create_backup_branch",
+      "module_id": "mod:.claude",
+      "signature": "create_backup_branch(d)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 177,
+      "is_public": true
+    },
+    {
+      "name": "create_zip_backup",
+      "module_id": "mod:.claude",
+      "signature": "create_zip_backup(d, changed_files)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 184,
+      "is_public": true
+    },
+    {
+      "name": "_remind_lessons",
+      "module_id": "mod:.claude",
+      "signature": "_remind_lessons()",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 221,
+      "is_public": false
+    },
+    {
+      "name": "do_commit",
+      "module_id": "mod:.claude",
+      "signature": "do_commit(d, message)",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 231,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/auto_checkpoint_commit.py",
+      "line_number": 251,
+      "is_public": true
+    },
+    {
+      "name": "run_git",
+      "module_id": "mod:.claude",
+      "signature": "run_git()",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 23,
+      "is_public": true
+    },
+    {
+      "name": "is_git_write_op",
+      "module_id": "mod:.claude",
+      "signature": "is_git_write_op(tool_input)",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 39,
+      "is_public": true
+    },
+    {
+      "name": "analyze_workspace",
+      "module_id": "mod:.claude",
+      "signature": "analyze_workspace(cwd)",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 55,
+      "is_public": true
+    },
+    {
+      "name": "risk_level",
+      "module_id": "mod:.claude",
+      "signature": "risk_level(ws)",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 139,
+      "is_public": true
+    },
+    {
+      "name": "build_message",
+      "module_id": "mod:.claude",
+      "signature": "build_message(ws, level, issues, cmd)",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 194,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/git_safety_check.py",
+      "line_number": 331,
+      "is_public": true
+    },
+    {
+      "name": "resolve_project_dir",
+      "module_id": "mod:.claude",
+      "signature": "resolve_project_dir(project_dir_text)",
+      "file_path": ".claude/scripts/hook_runner.py",
+      "line_number": 13,
+      "is_public": true
+    },
+    {
+      "name": "resolve_script_path",
+      "module_id": "mod:.claude",
+      "signature": "resolve_script_path(project_dir, script_text)",
+      "file_path": ".claude/scripts/hook_runner.py",
+      "line_number": 23,
+      "is_public": true
+    },
+    {
+      "name": "parse_args",
+      "module_id": "mod:.claude",
+      "signature": "parse_args()",
+      "file_path": ".claude/scripts/hook_runner.py",
+      "line_number": 31,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/hook_runner.py",
+      "line_number": 40,
+      "is_public": true
+    },
+    {
+      "name": "parse_json_text",
+      "module_id": "mod:.claude",
+      "signature": "parse_json_text(raw_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 16,
+      "is_public": true
+    },
+    {
+      "name": "read_input_payload",
+      "module_id": "mod:.claude",
+      "signature": "read_input_payload()",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 29,
+      "is_public": true
+    },
+    {
+      "name": "deep_find_command",
+      "module_id": "mod:.claude",
+      "signature": "deep_find_command(payload)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 42,
+      "is_public": true
+    },
+    {
+      "name": "extract_command_text",
+      "module_id": "mod:.claude",
+      "signature": "extract_command_text(payload)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 65,
+      "is_public": true
+    },
+    {
+      "name": "output_decision",
+      "module_id": "mod:.claude",
+      "signature": "output_decision(decision, reason_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 73,
+      "is_public": true
+    },
+    {
+      "name": "is_merge_command",
+      "module_id": "mod:.claude",
+      "signature": "is_merge_command(command_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 79,
+      "is_public": true
+    },
+    {
+      "name": "split_command_tokens",
+      "module_id": "mod:.claude",
+      "signature": "split_command_tokens(command_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 84,
+      "is_public": true
+    },
+    {
+      "name": "extract_merge_source_branch",
+      "module_id": "mod:.claude",
+      "signature": "extract_merge_source_branch(command_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 92,
+      "is_public": true
+    },
+    {
+      "name": "infer_task_name_from_branch",
+      "module_id": "mod:.claude",
+      "signature": "infer_task_name_from_branch(source_branch)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 130,
+      "is_public": true
+    },
+    {
+      "name": "infer_feature_name_from_branch",
+      "module_id": "mod:.claude",
+      "signature": "infer_feature_name_from_branch(source_branch)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 140,
+      "is_public": true
+    },
+    {
+      "name": "resolve_table_path",
+      "module_id": "mod:.claude",
+      "signature": "resolve_table_path(project_dir, source_branch, explicit_table)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 161,
+      "is_public": true
+    },
+    {
+      "name": "load_tasks_from_table",
+      "module_id": "mod:.claude",
+      "signature": "load_tasks_from_table(table_path)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 185,
+      "is_public": true
+    },
+    {
+      "name": "resolve_task_name",
+      "module_id": "mod:.claude",
+      "signature": "resolve_task_name(table_path, source_branch, explicit_task)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 194,
+      "is_public": true
+    },
+    {
+      "name": "check_ref_exists",
+      "module_id": "mod:.claude",
+      "signature": "check_ref_exists(ref_text)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 211,
+      "is_public": true
+    },
+    {
+      "name": "resolve_base_ref",
+      "module_id": "mod:.claude",
+      "signature": "resolve_base_ref(base_ref)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 224,
+      "is_public": true
+    },
+    {
+      "name": "run_scope_verify",
+      "module_id": "mod:.claude",
+      "signature": "run_scope_verify(project_dir, table_path, task_name, base_ref, target_ref)",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 242,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/pre_merge_scope_guard.py",
+      "line_number": 279,
+      "is_public": true
+    },
+    {
+      "name": "normalize_path",
+      "module_id": "mod:.claude",
+      "signature": "normalize_path(path_text)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 13,
+      "is_public": true
+    },
+    {
+      "name": "clean_cell",
+      "module_id": "mod:.claude",
+      "signature": "clean_cell(cell_text)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 21,
+      "is_public": true
+    },
+    {
+      "name": "split_items",
+      "module_id": "mod:.claude",
+      "signature": "split_items(cell_text)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 26,
+      "is_public": true
+    },
+    {
+      "name": "run_git_command",
+      "module_id": "mod:.claude",
+      "signature": "run_git_command(command_args)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 35,
+      "is_public": true
+    },
+    {
+      "name": "check_ref_exists",
+      "module_id": "mod:.claude",
+      "signature": "check_ref_exists(ref_text)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 47,
+      "is_public": true
+    },
+    {
+      "name": "run_git_diff",
+      "module_id": "mod:.claude",
+      "signature": "run_git_diff(base_ref, target_ref)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 53,
+      "is_public": true
+    },
+    {
+      "name": "find_header_indexes",
+      "module_id": "mod:.claude",
+      "signature": "find_header_indexes(headers)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 67,
+      "is_public": true
+    },
+    {
+      "name": "parse_scope_table",
+      "module_id": "mod:.claude",
+      "signature": "parse_scope_table(table_path)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 89,
+      "is_public": true
+    },
+    {
+      "name": "expand_allowed_patterns",
+      "module_id": "mod:.claude",
+      "signature": "expand_allowed_patterns(raw_patterns)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 132,
+      "is_public": true
+    },
+    {
+      "name": "matches_allowed",
+      "module_id": "mod:.claude",
+      "signature": "matches_allowed(file_path, allowed_patterns, allowed_exact)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 153,
+      "is_public": true
+    },
+    {
+      "name": "validate_shared_owner_rules",
+      "module_id": "mod:.claude",
+      "signature": "validate_shared_owner_rules(rows)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 170,
+      "is_public": true
+    },
+    {
+      "name": "build_scope_policy",
+      "module_id": "mod:.claude",
+      "signature": "build_scope_policy(rows, task_name)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 200,
+      "is_public": true
+    },
+    {
+      "name": "verify_scope",
+      "module_id": "mod:.claude",
+      "signature": "verify_scope(changed_files, allowed_patterns, allowed_exact, forbidden_shared)",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 227,
+      "is_public": true
+    },
+    {
+      "name": "main",
+      "module_id": "mod:.claude",
+      "signature": "main()",
+      "file_path": ".claude/scripts/verify_parallel_scope.py",
+      "line_number": 247,
+      "is_public": true
+    }
+  ],
+  "data_structures": [],
+  "data_flows": [],
+  "constraints": [],
+  "impact_items": [],
+  "reference_docs": []
+}

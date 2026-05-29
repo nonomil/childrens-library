@@ -1,0 +1,25 @@
+task_id: "T010"
+title: "128课件差异修复 — 融合AutoResearchClaw方法论"
+status: "pending"
+priority: "P0"
+created: "2026-05-29"
+methodology: "AutoResearchClaw CoPilot Mode"
+human_checkpoints: 6
+subtasks: 8
+estimated_hours: 3.5
+dependencies: ["T1-T9"]
+acceptance_criteria: "python test_all.py → 128/128 + 6个人类介入节点通过"
+files_modified:
+  - "Prj/childrens-library/courseware/shared/courseware.css"
+  - "Prj/childrens-library/courseware/shared/village.js"
+  - "Prj/childrens-library/courseware/shared/village-reporter.js"
+  - "Prj/childrens-library/courseware/shared/village.css"
+  - "Prj/childrens-library/courseware/story-space-d2.html"
+  - "Prj/childrens-library/courseware/story-space-d3.html"
+  - "Prj/childrens-library/courseware/story-space-d4.html"
+  - "128个courseware HTML文件（onerror降级）"
+docs:
+  - "docs/plan/plan-2026-05-29-gap-fix-with-autoresearch.md"
+  - "docs/plan/tasks/T010-128课件差异修复/steps.md"
+  - "docs/plan/验收标准-打勾计划表.md"
+  - "docs/plan/master-plan.md"

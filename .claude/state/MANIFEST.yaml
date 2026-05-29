@@ -1,0 +1,38 @@
+# MANIFEST.yaml — 当前会话运行时状态
+# 职责：仅跟踪当前会话正在做什么，不维护完整任务列表（那是 docs/plan/PLAN.md 的职责）
+
+project:
+  name: "Label_Defect"
+  goal: "印刷标签缺陷检测——PLDD 框架复现与研究"
+  last_updated: "2026-05-09T12:00:00+08:00"
+
+# 活跃任务列表（支持多任务并行，同 lane 串行，不同 lane 可并行）
+active_tasks: []
+  # - task_id: "T001"
+  #   task_name: "论文精读"
+  #   plan_subdir: "T001-论文精读"
+  #   started: "2026-05-09T12:00:00"
+  #   lane: "research"
+
+# 主任务指针（指向 active_tasks 中当前聚焦的任务）
+current_focus:
+  task_id: null
+
+# 会话级状态
+session:
+  gate_approved: false
+  mode: null
+  phase: null
+
+# 项目级事实
+context_snapshot:
+  last_compressed: null
+  summary: ""
+  key_facts:
+    - "Python 3.10+, OpenCV, NumPy, Pillow"
+    - "CC = 大脑（规划/决策），Codex = 双手（代码生成）"
+    - "单次 diff ≤ 200 行硬约束"
+    - "lessons 路径: .claude/memory/lessons/"
+    - "门禁规则: .claude/rules/gate.md"
+    - "Hook 硬拦截: gate_guard.py (PreToolUse) + gate_exit_check.py (Stop)"
+    - "总计划入口: docs/plan/PLAN.md"

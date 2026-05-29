@@ -1,0 +1,16 @@
+{
+  "name": "tavily",
+  "description": "AI-native web search and extraction via Tavily API",
+  "author": {
+    "name": "Tavily",
+    "url": "https://tavily.com"
+  },
+  "mcp": {
+    "command": "npx",
+    "args": ["-y", "tavily-mcp"],
+    "env": {
+      "TAVILY_API_KEY": "${TAVILY_API_KEY}"
+    },
+    "type": "stdio"
+  }
+}

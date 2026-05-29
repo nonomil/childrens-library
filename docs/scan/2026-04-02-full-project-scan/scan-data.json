@@ -1,0 +1,711 @@
+{
+  "scan_meta": {
+    "topic": "full-project-scan",
+    "mode": "M4",
+    "scope": [
+      ".claude/workflows",
+      ".claude/rules",
+      ".claude/scripts",
+      ".claude/skills",
+      "docs"
+    ],
+    "reference_docs": [
+      "docs/CODEBASE_MAP.md"
+    ],
+    "generated_at": "2026-04-02T19:30:00Z",
+    "scan_date": "2026-04-02T19:29:26",
+    "stats": {
+      "modules": 6,
+      "entry_points": 4,
+      "public_apis": 15,
+      "core_data_structures": 4,
+      "data_flows": 4,
+      "constraints": 6,
+      "impact_items": 7,
+      "total_files_scoped": 130,
+      "total_functions": 60,
+      "total_loc_scripts": 1576,
+      "total_skill_definitions": 24,
+      "total_workflow_files": 10,
+      "total_rule_files": 8,
+      "total_docs_files": 112
+    },
+    "scan_mode": "M4"
+  },
+  "module_inventory": [
+    {
+      "module_id": "mod:workflows",
+      "path": ".claude/workflows",
+      "responsibility": "Workflow definitions and routing rules — dispatches user requests to appropriate execution paths",
+      "file_count": 10,
+      "loc": 0,
+      "public_symbols": [
+        "ComplexWorkflow",
+        "DebugWorkflow",
+        "LargebaseWorkflow",
+        "ParallelWorkflow",
+        "ResearchWorkflow",
+        "ReviewWorkflow",
+        "CppBuildWorkflow",
+        "CppTestWorkflow",
+        "InitWorkflow",
+        "ConstantsConfig"
+      ],
+      "dependencies": [
+        "claude-workflow-constants.md"
+      ],
+      "risk_level": "high",
+      "name": ".claude/workflows"
+    },
+    {
+      "module_id": "mod:rules",
+      "path": ".claude/rules",
+      "responsibility": "Project and code style rules loaded by Claude Code on demand — governs code generation quality and patterns",
+      "file_count": 8,
+      "loc": 0,
+      "public_symbols": [
+        "code-style.md",
+        "code-style-cpp.md",
+        "security.md",
+        "security-cpp.md",
+        "testing.md",
+        "testing-cpp.md",
+        "project.md",
+        "workflows.md"
+      ],
+      "dependencies": [],
+      "risk_level": "medium",
+      "name": ".claude/rules"
+    },
+    {
+      "module_id": "mod:scripts",
+      "path": ".claude/scripts",
+      "responsibility": "Git hooks and automation scripts — safety checks, scope guards, checkpoint commits, changelog generation",
+      "file_count": 8,
+      "loc": 1576,
+      "public_symbols": [
+        "auto_checkpoint_commit",
+        "append_changelog_draft",
+        "pre_merge_scope_guard",
+        "verify_parallel_scope",
+        "git_safety_check",
+        "hook_runner",
+        "codex-review",
+        "split"
+      ],
+      "dependencies": [
+        "git",
+        "json",
+        "subprocess",
+        "sys",
+        "os",
+        "zipfile",
+        "datetime"
+      ],
+      "risk_level": "high",
+      "name": ".claude/scripts"
+    },
+    {
+      "module_id": "mod:skills",
+      "path": ".claude/skills",
+      "responsibility": "Skill definitions for Claude Code — 24 reusable action templates covering development lifecycle",
+      "file_count": 24,
+      "loc": 0,
+      "public_symbols": [
+        "scan",
+        "load",
+        "query",
+        "commit",
+        "changelog",
+        "git_ops",
+        "review",
+        "plan",
+        "execute",
+        "test",
+        "memory",
+        "doc-gen",
+        "doc-sync",
+        "orchestrate",
+        "pipeline-init",
+        "cpp-build",
+        "cpp-unit-test",
+        "smoke-test",
+        "report",
+        "project-init",
+        "plan-checklist",
+        "algorithm-spec-review",
+        "ui-screenshot-audit",
+        "ui-ux-design-guide",
+        "industrial-ui-design",
+        "windows-shell-fallback"
+      ],
+      "dependencies": [
+        "SQLite",
+        "tiktoken",
+        "git"
+      ],
+      "risk_level": "medium",
+      "name": ".claude/skills"
+    },
+    {
+      "module_id": "mod:docs",
+      "path": "docs",
+      "responsibility": "Documentation — plans, scan results, reference docs, templates, codebase map",
+      "file_count": 112,
+      "loc": 0,
+      "public_symbols": [
+        "CODEBASE_MAP.md",
+        "plan-archive",
+        "scan-results",
+        "reference-docs",
+        "templates"
+      ],
+      "dependencies": [],
+      "risk_level": "low",
+      "name": "docs"
+    },
+    {
+      "module_id": "mod:image-merger",
+      "path": "image-merger/src",
+      "responsibility": "Sample Python image merger application (CLI + GUI) — demonstrates CC+Codex workflow",
+      "file_count": 5,
+      "loc": 0,
+      "public_symbols": [
+        "merge_images",
+        "batch_merge",
+        "scan_images",
+        "build_rename_map",
+        "MergeApp"
+      ],
+      "dependencies": [
+        "Pillow",
+        "tkinter"
+      ],
+      "risk_level": "low",
+      "name": "image-merger/src"
+    }
+  ],
+  "entry_points": [
+    {
+      "name": "CLAUDE.md",
+      "type": "routing",
+      "trigger": "Claude Code session start",
+      "call_chain_top3": [
+        "Gate check: read requirements, discuss with user, assess complexity",
+        "Scene dispatch: route to debug/review/parallel/complex/simple workflow",
+        "Execute workflow: delegate to Codex or CC based on task complexity"
+      ],
+      "description": "Main routing file — all user requests enter through this gate. Contains scene routing table, mandatory gate check rules, and sub-document index."
+    },
+    {
+      "name": "AGENTS.md",
+      "type": "constraints",
+      "trigger": "Codex session initialization",
+      "call_chain_top3": [
+        "Load Codex-side constraints and behavior rules",
+        "Define Codex output format requirements",
+        "Set quality standards for code generation"
+      ],
+      "description": "Codex-side constraint file — defines how Codex should behave, what output format to use, and quality expectations."
+    },
+    {
+      "name": "scan.py",
+      "type": "tool",
+      "trigger": "Skill tool invocation or CLI",
+      "call_chain_top3": [
+        "cmd_scan: initialize scan with mode/scope/topic",
+        "cmd_extract: local AST/regex extraction of modules and functions",
+        "cmd_load: import extracted data into SQLite for structured queries"
+      ],
+      "description": "Structured scan tool with 8 subcommands (scan, extract, load, query, verify, measure, merge, export-to-claude-md). 2392 lines, 53+ functions."
+    },
+    {
+      "name": ".claude/fbm/fbm-mcp.js",
+      "type": "server",
+      "trigger": "MCP server startup",
+      "call_chain_top3": [
+        "Initialize FBM memory MCP server",
+        "Register tools: search, append, list, read",
+        "Serve memory operations to Claude Code"
+      ],
+      "description": "FBM (Flash-Based Memory) MCP server — provides cross-session memory via Markdown files with semantic search capabilities."
+    }
+  ],
+  "data_structures": [
+    {
+      "name": "pipeline/state.json",
+      "location": "pipeline/state.json",
+      "purpose": "Tracks the multi-agent pipeline lifecycle state",
+      "schema": {
+        "state": "enum(idle, planning, executing, reviewing, testing, reporting, done)",
+        "current_step": "string",
+        "started_at": "ISO 8601 timestamp",
+        "updated_at": "ISO 8601 timestamp"
+      },
+      "owner": "orchestrate skill",
+      "accessors": [
+        "Claude Code",
+        "Codex (read-only)"
+      ]
+    },
+    {
+      "name": "thread-registry",
+      "location": ".coordination/threads/*.yaml",
+      "purpose": "Registry of active Codex threads for parallel development",
+      "schema": {
+        "thread_id": "string (UUID or Codex thread ID)",
+        "role": "string (e.g. implement-module-A)",
+        "status": "enum(idle, working, completed, failed)",
+        "owned_paths": "list[string] (file paths this thread owns)",
+        "heartbeat": "ISO 8601 timestamp"
+      },
+      "owner": "parallel workflow",
+      "accessors": [
+        "verify_parallel_scope.py",
+        "pre_merge_scope_guard.py"
+      ]
+    },
+    {
+      "name": "scan.db",
+      "location": "docs/scan/*/scan.db",
+      "purpose": "SQLite database storing structured scan results for query and verification",
+      "schema": {
+        "tables": [
+          "scan_meta",
+          "modules",
+          "functions",
+          "dataflows",
+          "data_structures",
+          "constraints",
+          "impact_items",
+          "reference_docs",
+          "file_hashes"
+        ]
+      },
+      "owner": "scan.py (largebase-structured-scan skill)",
+      "accessors": [
+        "scan.py cmd_query",
+        "scan.py cmd_verify",
+        "scan.py cmd_measure"
+      ]
+    },
+    {
+      "name": "extract-data.json",
+      "location": "docs/scan/*/extract-data.json",
+      "purpose": "Local extraction output from AST/regex analysis — intermediate format before load into scan.db",
+      "schema": {
+        "scan_meta": "object (scan_date, scan_mode, scan_scope, scan_topic, extraction_method, ai_tokens_used)",
+        "modules": "array of {name, path, responsibility, exported_symbols, dependencies, file_count, loc}",
+        "functions": "array of {name, module_id, signature, file_path, line_number, is_public}",
+        "data_structures": "array",
+        "data_flows": "array",
+        "constraints": "array",
+        "impact_items": "array",
+        "reference_docs": "array"
+      },
+      "owner": "scan.py cmd_extract",
+      "accessors": [
+        "scan.py cmd_load"
+      ]
+    }
+  ],
+  "data_flows": [
+    {
+      "id": "flow:main-request",
+      "name": "User Request Lifecycle",
+      "description": "Primary request flow from user input through Claude Code gate to execution and commit",
+      "steps": [
+        "User request received",
+        "CLAUDE.md gate check: read requirements, assess complexity (5 criteria)",
+        "Search .claude/memory/ for historical lessons",
+        "User confirms requirements",
+        "Route to appropriate workflow (debug/review/parallel/complex/simple)",
+        "Delegate to Codex (code tasks) or CC (trivial/non-code)",
+        "Two-round review (CC + Codex depth for diff>100 lines)",
+        "Validation gate: functionality, tests, types, no API break",
+        "Git commit with conventional commit message"
+      ],
+      "data_carried": [
+        "user_requirements",
+        "complexity_assessment",
+        "workflow_selection",
+        "codex_output",
+        "review_result"
+      ],
+      "modules_involved": [
+        "mod:workflows",
+        "mod:rules",
+        "mod:scripts",
+        "mod:skills"
+      ]
+    },
+    {
+      "id": "flow:scan-pipeline",
+      "name": "Scan Pipeline",
+      "description": "Structured scan lifecycle: extract code structure, load into DB, query, verify, export",
+      "steps": [
+        "cmd_scan: initialize scan with mode (M1-M4), scope, topic",
+        "cmd_extract: local AST/regex extraction of modules, functions, imports",
+        "cmd_load: import extract-data.json into scan.db (SQLite)",
+        "cmd_query: structured + fuzzy queries against scan.db",
+        "cmd_verify: artifact completeness check (required fields present)",
+        "cmd_export_to_claude_md: generate CLAUDE.md scan summary section"
+      ],
+      "data_carried": [
+        "scan_config",
+        "extract-data.json",
+        "scan.db",
+        "query_results",
+        "verification_report"
+      ],
+      "modules_involved": [
+        "mod:skills",
+        "mod:docs"
+      ]
+    },
+    {
+      "id": "flow:hook-chain",
+      "name": "Git Hook Chain",
+      "description": "Sequential hook execution for every tool use that touches the filesystem",
+      "steps": [
+        "PreToolUse: git_safety_check.py — analyze workspace risk (HIGH>=60, MEDIUM>=25)",
+        "Tool execution proceeds if safety check passes",
+        "PostToolUse: append_changelog_draft.py — record changed files for changelog",
+        "Stop: auto_checkpoint_commit.py — auto-commit if unstaged changes exceed threshold",
+        "PreToolUse (merge): pre_merge_scope_guard.py — verify merge scope against task table",
+        "PreToolUse (parallel): verify_parallel_scope.py — verify parallel dev scope isolation"
+      ],
+      "data_carried": [
+        "tool_input",
+        "workspace_state",
+        "risk_score",
+        "changed_files",
+        "scope_table"
+      ],
+      "modules_involved": [
+        "mod:scripts"
+      ]
+    },
+    {
+      "id": "flow:parallel-dev",
+      "name": "Parallel Development",
+      "description": "Multi-agent parallel development workflow with scope isolation",
+      "steps": [
+        "Plan task and identify independent subtasks",
+        "Decouple: define owned file paths per subtask",
+        "Create worktrees for each parallel track",
+        "Launch independent Codex sessions per worktree",
+        "verify_parallel_scope.py: enforce no cross-boundary modifications",
+        "pre_merge_scope_guard.py: verify merge diff against declared scope",
+        "Merge results after all tracks complete"
+      ],
+      "data_carried": [
+        "task_plan",
+        "scope_table",
+        "thread_registry",
+        "diff_results",
+        "merge_decision"
+      ],
+      "modules_involved": [
+        "mod:workflows",
+        "mod:scripts"
+      ]
+    }
+  ],
+  "api_surface": [
+    {
+      "name": "analyze_workspace",
+      "signature": "analyze_workspace(d, wt_info) -> dict",
+      "file_line": ".claude/scripts/auto_checkpoint_commit.py:128",
+      "module": "mod:scripts",
+      "callers": [
+        "auto_checkpoint_commit.main"
+      ],
+      "description": "Analyzes workspace state: branch, changed files, unstaged age, worktree detection. Returns workspace analysis dict for checkpoint decision.",
+      "compatibility_strategy": "Return dict keys are consumed by main(); new keys are safe, removing keys breaks callers"
+    },
+    {
+      "name": "risk_level",
+      "signature": "risk_level(ws) -> str",
+      "file_line": ".claude/scripts/git_safety_check.py:139",
+      "module": "mod:scripts",
+      "callers": [
+        "git_safety_check.main",
+        "build_message"
+      ],
+      "description": "Computes risk level from workspace state. Returns 'HIGH' (score>=60), 'MEDIUM' (score>=25), or 'LOW'. Blocks dangerous git operations at HIGH risk.",
+      "compatibility_strategy": "Threshold values are constants; changing return enum values breaks all callers"
+    },
+    {
+      "name": "build_message",
+      "signature": "build_message(ws, level, issues, cmd) -> str",
+      "file_line": ".claude/scripts/git_safety_check.py:194",
+      "module": "mod:scripts",
+      "callers": [
+        "git_safety_check.main"
+      ],
+      "description": "Builds human-readable risk assessment message for Claude Code hook output.",
+      "compatibility_strategy": "Output format consumed by CC hook parser; maintain JSON structure"
+    },
+    {
+      "name": "verify_scope",
+      "signature": "verify_scope(changed_files, allowed_patterns, allowed_exact, forbidden_shared) -> dict",
+      "file_line": ".claude/scripts/verify_parallel_scope.py:227",
+      "module": "mod:scripts",
+      "callers": [
+        "verify_parallel_scope.main"
+      ],
+      "description": "Verifies that changed files fall within allowed scope patterns. Returns {ok, violations, warnings}.",
+      "compatibility_strategy": "Return dict structure is contract; new fields safe, removing fields breaks callers"
+    },
+    {
+      "name": "build_scope_policy",
+      "signature": "build_scope_policy(rows, task_name) -> dict",
+      "file_line": ".claude/scripts/verify_parallel_scope.py:200",
+      "module": "mod:scripts",
+      "callers": [
+        "verify_parallel_scope.main"
+      ],
+      "description": "Parses scope table rows and builds policy dict with allowed_patterns, allowed_exact, forbidden_shared.",
+      "compatibility_strategy": "Policy dict keys consumed by verify_scope(); maintain key names"
+    },
+    {
+      "name": "parse_scope_table",
+      "signature": "parse_scope_table(table_path) -> list[dict]",
+      "file_line": ".claude/scripts/verify_parallel_scope.py:89",
+      "module": "mod:scripts",
+      "callers": [
+        "verify_parallel_scope.main"
+      ],
+      "description": "Parses Markdown scope table into structured row dicts with task, owner, paths, shared columns.",
+      "compatibility_strategy": "Table column names are implicit contract; document any column changes"
+    },
+    {
+      "name": "run_scope_verify",
+      "signature": "run_scope_verify(project_dir, table_path, task_name, base_ref, target_ref) -> dict",
+      "file_line": ".claude/scripts/pre_merge_scope_guard.py:242",
+      "module": "mod:scripts",
+      "callers": [
+        "pre_merge_scope_guard.main"
+      ],
+      "description": "Runs full scope verification: loads table, resolves task, computes diff, checks violations. Returns {approved, violations}.",
+      "compatibility_strategy": "Return dict consumed by main() for allow/block decision"
+    },
+    {
+      "name": "extract_merge_source_branch",
+      "signature": "extract_merge_source_branch(command_text) -> str | None",
+      "file_line": ".claude/scripts/pre_merge_scope_guard.py:92",
+      "module": "mod:scripts",
+      "callers": [
+        "pre_merge_scope_guard.main"
+      ],
+      "description": "Parses git merge command text to extract source branch name. Returns None if not a merge command.",
+      "compatibility_strategy": "Return type None on failure is contract; caller checks for None"
+    },
+    {
+      "name": "infer_task_name_from_branch",
+      "signature": "infer_task_name_from_branch(source_branch) -> str | None",
+      "file_line": ".claude/scripts/pre_merge_scope_guard.py:130",
+      "module": "mod:scripts",
+      "callers": [
+        "pre_merge_scope_guard.main"
+      ],
+      "description": "Infers task name from branch naming convention (e.g. 'feat/task-name' -> 'task-name').",
+      "compatibility_strategy": "Branch naming convention is implicit; document any pattern changes"
+    },
+    {
+      "name": "cmd_extract",
+      "signature": "cmd_extract(args) -> None",
+      "file_line": "scan.py",
+      "module": "mod:skills",
+      "callers": [
+        "scan.py CLI / Skill tool"
+      ],
+      "description": "Performs local AST/regex extraction of code structure. Outputs extract-data.json with modules, functions, imports.",
+      "compatibility_strategy": "Output JSON schema is consumed by cmd_load; maintain schema contract"
+    },
+    {
+      "name": "cmd_verify",
+      "signature": "cmd_verify(args) -> None",
+      "file_line": "scan.py",
+      "module": "mod:skills",
+      "callers": [
+        "scan.py CLI / Skill tool"
+      ],
+      "description": "Verifies scan artifact completeness: checks all required fields in scan-data.json and scan.db tables.",
+      "compatibility_strategy": "Verification criteria must match scan-data.json schema"
+    },
+    {
+      "name": "cmd_query",
+      "signature": "cmd_query(args) -> None",
+      "file_line": "scan.py",
+      "module": "mod:skills",
+      "callers": [
+        "scan.py CLI / Skill tool"
+      ],
+      "description": "Structured + fuzzy query against scan.db. Supports querying modules, functions, constraints, impact items.",
+      "compatibility_strategy": "Query interface is stable; new query types are additive"
+    },
+    {
+      "name": "validate_scan_data",
+      "signature": "validate_scan_data(data) -> list[str]",
+      "file_line": "scan.py",
+      "module": "mod:skills",
+      "callers": [
+        "cmd_load",
+        "cmd_verify"
+      ],
+      "description": "Schema validation for scan-data.json. Returns list of error strings (empty = valid).",
+      "compatibility_strategy": "Validation rules must match scan-data.json schema; errors are strings"
+    },
+    {
+      "name": "create_zip_backup",
+      "signature": "create_zip_backup(d, changed_files) -> str",
+      "file_line": ".claude/scripts/auto_checkpoint_commit.py:184",
+      "module": "mod:scripts",
+      "callers": [
+        "auto_checkpoint_commit.main"
+      ],
+      "description": "Creates ZIP backup of changed files before checkpoint commit. Returns backup file path.",
+      "compatibility_strategy": "Return value is backup path string; caller logs it"
+    },
+    {
+      "name": "do_commit",
+      "signature": "do_commit(d, message) -> bool",
+      "file_line": ".claude/scripts/auto_checkpoint_commit.py:231",
+      "module": "mod:scripts",
+      "callers": [
+        "auto_checkpoint_commit.main"
+      ],
+      "description": "Stages all changes and creates git commit with given message. Returns True on success.",
+      "compatibility_strategy": "Boolean return is contract; caller checks for commit success"
+    }
+  ],
+  "reference_constraints": [
+    {
+      "source": "claude-workflow-constants.md",
+      "constraint": "Codex 4 mandatory params: model, sandbox, approval-policy, reasoning",
+      "impact": "All Codex MCP calls must include all 4 parameters with exact values (model=gpt-5.4, sandbox=danger-full-access, approval-policy=on-failure)",
+      "conflict_with": "",
+      "adopt": "claude-workflow-constants.md",
+      "risk_level": "high"
+    },
+    {
+      "source": "claude-workflow-constants.md",
+      "constraint": "Single diff <= 200 lines (hard limit)",
+      "impact": "Forces task decomposition; any change exceeding 200 lines must be split into independent commits",
+      "conflict_with": "",
+      "adopt": "claude-workflow-constants.md",
+      "risk_level": "high"
+    },
+    {
+      "source": "claude-workflow-constants.md",
+      "constraint": "File operation boundary: no rm -rf, no git reset --hard, no force push to main/master",
+      "impact": "Safety protection against destructive operations; block-delete.py hook enforces this",
+      "conflict_with": "",
+      "adopt": "claude-workflow-constants.md",
+      "risk_level": "high"
+    },
+    {
+      "source": "claude-workflow-constants.md",
+      "constraint": "--scope must not include .git, node_modules, .venv, docs/scan",
+      "impact": "Scan and parallel scope operations must exclude these directories to prevent noise and accidental modification",
+      "conflict_with": "",
+      "adopt": "claude-workflow-constants.md",
+      "risk_level": "medium"
+    },
+    {
+      "source": "scan.py / largebase-structured-scan skill",
+      "constraint": "scan-data.json must pass schema validation before load into scan.db",
+      "impact": "Ensures data integrity; invalid scan data is rejected with error messages listing missing/invalid fields",
+      "conflict_with": "",
+      "adopt": "scan.py validate_scan_data()",
+      "risk_level": "medium"
+    },
+    {
+      "source": "CODEBASE_MAP.md",
+      "constraint": "No new third-party dependencies beyond Pillow/tkinter for image-merger",
+      "impact": "Keeps sample application dependency-free; any new import must be from Python stdlib",
+      "conflict_with": "",
+      "adopt": "CODEBASE_MAP.md",
+      "risk_level": "medium"
+    }
+  ],
+  "impact_matrix": [
+    {
+      "change_point": "claude-workflow-constants.md",
+      "direct_impact": "All workflows reference constants for Codex params, diff limits, file boundaries, and gate checks",
+      "indirect_impact": "Every user request flow passes through constants; affects CC/Codex role boundary, approval policies, scope exclusions",
+      "validation_point": "Full workflow regression: trigger each workflow path and verify constants are respected",
+      "risk_level": "high",
+      "affected_modules": [
+        "mod:workflows",
+        "mod:scripts",
+        "mod:skills"
+      ]
+    },
+    {
+      "change_point": "scan.py",
+      "direct_impact": "All scan operations: extract, load, query, verify, measure, merge, export-to-claude-md",
+      "indirect_impact": "scan-data.json schema changes affect all downstream consumers (largebase-scan skill, CLAUDE.md scan summary)",
+      "validation_point": "Run full scan pipeline: extract -> load -> query -> verify -> export",
+      "risk_level": "high",
+      "affected_modules": [
+        "mod:skills",
+        "mod:docs"
+      ]
+    },
+    {
+      "change_point": ".claude/scripts/git_safety_check.py",
+      "direct_impact": "All git write operations pass through safety check hook (PreToolUse)",
+      "indirect_impact": "Risk scoring threshold changes affect which operations are blocked/allowed; affects all workflows that modify files",
+      "validation_point": "Test HIGH/MEDIUM/LOW risk scenarios with various workspace states",
+      "risk_level": "high",
+      "affected_modules": [
+        "mod:scripts",
+        "mod:workflows"
+      ]
+    },
+    {
+      "change_point": ".claude/scripts/pre_merge_scope_guard.py",
+      "direct_impact": "All git merge operations are scope-checked before execution",
+      "indirect_impact": "Branch naming convention changes affect task name inference; table path resolution affects parallel workflow",
+      "validation_point": "Test merge scenarios: in-scope merge, out-of-scope merge, missing task table",
+      "risk_level": "high",
+      "affected_modules": [
+        "mod:scripts"
+      ]
+    },
+    {
+      "change_point": ".claude/scripts/verify_parallel_scope.py",
+      "direct_impact": "Parallel development scope verification — enforces file ownership boundaries",
+      "indirect_impact": "Scope table parsing changes affect all parallel workflows; pattern matching changes affect what files are allowed/denied",
+      "validation_point": "Test parallel scope scenarios: exact match, pattern match, shared file violation, forbidden shared file",
+      "risk_level": "high",
+      "affected_modules": [
+        "mod:scripts"
+      ]
+    },
+    {
+      "change_point": ".claude/rules/*.md",
+      "direct_impact": "Code generation quality rules loaded by Claude Code for all code tasks",
+      "indirect_impact": "Style guide changes affect Codex output formatting; security rules affect what patterns are flagged",
+      "validation_point": "Generate code with Codex and verify rules are applied in output",
+      "risk_level": "medium",
+      "affected_modules": [
+        "mod:rules"
+      ]
+    },
+    {
+      "change_point": ".claude/skills/*/SKILL.md",
+      "direct_impact": "Skill routing and execution behavior — changes trigger conditions or execution steps",
+      "indirect_impact": "Users relying on specific skill behavior may see different results; skill selection logic in CLAUDE.md may need updates",
+      "validation_point": "Trigger each modified skill and verify execution matches specification",
+      "risk_level": "medium",
+      "affected_modules": [
+        "mod:skills",
+        "mod:workflows"
+      ]
+    }
+  ]
+}

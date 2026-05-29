@@ -1,0 +1,21 @@
+{
+  "name": "tavily-marketplace",
+  "owner": {
+    "name": "Tavily",
+    "url": "https://tavily.com"
+  },
+  "metadata": {
+    "description": "AI-native web search and extraction via Tavily API",
+    "version": "0.2.18"
+  },
+  "plugins": [
+    {
+      "name": "tavily",
+      "source": "./plugins/tavily",
+      "description": "Web search, URL extraction, site crawling, sitemap, and deep research via Tavily MCP server.",
+      "version": "0.2.18",
+      "category": "web tools",
+      "keywords": ["search", "web", "extract", "crawl", "research", "mcp", "tavily"]
+    }
+  ]
+}

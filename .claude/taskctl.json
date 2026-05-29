@@ -1,0 +1,10 @@
+{
+  "auto_advanced": {
+    "parallel_active_task_limit": 3,
+    "approval_target": {
+      "gate": "coordinator",
+      "review": "reviewer",
+      "merge": "merge-owner"
+    }
+  }
+}

@@ -1,0 +1,341 @@
+# AI辅助儿童课件·绘本·HTML开发 — 全景指南
+
+# AI辅助儿童课件·绘本·HTML开发 — 全景指南
+
+> 面向 nonomil 绘本图书馆项目，多角度分析 \| 2026\-05\-28
+> 
+> 好，资料已经够充分了，现在整合成完整的多角度分析报告。报告整理完毕。以下是核心要点的快速导读：
+> 
+> ---
+> 
+> ## 五个角度的核心发现
+> 
+> **① 开源引擎选型** — 最值得关注的新发现是 PBS\-KIDS HTML5\-Storybook，这是PBS官方开发的HTML5故事书引擎，允许快速开发跨平台互动故事书，混合 DOM 和 Canvas 元素来实现响应式图片、文字和动画，并支持音频。这是现存最对口你项目的开源参考，可以直接拆源码学习。
+> 
+> 分支叙事方面，Ink/inkjs 是开源叙事脚本语言，支持在任何现代浏览器中运行分支故事，专业游戏（80 Days、Heaven\&\#39;s Vault）都用它，MIT授权 — 比 WebGAL 更轻量，且更适合让 AI 生成脚本内容。
+> 
+> **② AI辅助开发工作流** — 值得关注的儿童AI教育工具包括：ChatGPT/Claude/Gemini 用于互动故事；StoryWizard、BookCreator AI 生成儿童安全数字故事；Khanmigo Kids 做引导式学习对话；Scribble Diffusion 和 DALL·E 用于儿童友好图像生成。配图推荐 Gemini 3\.1 Flash Image（理解教育场景，速度快）。
+> 
+> **③ 家庭教育AI设计** — 研究数据很有说服力：AI个性化辅导提升学习效果20\-30%（Stanford HAI），但家长参与使效果翻倍；8周以上坚持使用同一工具的孩子，效果明显优于频繁换工具的孩子。这说明你的项目要有**角色一致性**（Steve/Alex/Bob）和**课程连续性**，不能每课换面貌。
+> 
+> **④ 差异化机会确认** — Google 已推出 Gemini Guided Learning 模式，作为个人 AI 学习伴侣，通过追问和开放式问题引导学生深入探究，而非直接给答案。这说明大厂在做的是辅助型AI；你的绘本走的是**沉浸叙事\+互动实验**路线，差异化空间还很大。
+> 
+> **⑤ 最小可行路径** — 对你项目最有 ROI 的三步：PBS\-KIDS 引擎学习（今天）→ Edge\-TTS 接入有声绘本（本周）→ Ink分支故事原型（下周）。不需要大改现有架构，逐步叠加就能从「能用」升到「好玩」。
+> 
+> 
+
+---
+
+## 角度一：开源引擎选型地图
+
+### 🗺️ 全景选型一览
+
+```Plain Text
+你的内容是什么？
+│
+├─ 纯故事阅读（有页感）→ Turn.js ✅ 已在用，够了
+│
+├─ 物理/科学互动实验 → Canvas 2D（齿轮/太阳系/电路）
+│                        → PixiJS（等交互复杂了再切）
+│
+├─ 分支剧情·孩子做选择 ──→ WebGAL ⭐ 推荐优先探索
+│                          → Ink + inkjs ⭐⭐ 更轻量
+│                          → Twine → 导出HTML（适合快速原型）
+│
+├─ 游戏化闯关 → Phaser（轻游戏引擎）
+│
+└─ 混合内容（故事+互动） → 你的 TEMPLATE_CONFIG 架构 ✅
+```
+
+---
+
+### 📦 核心开源项目清单（附链接）
+
+#### 🔖 A\. 故事/翻页类
+
+#### 🎮 B\. 分支叙事类（最大差异化机会）
+
+#### 🧪 C\. 互动实验/游戏类
+
+#### 🤖 D\. AI生成/课堂类
+
+---
+
+## 角度二：AI辅助开发工作流
+
+### 🔄 完整 AI 开发流水线
+
+```Plain Text
+[选题/课程设计]
+      ↓
+Claude/DeepSeek → 生成课程大纲 + 故事脚本 + JSON CONFIG
+      ↓
+[配图生成]
+Gemini 3.1 Flash Image / Flux / Seedream → 批量生成插图
+（儿童水彩风 prompt：warm watercolor, children illustration, 
+  soft colors, cute character, educational）
+      ↓
+[代码生成]
+Claude Code / Cursor → 根据 TEMPLATE_CONFIG 生成 HTML 单文件
+      ↓
+[语音合成]
+Edge-TTS（免费）或 Qwen3-TTS（高质量）→ 角色配音
+      ↓
+[分支逻辑]（可选）
+Ink脚本 或 WebGAL剧本 → AI生成分支故事 → 渲染到课件
+      ↓
+[发布]
+GitHub Pages → nonomil.github.io/childrens-library
+```
+
+### 🧠 各步骤推荐 AI 工具
+
+### 💡 一个实操 Prompt 示例
+
+```Plain Text
+# 给 Claude 的课件生成 Prompt
+
+你是一个儿童教育课件作者，帮我生成一个齿轮主题课件的 TEMPLATE_CONFIG。
+
+要求：
+- 目标年龄：4-7岁
+- 主角：Steve（小男孩）、Alex（小女孩）、Bob（老爷爷）
+- 主题：齿轮传动
+- 课件结构：封面→故事（3页）→互动实验→小游戏（配对）→庆祝
+- 每页有：配图描述（英文 prompt）、旁白文字（中文）、Steve的对话
+- 输出格式：JSON（TEMPLATE_CONFIG结构）
+
+同时生成：每张图的 Gemini 配图 prompt（水彩风格，角色一致性描述）
+```
+
+---
+
+## 角度三：课件/绘本主题内容设计方案
+
+### 🌍 推荐主题扩展路线图
+
+基于现有齿轮主题（✅已完成），建议按以下顺序扩展：
+
+```Plain Text
+第1批（科学探索，Canvas互动）
+├─ ⚙️  齿轮传动（已完成）
+├─ 🌍  太阳系大冒险（行星轨道/公转）
+├─ 💧  水的旅程（水循环/蒸发/降雨）
+└─ 🔌  小小电路师（电路/开关/LED）
+
+第2批（语文，翻页书+有声）
+├─ 🐻  小熊的一天（象形字：日月水火）
+├─ 🌈  颜色王国（混色+识字）
+└─ 🌱  种子的梦想（植物生长+量词）
+
+第3批（数学，游戏化）
+├─ 🍎  果园里的加减法（10以内加减）
+├─ 🔺  形状大侦探（几何图形识别）
+└─ 📏  谁更长？（比较测量）
+
+第4批（英语，Galgame式）
+├─ 🏫  Steve的第一天（入学+打招呼）
+├─ 🛒  Alex去超市（数量+价格英语）
+└─ 🌙  Bob讲睡前故事（情感词汇）
+```
+
+### 🎭 每个主题的内容结构模板
+
+```Plain Text
+[封面页]    主题插图 + 大标题 + "点击开始" 按钮
+[故事页1-3] 角色叙事 + 配图 + 旁白语音
+[知识页]    核心概念图解（Canvas交互 或 静态图）
+[实验页]    拖拽/点击互动（Canvas全屏）
+[游戏页]    配对/排序/拼图（小游戏）
+[测验页]    2-3题单选（星星奖励）
+[庆祝页]    烟花动画 + "你真棒！" + 分享按钮
+```
+
+### 🌟 Galgame式分支设计示例（英语课）
+
+```Plain Text
+// Ink 脚本示例：Steve 的第一天
+VAR courage = 0
+
+Steve走进教室，看到一个陌生的小朋友...
+
+* [走过去说 "Hello！"]
+    -> brave_greeting
+* [躲在角落不说话]
+    -> shy_ending
+
+=== brave_greeting ===
+"Hello! I'm Steve. What's your name?"
+~ courage = courage + 1
+Alex笑着说："I'm Alex! Nice to meet you!"
+-> lesson_words
+
+=== shy_ending ===
+Bob爷爷轻轻走过来...
+"Steve, everyone feels nervous sometimes. 
+ Let's try again together!"
+-> brave_greeting
+```
+
+---
+
+## 角度四：AI辅助家庭教育设计
+
+### 🏠 家庭教育 AI 工具生态（2026）
+
+#### 分角色工具推荐
+
+**👶 给孩子直接用**
+
+**👨‍👩‍👧 给家长/教育者用**
+
+### 📊 AI家庭教育效果数据（2025研究）
+
+来源：Stanford HAI、Carnegie Learning、Common Sense Media 等：
+
+- AI个性化辅导提升学习效果 **20\-30%**（Stanford HAI, 2025）
+
+- **家长参与使效果翻倍**——偶尔互动的AI工具学习收益是独立使用的2倍
+
+- 8周以上坚持使用同一工具的孩子，效果显著优于频繁换工具的孩子
+
+- 86% 的全球学生已在学习中使用AI（Digital Education Council, 2025）
+
+### 🧩 家庭教育 AI 使用场景设计
+
+```Plain Text
+早晨唤醒（10分钟）
+  → 打开绘本课件：Steve今天去哪里？
+  → 孩子选择故事分支
+  → Edge-TTS朗读，模仿跟读
+
+睡前故事（15分钟）
+  → 家长用Claude生成今天主题的睡前故事
+  → prompt: "用温柔的语气，200字，主角是我家孩子的名字，
+             今天学了[齿轮]，编一个睡前小故事"
+  → Qwen3-TTS生成音频（Chelsie温柔女声）
+
+周末探索（30分钟）
+  → 打开互动实验室（Canvas课件）
+  → 孩子自己拖拽齿轮/调节参数
+  → 家长旁观，孩子发现后提问
+```
+
+### 🔑 家庭AI教育的5条设计原则
+
+1. **AI做脚手架，家长做见证者** — 不是让AI替代陪伴，而是让AI备课省时，家长把时间用在陪伴上
+
+2. **孩子的选择要真正改变故事** — Galgame式分支不是装饰，选择产生实际不同结局才有意义
+
+3. **声音比文字先行** — 4\-7岁孩子是听觉优先学习者，先让TTS朗读，孩子跟读，文字是辅助
+
+4. **每次课件要有一个\&\#34;惊喜时刻\&\#34;** — 齿轮眨眼/星星爆炸/角色跳舞，让孩子期待下一次打开
+
+5. **家长的提问比AI的答案更重要** — \&\#34;你觉得为什么小齿轮转得更快？\&\#34; 比任何AI解释都有效
+
+---
+
+## 角度五：针对你项目的具体建议路线
+
+### 📍 现在（本周）
+
+```Plain Text
+① 给 gears-transmission-v2 钉死生命周期契约
+   mount → unmount → resize → update
+
+② 用 Edge-TTS 给齿轮课件加旁白
+   zh-CN-XiaoxiaoNeural（晓晓，温柔女声，最适合儿童内容）
+
+③ 研究 PBS-KIDS/HTML5-Storybook 源码
+   github.com/PBS-KIDS/HTML5-Storybook
+   学习它的页面切换 + 音频同步方案
+```
+
+### 📍 下周（差异化）
+
+```Plain Text
+④ 用 Twine 快速做一个「Steve的齿轮冒险」分支原型
+   → 不用写代码，拖节点即可
+   → 验证「孩子愿不愿意做选择」这个假设
+
+⑤ 把 Ink 脚本语法教给 Claude
+   → 用Claude批量生成英语课的分支对话脚本
+   → 用 inkjs 渲染到现有HTML课件中
+```
+
+### 📍 下个月（规模化）
+
+```Plain Text
+⑥ 配图流水线
+   Claude生成图片描述 → Gemini 3.1 Flash Image批量出图
+   → 存到 /assets/images/ → images.status = "ready"
+
+⑦ Steve/Alex/Bob 专属声音克隆
+   Qwen3-TTS-VC：录制3-5秒参考音频 → 克隆角色声音
+   → 每个角色有自己的声线，孩子能认出Steve在说话
+
+⑧ 太阳系主题课件
+   复用齿轮引擎 → 改 TEMPLATE_CONFIG → 新主题上线
+```
+
+---
+
+## 快速参考链接汇总
+
+### 开源项目
+
+- PBS\-KIDS HTML5\-Storybook: https://github\.com/PBS\-KIDS/HTML5\-Storybook
+
+- WebGAL: https://github\.com/OpenWebGAL/WebGAL
+
+- WebGAL\_Terre（编辑器）: https://github\.com/OpenWebGAL/WebGAL\_Terre
+
+- Ink（叙事脚本语言）: https://github\.com/inkle/ink
+
+- Twine（在线版）: https://twinery\.org
+
+- Phaser（游戏引擎）: https://github\.com/phaserjs/phaser
+
+- Matter\.js（物理引擎）: https://github\.com/liabru/matter\-js
+
+- p5\.js（创意编程）: https://github\.com/processing/p5\.js
+
+- OpenMAIC（清华AI课堂）: https://github\.com/THU\-MAIC/OpenMAIC
+
+- Remotion（React视频）: https://github\.com/remotion\-dev/remotion
+
+- buildfastwithai/storybook: https://github\.com/buildfastwithai/storybook
+
+### TTS工具
+
+- Edge\-TTS（Python库）: https://github\.com/rany2/edge\-tts
+
+- Qwen3\-TTS API文档: https://help\.aliyun\.com/zh/model\-studio/tts\-model
+
+- Qwen3\-TTS声音克隆: https://help\.aliyun\.com/zh/model\-studio/qwen\-tts\-voice\-cloning
+
+### 儿童AI教育工具
+
+- Khanmigo: https://khanacademy\.org/khanmigo
+
+- Ello AI阅读教练: https://ello\.com
+
+- Gemini Guided Learning: https://gemini\.google\.com
+
+### 学术/政策
+
+- 教育部AI使用指南（2025版）: 教育部官网
+
+- OpenMAIC论文（JCST）: \&\#34;From MOOC to MAIC\&\#34;
+
+- AI教育效果研究: Stanford HAI 2025
+
+```Plain Text
+
+---
+
+*整合：内部调研文档 + GitHub Topics检索 + 学术文献 + 行业报告 | 2026-05-28*
+```
+
+
+

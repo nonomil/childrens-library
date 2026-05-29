@@ -1,0 +1,36 @@
+# MANIFEST.yaml — 全局任务状态机
+# 唯一数据源（Single Source of Truth）。Claude Code 每次回复前后必须同步此文件。
+# 不可手动随意修改，由 AI 在任务变化时更新。
+
+project:
+  name: "ClaudeCode_Codex_Cowork_Example"
+  goal: "CC+Codex 协作工作流框架 + Python 图片合并演示应用"
+  last_updated: "2026-04-03T00:00:00"
+
+progress:
+  total: 0
+  completed: 0
+  in_progress: 0
+  blocked: 0
+  pending: 0
+
+current_focus:
+  task_id: null
+  task_name: null
+  started: null
+  context: ""
+
+tasks: []
+
+decisions: []
+
+context_snapshot:
+  last_compressed: null
+  summary: ""
+  key_facts:
+    - "Python 3.10+, Pillow, tkinter, SQLite"
+    - "CC = 大脑（规划/决策），Codex = 双手（代码生成）"
+    - "单次 diff ≤ 200 行硬约束"
+    - "lessons 路径: .claude/memory/lessons/"
+    - "门禁规则: .claude/rules/gate.md"
+    - "Hook 硬拦截: gate_guard.py (PreToolUse) + gate_exit_check.py (Stop)"

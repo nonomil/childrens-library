@@ -1,0 +1,419 @@
+:root {
+  --paper: #f4ecdf;
+  --panel: rgba(255, 249, 242, 0.82);
+  --panel_strong: rgba(255, 255, 255, 0.88);
+  --ink: #14293f;
+  --muted: #566575;
+  --line: rgba(20, 41, 63, 0.12);
+  --warm: #b75234;
+  --warm_deep: #843019;
+  --cool: #1e6a67;
+  --cool_soft: rgba(30, 106, 103, 0.11);
+  --gold: #e8c57b;
+  --shadow: 0 24px 64px rgba(20, 41, 63, 0.14);
+  --radius_l: 28px;
+  --radius_m: 20px;
+  --radius_s: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(232, 197, 123, 0.45), transparent 24%),
+    radial-gradient(circle at 88% 10%, rgba(30, 106, 103, 0.18), transparent 22%),
+    linear-gradient(135deg, #ece1d0 0%, #f7f0e3 42%, #eee3d0 100%);
+  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(20, 41, 63, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 41, 63, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.55;
+}
+
+a {
+  color: inherit;
+}
+
+.site_shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: 18px;
+  width: min(1360px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 18px 0 36px;
+}
+
+.sidebar_nav,
+.hero_banner,
+.content_panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+}
+
+.sidebar_nav {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+  padding: 18px;
+  border-radius: var(--radius_l);
+}
+
+.brand_link {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  text-decoration: none;
+}
+
+.brand_mark {
+  display: inline-flex;
+  width: 52px;
+  height: 52px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--warm) 0%, var(--warm_deep) 100%);
+  color: #fff7f1;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+}
+
+.brand_text {
+  display: flex;
+  flex-direction: column;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+}
+
+.brand_text strong {
+  font-size: 1rem;
+}
+
+.brand_text small {
+  margin-top: 4px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav_group {
+  display: grid;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.nav_link {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid rgba(20, 41, 63, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.nav_link:hover {
+  transform: translateX(2px);
+}
+
+.nav_link.is_active {
+  background: linear-gradient(135deg, var(--cool) 0%, #2d8780 100%);
+  color: #f7fffd;
+}
+
+.sidebar_note {
+  margin-top: 24px;
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.68);
+  border: 1px solid rgba(20, 41, 63, 0.08);
+}
+
+.sidebar_label,
+.eyebrow,
+.section_kicker,
+.card_eyebrow {
+  margin: 0;
+  color: var(--warm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+}
+
+.sidebar_note strong {
+  display: block;
+  margin-top: 8px;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+}
+
+.sidebar_note p:last-child {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.page_main {
+  display: grid;
+  gap: 18px;
+}
+
+.hero_banner,
+.content_panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius_l);
+}
+
+.hero_banner::after,
+.content_panel::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.26), transparent 30%, transparent 72%, rgba(30, 106, 103, 0.06));
+}
+
+.hero_banner {
+  padding: 28px;
+}
+
+.hero_banner h1,
+.section_header h2,
+.info_card h3 {
+  position: relative;
+  z-index: 1;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+}
+
+.hero_banner h1 {
+  margin: 10px 0 0;
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+.hero_intro {
+  position: relative;
+  z-index: 1;
+  max-width: 70ch;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.04rem;
+  line-height: 1.85;
+}
+
+.content_panel {
+  padding: 24px;
+}
+
+.section_header {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 18px;
+}
+
+.section_header h2 {
+  margin: 8px 0 0;
+  font-size: clamp(1.6rem, 3vw, 2.7rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
+.card_grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 16px;
+}
+
+.one_col {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.two_cols {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.three_cols {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.info_card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border-radius: var(--radius_m);
+  border: 1px solid rgba(20, 41, 63, 0.08);
+  background: var(--panel_strong);
+}
+
+.info_card::before {
+  position: absolute;
+  left: -24%;
+  top: 0;
+  width: 160px;
+  height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(30, 106, 103, 0.38), transparent);
+  animation: sweep_line 8s linear infinite;
+}
+
+.accent_warm {
+  background: linear-gradient(160deg, rgba(183, 82, 52, 0.12), rgba(255, 255, 255, 0.9) 54%);
+}
+
+.accent_cool {
+  background: linear-gradient(160deg, rgba(30, 106, 103, 0.12), rgba(255, 255, 255, 0.9) 54%);
+}
+
+.info_card h3 {
+  margin: 10px 0 10px;
+  font-size: 1.2rem;
+}
+
+.info_card p,
+.plain_list,
+.helper_text {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.plain_list {
+  margin: 14px 0 0;
+  padding-left: 18px;
+}
+
+.helper_text {
+  margin-top: 12px;
+}
+
+.command_block {
+  margin-top: 16px;
+  border-radius: var(--radius_s);
+  border: 1px solid rgba(20, 41, 63, 0.12);
+  background: rgba(12, 24, 38, 0.96);
+  color: #e8f0f2;
+  overflow: hidden;
+}
+
+.command_head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 0.88rem;
+}
+
+.command_block pre {
+  margin: 0;
+  padding: 14px;
+  overflow-x: auto;
+  font-family: "Consolas", "Cascadia Code", monospace;
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+.copy_button {
+  min-width: 74px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f8fbfa;
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.copy_button:hover {
+  transform: translateY(-1px);
+  background: rgba(232, 197, 123, 0.22);
+}
+
+.copy_button.is_done {
+  background: rgba(30, 106, 103, 0.58);
+}
+
+.text_link {
+  display: inline-flex;
+  margin-top: 14px;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  color: var(--cool);
+  text-decoration: none;
+}
+
+.text_link:hover {
+  text-decoration: underline;
+}
+
+@keyframes sweep_line {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(190%);
+  }
+}
+
+@media (max-width: 1080px) {
+  .site_shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar_nav {
+    position: static;
+  }
+}
+
+@media (max-width: 860px) {
+  .two_cols,
+  .three_cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .site_shell {
+    width: min(100vw - 16px, 100%);
+    padding-top: 8px;
+  }
+
+  .sidebar_nav,
+  .hero_banner,
+  .content_panel {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .hero_banner h1 {
+    font-size: 2.35rem;
+  }
+}

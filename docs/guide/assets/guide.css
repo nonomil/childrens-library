@@ -1,0 +1,658 @@
+/* guide.css — CC+Codex 协作框架文档共享样式
+   基于 Skills技能说明/site.css 暖纸风格，新增 tab 切换 + 表格美化 */
+
+:root {
+  --paper: #f4ecdf;
+  --panel: rgba(255, 249, 242, 0.82);
+  --panel_strong: rgba(255, 255, 255, 0.88);
+  --ink: #14293f;
+  --muted: #566575;
+  --line: rgba(20, 41, 63, 0.12);
+  --warm: #b75234;
+  --warm_deep: #843019;
+  --cool: #1e6a67;
+  --cool_soft: rgba(30, 106, 103, 0.11);
+  --gold: #e8c57b;
+  --shadow: 0 24px 64px rgba(20, 41, 63, 0.14);
+  --radius_l: 28px;
+  --radius_m: 20px;
+  --radius_s: 14px;
+  --radius_xs: 10px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(232, 197, 123, 0.45), transparent 24%),
+    radial-gradient(circle at 88% 10%, rgba(30, 106, 103, 0.18), transparent 22%),
+    linear-gradient(135deg, #ece1d0 0%, #f7f0e3 42%, #eee3d0 100%);
+  font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  line-height: 1.6;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background-image:
+    linear-gradient(rgba(20, 41, 63, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(20, 41, 63, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.55;
+}
+
+a { color: var(--cool); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---- Site Shell (sidebar + content) ---- */
+.site_shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 16px;
+  width: min(1200px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 18px 0 36px;
+}
+
+/* ---- Sidebar ---- */
+.sidebar {
+  position: sticky;
+  top: 18px;
+  align-self: start;
+  padding: 18px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius_l);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-thumb { background: rgba(20,41,63,0.12); border-radius: 4px; }
+
+.sidebar_brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-decoration: none;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.hero_logo {
+  display: inline-flex;
+  width: 42px; height: 42px;
+  align-items: center; justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--warm) 0%, var(--warm_deep) 100%);
+  color: #fff7f1;
+  font-family: "Bahnschrift", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  flex-shrink: 0;
+}
+
+.sidebar_brand_text {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar_brand_text strong {
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 0.92rem;
+}
+
+.sidebar_brand_text small {
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Page nav in sidebar */
+.sidebar_pages {
+  display: grid;
+  gap: 6px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.sidebar_pages a {
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
+  border: 1px solid rgba(20,41,63,0.08);
+  border-radius: var(--radius_s);
+  background: rgba(255,255,255,0.6);
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.sidebar_pages a:hover {
+  background: rgba(255,255,255,0.85);
+  text-decoration: none;
+}
+
+.sidebar_pages a.active {
+  background: linear-gradient(135deg, var(--cool) 0%, #2d8780 100%);
+  color: #f7fffd;
+  border-color: transparent;
+}
+
+/* Tab buttons in sidebar */
+.sidebar_tabs {
+  display: grid;
+  gap: 4px;
+  padding: 14px 0;
+}
+
+.sidebar_section_label {
+  margin: 0 0 8px 4px;
+  color: var(--warm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: "Bahnschrift", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.tab_btn {
+  padding: 9px 14px;
+  border: none;
+  border-radius: var(--radius_s);
+  background: transparent;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.tab_btn:hover { background: rgba(255,255,255,0.5); }
+
+.tab_btn.active {
+  background: linear-gradient(135deg, var(--warm) 0%, var(--warm_deep) 100%);
+  color: #fff7f1;
+}
+
+/* Sidebar bottom note */
+.sidebar_note {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.sidebar_note p {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  margin: 4px 0;
+}
+
+/* ---- Content Area (right side) ---- */
+.content_area {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.tab_panel { display: none; }
+.tab_panel.active { display: block; }
+
+/* ---- Hero Banner (compact for content area) ---- */
+.hero_banner {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 28px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius_l);
+}
+
+.hero_banner::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(125deg, rgba(255,255,255,0.26), transparent 30%, transparent 72%, rgba(30,106,103,0.06));
+}
+
+.hero_banner h1 {
+  position: relative; z-index: 1;
+  margin: 0;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.hero_banner p {
+  position: relative; z-index: 1;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+/* ---- Content Panels ---- */
+.content_panel {
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius_l);
+  margin-bottom: 18px;
+}
+
+.content_panel::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: linear-gradient(125deg, rgba(255,255,255,0.26), transparent 30%, transparent 72%, rgba(30,106,103,0.06));
+}
+
+.content_panel h2 {
+  position: relative; z-index: 1;
+  margin: 0 0 6px;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: clamp(1.4rem, 3vw, 1.8rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.content_panel h3 {
+  position: relative; z-index: 1;
+  margin: 20px 0 8px;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 1.15rem;
+}
+
+.content_panel h4 {
+  position: relative; z-index: 1;
+  margin: 16px 0 6px;
+  font-family: "Bahnschrift", sans-serif;
+  font-size: 1rem;
+}
+
+.content_panel p,
+.content_panel ul,
+.content_panel ol {
+  position: relative; z-index: 1;
+  color: var(--muted);
+  line-height: 1.75;
+  margin: 8px 0;
+}
+
+.content_panel ul, .content_panel ol {
+  padding-left: 22px;
+}
+
+.eyebrow, .section_kicker {
+  margin: 0;
+  color: var(--warm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.section_header {
+  position: relative; z-index: 1;
+  margin-bottom: 16px;
+}
+
+.section_header h2 { margin-bottom: 4px; }
+
+/* ---- Card Grid ---- */
+.card_grid {
+  position: relative; z-index: 1;
+  display: grid;
+  gap: 14px;
+}
+.two_cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.three_cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.info_card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border-radius: var(--radius_m);
+  border: 1px solid rgba(20,41,63,0.08);
+  background: var(--panel_strong);
+}
+
+.info_card::before {
+  position: absolute;
+  left: -24%; top: 0;
+  width: 160px; height: 2px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(30,106,103,0.38), transparent);
+  animation: sweep_line 8s linear infinite;
+}
+
+.accent_warm {
+  background: linear-gradient(160deg, rgba(183,82,52,0.12), rgba(255,255,255,0.9) 54%);
+}
+
+.accent_cool {
+  background: linear-gradient(160deg, rgba(30,106,103,0.12), rgba(255,255,255,0.9) 54%);
+}
+
+.info_card h3 {
+  margin: 0 0 8px;
+  font-family: "Bahnschrift", "Segoe UI Variable Display", "Trebuchet MS", sans-serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+
+.info_card p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin: 6px 0;
+}
+
+/* ---- Tables ---- */
+.content_panel table {
+  position: relative; z-index: 1;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 12px 0 20px;
+  font-size: 0.88rem;
+}
+
+.content_panel th {
+  background: rgba(183,82,52,0.08);
+  color: var(--warm_deep);
+  font-family: "Bahnschrift", sans-serif;
+  font-weight: 600;
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 2px solid rgba(183,82,52,0.15);
+}
+
+.content_panel td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgba(20,41,63,0.06);
+  color: var(--muted);
+  vertical-align: top;
+}
+
+.content_panel tr:hover td {
+  background: rgba(255,255,255,0.4);
+}
+
+code {
+  background: rgba(30,106,103,0.08);
+  color: var(--warm_deep);
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  font-family: "Consolas", "Cascadia Code", monospace;
+}
+
+/* ---- Command Block ---- */
+.command_block {
+  margin-top: 12px;
+  border-radius: var(--radius_s);
+  border: 1px solid rgba(20,41,63,0.12);
+  background: rgba(12,24,38,0.96);
+  color: #e8f0f2;
+  overflow: hidden;
+}
+
+.command_head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-family: "Bahnschrift", sans-serif;
+  font-size: 0.82rem;
+}
+
+.command_block pre {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-family: "Consolas", "Cascadia Code", monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.copy_button {
+  min-width: 60px;
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: #f8fbfa;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transition: background 160ms ease;
+}
+
+.copy_button:hover { background: rgba(232,197,123,0.22); }
+.copy_button.copied { background: rgba(30,106,103,0.58); }
+
+/* ---- Badges ---- */
+.badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: "Bahnschrift", sans-serif;
+  letter-spacing: 0.02em;
+  margin-right: 4px;
+}
+.badge_warm   { background: rgba(183,82,52,0.12); color: var(--warm); }
+.badge_cool   { background: var(--cool_soft); color: var(--cool); }
+.badge_gold   { background: rgba(232,197,123,0.25); color: #9a7b2a; }
+.badge_purple { background: rgba(142,68,173,0.1); color: #8e44ad; }
+
+/* ---- Collapsible ---- */
+.collapsible {
+  cursor: pointer;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(20,41,63,0.08);
+  border-radius: var(--radius_s);
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  font-size: 0.92rem;
+  color: var(--ink);
+  transition: background 160ms ease;
+}
+
+.collapsible:hover { background: rgba(255,255,255,0.85); }
+
+.collapsible_content {
+  display: none;
+  padding: 12px 16px;
+  border: 1px solid rgba(20,41,63,0.08);
+  border-top: none;
+  border-radius: 0 0 var(--radius_s) var(--radius_s);
+  margin-top: -8px;
+  background: rgba(255,255,255,0.4);
+}
+
+.collapsible_content.show { display: block; }
+
+.collapsible::after {
+  content: "\25BC";
+  font-size: 10px;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+
+.collapsible.open::after { transform: rotate(180deg); }
+
+/* ---- Flow Steps ---- */
+.flow_step {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 6px 0;
+  background: rgba(255,255,255,0.6);
+  border-radius: var(--radius_s);
+  border: 1px solid rgba(20,41,63,0.08);
+}
+
+.flow_step .num {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--cool) 0%, #2d8780 100%);
+  color: #f7fffd;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  font-family: "Bahnschrift", sans-serif;
+  flex-shrink: 0;
+}
+
+.flow_step .label {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.arrow_down {
+  text-align: center;
+  color: var(--cool);
+  font-size: 18px;
+  margin: 2px 0;
+}
+
+/* ---- Method Card ---- */
+.method_card {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(20,41,63,0.08);
+  border-radius: var(--radius_s);
+  padding: 16px;
+  margin: 8px 0;
+}
+
+.method_card h4 {
+  margin: 0 0 8px;
+  font-family: "Bahnschrift", sans-serif;
+  color: var(--ink);
+}
+
+.method_card p {
+  margin: 4px 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+/* ---- Section Divider ---- */
+.section_divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(20,41,63,0.1), transparent);
+  margin: 24px 0;
+}
+
+/* ---- Footer ---- */
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  border-top: 1px solid rgba(20,41,63,0.08);
+  margin-top: 24px;
+}
+
+.footer a { color: var(--cool); }
+
+/* ---- Helper ---- */
+.text_link {
+  display: inline-flex;
+  margin-top: 10px;
+  font-family: "Bahnschrift", sans-serif;
+  color: var(--cool);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.text_link:hover { text-decoration: underline; }
+
+.helper_text {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* ---- Animations ---- */
+@keyframes sweep_line {
+  from { transform: translateX(0); }
+  to { transform: translateX(190%); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .two_cols, .three_cols { grid-template-columns: minmax(0, 1fr); }
+  .site_shell {
+    grid-template-columns: 1fr;
+    width: min(100vw - 16px, 100%);
+    padding-top: 8px;
+  }
+  .sidebar {
+    position: static;
+    max-height: none;
+    flex-direction: column;
+  }
+  .sidebar_pages {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .sidebar_tabs {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+  }
+  .sidebar_section_label { display: none; }
+  .sidebar_note { display: none; }
+}
+
+@media (max-width: 640px) {
+  .hero_banner, .content_panel { padding: 16px; border-radius: 22px; }
+  .hero_banner h1 { font-size: 1.4rem; }
+  .tab_btn { padding: 8px 12px; font-size: 0.8rem; }
+}

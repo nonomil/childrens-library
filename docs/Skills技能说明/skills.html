@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Workspace Launchpad - Skills</title>
+  <link rel="stylesheet" href="./assets/site.css">
+</head>
+<body data_page="skills">
+  <div class="site_shell">
+    <aside class="sidebar_nav">
+      <a class="brand_link" href="./index.html">
+        <span class="brand_mark">AW</span>
+        <span class="brand_text">
+          <strong>AI Workspace</strong>
+          <small>Launchpad</small>
+        </span>
+      </a>
+
+      <nav class="nav_group">
+        <a class="nav_link" data_nav_page="install" href="./index.html">Install</a>
+        <a class="nav_link" data_nav_page="activation" href="./activation.html">Activation</a>
+        <a class="nav_link" data_nav_page="superpowers" href="./superpowers.html">Superpowers</a>
+        <a class="nav_link" data_nav_page="skills" href="./skills.html">Skills</a>
+      </nav>
+
+      <div class="sidebar_note">
+        <p class="sidebar_label">Source Article</p>
+        <strong>skills guide</strong>
+        <p>这里把推荐 skills 做成了更适合新用户浏览的安装说明页。</p>
+      </div>
+    </aside>
+
+    <main class="page_main">
+      <header class="hero_banner">
+        <p class="eyebrow">Skills</p>
+        <h1>推荐 skills、用途和安装路线</h1>
+        <p class="hero_intro">
+          这一页把项目文档里提到的 skills 拆成单独卡片。每个卡片都写了用途、适合谁用，以及 How to install。
+          这里不强调你自己敲安装命令，而是提示你直接复制下面的话给 AI。
+        </p>
+      </header>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Recommended Skills</p>
+          <h2>六个值得优先了解的 skills</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card skill_card">
+            <h3>Frontend Design</h3>
+            <p>用来解决前端页面“AI 味太重”的问题，强制模型在排版、字体、色彩和动效上做出更明确的设计选择。</p>
+            <p class="helper_text">How to install：复制下面的话给 AI，让它帮你安装。适合经常做页面、数据看板、小工具界面的人。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请帮我安装 Frontend Design skill。如果它在官方 curated skills 里，请直接安装；如果不在，请从对应 GitHub 仓库安装。安装完成后提醒我重启 Codex。">Copy</button>
+              </div>
+              <pre>请帮我安装 Frontend Design skill。
+如果它在官方 curated skills 里，请直接安装；
+如果不在，请从对应 GitHub 仓库安装。
+安装完成后提醒我重启 Codex。</pre>
+            </div>
+            <a class="text_link" href="https://github.com/anthropics/skills/tree/main/skills/frontend-design">Open repo</a>
+          </article>
+
+          <article class="info_card skill_card">
+            <h3>Office Four-Pack</h3>
+            <p>把 `docx`、`xlsx`、`pdf`、`pptx` 作为一组文档处理能力来看，能显著提升办公文档生成和修改质量。</p>
+            <p class="helper_text">How to install：建议让 AI 按需安装，不一定一次装满四个。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请帮我安装办公文档相关 skills，包括 docx、xlsx、pdf、pptx。请优先使用 skill-installer，如果某个 skill 需要 GitHub 仓库安装，也请一并处理。">Copy</button>
+              </div>
+              <pre>请帮我安装办公文档相关 skills，包括 docx、xlsx、pdf、pptx。
+请优先使用 skill-installer，
+如果某个 skill 需要 GitHub 仓库安装，也请一并处理。</pre>
+            </div>
+            <a class="text_link" href="https://github.com/anthropics/skills/tree/main/skills">Open repo</a>
+          </article>
+
+          <article class="info_card skill_card">
+            <h3>Web Access</h3>
+            <p>适合需要真实联网、浏览器操作和带登录态读取站内内容的场景，比普通搜索更强。</p>
+            <p class="helper_text">How to install：这是第三方 skill，更适合直接把 GitHub 地址复制给 AI。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/eze-is/web-access/ 安装 Web Access skill。安装完成后提醒我重启 Codex。">Copy</button>
+              </div>
+              <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/eze-is/web-access/ 安装 Web Access skill。
+安装完成后提醒我重启 Codex。</pre>
+            </div>
+            <a class="text_link" href="https://github.com/eze-is/web-access/">Open repo</a>
+          </article>
+
+          <article class="info_card skill_card">
+            <h3>PUA</h3>
+            <p>适合在 Agent 明显摆烂、陷入重复尝试却不愿继续推进时使用，核心作用是强制它换策略。</p>
+            <p class="helper_text">How to install：第三方 skill，直接复制给 AI 让它处理更省心。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/tanweai/pua 安装 PUA skill。安装完成后提醒我重启 Codex。">Copy</button>
+              </div>
+              <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/tanweai/pua 安装 PUA skill。
+安装完成后提醒我重启 Codex。</pre>
+            </div>
+            <a class="text_link" href="https://github.com/tanweai/pua">Open repo</a>
+          </article>
+
+          <article class="info_card skill_card">
+            <h3>Claude-mem</h3>
+            <p>提供长期记忆和跨会话检索，适合上下文很长、项目持续时间很久的任务。</p>
+            <p class="helper_text">How to install：第三方 skill，推荐直接把仓库和需求一起交给 AI。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请使用 skill-installer，从 GitHub 仓库 https://github.com/thedotmack/claude-mem 安装 Claude-mem。安装完成后提醒我重启 Codex。">Copy</button>
+              </div>
+              <pre>请使用 skill-installer，
+从 GitHub 仓库 https://github.com/thedotmack/claude-mem 安装 Claude-mem。
+安装完成后提醒我重启 Codex。</pre>
+            </div>
+            <a class="text_link" href="https://github.com/thedotmack/claude-mem">Open repo</a>
+          </article>
+
+          <article class="info_card skill_card">
+            <h3>Skill-Creator</h3>
+            <p>它不只是一个可安装 skill，更是把你自己的流程沉淀成 skill 的入口，长期价值最高。</p>
+            <p class="helper_text">How to install：很多环境里它已经内置；如果没有，再让 AI 判断是否需要补装。</p>
+            <div class="command_block">
+              <div class="command_head">
+                <span>Copy this to your AI</span>
+                <button type="button" class="copy_button" data_copy_text="请帮我检查当前环境里是否已经有 skill-creator。如果没有，请用合适的来源帮我安装；如果已经有，请告诉我怎么开始使用它。">Copy</button>
+              </div>
+              <pre>请帮我检查当前环境里是否已经有 skill-creator。
+如果没有，请用合适的来源帮我安装；
+如果已经有，请告诉我怎么开始使用它。</pre>
+            </div>
+            <a class="text_link" href="https://claude.com/plugins/skill-creator">Open reference</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="content_panel">
+        <div class="section_header">
+          <p class="section_kicker">Related Reading</p>
+          <h2>进一步阅读</h2>
+        </div>
+
+        <div class="card_grid two_cols">
+          <article class="info_card">
+            <h3>Superpowers tab</h3>
+            <p>如果你想先搞清楚 Superpowers 本身是什么、怎么装、怎么用，去单独的 Superpowers 页面看会更清晰。</p>
+            <a class="text_link" href="./superpowers.html">Open Superpowers tab</a>
+          </article>
+
+          <article class="info_card">
+            <h3>simpread-分享 6 个我觉得应该必装的 Skills。.md</h3>
+            <p>如果你想看原始长文版本，这里可以直接打开本地文档。网页页只提炼了最适合新用户快速上手的内容。</p>
+            <a class="text_link" href="./simpread-分享 6 个我觉得应该必装的 Skills。.md">Open source article</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./assets/site.js"></script>
+</body>
+</html>
