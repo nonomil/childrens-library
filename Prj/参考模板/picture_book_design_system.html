@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>儿童绘本网页设计系统</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF8EE;
+    --orange: #FF6B35;
+    --orange-light: #FFE4D6;
+    --orange-dark: #CC4A1A;
+    --blue: #4A90D9;
+    --blue-light: #D6EAFA;
+    --blue-dark: #2C6FAD;
+    --green: #5BAD6F;
+    --green-light: #D4EDDA;
+    --green-dark: #3A7D4A;
+    --purple: #9B59B6;
+    --purple-light: #EAD6F5;
+    --yellow: #FFD166;
+    --yellow-light: #FFF5D6;
+    --red: #E85D5D;
+    --red-light: #FADADD;
+    --ink: #2D2D2D;
+    --ink-secondary: #5A5A5A;
+    --ink-muted: #9A9A9A;
+    --white: #FFFFFF;
+    --card-shadow: 0 6px 20px rgba(0,0,0,0.10);
+    --card-shadow-hover: 0 12px 32px rgba(0,0,0,0.16);
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 40px;
+    --font-main: 'Nunito', sans-serif;
+    --font-body: 'Nunito Sans', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-main);
+    background: #F0EBE1;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* ─── NAV ─── */
+  .doc-nav {
+    background: var(--white);
+    border-bottom: 3px solid var(--orange);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+  }
+  .doc-nav-logo {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--orange);
+    padding: 14px 0;
+    margin-right: 32px;
+    white-space: nowrap;
+  }
+  .doc-nav a {
+    text-decoration: none;
+    color: var(--ink-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 18px 14px;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .doc-nav a:hover { color: var(--orange); border-bottom-color: var(--orange); }
+
+  /* ─── LAYOUT ─── */
+  .doc-body { max-width: 960px; margin: 0 auto; padding: 48px 32px 80px; }
+  .section { margin-bottom: 72px; }
+  .section-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .section-desc {
+    font-size: 16px;
+    color: var(--ink-secondary);
+    max-width: 680px;
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-family: var(--font-body);
+  }
+
+  /* ─── HERO PREVIEW ─── */
+  #homepage .preview-wrap {
+    background: var(--cream);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--card-shadow);
+    border: 3px solid #EBDFC8;
+  }
+  .preview-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .preview-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+
+  /* ─── MINI HOMEPAGE PREVIEW ─── */
+  .mini-homepage {
+    background: var(--cream);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 2px solid #EBDFC8;
+  }
+  .mini-nav {
+    background: var(--white);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid #EBDFC8;
+  }
+  .mini-nav-logo {
+    font-size: 16px; font-weight: 900; color: var(--orange);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .mini-nav-logo .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--orange);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 16px;
+  }
+  .mini-nav-links { display: flex; gap: 4px; }
+  .mini-nav-links a {
+    font-size: 13px; font-weight: 700; color: var(--ink-secondary);
+    text-decoration: none; padding: 6px 12px;
+    border-radius: var(--radius-sm); transition: .2s;
+  }
+  .mini-nav-links a:hover { background: var(--orange-light); color: var(--orange); }
+  .mini-nav-btn {
+    background: var(--orange); color: white;
+    border: none; border-radius: 20px;
+    padding: 8px 18px; font-size: 13px; font-weight: 800;
+    cursor: pointer; font-family: var(--font-main);
+  }
+
+  /* Hero band */
+  .mini-hero {
+    background: linear-gradient(135deg, #4A90D9 0%, #6AABF2 100%);
+    padding: 36px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+  }
+  .mini-hero-text h1 {
+    font-size: 28px; font-weight: 900; color: white; line-height: 1.2; margin-bottom: 10px;
+  }
+  .mini-hero-text p {
+    font-size: 14px; color: rgba(255,255,255,.85); margin-bottom: 18px;
+    font-family: var(--font-body);
+  }
+  .mini-hero-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--orange); color: white; border: none;
+    border-radius: 24px; padding: 10px 22px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    font-family: var(--font-main);
+    box-shadow: 0 4px 12px rgba(255,107,53,.4);
+    transition: transform .15s, box-shadow .15s;
+  }
+  .btn-primary:hover { transform: scale(1.05); box-shadow: 0 6px 18px rgba(255,107,53,.5); }
+  .btn-ghost {
+    background: rgba(255,255,255,.2); color: white; border: 2px solid rgba(255,255,255,.5);
+    border-radius: 24px; padding: 10px 22px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    font-family: var(--font-main); transition: .2s;
+    backdrop-filter: blur(4px);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,.35); }
+  .mini-hero-illus {
+    flex-shrink: 0;
+  }
+  .hero-book {
+    width: 110px; height: 130px;
+    position: relative;
+  }
+  .hero-book-cover {
+    width: 100%; height: 100%;
+    background: #FF9F5A;
+    border-radius: 6px 16px 16px 6px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: -6px 6px 16px rgba(0,0,0,.25), inset -3px 0 0 rgba(0,0,0,.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-book-cover::before {
+    content: '';
+    position: absolute; left: 0; top: 0; bottom: 0;
+    width: 12px; background: rgba(0,0,0,.15);
+    border-radius: 4px 0 0 4px;
+  }
+  .hero-book-star { font-size: 36px; }
+  .hero-book-title {
+    font-size: 10px; font-weight: 900; color: white;
+    margin-top: 6px; text-align: center; padding: 0 10px;
+  }
+
+  /* Book grid */
+  .mini-section { padding: 28px 24px; }
+  .mini-section-title {
+    font-size: 18px; font-weight: 900; color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .mini-section-sub {
+    font-size: 13px; color: var(--ink-muted); margin-bottom: 18px;
+    font-family: var(--font-body);
+  }
+  .book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .book-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform .2s, box-shadow .2s;
+    cursor: pointer;
+  }
+  .book-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+  .book-cover {
+    height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .book-cover-pattern {
+    position: absolute; inset: 0;
+    opacity: .12;
+    background-image: radial-gradient(circle, white 20%, transparent 20%);
+    background-size: 20px 20px;
+  }
+  .book-card-body { padding: 12px; }
+  .book-title { font-size: 13px; font-weight: 800; color: var(--ink); margin-bottom: 4px; line-height: 1.3; }
+  .book-meta { font-size: 11px; color: var(--ink-muted); font-family: var(--font-body); }
+  .book-age-tag {
+    display: inline-block;
+    background: var(--yellow-light); color: #8B6914;
+    font-size: 10px; font-weight: 800;
+    padding: 2px 8px; border-radius: 20px;
+    margin-top: 6px;
+  }
+
+  /* ─── COLORS ─── */
+  .color-system { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+  .color-block { border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--card-shadow); }
+  .color-swatch { height: 80px; }
+  .color-info { background: white; padding: 14px; }
+  .color-name { font-size: 14px; font-weight: 800; color: var(--ink); }
+  .color-hex { font-size: 12px; color: var(--ink-muted); font-family: monospace; margin-top: 2px; }
+  .color-usage { font-size: 11px; color: var(--ink-muted); margin-top: 4px; font-family: var(--font-body); }
+  .color-pair { display: flex; gap: 4px; margin-top: 8px; }
+  .color-pair-chip {
+    height: 20px; flex: 1; border-radius: 6px;
+    font-size: 9px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .04em;
+  }
+
+  /* ─── TYPOGRAPHY ─── */
+  .type-samples { display: flex; flex-direction: column; gap: 0; }
+  .type-row {
+    display: flex; align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #EAE4D8;
+    gap: 24px;
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta { width: 180px; flex-shrink: 0; }
+  .type-meta-name { font-size: 12px; font-weight: 800; color: var(--ink-muted); }
+  .type-meta-spec { font-size: 11px; color: var(--ink-muted); font-family: monospace; margin-top: 2px; }
+  .type-sample-bg {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 20px 24px;
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    flex: 1;
+  }
+
+  /* ─── COMPONENTS ─── */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .comp-card {
+    background: var(--white);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    box-shadow: var(--card-shadow);
+  }
+  .comp-label {
+    font-size: 11px; font-weight: 800;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--ink-muted); margin-bottom: 16px;
+  }
+
+  /* Buttons showcase */
+  .btn-showcase { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  .btn-lg {
+    border: none; border-radius: 28px;
+    padding: 14px 28px; font-size: 16px; font-weight: 800;
+    cursor: pointer; font-family: var(--font-main);
+    transition: transform .15s, box-shadow .15s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-lg:hover { transform: scale(1.06) translateY(-2px); }
+  .btn-orange { background: var(--orange); color: white; box-shadow: 0 4px 16px rgba(255,107,53,.35); }
+  .btn-orange:hover { box-shadow: 0 8px 24px rgba(255,107,53,.45); }
+  .btn-blue { background: var(--blue); color: white; box-shadow: 0 4px 16px rgba(74,144,217,.3); }
+  .btn-blue:hover { box-shadow: 0 8px 24px rgba(74,144,217,.45); }
+  .btn-green { background: var(--green); color: white; box-shadow: 0 4px 16px rgba(91,173,111,.3); }
+  .btn-green:hover { box-shadow: 0 8px 24px rgba(91,173,111,.45); }
+  .btn-outline {
+    background: transparent; color: var(--orange);
+    border: 2.5px solid var(--orange);
+    border-radius: 28px; padding: 12px 26px;
+    font-size: 16px; font-weight: 800; cursor: pointer;
+    font-family: var(--font-main); transition: .2s;
+  }
+  .btn-outline:hover { background: var(--orange-light); transform: scale(1.04); }
+
+  /* Badge / Tag */
+  .badge-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    border-radius: 20px; padding: 6px 14px;
+    font-size: 13px; font-weight: 800;
+  }
+  .badge-orange { background: var(--orange-light); color: var(--orange-dark); }
+  .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
+  .badge-green { background: var(--green-light); color: var(--green-dark); }
+  .badge-purple { background: var(--purple-light); color: var(--purple); }
+  .badge-yellow { background: var(--yellow-light); color: #8B6914; }
+
+  /* Progress bar */
+  .progress-wrap { display: flex; flex-direction: column; gap: 12px; }
+  .progress-item { display: flex; flex-direction: column; gap: 6px; }
+  .progress-info { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; }
+  .progress-bar { height: 14px; background: #EAE4D8; border-radius: 20px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 20px; transition: width .6s ease; }
+
+  /* ─── BOOK READER PAGE ─── */
+  .reader-preview {
+    background: #1A1A2E;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+  }
+  .reader-topbar {
+    background: #12122A;
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .reader-book-info { display: flex; align-items: center; gap: 12px; }
+  .reader-book-thumb {
+    width: 36px; height: 44px;
+    background: var(--orange);
+    border-radius: 4px 8px 8px 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .reader-book-title { font-size: 15px; font-weight: 800; color: white; }
+  .reader-book-sub { font-size: 12px; color: rgba(255,255,255,.5); font-family: var(--font-body); }
+  .reader-controls { display: flex; align-items: center; gap: 10px; }
+  .reader-ctrl-btn {
+    background: rgba(255,255,255,.1); border: none; color: white;
+    width: 36px; height: 36px; border-radius: 10px;
+    font-size: 16px; cursor: pointer; transition: .2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .reader-ctrl-btn:hover { background: rgba(255,255,255,.2); }
+  .reader-exit {
+    background: rgba(255,107,53,.2); border: 1.5px solid rgba(255,107,53,.4);
+    color: var(--orange); border-radius: 10px; padding: 6px 14px;
+    font-size: 13px; font-weight: 800; cursor: pointer;
+    font-family: var(--font-main); transition: .2s;
+  }
+  .reader-exit:hover { background: rgba(255,107,53,.3); }
+
+  /* The actual page spread */
+  .reader-spread {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 380px;
+  }
+  .reader-illus-page {
+    background: #E8F4FD;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .illus-scene {
+    width: 100%;
+    aspect-ratio: 1;
+    max-width: 260px;
+    position: relative;
+  }
+  /* Simple SVG scene inside */
+  .reader-text-page {
+    background: var(--cream);
+    padding: 48px 44px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .reader-page-num {
+    font-size: 11px; font-weight: 800; color: var(--ink-muted);
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: 20px;
+  }
+  .reader-story-title {
+    font-size: 24px; font-weight: 900; color: var(--orange);
+    line-height: 1.25; margin-bottom: 16px;
+  }
+  .reader-story-text {
+    font-size: 18px; line-height: 1.85; color: var(--ink);
+    font-family: var(--font-body); font-weight: 400;
+    flex: 1;
+  }
+  .reader-story-text em { color: var(--blue); font-style: normal; font-weight: 700; }
+  .reader-nav-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 28px;
+  }
+  .reader-nav-btn {
+    display: flex; align-items: center; gap: 8px;
+    border: none; border-radius: 20px; padding: 10px 20px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    font-family: var(--font-main); transition: .15s;
+  }
+  .reader-nav-prev { background: var(--blue-light); color: var(--blue-dark); }
+  .reader-nav-next { background: var(--orange); color: white; }
+  .reader-nav-prev:hover { background: #B8D9F5; transform: translateX(-3px); }
+  .reader-nav-next:hover { background: var(--orange-dark); transform: translateX(3px) scale(1.04); }
+
+  /* Page dots */
+  .reader-bottombar {
+    background: #12122A;
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .page-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: rgba(255,255,255,.2); cursor: pointer; transition: .2s;
+  }
+  .page-dot.active { background: var(--orange); transform: scale(1.3); }
+  .page-dot:hover { background: rgba(255,255,255,.5); }
+
+  /* ─── SPACING SCALE ─── */
+  .spacing-grid { display: flex; flex-direction: column; gap: 12px; }
+  .spacing-row { display: flex; align-items: center; gap: 16px; }
+  .spacing-bar-wrap { flex: 1; background: #EAE4D8; border-radius: 8px; overflow: hidden; height: 28px; }
+  .spacing-bar { height: 100%; border-radius: 8px; background: var(--blue); display: flex; align-items: center; padding-left: 10px; color: white; font-size: 12px; font-weight: 800; white-space: nowrap; }
+  .spacing-name { width: 100px; font-size: 13px; font-weight: 700; color: var(--ink); }
+  .spacing-val { width: 60px; font-size: 12px; font-family: monospace; color: var(--ink-muted); }
+
+  /* ─── ILLUSTRATION STYLE ─── */
+  .illus-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .illus-card {
+    background: white; border-radius: var(--radius-lg);
+    padding: 24px; box-shadow: var(--card-shadow);
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .illus-scene-wrap {
+    width: 100%; aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .illus-label { font-size: 13px; font-weight: 800; color: var(--ink-secondary); text-align: center; }
+  .illus-sublabel { font-size: 11px; color: var(--ink-muted); font-family: var(--font-body); text-align: center; }
+
+  /* ─── CC PROMPT SPEC ─── */
+  .spec-box {
+    background: #1E1E2E;
+    border-radius: var(--radius-md);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .spec-box pre {
+    color: #A8D8A8;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .spec-box pre .comment { color: #6A9F6A; }
+  .spec-box pre .key { color: #89CFF0; }
+  .spec-box pre .val { color: #FFD166; }
+  .spec-box pre .string { color: #FF9F5A; }
+
+  .spec-section { margin-bottom: 28px; }
+  .spec-title {
+    font-size: 16px; font-weight: 900; color: var(--ink);
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 2px solid #EAE4D8;
+  }
+
+  /* ─── DO/DON'T ─── */
+  .do-dont-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .do-card, .dont-card {
+    border-radius: var(--radius-md); overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+  .do-card .card-header { background: var(--green); padding: 10px 18px; }
+  .dont-card .card-header { background: var(--red); padding: 10px 18px; }
+  .card-header-text { font-size: 14px; font-weight: 900; color: white; }
+  .do-card .card-body, .dont-card .card-body {
+    background: white; padding: 20px;
+  }
+  .dd-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; font-size: 14px; color: var(--ink-secondary); line-height: 1.5; font-family: var(--font-body); }
+  .dd-item:last-child { margin-bottom: 0; }
+  .dd-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; margin-top: 1px; }
+  .do-card .dd-icon { background: var(--green-light); color: var(--green-dark); }
+  .dont-card .dd-icon { background: var(--red-light); color: var(--red); }
+
+  /* ─── MISC ─── */
+  .divider { height: 2px; background: linear-gradient(to right, transparent, #EBDFC8, transparent); margin: 8px 0 48px; }
+  .tag {
+    display: inline-block; background: var(--orange-light); color: var(--orange-dark);
+    font-size: 12px; font-weight: 800; padding: 4px 12px; border-radius: 20px;
+    margin-right: 6px; margin-bottom: 6px;
+  }
+  .callout {
+    background: var(--blue-light); border-left: 4px solid var(--blue);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 16px 20px;
+    font-size: 14px; color: var(--blue-dark);
+    font-family: var(--font-body); line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .callout strong { font-weight: 800; }
+  .toc { background: white; border-radius: var(--radius-md); padding: 28px 32px; box-shadow: var(--card-shadow); margin-bottom: 48px; }
+  .toc-title { font-size: 16px; font-weight: 900; color: var(--ink); margin-bottom: 16px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; }
+  .toc-list li { display: flex; align-items: center; gap: 8px; }
+  .toc-list a { text-decoration: none; color: var(--blue-dark); font-size: 14px; font-weight: 700; transition: .2s; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-num { font-size: 12px; font-weight: 900; color: var(--orange); width: 20px; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .info-card {
+    background: white; border-radius: var(--radius-md);
+    padding: 22px; box-shadow: var(--card-shadow);
+  }
+  .info-card-icon { font-size: 28px; margin-bottom: 10px; }
+  .info-card-title { font-size: 15px; font-weight: 900; color: var(--ink); margin-bottom: 6px; }
+  .info-card-text { font-size: 13px; color: var(--ink-secondary); line-height: 1.6; font-family: var(--font-body); }
+  .info-card-spec { font-size: 12px; font-family: monospace; color: var(--blue-dark); margin-top: 8px; background: var(--blue-light); padding: 4px 10px; border-radius: 8px; display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="doc-nav">
+  <div class="doc-nav-logo">📚 绘本设计系统</div>
+  <a href="#homepage">首页</a>
+  <a href="#reader">阅读页</a>
+  <a href="#colors">配色</a>
+  <a href="#type">字体</a>
+  <a href="#components">组件</a>
+  <a href="#illustration">插画</a>
+  <a href="#spec">提示词规范</a>
+</nav>
+
+<div class="doc-body">
+
+  <!-- COVER -->
+  <div style="margin-bottom:56px; padding-top:8px;">
+    <p class="section-label">儿童绘本网页设计系统 v1.0</p>
+    <h1 class="section-title" style="font-size:44px;">🌟 PicBook Design System</h1>
+    <p class="section-desc">
+      一套面向 3–10 岁儿童阅读产品的完整网页设计规范，参考 code.org、Khan Kids、PBS Kids 成熟经验提炼。
+      直接把本文档交给 Claude Code，即可复现高质量界面。
+    </p>
+
+    <!-- TOC -->
+    <div class="toc">
+      <p class="toc-title">📋 文档目录</p>
+      <ul class="toc-list">
+        <li><span class="toc-num">01</span><a href="#homepage">首页布局设计</a></li>
+        <li><span class="toc-num">02</span><a href="#reader">绘本阅读页</a></li>
+        <li><span class="toc-num">03</span><a href="#colors">配色系统</a></li>
+        <li><span class="toc-num">04</span><a href="#type">字体与排版</a></li>
+        <li><span class="toc-num">05</span><a href="#components">核心组件库</a></li>
+        <li><span class="toc-num">06</span><a href="#illustration">插画风格规范</a></li>
+        <li><span class="toc-num">07</span><a href="#spacing">间距系统</a></li>
+        <li><span class="toc-num">08</span><a href="#dodont">Do / Don't</a></li>
+        <li><span class="toc-num">09</span><a href="#spec">CC 提示词规范</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 01 HOMEPAGE -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="homepage">
+    <p class="section-label">01 · 首页布局设计</p>
+    <h2 class="section-title">Homepage Layout</h2>
+    <p class="section-desc">以奶油黄为底，蓝色 Hero Banner 吸引视线，网格书架承载内容。所有模块圆角 ≥20px，无硬边。</p>
+
+    <div style="margin-bottom:24px;">
+      <p class="preview-label">Live Preview · 首页完整预览</p>
+    </div>
+
+    <div class="mini-homepage">
+      <!-- Nav -->
+      <div class="mini-nav">
+        <div class="mini-nav-logo">
+          <div class="logo-icon">📚</div>
+          小书屋 PicBook
+        </div>
+        <div class="mini-nav-links">
+          <a href="#">绘本馆</a>
+          <a href="#">年龄段</a>
+          <a href="#">亲子活动</a>
+        </div>
+        <button class="mini-nav-btn">开始阅读 →</button>
+      </div>
+
+      <!-- Hero -->
+      <div class="mini-hero">
+        <div class="mini-hero-text">
+          <h1>和孩子一起<br>发现奇妙故事 🌈</h1>
+          <p>300+ 精选绘本，跟着小熊一起探索世界</p>
+          <div class="mini-hero-btns">
+            <button class="btn-primary">免费开始阅读</button>
+            <button class="btn-ghost">📖 看看书单</button>
+          </div>
+        </div>
+        <div class="mini-hero-illus">
+          <div class="hero-book">
+            <div class="hero-book-cover">
+              <div class="hero-book-star">⭐</div>
+              <div class="hero-book-title">今天的<br>小熊</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Grid -->
+      <div class="mini-section">
+        <div class="mini-section-title">🔥 今日精选绘本</div>
+        <div class="mini-section-sub">每天更新，总有新故事等着你</div>
+        <div class="book-grid">
+          <div class="book-card">
+            <div class="book-cover" style="background: linear-gradient(135deg,#FFD166,#FF9F5A);">
+              <div class="book-cover-pattern"></div>
+              🦁
+            </div>
+            <div class="book-card-body">
+              <div class="book-title">狮子王的<br>早晨</div>
+              <div class="book-meta">12 页 · 5分钟</div>
+              <div class="book-age-tag">3-5岁</div>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover" style="background: linear-gradient(135deg,#A8E6CF,#5BAD6F);">
+              <div class="book-cover-pattern"></div>
+              🐸
+            </div>
+            <div class="book-card-body">
+              <div class="book-title">青蛙找朋友</div>
+              <div class="book-meta">16 页 · 8分钟</div>
+              <div class="book-age-tag">4-6岁</div>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover" style="background: linear-gradient(135deg,#B5D4F4,#4A90D9);">
+              <div class="book-cover-pattern"></div>
+              🚀
+            </div>
+            <div class="book-card-body">
+              <div class="book-title">小星星的<br>旅行</div>
+              <div class="book-meta">20 页 · 10分钟</div>
+              <div class="book-age-tag">5-8岁</div>
+            </div>
+          </div>
+          <div class="book-card">
+            <div class="book-cover" style="background: linear-gradient(135deg,#EAD6F5,#9B59B6);">
+              <div class="book-cover-pattern"></div>
+              🦋
+            </div>
+            <div class="book-card-body">
+              <div class="book-title">蝴蝶的秘密</div>
+              <div class="book-meta">14 页 · 7分钟</div>
+              <div class="book-age-tag">6-8岁</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout Anatomy -->
+    <div style="margin-top:40px;">
+      <h3 style="font-size:20px;font-weight:900;color:var(--ink);margin-bottom:20px;">🔍 布局解析</h3>
+      <div class="grid-3">
+        <div class="info-card">
+          <div class="info-card-icon">🧭</div>
+          <div class="info-card-title">顶部导航栏</div>
+          <div class="info-card-text">固定高度，白色背景，Logo 左对齐，主按钮右对齐。下方 3px 橙色线条增加儿童活力感。</div>
+          <div class="info-card-spec">height: 64px</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">🎨</div>
+          <div class="info-card-title">Hero Banner</div>
+          <div class="info-card-text">蓝色渐变背景，左文右图（或插画）。标题大且有力，2个 CTA 按钮，主次分明。</div>
+          <div class="info-card-spec">min-height: 300px</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">📚</div>
+          <div class="info-card-title">书籍网格区</div>
+          <div class="info-card-text">4列网格，每个卡片有彩色封面插画位 + 标题 + 元数据 + 年龄标签。hover 轻微上浮。</div>
+          <div class="info-card-spec">grid: 4cols / gap: 14px</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 02 READER PAGE -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="reader">
+    <p class="section-label">02 · 绘本阅读页</p>
+    <h2 class="section-title">Book Reader Page</h2>
+    <p class="section-desc">全屏沉浸式设计，深色 chrome + 左图右文双页展开，底部翻页点导航，还原真实翻书体验。</p>
+
+    <p class="preview-label">Live Preview · 阅读页预览</p>
+    <div class="reader-preview">
+      <!-- Top bar -->
+      <div class="reader-topbar">
+        <div class="reader-book-info">
+          <div class="reader-book-thumb">🦁</div>
+          <div>
+            <div class="reader-book-title">狮子王的早晨</div>
+            <div class="reader-book-sub">第 2 页，共 12 页 · 预计还需 4 分钟</div>
+          </div>
+        </div>
+        <div class="reader-controls">
+          <button class="reader-ctrl-btn" title="字号">A</button>
+          <button class="reader-ctrl-btn" title="声音">🔊</button>
+          <button class="reader-ctrl-btn" title="全屏">⛶</button>
+          <button class="reader-exit">退出阅读</button>
+        </div>
+      </div>
+
+      <!-- Spread -->
+      <div class="reader-spread">
+        <!-- Illustration page (left) -->
+        <div class="reader-illus-page">
+          <svg viewBox="0 0 240 240" width="100%" style="max-width:260px;">
+            <!-- Sky -->
+            <rect x="0" y="0" width="240" height="160" rx="16" fill="#FFF0D6"/>
+            <!-- Sun -->
+            <circle cx="190" cy="40" r="28" fill="#FFD166" opacity=".9"/>
+            <circle cx="190" cy="40" r="20" fill="#FFB81C"/>
+            <!-- Rays -->
+            <line x1="190" y1="5" x2="190" y2="0" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>
+            <line x1="215" y1="15" x2="220" y2="10" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>
+            <line x1="225" y1="40" x2="232" y2="40" stroke="#FFD166" stroke-width="3" stroke-linecap="round"/>
+            <!-- Ground -->
+            <rect x="0" y="155" width="240" height="85" rx="0" fill="#7BC67A"/>
+            <ellipse cx="120" cy="157" rx="120" ry="12" fill="#5BAD6F"/>
+            <!-- Clouds -->
+            <ellipse cx="60" cy="55" rx="35" ry="18" fill="white" opacity=".9"/>
+            <ellipse cx="80" cy="48" rx="25" ry="16" fill="white" opacity=".9"/>
+            <ellipse cx="40" cy="52" rx="20" ry="14" fill="white" opacity=".9"/>
+            <!-- Tree -->
+            <rect x="36" y="120" width="12" height="45" rx="4" fill="#8B5E3C"/>
+            <ellipse cx="42" cy="110" rx="28" ry="30" fill="#4A9B4A"/>
+            <ellipse cx="28" cy="118" rx="18" ry="22" fill="#5BAD6F"/>
+            <ellipse cx="56" cy="116" rx="16" ry="20" fill="#5BAD6F"/>
+            <!-- Lion body -->
+            <ellipse cx="140" cy="185" rx="38" ry="28" fill="#F5A623"/>
+            <!-- Lion head -->
+            <circle cx="140" cy="148" r="32" fill="#F5A623"/>
+            <!-- Mane -->
+            <circle cx="140" cy="148" r="38" fill="#D4840A" opacity=".7"/>
+            <circle cx="140" cy="148" r="30" fill="#F5A623"/>
+            <!-- Face -->
+            <circle cx="130" cy="143" r="4" fill="#2D2D2D"/>
+            <circle cx="150" cy="143" r="4" fill="#2D2D2D"/>
+            <circle cx="131" cy="141" r="1.5" fill="white"/>
+            <circle cx="151" cy="141" r="1.5" fill="white"/>
+            <ellipse cx="140" cy="152" rx="8" ry="5" fill="#E07B3A"/>
+            <path d="M134 156 Q140 162 146 156" stroke="#2D2D2D" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <!-- Nose -->
+            <ellipse cx="140" cy="150" rx="4" ry="2.5" fill="#CC5500"/>
+            <!-- Tail -->
+            <path d="M175 195 Q200 185 195 170 Q192 162 200 155" stroke="#F5A623" stroke-width="8" fill="none" stroke-linecap="round"/>
+            <circle cx="201" cy="152" r="8" fill="#D4840A"/>
+          </svg>
+        </div>
+
+        <!-- Text page (right) -->
+        <div class="reader-text-page">
+          <div>
+            <div class="reader-page-num">第 2 页</div>
+            <div class="reader-story-title">太阳升起的<br>那一刻 🌅</div>
+            <div class="reader-story-text">
+              清晨，<em>小狮子辛巴</em>从温暖的窝里醒来。<br><br>
+              金色的阳光轻轻地洒在大草原上，把所有东西都染成了暖暖的橙色。<br><br>
+              "今天又是美好的一天！" 辛巴伸了个大懒腰，满心期待。
+            </div>
+          </div>
+
+          <div class="reader-nav-row">
+            <button class="reader-nav-btn reader-nav-prev">← 上一页</button>
+            <span style="font-size:13px;color:var(--ink-muted);font-weight:700;">2 / 12</span>
+            <button class="reader-nav-btn reader-nav-next">下一页 →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom dots -->
+      <div class="reader-bottombar">
+        <div class="page-dot"></div>
+        <div class="page-dot active"></div>
+        <div class="page-dot"></div>
+        <div class="page-dot"></div>
+        <div class="page-dot"></div>
+        <div class="page-dot"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:32px;">
+      <div class="grid-3">
+        <div class="info-card">
+          <div class="info-card-icon">🖼️</div>
+          <div class="info-card-title">插画页（左）</div>
+          <div class="info-card-text">浅色背景衬插画，SVG 扁平风格，主角居中，背景简洁有层次。色调与故事情绪匹配。</div>
+          <div class="info-card-spec">50% 宽 · 纯色底</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">📝</div>
+          <div class="info-card-title">文字页（右）</div>
+          <div class="info-card-text">奶油白背景，18px+ 正文，行距 1.85，关键词蓝色高亮。底部有上/下一页按钮。</div>
+          <div class="info-card-spec">font-size: 18px / lh: 1.85</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-icon">🔢</div>
+          <div class="info-card-title">页码导航</div>
+          <div class="info-card-text">顶部进度信息 + 底部圆点（当前页高亮橙色），直观展示阅读进度，点击可跳转。</div>
+          <div class="info-card-spec">dot size: 10px</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 03 COLORS -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="colors">
+    <p class="section-label">03 · 配色系统</p>
+    <h2 class="section-title">Color System</h2>
+    <p class="section-desc">以奶油黄为全局底色，橙色为主品牌色，蓝色承担信息架构，绿色表达成长积极。</p>
+
+    <div class="color-system">
+      <div class="color-block">
+        <div class="color-swatch" style="background:#FF6B35;"></div>
+        <div class="color-info">
+          <div class="color-name">🟠 品牌橙</div>
+          <div class="color-hex">#FF6B35</div>
+          <div class="color-usage">CTA 按钮、Logo、高亮</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#FFE4D6;color:#CC4A1A;">浅</div>
+            <div class="color-pair-chip" style="background:#FF6B35;color:white;">主</div>
+            <div class="color-pair-chip" style="background:#CC4A1A;color:white;">深</div>
+          </div>
+        </div>
+      </div>
+      <div class="color-block">
+        <div class="color-swatch" style="background:#4A90D9;"></div>
+        <div class="color-info">
+          <div class="color-name">🔵 叙事蓝</div>
+          <div class="color-hex">#4A90D9</div>
+          <div class="color-usage">Hero、链接、次要按钮</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#D6EAFA;color:#2C6FAD;">浅</div>
+            <div class="color-pair-chip" style="background:#4A90D9;color:white;">主</div>
+            <div class="color-pair-chip" style="background:#2C6FAD;color:white;">深</div>
+          </div>
+        </div>
+      </div>
+      <div class="color-block">
+        <div class="color-swatch" style="background:#5BAD6F;"></div>
+        <div class="color-info">
+          <div class="color-name">🟢 成长绿</div>
+          <div class="color-hex">#5BAD6F</div>
+          <div class="color-usage">成就、进度、正向反馈</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#D4EDDA;color:#3A7D4A;">浅</div>
+            <div class="color-pair-chip" style="background:#5BAD6F;color:white;">主</div>
+            <div class="color-pair-chip" style="background:#3A7D4A;color:white;">深</div>
+          </div>
+        </div>
+      </div>
+      <div class="color-block">
+        <div class="color-swatch" style="background:#FFD166;"></div>
+        <div class="color-info">
+          <div class="color-name">🌟 活力黄</div>
+          <div class="color-hex">#FFD166</div>
+          <div class="color-usage">标签、星星、收藏</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#FFF5D6;color:#8B6914;">浅</div>
+            <div class="color-pair-chip" style="background:#FFD166;color:#8B6914;">主</div>
+            <div class="color-pair-chip" style="background:#F0A800;color:white;">深</div>
+          </div>
+        </div>
+      </div>
+      <div class="color-block">
+        <div class="color-swatch" style="background:#9B59B6;"></div>
+        <div class="color-info">
+          <div class="color-name">💜 魔法紫</div>
+          <div class="color-hex">#9B59B6</div>
+          <div class="color-usage">奇幻类别、特殊标签</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#EAD6F5;color:#7D3EAD;">浅</div>
+            <div class="color-pair-chip" style="background:#9B59B6;color:white;">主</div>
+            <div class="color-pair-chip" style="background:#7D3EAD;color:white;">深</div>
+          </div>
+        </div>
+      </div>
+      <div class="color-block">
+        <div class="color-swatch" style="background:#FFF8EE;border:1px solid #EBDFC8;"></div>
+        <div class="color-info">
+          <div class="color-name">🟡 奶油底</div>
+          <div class="color-hex">#FFF8EE</div>
+          <div class="color-usage">全局页面背景、阅读页</div>
+          <div class="color-pair">
+            <div class="color-pair-chip" style="background:#FFF8EE;color:#8B6914;border:1px solid #EBDFC8;">页底</div>
+            <div class="color-pair-chip" style="background:#EBDFC8;color:#5A4A2A;">边框</div>
+            <div class="color-pair-chip" style="background:#D4C5A9;color:white;">阴影</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 04 TYPOGRAPHY -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="type">
+    <p class="section-label">04 · 字体与排版</p>
+    <h2 class="section-title">Typography System</h2>
+    <p class="section-desc">中文使用系统圆体，英文 / 数字用 Nunito（圆润无衬线）。绝对不用细体、斜体、装饰字体。</p>
+
+    <div class="callout">
+      <strong>中文字体方案：</strong>系统优先用 <code>PingFang SC / 华文圆体 / Microsoft YaHei</code>，正文 fallback 到 <code>sans-serif</code>。英文标题用 <strong>Nunito</strong>（Google Fonts，免费）。数字计数用 <strong>Nunito</strong>，不要 monospace。
+    </div>
+
+    <div class="type-sample-bg" style="padding:0; overflow:hidden; border-radius:var(--radius-md); box-shadow:var(--card-shadow);">
+      <div class="type-samples">
+        <div class="type-row" style="background:#FFF8EE;">
+          <div class="type-meta">
+            <div class="type-meta-name">页面大标题 H1</div>
+            <div class="type-meta-spec">44–48px / weight 900 / lh 1.15</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:44px; font-weight:900; color:#2D2D2D; font-family:'Nunito',sans-serif; line-height:1.15;">
+              和孩子一起探索<br>奇妙的故事世界 🌈
+            </div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-meta-name">区块标题 H2</div>
+            <div class="type-meta-spec">28–32px / weight 900 / lh 1.25</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:30px; font-weight:900; color:#2D2D2D; font-family:'Nunito',sans-serif;">今日精选绘本 📚</div>
+          </div>
+        </div>
+        <div class="type-row" style="background:#FFF8EE;">
+          <div class="type-meta">
+            <div class="type-meta-name">卡片标题 H3</div>
+            <div class="type-meta-spec">18–20px / weight 800 / lh 1.35</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:19px; font-weight:800; color:#2D2D2D; font-family:'Nunito',sans-serif;">狮子王的早晨</div>
+          </div>
+        </div>
+        <div class="type-row">
+          <div class="type-meta">
+            <div class="type-meta-name">阅读正文</div>
+            <div class="type-meta-spec">18px / weight 400 / lh 1.85</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-size:18px; font-weight:400; color:#2D2D2D; line-height:1.85; font-family:'Nunito Sans',sans-serif; max-width:400px;">
+              清晨，小狮子辛巴从温暖的窝里醒来。金色的阳光洒在大草原上，把所有东西都染成了暖暖的橙色。
+            </div>
+          </div>
+        </div>
+        <div class="type-row" style="background:#FFF8EE;">
+          <div class="type-meta">
+            <div class="type-meta-name">UI 标签 / 元数据</div>
+            <div class="type-meta-spec">12–13px / weight 700 / uppercase</div>
+          </div>
+          <div style="flex:1; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#9A9A9A;font-family:'Nunito',sans-serif;">12 页 · 6 分钟</span>
+            <span class="badge badge-yellow">3–5 岁</span>
+            <span class="badge badge-blue">自然科学</span>
+            <span class="badge badge-purple">奇幻冒险</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 05 COMPONENTS -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="components">
+    <p class="section-label">05 · 核心组件库</p>
+    <h2 class="section-title">Component Library</h2>
+    <p class="section-desc">所有交互元素必须有 hover 弹跳动效（transform: scale + translateY），让孩子感受到"活的"界面。</p>
+
+    <div class="comp-grid">
+      <!-- Buttons -->
+      <div class="comp-card">
+        <div class="comp-label">按钮 Buttons</div>
+        <div class="btn-showcase">
+          <button class="btn-lg btn-orange">🚀 开始阅读</button>
+          <button class="btn-lg btn-blue">📖 书单</button>
+          <button class="btn-lg btn-green">✅ 已完成</button>
+          <button class="btn-outline">← 返回</button>
+        </div>
+        <div style="margin-top:16px; padding:12px 16px; background:#F5F0E8; border-radius:12px;">
+          <div style="font-size:12px; font-family:monospace; color:#5A5A5A; line-height:1.8;">
+            border-radius: 28px;<br>
+            padding: 14px 28px;<br>
+            font-weight: 800;<br>
+            hover: scale(1.06) translateY(-2px);
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="comp-card">
+        <div class="comp-label">标签 / 徽章 Badges</div>
+        <div class="badge-row">
+          <span class="badge badge-orange">🔥 热门</span>
+          <span class="badge badge-blue">🔵 新上架</span>
+          <span class="badge badge-green">✨ 精品</span>
+          <span class="badge badge-purple">🪄 奇幻</span>
+          <span class="badge badge-yellow">⭐ 3–5岁</span>
+          <span class="badge" style="background:#FADADD;color:#A01C1C;">❤️ 收藏</span>
+        </div>
+        <div style="margin-top:16px; padding:12px 16px; background:#F5F0E8; border-radius:12px;">
+          <div style="font-size:12px; font-family:monospace; color:#5A5A5A; line-height:1.8;">
+            border-radius: 20px;<br>
+            padding: 6px 14px;<br>
+            font-weight: 800;<br>
+            background: {color}-light;
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="comp-card" style="grid-column: 1 / -1;">
+        <div class="comp-label">阅读进度条 Progress Bar</div>
+        <div class="progress-wrap">
+          <div class="progress-item">
+            <div class="progress-info">
+              <span>狮子王的早晨</span>
+              <span style="color:var(--orange);">75%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:75%;background:var(--orange);"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-info">
+              <span>小星星的旅行</span>
+              <span style="color:var(--blue);">40%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:40%;background:var(--blue);"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="progress-info">
+              <span>青蛙找朋友</span>
+              <span style="color:var(--green);">100% ✅</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:100%;background:var(--green);"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 06 ILLUSTRATION STYLE -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="illustration">
+    <p class="section-label">06 · 插画风格规范</p>
+    <h2 class="section-title">Illustration Style Guide</h2>
+    <p class="section-desc">全部使用 SVG 扁平插画，圆润形状，厚线条轮廓，饱和色彩，避免真实照片和复杂贴图。</p>
+
+    <div class="illus-grid">
+      <div class="illus-card">
+        <div class="illus-scene-wrap" style="background:#E8F4FD;">
+          <svg viewBox="0 0 200 200" width="120" height="120">
+            <circle cx="100" cy="70" r="45" fill="#F5A623"/>
+            <circle cx="100" cy="70" r="52" fill="#D4840A" opacity=".6"/>
+            <circle cx="100" cy="70" r="43" fill="#F5A623"/>
+            <circle cx="88" cy="63" r="6" fill="#2D2D2D"/>
+            <circle cx="112" cy="63" r="6" fill="#2D2D2D"/>
+            <circle cx="90" cy="60" r="2" fill="white"/>
+            <circle cx="114" cy="60" r="2" fill="white"/>
+            <ellipse cx="100" cy="75" rx="5" ry="3" fill="#CC5500"/>
+            <path d="M92 82 Q100 90 108 82" stroke="#2D2D2D" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <ellipse cx="100" cy="135" rx="42" ry="30" fill="#F5A623"/>
+            <rect x="58" y="130" width="20" height="45" rx="10" fill="#F5A623"/>
+            <rect x="122" y="130" width="20" height="45" rx="10" fill="#F5A623"/>
+          </svg>
+        </div>
+        <div class="illus-label">圆润动物角色</div>
+        <div class="illus-sublabel">大眼睛、厚轮廓、超圆形体</div>
+      </div>
+
+      <div class="illus-card">
+        <div class="illus-scene-wrap" style="background:#FFF0D6;">
+          <svg viewBox="0 0 200 200" width="120" height="120">
+            <!-- Sky -->
+            <rect x="0" y="0" width="200" height="130" fill="#87CEEB"/>
+            <!-- Ground -->
+            <rect x="0" y="125" width="200" height="75" fill="#7BC67A"/>
+            <!-- Sun -->
+            <circle cx="160" cy="35" r="22" fill="#FFD166"/>
+            <!-- Cloud -->
+            <ellipse cx="60" cy="45" rx="28" ry="15" fill="white" opacity=".9"/>
+            <ellipse cx="75" cy="38" rx="20" ry="13" fill="white" opacity=".9"/>
+            <!-- House -->
+            <rect x="60" y="95" width="80" height="50" rx="4" fill="#FF9F5A"/>
+            <polygon points="50,100 100,60 150,100" fill="#E85D5D"/>
+            <rect x="85" y="115" width="30" height="30" rx="4" fill="#4A90D9"/>
+            <rect x="65" y="100" width="20" height="18" rx="3" fill="#FFD166"/>
+          </svg>
+        </div>
+        <div class="illus-label">扁平场景背景</div>
+        <div class="illus-sublabel">分层色块、无透视、简化形状</div>
+      </div>
+
+      <div class="illus-card">
+        <div class="illus-scene-wrap" style="background:#EAD6F5;">
+          <svg viewBox="0 0 200 200" width="120" height="120">
+            <!-- Magic stars -->
+            <circle cx="40" cy="40" r="8" fill="#FFD166"/>
+            <text x="37" y="45" font-size="12" fill="#2D2D2D">✦</text>
+            <circle cx="160" cy="60" r="6" fill="#FF9F5A"/>
+            <circle cx="100" cy="30" r="5" fill="#9B59B6"/>
+            <!-- Wand -->
+            <line x1="70" y1="140" x2="130" y2="80" stroke="#9B59B6" stroke-width="8" stroke-linecap="round"/>
+            <polygon points="130,80 118,65 145,68" fill="#FFD166"/>
+            <!-- Sparkles -->
+            <circle cx="138" cy="72" r="10" fill="#FFD166" opacity=".4"/>
+            <circle cx="138" cy="72" r="6" fill="#FFD166"/>
+            <!-- Book -->
+            <rect x="55" y="148" width="90" height="36" rx="8" fill="#4A90D9"/>
+            <rect x="55" y="148" width="8" height="36" rx="4" fill="#2C6FAD"/>
+            <line x1="55" y1="166" x2="145" y2="166" stroke="rgba(255,255,255,.3)" stroke-width="1"/>
+          </svg>
+        </div>
+        <div class="illus-label">奇幻魔法元素</div>
+        <div class="illus-sublabel">星光、渐变光晕、饱和紫色系</div>
+      </div>
+    </div>
+
+    <div style="margin-top:28px;" class="callout">
+      <strong>SVG 插画规范：</strong>所有主角圆形度 ≥ 60%（用 circle/ellipse 为主），轮廓线 stroke-width 2–3px，配色取自系统色板，不引入第三方图片。阴影用 <code>opacity 0.15</code> 叠色块代替 filter: drop-shadow。
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 07 SPACING -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="spacing">
+    <p class="section-label">07 · 间距系统</p>
+    <h2 class="section-title">Spacing Scale</h2>
+    <p class="section-desc">基于 8px 基准的间距阶梯，儿童界面比成人产品多 1.5–2x 留白，让视线有喘息空间。</p>
+
+    <div class="type-sample-bg" style="border-radius:var(--radius-md);box-shadow:var(--card-shadow);padding:28px;">
+      <div class="spacing-grid">
+        <div class="spacing-row">
+          <div class="spacing-name">xs</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:10%;background:var(--blue-light);color:var(--blue-dark);">6px</div></div>
+          <div class="spacing-val">icon gap</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">sm</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:18%;background:#B5D4F4;color:#2C6FAD;">12px</div></div>
+          <div class="spacing-val">badge pad</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">md</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:26%;background:#85B7EB;color:white;">16px</div></div>
+          <div class="spacing-val">card gap</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">lg</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:35%;background:#4A90D9;color:white;">24px</div></div>
+          <div class="spacing-val">card padding</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">xl</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:48%;background:#2C6FAD;color:white;">36px</div></div>
+          <div class="spacing-val">section gap</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">2xl</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:66%;background:#185FA5;color:white;">48px</div></div>
+          <div class="spacing-val">section padding</div>
+        </div>
+        <div class="spacing-row">
+          <div class="spacing-name">hero</div>
+          <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:100%;background:#0C447C;color:white;">72px + section margins</div></div>
+          <div class="spacing-val">hero vertical</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 08 DO / DON'T -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="dodont">
+    <p class="section-label">08 · 设计规范</p>
+    <h2 class="section-title">Do / Don't</h2>
+    <p class="section-desc">避免这些常见错误，是让绘本网站从"普通"变"精美"的关键差距。</p>
+
+    <div class="do-dont-grid">
+      <div class="do-card">
+        <div class="card-header"><div class="card-header-text">✅ Do · 这样做</div></div>
+        <div class="card-body">
+          <div class="dd-item"><div class="dd-icon">✓</div>按钮 hover 时 scale(1.05~1.08) + 上移 2–3px，有弹跳感</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>卡片圆角 border-radius ≥ 20px，统一且一致</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>每个 CTA 按钮有对应颜色的 box-shadow（半透明）</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>正文行距 line-height ≥ 1.8，阅读舒适</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>插画用 SVG 扁平风格，主角有大眼睛、厚轮廓</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>配色用系统色板，轻/中/深三档成套使用</div>
+          <div class="dd-item"><div class="dd-icon">✓</div>书封面用纯色渐变区分，emoji 做主视觉占位</div>
+        </div>
+      </div>
+      <div class="dont-card">
+        <div class="card-header"><div class="card-header-text">❌ Don't · 避免这样</div></div>
+        <div class="card-body">
+          <div class="dd-item"><div class="dd-icon">✗</div>按钮没有 hover 效果，点击无任何视觉反馈</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>圆角忽大忽小，border-radius: 4px 和 20px 混用</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>所有按钮用同一个灰色或白色，没有层级</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>正文字号小于 14px，行距 ≤ 1.4</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>直接用真实照片做插画，风格割裂</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>随意取色，没有品牌一致性</div>
+          <div class="dd-item"><div class="dd-icon">✗</div>书封面统一用白底灰字，没有辨识度</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- 09 CC PROMPT SPEC -->
+  <!-- ══════════════════════════════════════ -->
+  <div class="section" id="spec">
+    <p class="section-label">09 · Claude Code 提示词规范</p>
+    <h2 class="section-title">CC Implementation Spec</h2>
+    <p class="section-desc">把下面的规范块直接粘贴给 Claude Code，它能严格按设计系统实现，不会自由发挥乱改。</p>
+
+    <div class="spec-section">
+      <div class="spec-title">🏠 首页实现提示词</div>
+      <div class="spec-box"><pre>
+<span class="comment"># PicBook 儿童绘本网站 - 首页实现规范</span>
+
+<span class="key">## 技术栈</span>
+<span class="val">- 纯 HTML5 + CSS3 + 原生 JS（无框架依赖）</span>
+<span class="val">- 字体：Google Fonts Nunito（400/700/800/900）</span>
+<span class="val">- 图标：纯 SVG 或 Unicode emoji</span>
+<span class="val">- 插画：内联 SVG，扁平风格</span>
+
+<span class="key">## CSS 变量（必须在 :root 中定义）</span>
+<span class="string">--cream: #FFF8EE          /* 全局背景 */</span>
+<span class="string">--orange: #FF6B35          /* 主品牌色 */</span>
+<span class="string">--orange-light: #FFE4D6   /* 浅橙，用于 hover bg */</span>
+<span class="string">--blue: #4A90D9            /* Hero 背景、链接 */</span>
+<span class="string">--green: #5BAD6F           /* 成就、完成状态 */</span>
+<span class="string">--yellow: #FFD166          /* 收藏、标签 */</span>
+<span class="string">--ink: #2D2D2D             /* 正文 */</span>
+<span class="string">--ink-muted: #9A9A9A      /* 辅助信息 */</span>
+
+<span class="key">## 圆角规范（所有卡片/容器必须用变量）</span>
+<span class="string">--radius-sm: 12px   /* 小元素 badge/tag */</span>
+<span class="string">--radius-md: 20px   /* 卡片、输入框 */</span>
+<span class="string">--radius-lg: 28px   /* 大容器、Hero */</span>
+<span class="string">--radius-xl: 40px   /* 特殊圆形按钮 */</span>
+
+<span class="key">## 按钮规范</span>
+<span class="val">所有主 CTA 按钮必须有：</span>
+<span class="string">border-radius: 28px;</span>
+<span class="string">padding: 14px 28px;</span>
+<span class="string">font-weight: 800;</span>
+<span class="string">transition: transform 0.15s, box-shadow 0.15s;</span>
+<span class="string">box-shadow: 0 4px 16px rgba(主色, 0.35);</span>
+<span class="val">hover 效果：</span>
+<span class="string">transform: scale(1.06) translateY(-2px);</span>
+<span class="string">box-shadow: 0 8px 24px rgba(主色, 0.45);</span>
+
+<span class="key">## 书籍卡片规范</span>
+<span class="val">结构：封面图（彩色渐变背景+emoji）+ 书名 + 元数据 + 年龄标签</span>
+<span class="string">封面高度: 100–140px</span>
+<span class="string">卡片 border-radius: 20px</span>
+<span class="string">box-shadow: 0 6px 20px rgba(0,0,0,0.10)</span>
+<span class="val">hover：</span>
+<span class="string">transform: translateY(-4px);</span>
+<span class="string">box-shadow: 0 12px 32px rgba(0,0,0,0.16);</span>
+<span class="string">transition: 0.2s ease;</span>
+
+<span class="key">## Hero Banner 规范</span>
+<span class="string">background: linear-gradient(135deg, #4A90D9, #6AABF2)</span>
+<span class="string">min-height: 300px</span>
+<span class="val">左侧：大标题（font-size≥36px，weight 900，白色）+ 2个按钮</span>
+<span class="val">右侧：SVG 书本/角色插画或装饰物</span>
+      </pre></div>
+    </div>
+
+    <div class="spec-section">
+      <div class="spec-title">📖 阅读页实现提示词</div>
+      <div class="spec-box"><pre>
+<span class="comment"># 绘本阅读页 Reader Page 实现规范</span>
+
+<span class="key">## 布局结构</span>
+<span class="val">1. 顶部工具栏（高度 60px，深色背景 #1A1A2E）</span>
+<span class="val">   - 左：书名 + 进度信息</span>
+<span class="val">   - 右：控制按钮（字号/音频/全屏）+ 退出按钮</span>
+
+<span class="val">2. 双页展开区（grid: 1fr 1fr，min-height 400px）</span>
+<span class="val">   - 左页：浅色背景，SVG 插画居中（宽度 80%，居中）</span>
+<span class="val">   - 右页：奶油白背景 #FFF8EE，阅读正文</span>
+
+<span class="val">3. 底部页码导航（深色背景，圆点居中）</span>
+<span class="val">   - 当前页圆点：橙色 #FF6B35，scale 1.3</span>
+<span class="val">   - 其他页圆点：半透明白色</span>
+
+<span class="key">## 正文排版</span>
+<span class="string">font-size: 18–20px</span>
+<span class="string">line-height: 1.85</span>
+<span class="string">font-family: 'Nunito Sans', 'PingFang SC', sans-serif</span>
+<span class="val">关键词/角色名：用 &lt;em&gt; 或 span 标蓝色 #4A90D9，font-weight 700</span>
+
+<span class="key">## 翻页按钮</span>
+<span class="val">上一页：浅蓝背景 #D6EAFA，蓝色文字</span>
+<span class="val">下一页：橙色背景 #FF6B35，白色文字</span>
+<span class="val">hover 动效：上一页向左位移 3px，下一页向右 + scale 1.04</span>
+
+<span class="key">## SVG 插画规范</span>
+<span class="val">- 必须用 viewBox，不用 width/height 固定值</span>
+<span class="val">- 主角圆形度：70% 以上用 circle/ellipse</span>
+<span class="val">- 表情：大眼睛（两个白色高光点），嘴巴用 path 弧线</span>
+<span class="val">- 背景分层：天空层 + 地面层 + 中景 + 主角</span>
+<span class="val">- 颜色严格取自 CSS 变量色板</span>
+      </pre></div>
+    </div>
+
+    <div class="callout" style="margin-top:0;">
+      <strong>💡 使用技巧：</strong>把上面的规范 + 本文档的 HTML 源码截图一起发给 Claude Code，让它"照这个改内容"而不是"从头设计"，成功率和质量会大幅提升。尤其是 SVG 插画部分，直接复制阅读页的 SVG 代码让它修改角色和场景，比重新生成效果好很多。
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center; padding:32px 0 0; border-top:2px solid #EBDFC8; margin-top:16px;">
+    <p style="font-size:14px;color:var(--ink-muted);font-family:var(--font-body);">
+      PicBook Design System v1.0 · 设计规范文档 · 供 Claude Code 实现参考使用
+    </p>
+    <div style="margin-top:12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+      <span class="tag">Nunito 字体</span>
+      <span class="tag">SVG 插画</span>
+      <span class="tag">奶油黄底色</span>
+      <span class="tag">弹跳动效</span>
+      <span class="tag">双页阅读</span>
+      <span class="tag">圆角 ≥20px</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.page-dot').forEach((dot, i) => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.page-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.book-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = 'translateY(-4px)';
+      card.style.boxShadow = '0 12px 32px rgba(0,0,0,.16)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = '';
+      card.style.boxShadow = '';
+    });
+  });
+</script>
+</body>
+</html>
