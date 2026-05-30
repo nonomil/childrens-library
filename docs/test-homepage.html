@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎪 小朋友的互动学习乐园</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap');
+
+:root {
+  --sky-top: #87CEEB;
+  --sky-mid: #E0F0FF;
+  --sky-low: #FFF5E6;
+  --grass: #7CB342;
+  --grass-light: #9CCC65;
+  --path: #A1887F;
+  --path-edge: #8D6E63;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  overflow-x: hidden;
+  background: var(--sky-top);
+  min-height: 100vh;
+}
+
+/* ===== 天空场景 ===== */
+.sky-scene {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, 
+    #4FC3F7 0%, 
+    #81D4FA 25%, 
+    #B3E5FC 45%,
+    #E1F5FE 60%,
+    #FFF9C4 80%,
+    #FFECB3 100%
+  );
+  overflow: hidden;
+}
+
+/* ===== 云朵 ===== */
+.cloud {
+  position: absolute;
+  background: white;
+  border-radius: 50px;
+  opacity: 0.9;
+  animation: float 20s linear infinite;
+}
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+.cloud-1 { width:120px; height:40px; top:8%; left:-150px; animation-duration:25s; }
+.cloud-1::before { width:50px; height:50px; top:-25px; left:20px; }
+.cloud-1::after { width:70px; height:60px; top:-30px; left:45px; }
+.cloud-2 { width:100px; height:35px; top:15%; left:-120px; animation-duration:30s; animation-delay:5s; opacity:0.7; }
+.cloud-2::before { width:45px; height:45px; top:-22px; left:15px; }
+.cloud-2::after { width:55px; height:50px; top:-25px; left:35px; }
+.cloud-3 { width:80px; height:30px; top:5%; left:-100px; animation-duration:35s; animation-delay:10s; opacity:0.6; }
+.cloud-3::before { width:35px; height:35px; top:-18px; left:12px; }
+.cloud-3::after { width:45px; height:40px; top:-20px; left:30px; }
+
+@keyframes float {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 300px)); }
+}
+
+/* ===== 太阳 ===== */
+.sun {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: #FFD54F;
+  border-radius: 50%;
+  top: 6%;
+  right: 10%;
+  box-shadow: 0 0 60px #FFD54F, 0 0 120px rgba(255,213,79,0.3);
+  animation: pulse 3s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ===== 飞鸟 ===== */
+.bird {
+  position: absolute;
+  top: 12%;
+  width: 20px;
+  height: 10px;
+  animation: fly 12s linear infinite;
+}
+.bird::before, .bird::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 3px;
+  background: #555;
+  border-radius: 50%;
+  top: 0;
+}
+.bird::before { left: 0; transform: rotate(-20deg); }
+.bird::after { right: 0; transform: rotate(20deg); }
+.bird-1 { left: -30px; animation-duration: 10s; }
+.bird-2 { left: -30px; top: 8%; animation-duration: 14s; animation-delay: 3s; }
+@keyframes fly {
+  from { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(25vw) translateY(-15px); }
+  50% { transform: translateX(50vw) translateY(5px); }
+  75% { transform: translateX(75vw) translateY(-10px); }
+  to { transform: translateX(110vw) translateY(0); }
+}
+
+/* ===== 远山 ===== */
+.mountains {
+  position: absolute;
+  bottom: 25%;
+  width: 100%;
+  height: 200px;
+}
+.mountain {
+  position: absolute;
+  bottom: 0;
+  border-left: solid transparent;
+  border-right: solid transparent;
+  border-bottom: solid;
+}
+.mt-1 { left: 5%; border-left-width: 120px; border-right-width: 100px; border-bottom-width: 160px; border-bottom-color: #81C784; }
+.mt-2 { left: 25%; border-left-width: 150px; border-right-width: 130px; border-bottom-width: 200px; border-bottom-color: #66BB6A; }
+.mt-3 { left: 55%; border-left-width: 100px; border-right-width: 120px; border-bottom-width: 140px; border-bottom-color: #81C784; }
+.mt-4 { left: 75%; border-left-width: 140px; border-right-width: 110px; border-bottom-width: 180px; border-bottom-color: #4CAF50; }
+
+/* ===== 草地 ===== */
+.ground {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+  background: linear-gradient(180deg, #8BC34A 0%, #689F38 30%, #558B2F 100%);
+  border-radius: 50% 50% 0 0 / 20px 20px 0 0;
+}
+.ground::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  width: 100%;
+  height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M0,20 Q10,5 20,20 Q30,8 40,20 Q50,3 60,20 Q70,7 80,20 Q90,4 100,20' fill='%238BC34A'/%3E%3C/svg%3E") repeat-x;
+  background-size: 100px 20px;
+}
+
+/* ===== 蜿蜒小路 ===== */
+.path-svg {
+  position: absolute;
+  bottom: 15%;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ===== 标题区 ===== */
+.title-area {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 30px 20px 10px;
+}
+.title-area h1 {
+  font-size: 36px;
+  font-weight: 900;
+  color: #5D4037;
+  text-shadow: 2px 2px 0 #FFD54F, 4px 4px 0 rgba(0,0,0,0.1);
+  letter-spacing: 2px;
+}
+.title-area .subtitle {
+  font-size: 16px;
+  color: #795548;
+  margin-top: 4px;
+  font-weight: 700;
+}
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.stat-pill {
+  background: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #5D4037;
+  border: 2px solid #FFD54F;
+  backdrop-filter: blur(4px);
+}
+
+/* ===== 角色 ===== */
+.character {
+  position: absolute;
+  bottom: 28%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+  animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-8px); }
+}
+
+/* ===== 建筑/地点卡片 ===== */
+.buildings-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  padding: 20px 5%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.building-card {
+  position: relative;
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  padding: 20px 12px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  border: 3px solid transparent;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.building-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  border-radius: 20px 20px 0 0;
+}
+.building-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+.building-card:active {
+  transform: scale(0.97);
+}
+
+.building-icon {
+  font-size: 48px;
+  line-height: 1;
+  margin-bottom: 8px;
+  display: block;
+  filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.1));
+}
+.building-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #5D4037;
+  margin-bottom: 4px;
+}
+.building-desc {
+  font-size: 11px;
+  color: #8D6E63;
+  line-height: 1.3;
+}
+.building-count {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #FF7043;
+  color: white;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.new-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  background: #E91E63;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 10px;
+  animation: popIn 0.5s ease-out;
+}
+@keyframes popIn {
+  0% { transform: scale(0); }
+  70% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* 建筑颜色 */
+.b-music::before { background: linear-gradient(90deg, #AB47BC, #7B1FA2); }
+.b-music { border-color: #CE93D8; }
+.b-math::before { background: linear-gradient(90deg, #FF7043, #E64A19); }
+.b-math { border-color: #FFAB91; }
+.b-english::before { background: linear-gradient(90deg, #42A5F5, #1565C0); }
+.b-english { border-color: #90CAF9; }
+.b-story::before { background: linear-gradient(90deg, #66BB6A, #2E7D32); }
+.b-story { border-color: #A5D6A7; }
+.b-poetry::before { background: linear-gradient(90deg, #EF5350, #C62828); }
+.b-poetry { border-color: #EF9A9A; }
+.b-chinese::before { background: linear-gradient(90deg, #FFA726, #E65100); }
+.b-chinese { border-color: #FFCC80; }
+.b-picture::before { background: linear-gradient(90deg, #26C6DA, #00838F); }
+.b-picture { border-color: #80DEEA; }
+.b-lesson::before { background: linear-gradient(90deg, #78909C, #37474F); }
+.b-lesson { border-color: #B0BEC5; }
+
+/* ===== 底部 ===== */
+.footer {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 20px;
+  color: #5D4037;
+  font-size: 12px;
+}
+
+/* ===== 装饰元素 ===== */
+.flower {
+  position: absolute;
+  z-index: 8;
+  font-size: 24px;
+}
+.flower-1 { bottom: 28%; left: 8%; animation: sway 3s ease-in-out infinite; }
+.flower-2 { bottom: 30%; right: 12%; animation: sway 3.5s ease-in-out infinite 0.5s; }
+.flower-3 { bottom: 26%; left: 20%; animation: sway 2.8s ease-in-out infinite 1s; }
+.flower-4 { bottom: 29%; right: 25%; animation: sway 3.2s ease-in-out infinite 0.3s; }
+@keyframes sway {
+  0%,100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.tree {
+  position: absolute;
+  z-index: 7;
+  font-size: 36px;
+}
+.tree-1 { bottom: 27%; left: 3%; }
+.tree-2 { bottom: 28%; right: 5%; }
+.tree-3 { bottom: 25%; left: 35%; font-size: 28px; }
+
+/* ===== 移动端适配 ===== */
+@media (max-width: 600px) {
+  .title-area h1 { font-size: 24px; }
+  .buildings-grid { 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 10px;
+    padding: 10px 4%;
+  }
+  .building-icon { font-size: 36px; }
+  .building-name { font-size: 13px; }
+  .building-desc { font-size: 10px; }
+  .stat-pill { font-size: 11px; padding: 3px 10px; }
+  .cloud-1, .cloud-2, .cloud-3 { display: none; }
+  .mountains { display: none; }
+  .tree, .flower { display: none; }
+  .ground { height: 35%; }
+}
+
+/* ===== 页面底部列表区 ===== */
+.content-sections {
+  background: #FFF8E1;
+  padding: 20px 5%;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #5D4037;
+  text-align: center;
+  margin: 20px 0 12px;
+}
+.section-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0 12px;
+  scroll-snap-type: x mandatory;
+}
+.section-row::-webkit-scrollbar { height: 4px; }
+.section-row::-webkit-scrollbar-thumb { background: #FFB74D; border-radius: 2px; }
+
+.mini-card {
+  flex: 0 0 100px;
+  background: white;
+  border-radius: 14px;
+  padding: 10px 6px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  border: 2px solid #FFE0B2;
+  transition: transform 0.2s;
+  scroll-snap-align: start;
+}
+.mini-card:hover { transform: translateY(-3px); border-color: #FFB74D; }
+.mini-card .mc-icon { font-size: 28px; }
+.mini-card .mc-name { font-size: 10px; font-weight: 700; color: #5D4037; margin-top: 2px; }
+.mini-card .mc-new { color: #E91E63; font-size: 9px; }
+</style>
+</head>
+<body>
+
+<!-- ===== 天空场景 ===== -->
+<div class="sky-scene">
+  <!-- 太阳 -->
+  <div class="sun"></div>
+  
+  <!-- 云朵 -->
+  <div class="cloud cloud-1"></div>
+  <div class="cloud cloud-2"></div>
+  <div class="cloud cloud-3"></div>
+  
+  <!-- 飞鸟 -->
+  <div class="bird bird-1"></div>
+  <div class="bird bird-2"></div>
+  
+  <!-- 远山 -->
+  <div class="mountains">
+    <div class="mountain mt-1"></div>
+    <div class="mountain mt-2"></div>
+    <div class="mountain mt-3"></div>
+    <div class="mountain mt-4"></div>
+  </div>
+  
+  <!-- 装饰 -->
+  <div class="tree tree-1">🌲</div>
+  <div class="tree tree-2">🌳</div>
+  <div class="tree tree-3">🌲</div>
+  <div class="flower flower-1">🌸</div>
+  <div class="flower flower-2">🌻</div>
+  <div class="flower flower-3">🌷</div>
+  <div class="flower flower-4">🌼</div>
+  
+  <!-- 草地 -->
+  <div class="ground"></div>
+  
+  <!-- 标题 -->
+  <div class="title-area">
+    <h1>🎪 小朋友的互动学习乐园</h1>
+    <p class="subtitle">✨ 每堂课都有互动游戏和语音朗读 🎧</p>
+    <div class="stats-bar">
+      <span class="stat-pill">📚 123 堂课</span>
+      <span class="stat-pill">🎵 27 童谣</span>
+      <span class="stat-pill">🔤 24 英语</span>
+      <span class="stat-pill">🧮 24 数学</span>
+      <span class="stat-pill">📖 20 故事</span>
+      <span class="stat-pill">🏯 20 古诗</span>
+    </div>
+  </div>
+  
+  <!-- 建筑卡片 -->
+  <div class="buildings-grid">
+    
+    <a href="courseware/twinkle-twinkle.html" class="building-card b-music">
+      <span class="building-count">27</span>
+      <span class="building-icon">🎵</span>
+      <div class="building-name">音乐喷泉</div>
+      <div class="building-desc">唱童谣、听节奏</div>
+    </a>
+    
+    <a href="courseware/village.html" class="building-card b-math">
+      <span class="new-badge">NEW</span>
+      <span class="building-count">24</span>
+      <span class="building-icon">🔨</span>
+      <div class="building-name">数学铁匠铺</div>
+      <div class="building-desc">算数、逻辑、思维</div>
+    </a>
+    
+    <a href="courseware/" class="building-card b-english">
+      <span class="building-count">24</span>
+      <span class="building-icon">📚</span>
+      <div class="building-name">英语图书馆</div>
+      <div class="building-desc">字母、单词、阅读</div>
+    </a>
+    
+    <a href="courseware/story_extra_01_小蜗牛慢慢游历记.html" class="building-card b-story">
+      <span class="new-badge">NEW</span>
+      <span class="building-count">20</span>
+      <span class="building-icon">🍞</span>
+      <div class="building-name">故事面包房</div>
+      <div class="building-desc">中文+英文故事</div>
+    </a>
+    
+    <a href="courseware/poem_explain_01_咏鹅.html" class="building-card b-poetry">
+      <span class="new-badge">NEW</span>
+      <span class="building-count">20</span>
+      <span class="building-icon">⛩️</span>
+      <div class="building-name">古诗神社</div>
+      <div class="building-desc">唐诗宋词讲解</div>
+    </a>
+    
+    <a href="courseware/chinese_01_小壁虎借尾巴.html" class="building-card b-chinese">
+      <span class="building-count">24</span>
+      <span class="building-icon">🏮</span>
+      <div class="building-name">语文灯笼铺</div>
+      <div class="building-desc">课文、拼音、识字</div>
+    </a>
+    
+    <a href="courseware/pigeon_bus.html" class="building-card b-picture">
+      <span class="building-count">8</span>
+      <span class="building-icon">🎨</span>
+      <div class="building-name">绘本画廊</div>
+      <div class="building-desc">经典英文绘本</div>
+    </a>
+    
+    <a href="courseware/lesson_extra_01_数学启蒙：比大小.html" class="building-card b-lesson">
+      <span class="new-badge">NEW</span>
+      <span class="building-count">10</span>
+      <span class="building-icon">🎓</span>
+      <div class="building-name">教案工坊</div>
+      <div class="building-desc">亲子互动教案</div>
+    </a>
+    
+  </div>
+  
+  <!-- 底部小卡片列表 -->
+  <div class="content-sections">
+    
+    <div class="section-title">🎵 热门童谣</div>
+    <div class="section-row">
+      <a href="courseware/twinkle-twinkle.html" class="mini-card"><span class="mc-icon">🌟</span><span class="mc-name">Twinkle Star</span></a>
+      <a href="courseware/old-macdonald.html" class="mini-card"><span class="mc-icon">🚜</span><span class="mc-name">Old MacDonald</span></a>
+      <a href="courseware/five-little-monkeys.html" class="mini-card"><span class="mc-icon">🐵</span><span class="mc-name">5 Monkeys</span></a>
+      <a href="courseware/wheels-on-bus.html" class="mini-card"><span class="mc-icon">🚌</span><span class="mc-name">Wheels Bus</span></a>
+      <a href="courseware/bingo.html" class="mini-card"><span class="mc-icon">🐶</span><span class="mc-name">BINGO</span></a>
+      <a href="courseware/abc-song.html" class="mini-card"><span class="mc-icon">🔤</span><span class="mc-name">ABC Song</span></a>
+      <a href="courseware/itsy-bitsy-spider.html" class="mini-card"><span class="mc-icon">🕷️</span><span class="mc-name">Itsy Spider</span></a>
+      <a href="courseware/head-shoulders.html" class="mini-card"><span class="mc-icon">🧍</span><span class="mc-name">Head Shoulders</span></a>
+    </div>
+    
+    <div class="section-title">📖 精选故事</div>
+    <div class="section-row">
+      <a href="courseware/story_extra_01_小蜗牛慢慢游历记.html" class="mini-card"><span class="mc-icon">🐌</span><span class="mc-name">小蜗牛</span></a>
+      <a href="courseware/story_extra_03_森林里的圣诞节.html" class="mini-card"><span class="mc-icon">🎄</span><span class="mc-name">森林圣诞</span></a>
+      <a href="courseware/story_extra_06_彩虹尽头的宝藏.html" class="mini-card"><span class="mc-icon">🌈</span><span class="mc-name">彩虹宝藏</span></a>
+      <a href="courseware/story_extra_10_太空小探险家.html" class="mini-card"><span class="mc-icon">🚀</span><span class="mc-name">太空探险</span></a>
+      <a href="courseware/english_story_03_The_Ugly_Duckling.html" class="mini-card"><span class="mc-icon">🦢</span><span class="mc-name">丑小鸭</span></a>
+      <a href="courseware/english_story_06_Goldilocks_and_the_Three_Bears.html" class="mini-card"><span class="mc-icon">🐻</span><span class="mc-name">金发姑娘</span></a>
+    </div>
+    
+    <div class="section-title">🏯 古诗欣赏</div>
+    <div class="section-row">
+      <a href="courseware/poem_explain_01_咏鹅.html" class="mini-card"><span class="mc-icon">🪿</span><span class="mc-name">咏鹅</span></a>
+      <a href="courseware/poem_explain_02_春晓.html" class="mini-card"><span class="mc-icon">🌸</span><span class="mc-name">春晓</span></a>
+      <a href="courseware/poem_explain_03_静夜思.html" class="mini-card"><span class="mc-icon">🌙</span><span class="mc-name">静夜思</span></a>
+      <a href="courseware/poem_explain_04_悯农.html" class="mini-card"><span class="mc-icon">🌾</span><span class="mc-name">悯农</span></a>
+      <a href="courseware/poem_explain_05_登鹳雀楼.html" class="mini-card"><span class="mc-icon">🏯</span><span class="mc-name">鹳雀楼</span></a>
+    </div>
+    
+  </div>
+  
+</div>
+
+<div class="footer">
+  🎪 每一堂课，都是一次冒险 ✨
+</div>
+
+</body>
+</html>
