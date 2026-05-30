@@ -11,44 +11,32 @@
 body { 
   font-family: 'Noto Sans SC', sans-serif;
   overflow: hidden;
-  height: 100vh;
-  width: 100vw;
-  background: #87CEEB;
-  cursor: default;
-  touch-action: none;
+  height: 100vh; width: 100vw;
+  background: #2E7D32;
 }
 
 /* ===== 开始界面 ===== */
 .start-screen {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; inset: 0;
   background: linear-gradient(180deg, #1a237e 0%, #283593 40%, #1565c0 100%);
   z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
   transition: opacity 0.8s;
 }
 .start-screen.hide { opacity: 0; pointer-events: none; }
 .start-title {
-  font-size: min(42px, 8vw);
-  font-weight: 900;
+  font-size: min(42px, 8vw); font-weight: 900;
   color: #FFD54F;
   text-shadow: 3px 3px 0 #5D4037, 6px 6px 0 rgba(0,0,0,0.3);
   margin-bottom: 8px;
 }
 .start-sub { color: #B3E5FC; font-size: min(16px, 3vw); margin-bottom: 40px; }
 .start-btn {
-  background: linear-gradient(180deg, #66BB6A 0%, #43A047 100%);
-  color: white;
-  border: 4px solid #2E7D32;
-  padding: 14px 48px;
-  font-size: 20px;
-  font-weight: 900;
-  border-radius: 12px;
-  cursor: pointer;
-  font-family: inherit;
+  background: linear-gradient(180deg, #66BB6A, #43A047);
+  color: white; border: 4px solid #2E7D32;
+  padding: 14px 48px; font-size: 20px; font-weight: 900;
+  border-radius: 12px; cursor: pointer; font-family: inherit;
   box-shadow: 0 6px 0 #1B5E20, 0 8px 20px rgba(0,0,0,0.3);
   transition: all 0.1s;
   text-shadow: 2px 2px 0 #1B5E20;
@@ -60,333 +48,203 @@ body {
 /* ===== 游戏世界 ===== */
 .game-world {
   position: relative;
-  width: 100%;
-  height: 100vh;
+  width: 100vw; height: 100vh;
   overflow: hidden;
-  background: linear-gradient(180deg, #87CEEB 0%, #B0E0FF 50%, #87CEEB 50.1%, #4CAF50 70%, #388E3C 100%);
+  background: #4a8c3f;
 }
 
-/* 天空层 - 视差慢速 */
-.sky-layer {
-  position: absolute;
-  top: 0; left: 0;
-  width: 200%;
-  height: 55%;
-  transition: transform 0.1s linear;
+/* 地图背景 */
+.map-bg {
+  position: absolute; inset: 0;
+  background-image: url('assets/sprites/world-map-bg.png');
+  background-size: cover;
+  background-position: center;
   image-rendering: pixelated;
-}
-.sky-layer img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  image-rendering: pixelated;
+  filter: brightness(0.95) saturate(1.1);
 }
 
-/* 太阳 */
-.sun {
-  position: absolute;
-  top: 8%;
-  right: 15%;
-  width: 80px;
-  height: 80px;
-  background: radial-gradient(circle, #FFD54F 40%, #FFC107 70%, transparent 71%);
-  border-radius: 50%;
-  box-shadow: 0 0 40px #FFD54F, 0 0 80px rgba(255,213,79,0.4);
-  animation: sunPulse 3s ease-in-out infinite;
-  z-index: 5;
-}
-@keyframes sunPulse {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-
-/* 云朵 */
-.cloud {
-  position: absolute;
-  z-index: 6;
-  opacity: 0.9;
-}
-.cloud::before, .cloud::after {
-  content: '';
-  position: absolute;
-  background: white;
-  border-radius: 50%;
-}
-.cloud-1 { top: 12%; left: 10%; animation: cloudFloat 20s linear infinite; }
-.cloud-1::before { width: 60px; height: 40px; top: 10px; left: 0; }
-.cloud-1::after { width: 80px; height: 50px; top: 0; left: 30px; }
-.cloud-2 { top: 18%; left: 50%; animation: cloudFloat 25s linear infinite; }
-.cloud-2::before { width: 50px; height: 35px; top: 8px; left: 0; }
-.cloud-2::after { width: 70px; height: 45px; top: 0; left: 25px; }
-.cloud-3 { top: 8%; left: 75%; animation: cloudFloat 18s linear infinite; }
-.cloud-3::before { width: 45px; height: 30px; top: 10px; left: 0; }
-.cloud-3::after { width: 65px; height: 40px; top: 0; left: 20px; }
-@keyframes cloudFloat {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-120vw); }
-}
-
-/* 地面层 - 视差快速 */
-.ground-layer {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%;
-  height: 55%;
-  background: 
-    linear-gradient(180deg, #66BB6A 0%, #4CAF50 5%, #388E3C 15%, #5D4037 20%, #795548 40%, #8D6E63 100%);
-  z-index: 10;
-}
-
-/* 蜿蜒小路 */
-.path-overlay {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 100%;
-  height: 55%;
-  z-index: 11;
+/* SVG路径层 */
+.path-layer {
+  position: absolute; inset: 0;
+  z-index: 20;
   pointer-events: none;
 }
-.path-overlay svg {
-  width: 100%;
-  height: 100%;
+.path-layer svg {
+  width: 100%; height: 100%;
 }
 
-/* ===== 建筑 ===== */
-.building {
+/* ===== 建筑节点 ===== */
+.building-node {
   position: absolute;
   z-index: 50;
   cursor: pointer;
-  transition: transform 0.2s;
   text-align: center;
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s;
 }
-.building:hover { transform: scale(1.08); z-index: 60; }
-.building:active { transform: scale(0.95); }
+.building-node:hover { transform: translate(-50%, -50%) scale(1.1); z-index: 60; }
+.building-node:active { transform: translate(-50%, -50%) scale(0.95); }
 
-.building-img {
-  width: 100%;
-  height: auto;
-  image-rendering: pixelated;
-  filter: drop-shadow(3px 5px 4px rgba(0,0,0,0.35));
-  transition: filter 0.2s;
-}
-.building:hover .building-img {
-  filter: drop-shadow(3px 5px 8px rgba(255,213,79,0.6));
-}
-
-/* CSS建筑（无图片时的后备） */
-.building-css {
+/* 建筑圆形底座 */
+.node-base {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 -3px 6px rgba(0,0,0,0.15);
+  border: 4px solid rgba(255,255,255,0.8);
   position: relative;
+  overflow: visible;
+}
+.node-base img {
+  width: 60px; height: 60px;
   image-rendering: pixelated;
 }
-.building-css .roof {
-  width: 100%;
-  height: 40%;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-.building-css .wall {
-  width: 100%;
-  height: 60%;
-  border: 3px solid rgba(0,0,0,0.2);
+.node-base .emoji-icon {
+  font-size: 36px;
+  line-height: 1;
+  filter: drop-shadow(1px 2px 2px rgba(0,0,0,0.3));
 }
 
-/* 建筑标签 */
-.building-label {
+/* 建筑名称气泡 */
+.node-label {
   position: absolute;
-  bottom: -28px;
-  left: 50%;
+  bottom: -30px; left: 50%;
   transform: translateX(-50%);
   background: rgba(0,0,0,0.85);
   color: #FFD54F;
-  padding: 4px 12px;
-  border-radius: 10px;
+  padding: 3px 10px;
+  border-radius: 8px;
   font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
-  pointer-events: none;
+  border: 2px solid #FFD54F;
   opacity: 0;
   transition: opacity 0.2s;
-  border: 2px solid #FFD54F;
-  z-index: 70;
+  pointer-events: none;
 }
-.building:hover .building-label { opacity: 1; }
+.building-node:hover .node-label { opacity: 1; }
 
 /* NEW标记 */
 .badge-new {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #EF5350;
-  color: white;
-  font-size: 9px;
-  font-weight: 900;
-  padding: 2px 6px;
-  border-radius: 8px;
+  position: absolute; top: -6px; right: -6px;
+  background: #EF5350; color: white;
+  font-size: 9px; font-weight: 900;
+  padding: 2px 6px; border-radius: 8px;
   border: 2px solid white;
-  z-index: 71;
-  animation: badgeBounce 1s ease-in-out infinite;
+  animation: badgePulse 1.2s ease-in-out infinite;
+  z-index: 55;
 }
-@keyframes badgeBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
+@keyframes badgePulse {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 
-/* 课程数量 */
-.building-count {
-  position: absolute;
-  top: -12px;
-  left: -8px;
-  background: #4CAF50;
-  color: white;
-  font-size: 10px;
-  font-weight: 900;
-  padding: 2px 8px;
-  border-radius: 10px;
+/* 课程数徽章 */
+.node-count {
+  position: absolute; top: -6px; left: -6px;
+  background: #4CAF50; color: white;
+  font-size: 10px; font-weight: 900;
+  padding: 2px 7px; border-radius: 10px;
   border: 2px solid white;
-  z-index: 71;
+  z-index: 55;
 }
 
-/* ===== 角色 Steve ===== */
+/* 路径上的站号 */
+.node-number {
+  position: absolute;
+  top: -14px; left: 50%;
+  transform: translateX(-50%);
+  background: #FFD54F; color: #5D4037;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  font-size: 11px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 56;
+}
+
+/* ===== Steve 角色 ===== */
 #steve {
   position: absolute;
   z-index: 100;
-  transition: left 0.4s ease-out, bottom 0.3s ease-out;
+  transition: left 0.5s ease-in-out, top 0.5s ease-in-out;
   pointer-events: none;
+  transform: translate(-50%, -100%);
 }
 #steve img {
+  width: 40px; height: 80px;
   image-rendering: pixelated;
-  width: 48px;
-  height: 96px;
-  filter: drop-shadow(2px 3px 2px rgba(0,0,0,0.4));
+  filter: drop-shadow(2px 3px 3px rgba(0,0,0,0.5));
 }
 #steve.walking img {
-  animation: steveWalkBounce 0.3s steps(2) infinite;
+  animation: steveBounce 0.3s steps(2) infinite;
 }
-@keyframes steveWalkBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+@keyframes steveBounce {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 #steve.facing-left img { transform: scaleX(-1); }
+#steve.facing-left.walking img { transform: scaleX(-1) translateY(-5px); }
 
-/* Steve名字标签 */
-.steve-name {
+.steve-label {
   position: absolute;
-  top: -22px;
-  left: 50%;
+  top: -18px; left: 50%;
   transform: translateX(-50%);
-  background: rgba(0,0,0,0.7);
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 6px;
+  background: rgba(0,0,0,0.75);
+  color: white; font-size: 9px; font-weight: 700;
+  padding: 1px 6px; border-radius: 4px;
   white-space: nowrap;
 }
 
 /* ===== HUD ===== */
 .hud {
-  position: fixed;
-  top: 12px;
-  left: 50%;
+  position: fixed; top: 10px; left: 50%;
   transform: translateX(-50%);
   z-index: 200;
-  display: flex;
-  gap: 12px;
-  background: rgba(0,0,0,0.65);
-  padding: 8px 20px;
-  border-radius: 20px;
+  display: flex; gap: 12px;
+  background: rgba(0,0,0,0.7);
+  padding: 6px 18px; border-radius: 20px;
   backdrop-filter: blur(8px);
   border: 2px solid rgba(255,255,255,0.15);
 }
 .hud-item {
-  color: white;
-  font-size: 14px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
+  color: white; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
 }
 
-/* 标题 */
 .game-title {
-  position: fixed;
-  top: 55px;
-  left: 50%;
+  position: fixed; top: 50px; left: 50%;
   transform: translateX(-50%);
   z-index: 200;
-  color: #FFD54F;
-  font-size: min(20px, 4vw);
+  color: #FFD54F; font-size: min(18px, 3.5vw);
   font-weight: 900;
   text-shadow: 2px 2px 0 #5D4037, 3px 3px 0 rgba(0,0,0,0.3);
-  white-space: nowrap;
-  pointer-events: none;
+  white-space: nowrap; pointer-events: none;
 }
 
-/* 操作提示 */
 .controls-hint {
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
+  position: fixed; bottom: 14px; left: 50%;
   transform: translateX(-50%);
   z-index: 200;
   background: rgba(0,0,0,0.7);
   color: #B0BEC5;
-  padding: 8px 20px;
-  border-radius: 12px;
-  font-size: 12px;
-  text-align: center;
+  padding: 6px 16px; border-radius: 10px;
+  font-size: 11px; text-align: center;
   pointer-events: none;
 }
 .controls-hint kbd {
-  background: #37474F;
-  padding: 2px 6px;
-  border-radius: 4px;
-  border: 1px solid #546E7A;
-  font-size: 11px;
+  background: #37474F; padding: 1px 5px;
+  border-radius: 3px; border: 1px solid #546E7A;
   color: #FFD54F;
 }
 
-/* 蝴蝶 */
-.butterfly {
-  position: absolute;
-  z-index: 80;
-  font-size: 18px;
-  animation: butterflyFly 12s ease-in-out infinite;
+/* 环境装饰 */
+.deco {
+  position: absolute; z-index: 30;
   pointer-events: none;
-}
-@keyframes butterflyFly {
-  0% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(80px, -40px) rotate(10deg); }
-  50% { transform: translate(40px, -80px) rotate(-5deg); }
-  75% { transform: translate(-40px, -30px) rotate(8deg); }
-  100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-/* 粒子效果 */
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 75;
-  animation: particleFloat 4s ease-in-out infinite;
-}
-@keyframes particleFloat {
-  0% { opacity: 0; transform: translateY(0); }
-  20% { opacity: 1; }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-60px); }
-}
-
-/* 树木 */
-.tree {
-  position: absolute;
-  z-index: 45;
-  pointer-events: none;
-}
-.tree img {
   image-rendering: pixelated;
-  filter: drop-shadow(2px 4px 3px rgba(0,0,0,0.3));
 }
 </style>
 </head>
@@ -402,51 +260,83 @@ body {
 
 <!-- 游戏世界 -->
 <div class="game-world" id="gameWorld">
+  <div class="map-bg"></div>
   
-  <!-- 太阳 -->
-  <div class="sun"></div>
+  <!-- SVG 蜿蜒路径 -->
+  <svg class="path-layer" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <!-- 路径样式：泥土路 -->
+      <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#C8A96E"/>
+        <stop offset="50%" stop-color="#B8945A"/>
+        <stop offset="100%" stop-color="#A07840"/>
+      </linearGradient>
+      <filter id="roadShadow">
+        <feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="rgba(0,0,0,0.3)"/>
+      </filter>
+    </defs>
+    <!-- 主路：蜿蜒的泥土路 -->
+    <path id="mainRoad" d="
+      M 160,820 
+      Q 200,780 260,750 
+      Q 340,710 420,720
+      Q 500,730 540,680
+      Q 580,630 620,600
+      Q 680,560 750,540
+      Q 830,520 900,500
+      Q 960,480 1020,490
+      Q 1080,500 1120,460
+      Q 1160,420 1220,400
+      Q 1300,370 1380,360
+      Q 1460,350 1520,320
+      Q 1580,290 1650,280
+      Q 1720,270 1760,250
+    " fill="none" stroke="url(#roadGrad)" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" filter="url(#roadShadow)"/>
+    <!-- 路径边线 -->
+    <path d="
+      M 160,820 
+      Q 200,780 260,750 
+      Q 340,710 420,720
+      Q 500,730 540,680
+      Q 580,630 620,600
+      Q 680,560 750,540
+      Q 830,520 900,500
+      Q 960,480 1020,490
+      Q 1080,500 1120,460
+      Q 1160,420 1220,400
+      Q 1300,370 1380,360
+      Q 1460,350 1520,320
+      Q 1580,290 1650,280
+      Q 1720,270 1760,250
+    " fill="none" stroke="#D4B87A" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 路径中心线（虚线） -->
+    <path d="
+      M 160,820 
+      Q 200,780 260,750 
+      Q 340,710 420,720
+      Q 500,730 540,680
+      Q 580,630 620,600
+      Q 680,560 750,540
+      Q 830,520 900,500
+      Q 960,480 1020,490
+      Q 1080,500 1120,460
+      Q 1160,420 1220,400
+      Q 1300,370 1380,360
+      Q 1460,350 1520,320
+      Q 1580,290 1650,280
+      Q 1720,270 1760,250
+    " fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-dasharray="12 8" stroke-linecap="round"/>
+  </svg>
   
-  <!-- 云朵 -->
-  <div class="cloud cloud-1"></div>
-  <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
-  
-  <!-- 蝴蝶 -->
-  <div class="butterfly" style="top:25%;left:30%">🦋</div>
-  <div class="butterfly" style="top:30%;left:65%;animation-delay:-4s">🦋</div>
-  
-  <!-- 树木装饰 -->
-  <div class="tree" style="bottom:52%;left:5%;z-index:45">
-    <img src="assets/sprites/Leaves.PNG" width="48" height="48" style="filter:hue-rotate(0deg)">
-  </div>
-  <div class="tree" style="bottom:54%;left:22%;z-index:44">
-    <img src="assets/sprites/Leaves.PNG" width="40" height="40">
-  </div>
-  <div class="tree" style="bottom:50%;left:42%;z-index:46">
-    <img src="assets/sprites/Leaves.PNG" width="52" height="52" style="filter:hue-rotate(-10deg)">
-  </div>
-  <div class="tree" style="bottom:53%;left:60%;z-index:44">
-    <img src="assets/sprites/Leaves.PNG" width="36" height="36">
-  </div>
-  <div class="tree" style="bottom:51%;left:80%;z-index:45">
-    <img src="assets/sprites/Leaves.PNG" width="44" height="44" style="filter:hue-rotate(10deg)">
-  </div>
-  <div class="tree" style="bottom:55%;left:92%;z-index:43">
-    <img src="assets/sprites/Leaves.PNG" width="38" height="38">
-  </div>
-  
-  <!-- 粒子效果 -->
-  <div class="particle" style="bottom:48%;left:15%;background:#FFD54F;animation-delay:0s"></div>
-  <div class="particle" style="bottom:50%;left:35%;background:#FF7043;animation-delay:-1.5s"></div>
-  <div class="particle" style="bottom:47%;left:55%;background:#AB47BC;animation-delay:-3s"></div>
-  <div class="particle" style="bottom:49%;left:75%;background:#26C6DA;animation-delay:-2s"></div>
-  
-  <!-- 建筑群 -->
+  <!-- 建筑节点（沿路径分布） -->
   <div id="buildings-container"></div>
+  
+  <!-- 装饰树木 -->
+  <div id="decorations"></div>
   
   <!-- Steve 角色 -->
   <div id="steve">
-    <div class="steve-name">Steve</div>
+    <div class="steve-label">Steve</div>
     <img id="steveImg" src="assets/sprites/steve-front.png" alt="Steve">
   </div>
 </div>
@@ -457,228 +347,172 @@ body {
   <div class="hud-item">📚 <span id="courseCount">123</span> 课</div>
   <div class="hud-item">🏆 <span id="badgeCount">0</span></div>
 </div>
-
 <div class="game-title">🎪 小朋友的互动学习乐园</div>
 
-<!-- 操作提示 -->
 <div class="controls-hint">
-  <span class="mobile-hint" style="display:none">👆 点击地图移动 | 点击建筑探索</span>
-  <span class="desktop-hint">⌨️ <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> 移动 | 🖱️ 点击移动 | 点击建筑探索</span>
+  <span class="mobile-hint" style="display:none">👆 点击建筑探索</span>
+  <span class="desktop-hint">🖱️ 点击建筑探索 | Steve 会走过去！</span>
 </div>
 
 <script>
 // ===== 建筑数据 =====
+// 路径上的8个站点（SVG坐标 0-1920 x 0-1080）
 const BUILDINGS = [
-  { id:'music', name:'🎵 音乐喷泉', desc:'唱童谣、听节奏', count:27, color:'#AB47BC', x:0.12, y:0.52, link:'courseware/twinkle-twinkle.html', size:90, img:'building-music.png' },
-  { id:'math', name:'🔨 数学铁匠铺', desc:'算数、逻辑、思维', count:24, color:'#FF7043', x:0.28, y:0.40, link:'courseware/village.html', size:100, img:'building-math.png', isNew:true },
-  { id:'english', name:'📚 英语图书馆', desc:'字母、单词、阅读', count:24, color:'#42A5F5', x:0.44, y:0.48, link:'courseware/', size:95, img:'building-english.png' },
-  { id:'story', name:'🍞 故事面包房', desc:'中文+英文故事', count:20, color:'#66BB6A', x:0.60, y:0.42, link:'courseware/story_extra_01_小蜗牛慢慢游历记.html', size:85, img:'building-story.png', isNew:true },
-  { id:'poetry', name:'⛩️ 古诗神社', desc:'唐诗宋词讲解', count:20, color:'#EF5350', x:0.18, y:0.30, link:'courseware/poem_explain_01_咏鹅.html', size:80, isNew:true },
-  { id:'chinese', name:'🏮 语文灯笼铺', desc:'课文、拼音、识字', count:24, color:'#FFA726', x:0.38, y:0.28, link:'courseware/chinese_01_小壁虎借尾巴.html', size:85 },
-  { id:'picture', name:'🎨 绘本画廊', desc:'经典英文绘本', count:8, color:'#26C6DA', x:0.72, y:0.34, link:'courseware/pigeon_bus.html', size:75 },
-  { id:'lesson', name:'🎓 教案工坊', desc:'亲子互动教案', count:10, color:'#78909C', x:0.86, y:0.50, link:'courseware/lesson_extra_01_数学启蒙：比大小.html', size:70, isNew:true },
+  { id:'music',    name:'🎵 音乐喷泉',   desc:'唱童谣、听节奏',   count:27, color:'#AB47BC', svgX:160,  svgY:820,  link:'courseware/twinkle-twinkle.html',       emoji:'⛲', isNew:false },
+  { id:'math',     name:'🔨 数学铁匠铺', desc:'算数、逻辑、思维', count:24, color:'#FF7043', svgX:420,  svgY:720,  link:'courseware/village.html',               emoji:'🔨', isNew:true },
+  { id:'english',  name:'📚 英语图书馆', desc:'字母、单词、阅读', count:24, color:'#42A5F5', svgX:620,  svgY:600,  link:'courseware/',                           emoji:'📚', isNew:false },
+  { id:'story',    name:'🍞 故事面包房', desc:'中文+英文故事',   count:20, color:'#66BB6A', svgX:750,  svgY:540,  link:'courseware/story_extra_01_小蜗牛慢慢游历记.html', emoji:'🍞', isNew:true },
+  { id:'poetry',   name:'⛩️ 古诗神社',   desc:'唐诗宋词讲解',     count:20, color:'#EF5350', svgX:900,  svgY:500,  link:'courseware/poem_explain_01_咏鹅.html',  emoji:'⛩️', isNew:true },
+  { id:'chinese',  name:'🏮 语文灯笼铺', desc:'课文、拼音、识字', count:24, color:'#FFA726', svgX:1120, svgY:460,  link:'courseware/chinese_01_小壁虎借尾巴.html', emoji:'🏮', isNew:false },
+  { id:'picture',  name:'🎨 绘本画廊',   desc:'经典英文绘本',     count:8,  color:'#26C6DA', svgX:1380, svgY:360,  link:'courseware/pigeon_bus.html',             emoji:'🎨', isNew:false },
+  { id:'lesson',   name:'🎓 教案工坊',   desc:'亲子互动教案',     count:10, color:'#78909C', svgX:1760, svgY:250,  link:'courseware/lesson_extra_01_数学启蒙：比大小.html', emoji:'🎓', isNew:true },
 ];
 
-// ===== 游戏状态 =====
-let gameState = {
-  started: false,
-  steveX: 0.5,
-  steveY: 0.48,
-  targetX: null,
-  targetY: null,
-  moving: false,
-  keys: {},
-  worldWidth: 0,
-};
+// ===== 状态 =====
+let gameStarted = false;
 
-// ===== 初始化建筑 =====
+// ===== 初始化建筑节点 =====
 function initBuildings() {
   const container = document.getElementById('buildings-container');
   container.innerHTML = '';
+  const w = window.innerWidth;
+  const h = window.innerHeight;
   
-  BUILDINGS.forEach(b => {
+  // SVG viewBox = 1920 x 1080, 实际页面按比例映射
+  const scaleX = w / 1920;
+  const scaleY = h / 1080;
+  const scale = Math.min(scaleX, scaleY);
+  const offsetX = (w - 1920 * scale) / 2;
+  const offsetY = (h - 1080 * scale) / 2;
+  
+  BUILDINGS.forEach((b, i) => {
     const el = document.createElement('div');
-    el.className = 'building';
-    el.style.left = (b.x * 100) + '%';
-    el.style.bottom = (b.y * 100) + '%';
-    el.style.width = b.size + 'px';
-    el.style.transform = 'translate(-50%, 50%)';
-    
-    // 检查是否有图片
-    const imgSrc = 'assets/sprites/' + b.img;
-    let imgEl = `<img class="building-img" src="${imgSrc}" alt="${b.name}" 
-      onerror="this.parentElement.querySelector('.building-css-fallback').style.display='block';this.style.display='none'">`;
-    
-    // CSS后备建筑
-    let cssFallback = `<div class="building-css-fallback" style="display:none;width:100%;padding-top:100%;background:linear-gradient(180deg,${b.color} 0%,${b.color}dd 100%);border-radius:8px;border:3px solid rgba(0,0,0,0.2);box-shadow:inset 0 -10px 20px rgba(0,0,0,0.15)">
-      <div style="position:absolute;top:15%;left:50%;transform:translateX(-50%);font-size:${b.size*0.4}px;text-shadow:2px 2px 4px rgba(0,0,0,0.3)">${b.name.split(' ')[0]}</div>
-    </div>`;
+    el.className = 'building-node';
+    el.style.left = (b.svgX * scale + offsetX) + 'px';
+    el.style.top = (b.svgY * scale + offsetY) + 'px';
     
     el.innerHTML = `
-      ${imgEl}
-      ${cssFallback}
-      <div class="building-label">${b.name}<br><small style="color:#aaa">${b.desc} (${b.count}课)</small></div>
+      <div class="node-number">${i + 1}</div>
+      <div class="node-count">${b.count}课</div>
       ${b.isNew ? '<div class="badge-new">NEW</div>' : ''}
-      <div class="building-count">${b.count}课</div>
+      <div class="node-base" style="background:linear-gradient(135deg, ${b.color}, ${b.color}cc)">
+        <span class="emoji-icon">${b.emoji}</span>
+      </div>
+      <div class="node-label">${b.name}<br><small style="color:#aaa">${b.desc}</small></div>
     `;
     
     el.addEventListener('click', (e) => {
       e.stopPropagation();
-      moveToBuilding(b);
+      navigateToBuilding(b);
     });
     
     container.appendChild(el);
   });
 }
 
-// ===== Steve 角色 =====
-function updateSteve() {
-  const steve = document.getElementById('steve');
-  const world = document.getElementById('gameWorld');
-  const w = world.offsetWidth;
-  const h = world.offsetHeight;
+// ===== 初始化装饰 =====
+function initDecorations() {
+  const container = document.getElementById('decorations');
+  container.innerHTML = '';
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const scaleX = w / 1920;
+  const scaleY = h / 1080;
+  const scale = Math.min(scaleX, scaleY);
+  const offsetX = (w - 1920 * scale) / 2;
+  const offsetY = (h - 1080 * scale) / 2;
   
-  steve.style.left = (gameState.steveX * w) + 'px';
-  steve.style.bottom = (gameState.steveY * h - 20) + 'px';
+  // 随机树木装饰
+  const treePositions = [
+    {x:80,y:400},{x:300,y:350},{x:500,y:250},{x:700,y:200},
+    {x:200,y:900},{x:450,y:850},{x:650,y:800},{x:850,y:750},
+    {x:1050,y:700},{x:1250,y:650},{x:1450,y:550},{x:1650,y:500},
+    {x:100,y:600},{x:350,y:500},{x:550,y:450},{x:1100,y:300},
+    {x:1300,y:200},{x:1500,y:150},{x:1700,y:400},{x:1800,y:350},
+  ];
+  
+  treePositions.forEach(pos => {
+    const tree = document.createElement('div');
+    tree.className = 'deco';
+    tree.style.left = (pos.x * scale + offsetX) + 'px';
+    tree.style.top = (pos.y * scale + offsetY) + 'px';
+    tree.innerHTML = '<img src="assets/sprites/Leaves.PNG" width="32" height="32">';
+    container.appendChild(tree);
+  });
 }
 
-function setSteveFacing(direction) {
+// ===== Steve 移动 =====
+function navigateToBuilding(building) {
   const steve = document.getElementById('steve');
-  if (direction === 'left') {
-    steve.classList.add('facing-left');
-  } else {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const scaleX = w / 1920;
+  const scaleY = h / 1080;
+  const scale = Math.min(scaleX, scaleY);
+  const offsetX = (w - 1920 * scale) / 2;
+  const offsetY = (h - 1080 * scale) / 2;
+  
+  const targetX = building.svgX * scale + offsetX;
+  const targetY = building.svgY * scale + offsetY - 30;
+  
+  // 面向方向
+  const currentLeft = parseFloat(steve.style.left) || w/2;
+  if (targetX > currentLeft) {
     steve.classList.remove('facing-left');
-  }
-}
-
-function setSteveMoving(moving) {
-  const steve = document.getElementById('steve');
-  if (moving) {
-    steve.classList.add('walking');
-    // 切换到行走图
-    const img = document.getElementById('steveImg');
-    if (!img.src.includes('walk')) {
-      img.src = 'assets/sprites/steve-walk-right.png';
-    }
   } else {
+    steve.classList.add('facing-left');
+  }
+  
+  // 走路动画
+  steve.classList.add('walking');
+  document.getElementById('steveImg').src = 'assets/sprites/steve-walk-right.png';
+  
+  // 移动
+  steve.style.left = targetX + 'px';
+  steve.style.top = targetY + 'px';
+  
+  // 到达后
+  setTimeout(() => {
     steve.classList.remove('walking');
-    const img = document.getElementById('steveImg');
-    img.src = 'assets/sprites/steve-front.png';
-  }
-}
-
-// ===== 移动逻辑 =====
-function moveToBuilding(building) {
-  // Steve走向建筑
-  gameState.targetX = building.x;
-  gameState.targetY = building.y - 0.05;
-  gameState.moving = true;
-  
-  setSteveFacing(building.x > gameState.steveX ? 'right' : 'left');
-  setSteveMoving(true);
-  
-  // 到达后导航
-  const checkArrival = setInterval(() => {
-    const dx = Math.abs(gameState.steveX - gameState.targetX);
-    const dy = Math.abs(gameState.steveY - gameState.targetY);
-    if (dx < 0.02 && dy < 0.02) {
-      clearInterval(checkArrival);
-      setSteveMoving(false);
-      // 显示确认对话
-      if (confirm(`要去 ${building.name} 吗？\n${building.desc} (${building.count}课)`)) {
-        window.location.href = building.link;
-      }
-    }
-  }, 100);
-}
-
-function moveSteve(dx, dy) {
-  gameState.steveX = Math.max(0.05, Math.min(0.95, gameState.steveX + dx));
-  gameState.steveY = Math.max(0.15, Math.min(0.55, gameState.steveY + dy));
-  updateSteve();
-}
-
-// ===== 键盘控制 =====
-document.addEventListener('keydown', (e) => {
-  if (!gameState.started) return;
-  gameState.keys[e.key] = true;
-  
-  const speed = 0.02;
-  if (e.key === 'ArrowLeft' || e.key === 'a') { moveSteve(-speed, 0); setSteveFacing('left'); setSteveMoving(true); }
-  if (e.key === 'ArrowRight' || e.key === 'd') { moveSteve(speed, 0); setSteveFacing('right'); setSteveMoving(true); }
-  if (e.key === 'ArrowUp' || e.key === 'w') { moveSteve(0, speed); setSteveMoving(true); }
-  if (e.key === 'ArrowDown' || e.key === 's') { moveSteve(0, -speed); setSteveMoving(true); }
-  
-  e.preventDefault();
-});
-
-document.addEventListener('keyup', (e) => {
-  gameState.keys[e.key] = false;
-  if (!Object.values(gameState.keys).some(v => v)) {
-    setSteveMoving(false);
-  }
-});
-
-// ===== 触摸/点击控制 =====
-document.getElementById('gameWorld').addEventListener('click', (e) => {
-  if (!gameState.started) return;
-  
-  // 检查是否点击了建筑
-  if (e.target.closest('.building')) return;
-  
-  const world = document.getElementById('gameWorld');
-  const rect = world.getBoundingClientRect();
-  const clickX = (e.clientX - rect.left) / rect.width;
-  const clickY = 1 - (e.clientY - rect.top) / rect.height; // 翻转Y
-  
-  gameState.targetX = Math.max(0.05, Math.min(0.95, clickX));
-  gameState.targetY = Math.max(0.15, Math.min(0.55, clickY));
-  gameState.moving = true;
-  
-  setSteveFacing(gameState.targetX > gameState.steveX ? 'right' : 'left');
-  setSteveMoving(true);
-  
-  // 动画移动
-  const moveInterval = setInterval(() => {
-    const dx = gameState.targetX - gameState.steveX;
-    const dy = gameState.targetY - gameState.steveY;
-    const dist = Math.sqrt(dx*dx + dy*dy);
+    document.getElementById('steveImg').src = 'assets/sprites/steve-front.png';
     
-    if (dist < 0.015) {
-      clearInterval(moveInterval);
-      gameState.moving = false;
-      setSteveMoving(false);
-      return;
+    if (confirm(`要去 ${building.name} 吗？\n${building.desc} (${building.count}课)`)) {
+      window.location.href = building.link;
     }
-    
-    const speed = 0.015;
-    moveSteve(dx * speed * 5, dy * speed * 5);
-  }, 30);
-});
-
-// ===== 移动端检测 =====
-if ('ontouchstart' in window) {
-  document.querySelector('.desktop-hint').style.display = 'none';
-  document.querySelector('.mobile-hint').style.display = 'inline';
+  }, 600);
 }
 
 // ===== 开始游戏 =====
 function startGame() {
   document.getElementById('startScreen').classList.add('hide');
-  gameState.started = true;
-  gameState.steveX = 0.5;
-  gameState.steveY = 0.35;
-  updateSteve();
+  gameStarted = true;
+  
+  const steve = document.getElementById('steve');
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  
+  // Steve 从第一个建筑出发
+  steve.style.left = (160 * Math.min(w/1920, h/1080) + (w - 1920 * Math.min(w/1920, h/1080))/2) + 'px';
+  steve.style.top = (820 * Math.min(w/1920, h/1080) + (h - 1080 * Math.min(w/1920, h/1080))/2 - 40) + 'px';
 }
 
 // ===== 初始化 =====
 window.addEventListener('load', () => {
   initBuildings();
-  updateSteve();
+  initDecorations();
 });
 
 window.addEventListener('resize', () => {
-  updateSteve();
+  initBuildings();
+  initDecorations();
+  if (gameStarted) {
+    // 重新定位Steve到第一个建筑
+    const steve = document.getElementById('steve');
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    steve.style.left = (160 * Math.min(w/1920, h/1080) + (w - 1920 * Math.min(w/1920, h/1080))/2) + 'px';
+    steve.style.top = (820 * Math.min(w/1920, h/1080) + (h - 1080 * Math.min(w/1920, h/1080))/2 - 40) + 'px';
+  }
 });
 </script>
 </body>
