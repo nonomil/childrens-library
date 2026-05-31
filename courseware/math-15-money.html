@@ -1,75 +1,167 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-type="courseware">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no, viewport-fit=cover">
 <title>数学课 15 · 认识钱币</title>
   <meta name="description" content="数学课 15 · 认识钱币 - 幼儿数学思维互动课件，适合5-7岁幼小衔接">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<link rel="stylesheet" href="shared/courseware.css">
-
-<script src="shared/courseware.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:#e3f2fd;display:flex;align-items:center;justify-content:center;min-height:100dvh}
-.book{flex-shrink:0;position:relative;width:100%;max-width:960px;height:100dvh;max-height:90vh;overflow:hidden;background:linear-gradient(160deg,#42A5F5 0%,#1E88E5 40%,#1565C0 100%);border-radius:0}
-@media(min-width:460px){.book{border-radius:28px;box-shadow:0 12px 50px rgba(0,0,0,.28);height:94dvh;margin:3dvh auto}}
-@media(min-width:768px) and (orientation:landscape){.book{max-width:960px!important;width:100%!important}}
-.top-bar{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;justify-content:space-between;align-items:center;padding:8px 12px;pointer-events:none}
-.top-bar a{pointer-events:auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);border-radius:30px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;font-size:20px;text-decoration:none;color:#fff;cursor:pointer}
-.slides{position:relative;width:100%;height:calc(100% - 60px);overflow:hidden}
-.slide{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:50px 14px 12px;opacity:0;visibility:hidden;overflow-y:auto;gap:6px}
+body{
+  font-family:'Nunito',sans-serif;
+  background:linear-gradient(180deg,#eaf6ff 0%,#f6fbff 46%,#fff7ea 100%);
+  min-height:100dvh;
+  padding:14px;
+  color:#21445c;
+}
+.lesson-shell{max-width:1100px;margin:0 auto}
+.lesson-top{
+  background:linear-gradient(135deg,#4da3ff,#1e88e5);
+  color:#fff;border-radius:26px;padding:16px 18px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  gap:12px;align-items:center;box-shadow:0 14px 34px rgba(30,136,229,.2)
+}
+.lesson-top a,.top-progress,.top-speak{
+  text-decoration:none;color:#fff;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;min-height:46px;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 16px;font-weight:900
+}
+.top-speak{font-size:20px;cursor:pointer;font-family:inherit}
+.top-title{display:grid;gap:2px;text-align:center}
+.top-title .mini{font-size:13px;font-weight:800;opacity:.9}
+.top-title .main{font-size:24px;font-weight:900}
+.top-progress{justify-self:end}
+.lesson-hero{
+  margin-top:14px;background:linear-gradient(135deg,#fff 0%,#f3fbff 55%,#fff9ef 100%);
+  border:2px solid #d8ebfb;border-radius:26px;padding:18px 20px;
+  box-shadow:0 12px 30px rgba(77,163,255,.12);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
+}
+.hero-copy{display:grid;gap:8px}
+.hero-copy h1{font-size:clamp(30px,4vw,40px);color:#1565c0;line-height:1.06}
+.hero-copy p{font-size:16px;line-height:1.65;color:#557181;font-weight:700;max-width:620px}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;align-content:flex-start}
+.hero-tag{
+  background:#edf7ff;border:2px solid #cfe7fb;border-radius:999px;padding:10px 14px;
+  color:#1565c0;font-size:14px;font-weight:900
+}
+.book{
+  margin-top:14px;position:relative;width:100%;min-height:calc(100dvh - 210px);
+  background:linear-gradient(160deg,#42a5f5 0%,#1e88e5 38%,#1565c0 100%);
+  border-radius:28px;overflow:hidden;box-shadow:0 18px 48px rgba(21,101,192,.24)
+}
+.book-header{
+  position:absolute;top:12px;left:12px;right:12px;z-index:25;
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center
+}
+.book-chip,.page-count{
+  background:rgba(255,255,255,.16);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);
+  border-radius:18px;padding:10px 14px;color:#fff
+}
+.book-chip .k{font-size:12px;font-weight:800;opacity:.86}
+.book-chip .v{font-size:20px;font-weight:900;margin-top:2px}
+.page-count{font-size:15px;font-weight:900;min-height:46px;display:flex;align-items:center}
+.slides{position:relative;width:100%;height:100%;overflow:hidden}
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding:86px 16px 98px;opacity:0;visibility:hidden;overflow-y:auto;gap:12px
+}
 .slide.active{opacity:1;visibility:visible;position:relative;z-index:2}
-.page-title{font-size:26px;font-weight:900;color:#fff;text-align:center}
-.card{background:rgba(255,255,255,.92);border-radius:16px;padding:10px 12px;width:100%;max-width:380px}
-.card p{font-size:13px;color:#333;line-height:1.6}
-.quiz-opt{background:#fff;border:2px solid #90CAF9;border-radius:12px;padding:8px 14px;cursor:pointer;font-size:14px;color:#1565C0;width:100%;max-width:360px;text-align:center;touch-action:manipulation;transition:all .15s}
-.quiz-opt.correct{border-color:#4CAF50;background:#E8F5E9;color:#2E7D32}
-.quiz-opt.wrong{border-color:#F44336;background:#FFEBEE;color:#C62828}
-.feedback{font-size:13px;border-radius:8px;display:none;text-align:center;padding:4px}
+.page-shell{
+  width:min(100%,820px);background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);
+  border-radius:28px;padding:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.16)
+}
+.page-title{font-size:clamp(28px,5vw,42px);font-weight:900;color:#fff;text-align:center}
+.page-kicker{font-size:13px;color:rgba(255,255,255,.82);font-weight:800;text-align:center;letter-spacing:.5px}
+.story-figure{width:100%;text-align:center}
+.story-figure img{max-width:100%;border-radius:18px;box-shadow:0 8px 24px rgba(0,0,0,.14)}
+.svg-stage{
+  width:min(100%,520px);margin:0 auto;background:rgba(255,255,255,.1);
+  border:1px dashed rgba(255,255,255,.3);border-radius:22px;padding:12px;text-align:center
+}
+.card{background:rgba(255,255,255,.96);border-radius:20px;padding:18px 18px;width:100%;max-width:520px}
+.card p{font-size:17px;color:#284052;line-height:1.72}
+.quiz-opt{
+  background:#fff;border:2px solid #90caf9;border-radius:16px;padding:14px 16px;cursor:pointer;
+  font-size:17px;font-weight:800;color:#1565c0;width:100%;max-width:460px;text-align:center;touch-action:manipulation;transition:all .15s;min-height:48px
+}
+.quiz-opt.correct{border-color:#4caf50;background:#e8f5e9;color:#2e7d32}
+.quiz-opt.wrong{border-color:#f44336;background:#ffebee;color:#c62828}
+.feedback{font-size:15px;border-radius:12px;display:none;text-align:center;padding:10px 12px}
 .feedback.show{display:block}
-.feedback.good{background:#E8F5E9;color:#2E7D32}
-.feedback.bad{background:#FFEBEE;color:#C62828}
-.controls{position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:14px;z-index:20}
-.nav-btn{background:rgba(255,255,255,.25);border-radius:50%;width:42px;height:42px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.nav-btn:disabled{opacity:.25;cursor:default}
-.dots{display:flex;gap:4px}
-.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);cursor:pointer;border:none;transition:all .2s}
-.dot.active{background:#fff;transform:scale(1.3)}
-.goal-card{background:rgba(255,255,255,.95);border-radius:18px;padding:12px 16px;width:100%;max-width:360px}
-.goal-card h3{font-size:14px;color:#1565C0;margin-bottom:4px}
-.goal-card li{font-size:13px;color:#333;padding:2px 0;list-style:none}
+.feedback.good{background:#e8f5e9;color:#2e7d32}
+.feedback.bad{background:#ffebee;color:#c62828}
+.goal-card{background:rgba(255,255,255,.95);border-radius:22px;padding:16px 18px;width:100%;max-width:420px}
+.goal-card h3{font-size:18px;color:#1565c0;margin-bottom:8px}
+.goal-card li{font-size:17px;color:#284052;padding:5px 0;list-style:none;line-height:1.5}
 .goal-card li::before{content:'✅ '}
+.mis-card{border-left:4px solid #42a5f5}
+.controls{
+  position:absolute;bottom:10px;left:14px;right:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:20;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:10px 14px;backdrop-filter:blur(8px)
+}
+.nav-btn,.speak-btn{
+  background:rgba(255,255,255,.24);border:none;border-radius:50%;width:50px;height:50px;color:#fff;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-family:inherit
+}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.dots{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.34);cursor:pointer;border:none;transition:all .2s}
+.dot.active{background:#fff;transform:scale(1.32)}
+.speak-btn.speaking{animation:speakPulse 1s ease-in-out infinite}
 @keyframes confetti-fall{0%{transform:translateY(-10vh) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
-
-  /* ── speak button ── */
-  .speak-btn {
-    background: rgba(255,255,255,.2); backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,.15); border-radius: 50%;
-    width: 40px; height: 40px; color: #fff; font-size: 20px;
-    cursor: pointer; display: inline-flex; align-items: center;
-    justify-content: center; transition: all .2s;
-    touch-action: manipulation; user-select: none;
-    line-height: 1;
-  }
-  .speak-btn:hover { background: rgba(255,255,255,.35); }
-  .speak-btn:active { transform: scale(.88); }
-  .speak-btn.speaking { background: rgba(255,255,255,.4); animation: speakPulse 1s ease-in-out infinite; }
-  @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); } 50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
-
+@keyframes speakPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.46);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(255,255,255,0);transform:scale(1.08)}}
+@media (max-width: 640px){
+  body{padding:8px}
+  .lesson-top{grid-template-columns:1fr;justify-items:stretch}
+  .top-progress{justify-self:stretch}
+  .lesson-hero,.book,.page-shell{border-radius:20px}
+  .book{min-height:calc(100dvh - 180px)}
+  .book-header{grid-template-columns:1fr;top:10px;left:10px;right:10px}
+  .slide{padding:118px 12px 92px}
+  .page-title{font-size:28px}
+  .card p,.goal-card li{font-size:16px}
+  .nav-btn,.speak-btn{width:46px;height:46px;font-size:20px}
+}
 </style>
+<script src="../shared/village-reporter.js"></script>
 </head>
 <body>
-<div class="book">
-<div class="top-bar"><a href="../">🏠</a><button class="speak-btn" id="speakBtn" title="朗读本页" style="background:none;border:none;font-size:24px;cursor:pointer;line-height:1;padding:0;width:auto;height:auto;color:inherit">🔊</button><a href="../math-16-clock.html">▶</a></div>
-<div class="slides" id="slides"></div>
-<div class="controls">
-<button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
-<div class="dots" id="dots"></div>
-<button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
-</div>
+<div class="lesson-shell">
+  <div class="lesson-top">
+    <a href="../village.html">← 返回村庄</a>
+    <div class="top-title">
+      <div class="mini">Math · Lesson 15</div>
+      <div class="main">认识钱币</div>
+    </div>
+    <div class="top-progress" id="topProgress">1 / 7</div>
+  </div>
+  <section class="lesson-hero">
+    <div class="hero-copy">
+      <h1>认识人民币，学会算价钱</h1>
+      <p>这一课会带孩子认识元、角、分，在买东西和找零的情境里练习简单计算，让“钱币”不只是记概念，而是真的会用。</p>
+    </div>
+    <div class="hero-tags">
+      <div class="hero-tag">💰 认识面值</div>
+      <div class="hero-tag">🛒 商店情境</div>
+      <div class="hero-tag">🧠 口算找零</div>
+    </div>
+  </section>
+  <div class="book">
+    <div class="book-header">
+      <div class="book-chip"><div class="k">当前内容</div><div class="v" id="pageTitle">认识钱币</div></div>
+      <button class="top-speak" id="speakBtn" title="朗读本页">🔊 朗读</button>
+      <div class="page-count" id="pageCount">第 1 / 7 页</div>
+    </div>
+    <div class="slides" id="slides"></div>
+    <div class="controls">
+      <button class="nav-btn" id="prevBtn" onclick="go(-1)">◀</button>
+      <div class="dots" id="dots"></div>
+      <button class="nav-btn" id="nextBtn" onclick="go(1)">▶</button>
+    </div>
+  </div>
 </div>
 <div id="confetti" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999"></div>
 <script>
@@ -101,32 +193,35 @@ function render(n){
   if(!p)return;
   let h='';
   if(p.cover){
-    h=`<div class="slide active"><div style="font-size:64px;margin:4px">${p.icon}</div><div class="page-title">${p.title}</div>`;
-    if(p.subtitle)h+=`<p class="page-sub" style="font-size:13px;color:rgba(255,255,255,.7)">${p.subtitle}</p>`;
+    h=`<div class="slide active"><div class="page-shell"><div class="page-kicker">Learning goals</div><div style="font-size:64px;margin:6px auto;text-align:center">${p.icon}</div><div class="page-title">${p.title}</div>`;
+    if(p.subtitle)h+=`<p class="page-kicker" style="font-size:16px;margin-top:6px">${p.subtitle}</p>`;
     if(p.goals){
       h+=`<div class="goal-card"><h3>📋 学习目标</h3><ul>`;
       p.goals.forEach(g=>h+=`<li>${g}</li>`);
-      h+=`</ul></div></div>`;
+      h+=`</ul></div></div></div>`;
     }
   }else if(p.final){
-    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div style="font-size:72px">🎉</div><h2 style="font-size:24px;color:#fff">${p.title}</h2><p style="font-size:14px;color:rgba(255,255,255,.9);line-height:1.7">${p.msg}</p></div>`;
+    h=`<div class="slide active" style="justify-content:center;text-align:center;gap:12px"><div class="page-shell"><div style="font-size:72px">🎉</div><h2 style="font-size:30px;color:#fff;margin-top:4px">${p.title}</h2><p style="font-size:17px;color:rgba(255,255,255,.94);line-height:1.75;margin-top:10px">${p.msg}</p></div></div>`;
     setTimeout(doConfetti,300);
   }else if(p.interactive){
-    h=`<div class="slide active" style="gap:8px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
-    h+=`<div class="card"><p style="font-size:14px;font-weight:600;color:#1565C0;margin-bottom:6px">${p.q}</p>`;
+    h=`<div class="slide active" style="gap:10px"><div class="page-shell"><div class="page-kicker">Try it now</div><h3 style="font-size:24px;color:#fff;text-align:center">${p.title}</h3>`;
+    h+=`<div class="card"><p style="font-size:17px;font-weight:800;color:#1565C0;margin-bottom:8px">${p.q}</p>`;
     p.options.forEach((o,i)=>{h+=`<div class="quiz-opt" onclick="clickQuiz(${n},${i})" data-idx="${i}">${String.fromCharCode(65+i)}. ${o}</div>`;});
-    h+=`<div class="feedback" id="fb${n}"></div></div></div>`;
+    h+=`<div class="feedback" id="fb${n}"></div></div></div></div>`;
   }else{
-    h=`<div class="slide active" style="gap:6px"><h3 style="font-size:18px;color:#fff">${p.title}</h3>`;
-    if(p.svg)h+=p.svg;
-if(p.text||p.items||p.svg){h+=`<div style="text-align:center;margin-bottom:10px"><img src="images/math-15-money/webp/page-${String(n+1).padStart(2,"0")}.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>`;}
+    h=`<div class="slide active" style="gap:8px"><div class="page-shell"><div class="page-kicker">Math story page</div><h3 style="font-size:24px;color:#fff;text-align:center">${p.title}</h3>`;
+    if(p.svg)h+=`<div class="svg-stage">${p.svg}</div>`;
+if(p.text||p.items||p.svg){h+=`<div class="story-figure"><img src="../images/math-15-money/webp/page-${String(n+1).padStart(2,"0")}.webp" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>`;}
     if(p.text)h+=`<div class="card"><p>${p.text}</p></div>`;
-    if(p.items){p.items.forEach(it=>{h+=`<div class="card" style="border-left:3px solid #42A5F5"><h4 style="font-size:13px;color:#1565C0">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;});}
-    h+=`</div>`;
+    if(p.items){p.items.forEach(it=>{h+=`<div class="card mis-card"><h4 style="font-size:18px;color:#1565C0;margin-bottom:8px">${it.title}</h4><p><span style="color:#F44336">❌</span> ${it.w}</p><p><span style="color:#4CAF50">✅</span> ${it.r}</p></div>`;});}
+    h+=`</div></div>`;
   }
   el.innerHTML=h;
   document.getElementById('prevBtn').disabled=n===0;
   document.getElementById('nextBtn').disabled=n===pages.length-1;
+  document.getElementById('pageTitle').textContent=p.title.replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/,'');
+  document.getElementById('pageCount').textContent='第 '+(n+1)+' / '+pages.length+' 页';
+  document.getElementById('topProgress').textContent=(n+1)+' / '+pages.length;
   updateDots(n);
   gsap.fromTo('.slide.active>*',{opacity:0,y:15},{opacity:1,y:0,duration:.3,stagger:.05,ease:'power2.out'});
 }
@@ -142,6 +237,7 @@ function doConfetti(){const el=document.getElementById('confetti');const c=['#FF
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
 render(0);
 </script>
+
 
 <script>
 /* ── Speech Synthesis ── */
@@ -179,6 +275,7 @@ render(0);
 })();
 </script>
 
+
 <script>
 (function(){
   var sx = 0, sy = 0, swiping = false;
@@ -209,5 +306,85 @@ render(0);
 })();
 </script>
 
+<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
+<script>
+(function(){
+  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
+    btn.textContent = '🔊';
+    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(btn);
+  }
+  var sp = false, audioEl = null;
+  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
+  var lang = (document.documentElement.lang || 'en-US').indexOf('zh')>=0?'zh-CN':'en-US';
+
+  function getPageIdx(){
+    var a=document.querySelector('.page.active,.slide.active');
+    return a?Array.prototype.indexOf.call(a.parentNode.children,a):-1;
+  }
+
+  function speakPage(){
+    if(sp){stopPage();return;}
+    var idx=getPageIdx(); if(idx<0) return;
+    var mp3='../audio/'+courseName+'/page-'+(idx+1)+'.mp3';
+    if(audioEl){audioEl.pause();audioEl=null;}
+    audioEl=new Audio(mp3);
+    audioEl.onerror=function(){
+      var flat=new Audio('../audio/'+courseName+'.mp3');
+      flat.onerror=function(){speakTTS();};
+      flat.oncanplaythrough=function(){
+        if(audioEl)audioEl.pause(); audioEl=flat;
+        audioEl.play().catch(function(){speakTTS();});
+        btn.textContent='⏹';btn.classList.add('speaking');
+      };
+      flat.load();
+    };
+    audioEl.oncanplaythrough=function(){
+      audioEl.play(); btn.textContent='⏹';btn.classList.add('speaking');
+      sp=true; audioEl.onended=function(){stopPage();};
+    };
+    audioEl.load();
+  }
+
+  function speakTTS(){
+    if(!window.speechSynthesis)return;
+    var a=document.querySelector('.page.active,.slide.active');
+    if(!a)return;
+    var t=(a.innerText||a.textContent||'').replace(/\s+/g,' ').trim();
+    if(!t||t.length<2)return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t);
+    u.lang=lang;u.rate=0.85;
+    u.onstart=function(){sp=true;btn.classList.add('speaking');btn.textContent='⏹';};
+    u.onend=u.onerror=function(){stopPage();};
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopPage(){
+    if(audioEl){audioEl.pause();audioEl=null;}
+    if(window.speechSynthesis)window.speechSynthesis.cancel();
+    sp=false;btn.classList.remove('speaking');btn.textContent='🔊';
+  }
+
+  btn.addEventListener('click',function(e){e.stopPropagation();speakPage();});
+  if(btn.textContent.trim()===''||btn.textContent.trim()==='▶')btn.textContent='🔊';
+})();
+
+// === AUTO-ADDED: village completion reporting ===
+(function() {
+  var _book = document.getElementById('book') || document.querySelector('.book');
+  if (_book && _book.turn) {
+    $(_book).bind('turned', function(e, page, pages) {
+      if (page >= pages) {
+        setTimeout(function() { if (window.celebrate) window.celebrate(); }, 500);
+      }
+    });
+  }
+})();
+</script>
+  <script src="../shared/village-animals.js"></script>
 </body>
 </html>

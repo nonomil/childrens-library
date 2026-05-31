@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>儿童绘本课件 UI/UX 全面审查报告</title>
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+  background: #1a1a2e;
+  color: #e0e0e0;
+  line-height: 1.7;
+  padding: 0;
+}
+a { color: #53d769; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ===== Layout ===== */
+.report-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+.page-section {
+  background: #16213e;
+  border-radius: 16px;
+  padding: 36px 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.page-break { page-break-before: always; }
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.subtitle {
+  text-align: center;
+  color: #a0a0b8;
+  font-size: 1rem;
+  margin-bottom: 32px;
+}
+h2 {
+  font-size: 1.6rem;
+  color: #e94560;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #0f3460;
+}
+h3 {
+  font-size: 1.2rem;
+  color: #53d769;
+  margin: 20px 0 12px;
+}
+h4 {
+  font-size: 1.05rem;
+  color: #f0c040;
+  margin: 16px 0 8px;
+}
+
+/* ===== Score Colors ===== */
+.score-red { color: #e94560; font-weight: 700; }
+.score-orange { color: #f0a030; font-weight: 700; }
+.score-yellow { color: #f0c040; font-weight: 700; }
+.score-green { color: #53d769; font-weight: 700; }
+.score-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.score-badge.red { background: rgba(233,69,96,0.2); color: #e94560; }
+.score-badge.orange { background: rgba(240,160,48,0.2); color: #f0a030; }
+.score-badge.yellow { background: rgba(240,192,64,0.2); color: #f0c040; }
+.score-badge.green { background: rgba(83,215,105,0.2); color: #53d769; }
+
+/* ===== Cards Grid ===== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.card {
+  background: #0f3460;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-3px); }
+.card .category-icon { font-size: 2rem; margin-bottom: 8px; }
+.card .category-name { font-size: 1rem; color: #ffffff; margin-bottom: 6px; font-weight: 600; }
+.card .category-score { font-size: 2rem; font-weight: 700; }
+.card .category-range { font-size: 0.8rem; color: #a0a0b8; margin-top: 4px; }
+.card .category-samples { font-size: 0.75rem; color: #808098; }
+
+/* ===== Pie Chart (Pure CSS) ===== */
+.pie-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.pie-chart {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  position: relative;
+}
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+.pie-legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 0.92rem;
+}
+th {
+  background: #0f3460;
+  color: #ffffff;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e94560;
+}
+td {
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+tr:hover td { background: rgba(15,52,96,0.4); }
+td.score-cell { text-align: center; }
+
+/* ===== Screenshot Comparison ===== */
+.comparison-container {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.screenshot-panel {
+  flex: 1;
+  min-width: 280px;
+  background: #0d1b36;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.08);
+}
+.screenshot-panel.worst { border-color: rgba(233,69,96,0.4); }
+.screenshot-panel.best { border-color: rgba(83,215,105,0.4); }
+.screenshot-label {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.screenshot-label.worst-label { background: rgba(233,69,96,0.15); color: #e94560; }
+.screenshot-label.best-label { background: rgba(83,215,105,0.15); color: #53d769; }
+.screenshot-label.avg-label { background: rgba(240,192,64,0.15); color: #f0c040; }
+.screenshot-panel img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.screenshot-desc {
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  color: #a0a0b8;
+  background: rgba(0,0,0,0.2);
+}
+
+/* ===== Alert Boxes ===== */
+.alert-box {
+  background: rgba(233,69,96,0.1);
+  border-left: 4px solid #e94560;
+  border-radius: 0 12px 12px 0;
+  padding: 20px 24px;
+  margin: 16px 0;
+}
+.alert-box .alert-title {
+  color: #e94560;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+.alert-box .alert-desc { color: #d0d0d8; }
+.alert-box .alert-issues { margin-top: 8px; padding-left: 20px; }
+.alert-box .alert-issues li { margin: 4px 0; color: #c0c0d0; }
+
+.alert-item {
+  background: rgba(233,69,96,0.08);
+  border: 1px solid rgba(233,69,96,0.2);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 12px 0;
+}
+.alert-item .alert-rank {
+  display: inline-block;
+  background: #e94560;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 28px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-right: 10px;
+}
+.alert-item .alert-name { font-weight: 600; color: #ffffff; }
+.alert-item .alert-problems { margin-top: 8px; padding-left: 40px; }
+.alert-item .alert-problems li { color: #d0d0d8; margin: 3px 0; font-size: 0.9rem; }
+
+/* ===== Roadmap ===== */
+.roadmap-phase {
+  background: #0d1b36;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+.roadmap-phase.p1 { border-color: #e94560; }
+.roadmap-phase.p2 { border-color: #f0a030; }
+.roadmap-phase.p3 { border-color: #f0c040; }
+.roadmap-phase.p4 { border-color: #53d769; }
+.roadmap-phase h4 { margin-top: 0; }
+.roadmap-phase ul { padding-left: 20px; }
+.roadmap-phase li { margin: 4px 0; color: #c0c0d8; }
+
+/* ===== Design Patterns ===== */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.pattern-card {
+  background: #0d1b36;
+  border-radius: 10px;
+  padding: 16px 20px;
+  border: 1px solid rgba(83,215,105,0.2);
+}
+.pattern-card .pattern-num {
+  display: inline-block;
+  background: #53d769;
+  color: #1a1a2e;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.pattern-card .pattern-title { color: #ffffff; font-weight: 600; margin-bottom: 6px; }
+.pattern-card .pattern-desc { color: #a0a0b8; font-size: 0.88rem; }
+.pattern-card .pattern-example { color: #53d769; font-size: 0.85rem; margin-top: 6px; font-style: italic; }
+
+/* ===== Nav ===== */
+.nav-bar {
+  background: #0d1b36;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 10px 0;
+  text-align: center;
+}
+.nav-bar a {
+  display: inline-block;
+  color: #a0a0b8;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  margin: 2px 4px;
+  transition: all 0.2s;
+}
+.nav-bar a:hover {
+  background: #0f3460;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* ===== Summary Stats ===== */
+.stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+.stat-item {
+  text-align: center;
+}
+.stat-value {
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+.stat-label {
+  font-size: 0.85rem;
+  color: #a0a0b8;
+  margin-top: 2px;
+}
+
+/* ===== Global Issues Table ===== */
+.issue-section { margin: 20px 0; }
+.issue-section h3 { margin-bottom: 12px; }
+
+/* ===== Print Styles ===== */
+@media print {
+  body { background: #fff; color: #222; font-size: 12px; }
+  .page-section { background: #f8f8f8; box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+  .nav-bar { display: none; }
+  h2 { color: #c0392b; border-color: #333; }
+  h3 { color: #27ae60; }
+  .card { background: #eee; }
+  th { background: #ddd; color: #222; }
+  td { border-color: #ccc; }
+  .screenshot-panel img { max-width: 50%; }
+  .alert-box, .alert-item { background: #fff0f0; }
+  .roadmap-phase { background: #f8f8f8; }
+  .pattern-card { background: #f0fff0; border-color: #aaa; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .report-container { padding: 20px 12px; }
+  .page-section { padding: 24px 16px; }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+  .card-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .comparison-container { flex-direction: column; }
+  .screenshot-panel { min-width: 100%; }
+  .nav-bar { padding: 6px; }
+  .nav-bar a { font-size: 0.75rem; padding: 4px 8px; }
+  .stats-row { gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="nav-bar">
+  <a href="#dashboard">总览</a>
+  <a href="#hub">Hub</a>
+  <a href="#english">英语</a>
+  <a href="#math">数学</a>
+  <a href="#chinese">中文</a>
+  <a href="#songs">儿歌</a>
+  <a href="#stories">故事</a>
+  <a href="#alerts">红色警报</a>
+  <a href="#global">全局问题</a>
+  <a href="#roadmap">路线图</a>
+  <a href="#patterns">设计标杆</a>
+</nav>
+
+<div class="report-container">
+
+<!-- ============================================================ -->
+<!-- PAGE 1: Dashboard -->
+<!-- ============================================================ -->
+<section class="page-section" id="dashboard">
+  <h1>儿童绘本课件 UI/UX 全面审查报告</h1>
+  <p class="subtitle">审查日期：2026-05-31 &nbsp;|&nbsp; 覆盖 6 类课件 &middot; 59 个页面样本 &middot; 12 张对比截图</p>
+
+  <!-- Summary Stats -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <div class="stat-value score-yellow">24.6</div>
+      <div class="stat-label">整体均分（满分 30）</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value score-green">59</div>
+      <div class="stat-label">审查页面数</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value score-red">8</div>
+      <div class="stat-label">需重做页面</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value score-green">10</div>
+      <div class="stat-label">优秀设计模式</div>
+    </div>
+  </div>
+
+  <!-- Category Score Cards -->
+  <h3>各类别评分总览</h3>
+  <div class="card-grid">
+    <div class="card">
+      <div class="category-icon">&#x1F3E0;</div>
+      <div class="category-name">Hub 导航</div>
+      <div class="category-score score-orange">23.3</div>
+      <div class="category-range">15 ~ 29</div>
+      <div class="category-samples">6 个样本</div>
+    </div>
+    <div class="card">
+      <div class="category-icon">&#x1F4D6;</div>
+      <div class="category-name">中文绘本</div>
+      <div class="category-score score-green">26.2</div>
+      <div class="category-range">20 ~ 30</div>
+      <div class="category-samples">12 个样本</div>
+    </div>
+    <div class="card">
+      <div class="category-icon">&#x1F310;</div>
+      <div class="category-name">英语课件</div>
+      <div class="category-score score-green">26.3</div>
+      <div class="category-range">18 ~ 30</div>
+      <div class="category-samples">11 个样本</div>
+    </div>
+    <div class="card">
+      <div class="category-icon">&#x1F522;</div>
+      <div class="category-name">数学课件</div>
+      <div class="category-score score-yellow">23.4</div>
+      <div class="category-range">19 ~ 26</div>
+      <div class="category-samples">10 个样本</div>
+    </div>
+    <div class="card">
+      <div class="category-icon">&#x1F3B5;</div>
+      <div class="category-name">儿歌课件</div>
+      <div class="category-score score-green">26.4</div>
+      <div class="category-range">26 ~ 28</div>
+      <div class="category-samples">8 个样本</div>
+    </div>
+    <div class="card">
+      <div class="category-icon">&#x1F4D3;</div>
+      <div class="category-name">故事课件</div>
+      <div class="category-score score-yellow">23.3</div>
+      <div class="category-range">20 ~ 24</div>
+      <div class="category-samples">9 个样本</div>
+    </div>
+  </div>
+
+  <!-- Distribution Pie Chart (Pure CSS conic-gradient) -->
+  <h3>页面质量分布</h3>
+  <div class="pie-container">
+    <div class="pie-chart" style="background: conic-gradient(
+      #e94560 0deg 36deg,
+      #f0a030 36deg 108deg,
+      #f0c040 108deg 194deg,
+      #53d769 194deg 360deg
+    );"></div>
+    <div class="pie-legend">
+      <div class="pie-legend-item">
+        <div class="pie-legend-color" style="background:#e94560;"></div>
+        <span>需重做（&le;19分）&mdash; 6 页（10%）</span>
+      </div>
+      <div class="pie-legend-item">
+        <div class="pie-legend-color" style="background:#f0a030;"></div>
+        <span>待改进（20-23分）&mdash; 12 页（20%）</span>
+      </div>
+      <div class="pie-legend-item">
+        <div class="pie-legend-color" style="background:#f0c040;"></div>
+        <span>合格（24-26分）&mdash; 14 页（24%）</span>
+      </div>
+      <div class="pie-legend-item">
+        <div class="pie-legend-color" style="background:#53d769;"></div>
+        <span>优秀（&ge;27分）&mdash; 27 页（46%）</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 2: Hub -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="hub">
+  <h2>&#x1F3E0; Hub 导航页（均分 23.3）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>stories-index</td><td class="score-cell"><span class="score-badge green">29</span></td><td>优秀</td></tr>
+      <tr><td>2</td><td>village-v2</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>3</td><td>village</td><td class="score-cell"><span class="score-badge yellow">25</span></td><td>合格</td></tr>
+      <tr><td>4</td><td>pet-hub</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>5</td><td>village-canvas</td><td class="score-cell"><span class="score-badge orange">21</span></td><td>待改进</td></tr>
+      <tr><td>6</td><td>collection-hub</td><td class="score-cell"><span class="score-badge red">15</span></td><td>需重做</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最佳 vs 最差 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel worst">
+      <div class="screenshot-label worst-label">
+        <span>collection-hub（最差）</span>
+        <span class="score-badge red">15 分</span>
+      </div>
+      <img src="screenshots/hub-collection-hub-worst.png" alt="Hub collection-hub 截图" loading="lazy">
+      <div class="screenshot-desc">布局混乱，导航不清晰，视觉层次缺失</div>
+    </div>
+    <div class="screenshot-panel best">
+      <div class="screenshot-label best-label">
+        <span>stories-index（最佳）</span>
+        <span class="score-badge green">29 分</span>
+      </div>
+      <img src="screenshots/hub-stories-index-best.png" alt="Hub stories-index 截图" loading="lazy">
+      <div class="screenshot-desc">清晰的网格布局，良好的卡片设计和导航结构</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 3: English -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="english">
+  <h2>&#x1F310; 英语课件（均分 26.3）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>english-21</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>2</td><td>english-23</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>3</td><td>english-02</td><td class="score-cell"><span class="score-badge green">27</span></td><td>优秀</td></tr>
+      <tr><td>4</td><td>english-04</td><td class="score-cell"><span class="score-badge green">27</span></td><td>优秀</td></tr>
+      <tr><td>5</td><td>english-11</td><td class="score-cell"><span class="score-badge green">27</span></td><td>优秀</td></tr>
+      <tr><td>6</td><td>english-05</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>7</td><td>english-07</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>8</td><td>english-13</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>9</td><td>english-19</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>10</td><td>english-09</td><td class="score-cell"><span class="score-badge orange">22</span></td><td>待改进</td></tr>
+      <tr><td>11</td><td>english-01</td><td class="score-cell"><span class="score-badge red">18</span></td><td>需重做</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最佳 vs 最差 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel worst">
+      <div class="screenshot-label worst-label">
+        <span>english-01 Hello（最差）</span>
+        <span class="score-badge red">18 分</span>
+      </div>
+      <img src="screenshots/en-hello-worst.png" alt="英语 english-01 截图" loading="lazy">
+      <div class="screenshot-desc">交互元素不足，文字排版拥挤，缺乏视觉引导</div>
+    </div>
+    <div class="screenshot-panel best">
+      <div class="screenshot-label best-label">
+        <span>english-23 Birthday（最佳）</span>
+        <span class="score-badge green">30 分</span>
+      </div>
+      <img src="screenshots/en-birthday-best.png" alt="英语 english-23 截图" loading="lazy">
+      <div class="screenshot-desc">丰富的互动设计，优秀的色彩搭配和清晰的信息层级</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 4: Math -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="math">
+  <h2>&#x1F522; 数学课件（均分 23.4）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>math-22</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>2</td><td>math-24</td><td class="score-cell"><span class="score-badge yellow">25</span></td><td>合格</td></tr>
+      <tr><td>3</td><td>math-04</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>4</td><td>math-10</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>5</td><td>math-21</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>6</td><td>math-03</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>7</td><td>math-01</td><td class="score-cell"><span class="score-badge orange">22</span></td><td>待改进</td></tr>
+      <tr><td>8</td><td>math-11</td><td class="score-cell"><span class="score-badge orange">22</span></td><td>待改进</td></tr>
+      <tr><td>9</td><td>math-15</td><td class="score-cell"><span class="score-badge red">19</span></td><td>需重做</td></tr>
+      <tr><td>10</td><td>math-16</td><td class="score-cell"><span class="score-badge red">19</span></td><td>需重做</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最佳 vs 最差 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel worst">
+      <div class="screenshot-label worst-label">
+        <span>math-15 Money（最差）</span>
+        <span class="score-badge red">19 分</span>
+      </div>
+      <img src="screenshots/math-money-worst.png" alt="数学 math-15 截图" loading="lazy">
+      <div class="screenshot-desc">布局单调，缺乏趣味性，抽象概念未具象化</div>
+    </div>
+    <div class="screenshot-panel best">
+      <div class="screenshot-label best-label">
+        <span>math-24 Carnival（最佳）</span>
+        <span class="score-badge yellow">25 分</span>
+      </div>
+      <img src="screenshots/math-carnival-best.png" alt="数学 math-24 截图" loading="lazy">
+      <div class="screenshot-desc">丰富的场景化设计，色彩鲜艳，交互设计较好</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 5: Chinese -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="chinese">
+  <h2>&#x1F4D6; 中文绘本（均分 26.2）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>chinese-03</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>2</td><td>chinese-13</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>3</td><td>chinese-23</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>4</td><td>chinese-24</td><td class="score-cell"><span class="score-badge green">30</span></td><td>满分</td></tr>
+      <tr><td>5</td><td>chinese-14</td><td class="score-cell"><span class="score-badge green">29</span></td><td>优秀</td></tr>
+      <tr><td>6</td><td>chinese-01</td><td class="score-cell"><span class="score-badge green">27</span></td><td>优秀</td></tr>
+      <tr><td>7</td><td>chinese-05</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>8</td><td>chinese-07</td><td class="score-cell"><span class="score-badge yellow">25</span></td><td>合格</td></tr>
+      <tr><td>9</td><td>chinese-10</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>10</td><td>chinese-18</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>11</td><td>chinese-02</td><td class="score-cell"><span class="score-badge orange">21</span></td><td>待改进</td></tr>
+      <tr><td>12</td><td>chinese-magic</td><td class="score-cell"><span class="score-badge orange">20</span></td><td>待改进</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最佳 vs 最差 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel worst">
+      <div class="screenshot-label worst-label">
+        <span>chinese-magic（最差）</span>
+        <span class="score-badge orange">20 分</span>
+      </div>
+      <img src="screenshots/cn-magic-worst.png" alt="中文 chinese-magic 截图" loading="lazy">
+      <div class="screenshot-desc">视觉风格不统一，互动元素薄弱，排版间距不合理</div>
+    </div>
+    <div class="screenshot-panel best">
+      <div class="screenshot-label best-label">
+        <span>chinese 古诗（最佳）</span>
+        <span class="score-badge green">30 分</span>
+      </div>
+      <img src="screenshots/cn-poems-best.png" alt="中文 chinese-poems 截图" loading="lazy">
+      <div class="screenshot-desc">精美的中国风插画，优雅的排版，沉浸式阅读体验</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 6: Songs -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="songs">
+  <h2>&#x1F3B5; 儿歌课件（均分 26.4）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>twinkle-twinkle</td><td class="score-cell"><span class="score-badge green">28</span></td><td>优秀</td></tr>
+      <tr><td>2</td><td>old-macdonald</td><td class="score-cell"><span class="score-badge green">27</span></td><td>优秀</td></tr>
+      <tr><td>3</td><td>abc-song</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>4</td><td>five-little-monkeys</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>5</td><td>head-shoulders</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>6</td><td>itsy-bitsy-spider</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>7</td><td>wheels-on-bus</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+      <tr><td>8</td><td>london-bridge</td><td class="score-cell"><span class="score-badge yellow">26</span></td><td>合格</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最佳 vs 平均 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel best">
+      <div class="screenshot-label best-label">
+        <span>twinkle-twinkle（最佳）</span>
+        <span class="score-badge green">28 分</span>
+      </div>
+      <img src="screenshots/song-twinkle-best.png" alt="儿歌 twinkle-twinkle 截图" loading="lazy">
+      <div class="screenshot-desc">梦幻的星空背景，精致的动画效果，歌词清晰可读</div>
+    </div>
+    <div class="screenshot-panel">
+      <div class="screenshot-label avg-label">
+        <span>london-bridge（平均）</span>
+        <span class="score-badge yellow">26 分</span>
+      </div>
+      <img src="screenshots/song-bridge-avg.png" alt="儿歌 london-bridge 截图" loading="lazy">
+      <div class="screenshot-desc">标准模板化设计，功能完整但视觉吸引力一般</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 7: Stories -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="stories">
+  <h2>&#x1F4D3; 故事课件（均分 23.3）</h2>
+
+  <table>
+    <thead>
+      <tr><th>排名</th><th>页面</th><th>评分</th><th>等级</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>story-ocean</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>2</td><td>story-forest</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>3</td><td>story-kingdom</td><td class="score-cell"><span class="score-badge yellow">24</span></td><td>合格</td></tr>
+      <tr><td>4</td><td>story-animal</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>5</td><td>story-adventure</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>6</td><td>story-treasure</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>7</td><td>story-fairy</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>8</td><td>story-season</td><td class="score-cell"><span class="score-badge orange">23</span></td><td>待改进</td></tr>
+      <tr><td>9</td><td>story-space-d1</td><td class="score-cell"><span class="score-badge orange">20</span></td><td>待改进</td></tr>
+    </tbody>
+  </table>
+
+  <h3>最差 vs 平均 对比</h3>
+  <div class="comparison-container">
+    <div class="screenshot-panel worst">
+      <div class="screenshot-label worst-label">
+        <span>story-space-d1（最差）</span>
+        <span class="score-badge orange">20 分</span>
+      </div>
+      <img src="screenshots/story-space-worst.png" alt="故事 story-space 截图" loading="lazy">
+      <div class="screenshot-desc">背景过于单调，文字排版密集，缺乏故事氛围营造</div>
+    </div>
+    <div class="screenshot-panel">
+      <div class="screenshot-label avg-label">
+        <span>story-ocean（平均）</span>
+        <span class="score-badge yellow">23 分</span>
+      </div>
+      <img src="screenshots/story-ocean-avg.png" alt="故事 story-ocean 截图" loading="lazy">
+      <div class="screenshot-desc">较好的场景设计，但互动层次和视觉深度仍有提升空间</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 8: Red Alerts -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="alerts">
+  <h2>&#x1F6A8; 红色警报：最需要重做的页面</h2>
+  <p style="color:#a0a0b8; margin-bottom:20px;">以下 8 个页面评分最低，存在严重的 UI/UX 问题，建议优先重做。</p>
+
+  <div class="alert-item">
+    <span class="alert-rank">1</span>
+    <span class="alert-name">Hub &mdash; collection-hub（15 分）</span>
+    <ul class="alert-problems">
+      <li>导航层级混乱，用户无法快速找到目标内容</li>
+      <li>卡片设计不一致，间距和对齐方式不统一</li>
+      <li>缺少返回和面包屑导航</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">2</span>
+    <span class="alert-name">英语 &mdash; english-01 Hello（18 分）</span>
+    <ul class="alert-problems">
+      <li>作为入门页面，缺乏吸引力和互动引导</li>
+      <li>文字大小不适宜幼童阅读，行间距过窄</li>
+      <li>背景单调，缺少动画和音效提示</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">3</span>
+    <span class="alert-name">数学 &mdash; math-15 Money（19 分）</span>
+    <ul class="alert-problems">
+      <li>抽象概念（货币）未做具象化处理，幼童难以理解</li>
+      <li>练习区域布局拥挤，操作目标过小</li>
+      <li>缺少即时反馈和进度提示</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">4</span>
+    <span class="alert-name">数学 &mdash; math-16（19 分）</span>
+    <ul class="alert-problems">
+      <li>页面元素堆叠无层次，视觉焦点不明确</li>
+      <li>色彩对比度不足，关键信息不突出</li>
+      <li>交互区域缺乏视觉引导（hover/active 状态）</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">5</span>
+    <span class="alert-name">故事 &mdash; story-space-d1（20 分）</span>
+    <ul class="alert-problems">
+      <li>太空主题背景过于简单，缺乏沉浸感</li>
+      <li>文字区域与插画区域比例失调</li>
+      <li>翻页交互不流畅，缺少过渡动画</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">6</span>
+    <span class="alert-name">中文 &mdash; chinese-magic（20 分）</span>
+    <ul class="alert-problems">
+      <li>魔法主题视觉风格与整体绘本风格割裂</li>
+      <li>互动元素分散，缺乏连贯的叙事节奏</li>
+      <li>字体选择不符合儿童阅读习惯</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">7</span>
+    <span class="alert-name">中文 &mdash; chinese-02（21 分）</span>
+    <ul class="alert-problems">
+      <li>插画质量低于同类课件平均水平</li>
+      <li>文字排版未适配不同屏幕尺寸</li>
+      <li>缺少点击互动和声音反馈</li>
+    </ul>
+  </div>
+
+  <div class="alert-item">
+    <span class="alert-rank">8</span>
+    <span class="alert-name">Hub &mdash; village-canvas（21 分）</span>
+    <ul class="alert-problems">
+      <li>画布功能入口不明显，用户难以发现</li>
+      <li>工具栏设计不符合儿童操作习惯</li>
+      <li>保存和分享功能缺失或不完善</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 9: Global Issues -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="global">
+  <h2>&#x1F310; 全局性问题</h2>
+
+  <div class="issue-section">
+    <h3>&#x1F3D7;&#xFE0F; 架构层面</h3>
+    <table>
+      <thead>
+        <tr><th style="width:25%">问题</th><th style="width:10%">严重度</th><th>描述</th><th style="width:20%">建议</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>导航一致性缺失</td>
+          <td><span class="score-badge red">高</span></td>
+          <td>不同类别课件的导航栏位置、样式、返回逻辑不一致，用户切换时产生认知负担</td>
+          <td>建立统一的导航组件规范</td>
+        </tr>
+        <tr>
+          <td>页面过渡无动画</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>多数页面间切换生硬，缺乏过渡动画，对幼童用户体验不够友好</td>
+          <td>统一添加淡入淡出或滑动过渡</td>
+        </tr>
+        <tr>
+          <td>加载状态未处理</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>资源加载时缺少 loading 状态提示，可能造成用户困惑以为页面卡死</td>
+          <td>添加骨架屏或趣味加载动画</td>
+        </tr>
+        <tr>
+          <td>错误处理不完善</td>
+          <td><span class="score-badge yellow">低</span></td>
+          <td>音频播放失败、网络异常等边界情况缺少友好提示</td>
+          <td>设计儿童友好的错误提示</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="issue-section">
+    <h3>&#x1F3A8; 视觉层面</h3>
+    <table>
+      <thead>
+        <tr><th style="width:25%">问题</th><th style="width:10%">严重度</th><th>描述</th><th style="width:20%">建议</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>色彩体系不统一</td>
+          <td><span class="score-badge red">高</span></td>
+          <td>各类别课件使用不同的色彩风格和饱和度，缺乏统一的品牌色彩体系</td>
+          <td>建立色彩规范（主色/辅色/功能色）</td>
+        </tr>
+        <tr>
+          <td>字体层级混乱</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>标题、正文、提示文字的字号和字重缺乏统一标准，部分页面文字过小</td>
+          <td>制定 3 级字体规范（标题/正文/辅助）</td>
+        </tr>
+        <tr>
+          <td>图标风格不一致</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>部分页面使用线性图标，部分使用面性图标，视觉语言不统一</td>
+          <td>统一为面性彩色图标风格</td>
+        </tr>
+        <tr>
+          <td>留白不足</td>
+          <td><span class="score-badge yellow">低</span></td>
+          <td>低分页面普遍存在元素过于密集的问题，缺少呼吸空间</td>
+          <td>增加页面内边距和元素间距</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="issue-section">
+    <h3>&#x1F449; 交互层面</h3>
+    <table>
+      <thead>
+        <tr><th style="width:25%">问题</th><th style="width:10%">严重度</th><th>描述</th><th style="width:20%">建议</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>点击目标过小</td>
+          <td><span class="score-badge red">高</span></td>
+          <td>部分按钮和可点击区域尺寸不足 44px，不符合儿童触控标准（最小 48px）</td>
+          <td>所有可交互元素最小 48x48px</td>
+        </tr>
+        <tr>
+          <td>缺少触觉/音效反馈</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>交互操作后缺乏即时的声音或振动反馈，降低儿童的操作确认感</td>
+          <td>关键操作添加音效反馈</td>
+        </tr>
+        <tr>
+          <td>手势操作不友好</td>
+          <td><span class="score-badge orange">中</span></td>
+          <td>拖拽、缩放等复杂手势未做儿童适配，容易误操作</td>
+          <td>简化为点击/滑动为主</td>
+        </tr>
+        <tr>
+          <td>进度反馈缺失</td>
+          <td><span class="score-badge yellow">低</span></td>
+          <td>课件学习中缺少进度条或完成度提示，用户不知道自己学到哪了</td>
+          <td>添加可视化进度指示</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 10: Roadmap -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="roadmap">
+  <h2>&#x1F4CD; 优化路线图</h2>
+
+  <div class="roadmap-phase p1">
+    <h4>&#x1F534; Phase 1：紧急修复（第 1-2 周）</h4>
+    <ul>
+      <li>重做 <strong>collection-hub</strong> 导航页，建立清晰的层级结构</li>
+      <li>修复所有点击目标 &lt; 44px 的交互元素（扩至 48px+）</li>
+      <li>为 <strong>english-01</strong> 入门页增加互动引导和动画效果</li>
+      <li>统一全局导航栏组件（位置、样式、返回逻辑）</li>
+      <li>添加全局 loading 状态（趣味骨架屏）</li>
+    </ul>
+  </div>
+
+  <div class="roadmap-phase p2">
+    <h4>&#x1F7E0; Phase 2：体验提升（第 3-4 周）</h4>
+    <ul>
+      <li>建立色彩规范体系（主色 #53d769 / 辅色 / 功能色 / 品牌色）</li>
+      <li>制定 3 级字体规范（标题 24-32px / 正文 18-22px / 辅助 14-16px）</li>
+      <li>重做 <strong>math-15</strong> 和 <strong>math-16</strong>，将抽象概念具象化</li>
+      <li>为所有课件添加页面过渡动画（统一 300ms ease-out）</li>
+      <li>优化 <strong>chinese-magic</strong> 和 <strong>chinese-02</strong> 的视觉风格</li>
+    </ul>
+  </div>
+
+  <div class="roadmap-phase p3">
+    <h4>&#x1F7E1; Phase 3：体验优化（第 5-8 周）</h4>
+    <ul>
+      <li>为所有课件添加可视化进度指示系统</li>
+      <li>统一图标风格为面性彩色图标</li>
+      <li>优化 <strong>story-space</strong> 等 6 个 20-23 分页面的视觉和交互</li>
+      <li>为关键操作添加音效反馈（点击/完成/错误）</li>
+      <li>增加留白，优化整体呼吸感</li>
+    </ul>
+  </div>
+
+  <div class="roadmap-phase p4">
+    <h4>&#x1F7E2; Phase 4：精细打磨（第 9-12 周）</h4>
+    <ul>
+      <li>引入微交互动画系统（弹跳、摇晃、粒子等儿童喜爱的效果）</li>
+      <li>完善错误处理和边界情况的友好提示</li>
+      <li>优化手势操作，简化为点击/滑动为主</li>
+      <li>进行 A/B 测试，验证改版效果</li>
+      <li>编写设计规范文档和组件库，确保后续开发一致性</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- PAGE 11: Design Patterns -->
+<!-- ============================================================ -->
+<section class="page-section page-break" id="patterns">
+  <h2>&#x2B50; 设计标杆：值得推广的 10 个设计模式</h2>
+  <p style="color:#a0a0b8; margin-bottom:20px;">以下模式在满分/高分页面中反复出现，建议作为全平台设计规范。</p>
+
+  <div class="pattern-grid">
+    <div class="pattern-card">
+      <span class="pattern-num">01</span>
+      <div class="pattern-title">大卡片网格布局</div>
+      <div class="pattern-desc">使用统一尺寸的大卡片（最小 120x120px）展示内容入口，每行 2-3 个，间距一致。</div>
+      <div class="pattern-example">参考：stories-index（29 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">02</span>
+      <div class="pattern-title">沉浸式场景插画</div>
+      <div class="pattern-desc">全屏或大面积插画作为背景，文字浮于插画之上，营造故事氛围。</div>
+      <div class="pattern-example">参考：chinese-03/13/23/24（满分页）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">03</span>
+      <div class="pattern-title">多层级声音反馈</div>
+      <div class="pattern-desc">点击有短促音效、完成有庆祝音效、错误有柔和提示音，形成正向反馈循环。</div>
+      <div class="pattern-example">参考：english-21/23（满分页）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">04</span>
+      <div class="pattern-title">场景化数学设计</div>
+      <div class="pattern-desc">将抽象数学概念嵌入具体场景（如游乐场、超市），用实物替代数字符号。</div>
+      <div class="pattern-example">参考：math-24 Carnival（25 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">05</span>
+      <div class="pattern-title">主题一致性色彩</div>
+      <div class="pattern-desc">每个课件围绕 2-3 种主色调设计，色彩饱和度适中，避免过多颜色干扰。</div>
+      <div class="pattern-example">参考：twinkle-twinkle（28 分，星空蓝紫系）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">06</span>
+      <div class="pattern-title">渐进式互动引导</div>
+      <div class="pattern-desc">首次进入时有简短的互动引导（闪烁提示/手指动画），引导用户发现功能。</div>
+      <div class="pattern-example">参考：english-02/04/11（27 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">07</span>
+      <div class="pattern-title">安全触摸区域</div>
+      <div class="pattern-desc">所有可交互元素中心距屏幕边缘至少 16px，相邻元素间距至少 12px。</div>
+      <div class="pattern-example">参考：old-macdonald（27 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">08</span>
+      <div class="pattern-title">动画过渡一致性</div>
+      <div class="pattern-desc">页面切换、元素出现、状态变化使用统一的动画时长（200-400ms）和缓动函数。</div>
+      <div class="pattern-example">参考：chinese-14（29 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">09</span>
+      <div class="pattern-title">可视化进度系统</div>
+      <div class="pattern-desc">用进度条、星星收集、路径地图等方式展示学习进度，增强成就感。</div>
+      <div class="pattern-example">参考：village-v2（26 分）</div>
+    </div>
+
+    <div class="pattern-card">
+      <span class="pattern-num">10</span>
+      <div class="pattern-title">儿童友好字体系统</div>
+      <div class="pattern-desc">使用圆角无衬线字体，正文最小 18px，行高 1.6 以上，避免纯黑文字（用深灰）。</div>
+      <div class="pattern-example">参考：chinese-01（27 分）</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- Footer -->
+<!-- ============================================================ -->
+<section class="page-section" style="text-align:center; padding:24px;">
+  <p style="color:#808098; font-size:0.9rem;">
+    儿童绘本课件 UI/UX 全面审查报告 &middot; 2026-05-31 &middot; 共审查 59 个页面 &middot; 12 张对比截图
+  </p>
+  <p style="color:#606078; font-size:0.8rem; margin-top:8px;">
+    Powered by Claude Code &middot; 审查标准基于 Nielsen 儿童交互设计准则 + 幼教 UI 最佳实践
+  </p>
+</section>
+
+</div><!-- /report-container -->
+
+</body>
+</html>

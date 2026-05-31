@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>宝箱 — 村庄学堂</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#e8f7ff;
+  --cloud:#ffffff;
+  --cream:#fff8e8;
+  --line:#cfe7f8;
+  --ink:#23404d;
+  --soft:#5f7a86;
+  --green:#7bc96f;
+  --blue:#4da3ff;
+  --gold:#ffca3a;
+  --violet:#ba68ff;
+}
+body{
+  font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;
+  background:linear-gradient(180deg,#dff4ff 0%,#fff7de 55%,#fffdf6 100%);
+  color:var(--ink);
+  min-height:100vh;
+  padding:20px 14px 28px;
+}
+.hub-shell{max-width:1120px;margin:0 auto}
+.hero{
+  background:linear-gradient(135deg,#ffffff 0%,#f4fbff 55%,#fff8ef 100%);
+  border:2px solid var(--line);
+  border-radius:28px;
+  padding:18px;
+  box-shadow:0 14px 36px rgba(77,163,255,.12);
+  margin-bottom:18px;
+}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.hero-copy{display:grid;gap:10px}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:999px;background:#eef8ff;
+  color:#2d75b6;font-size:14px;font-weight:900
+}
+.hero h1{font-size:clamp(30px,4vw,44px);line-height:1.05;color:#245167}
+.hero p{font-size:17px;line-height:1.6;color:var(--soft);max-width:660px;font-weight:700}
+.btn-back{
+  background:#fff;color:#1565c0;border:2px solid #90caf9;padding:11px 16px;
+  font-family:inherit;font-size:15px;font-weight:900;cursor:pointer;text-decoration:none;
+  border-radius:999px;min-height:46px;display:inline-flex;align-items:center;justify-content:center
+}
+.hero-band{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px
+}
+.hero-chip,.stat-box{
+  background:#fff;border:2px solid #d8edf9;border-radius:20px;padding:16px;
+  box-shadow:0 8px 20px rgba(35,64,77,.06)
+}
+.hero-chip .k,.stat-box .stat-label{font-size:14px;color:var(--soft);font-weight:800}
+.hero-chip .v,.stat-box .stat-val{margin-top:6px;font-size:28px;line-height:1.1;font-weight:900;color:var(--ink)}
+.coins{color:#d88a00}
+.lv{color:#5b9b28}
+.prog{color:#2d75b6}
+.controls{
+  display:grid;grid-template-columns:1.3fr .9fr;gap:16px;margin-bottom:18px
+}
+.panel{
+  background:rgba(255,255,255,.9);
+  border:2px solid var(--line);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 10px 24px rgba(35,64,77,.06)
+}
+.panel-title{font-size:15px;color:var(--soft);font-weight:900;margin-bottom:12px}
+.tabs,.rarity-bar{display:flex;gap:10px;flex-wrap:wrap}
+.tab,.rarity-btn{
+  border:2px solid #d2e8f7;background:#fff;border-radius:999px;min-height:46px;
+  padding:10px 16px;font-size:15px;font-weight:900;font-family:inherit;cursor:pointer;color:#49636e
+}
+.tab.active{background:#fff4c9;border-color:#ffd54f;color:#8a6110}
+.rarity-btn[data-r=all]{color:#5c6d74;border-color:#b5c9d4}
+.rarity-btn[data-r=common]{color:#5b9b28;border-color:#8bc34a}
+.rarity-btn[data-r=uncommon]{color:#1976d2;border-color:#64b5f6}
+.rarity-btn[data-r=rare]{color:#ae7a00;border-color:#ffd54f}
+.rarity-btn[data-r=legendary]{color:#8e24aa;border-color:#ce93d8}
+.rarity-btn.active{background:#eef8ff}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.album-panel{
+  background:rgba(255,255,255,.92);
+  border:2px solid var(--line);
+  border-radius:28px;
+  padding:18px;
+  box-shadow:0 12px 28px rgba(35,64,77,.08)
+}
+.album-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px
+}
+.album-title{font-size:24px;font-weight:900;color:#245167}
+.album-note{
+  font-size:15px;font-weight:800;color:var(--soft);background:#f6fbff;padding:8px 12px;border-radius:999px
+}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.slot{
+  background:linear-gradient(180deg,#ffffff 0%,#f9fdff 100%);
+  border:2px solid #d8edf9;border-radius:20px;text-align:center;padding:16px 10px 48px;
+  position:relative;min-height:170px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 10px 24px rgba(77,163,255,.08)
+}
+.slot.found{border-color:#9ed0ff}
+.slot.unfound{opacity:.55;background:linear-gradient(180deg,#fbfdff 0%,#f2f6f8 100%)}
+.slot.r-common .slot-badge{background:#8bc34a}
+.slot.r-uncommon .slot-badge{background:#42a5f5}
+.slot.r-rare .slot-badge{background:#ffd54f;color:#5c4300}
+.slot.r-legendary .slot-badge{background:#ba68ff}
+.slot-badge{
+  position:absolute;top:10px;right:10px;font-size:13px;font-weight:900;padding:5px 10px;border-radius:999px;color:#fff
+}
+.slot-img{width:64px;height:64px;image-rendering:pixelated;image-rendering:crisp-edges}
+.slot-name{font-size:16px;font-weight:900;color:#314b58;line-height:1.35;word-break:break-word}
+.slot-count{font-size:15px;color:#607d8b;font-weight:900}
+.slot-trade{
+  display:none;position:absolute;left:10px;right:10px;bottom:10px;background:#6a4420;color:#ffe082;
+  border:0;font-size:14px;font-family:inherit;font-weight:900;padding:9px 12px;border-radius:999px;cursor:pointer;min-height:38px
+}
+.slot.found.has-dupe .slot-trade{display:block}
+.slot-unknown{font-size:38px;color:#b0bec5;font-weight:900}
+#ov{position:fixed;inset:0;background:rgba(16,35,45,.78);display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column;padding:20px}
+#ov.show{display:flex}
+.chest-card{
+  background:#fff;border-radius:28px;border:2px solid #d8edf9;padding:28px 24px;max-width:320px;width:100%;
+  display:flex;flex-direction:column;align-items:center;box-shadow:0 18px 42px rgba(16,35,45,.26)
+}
+.chest-anim{font-size:60px;animation:chestBounce .6s ease}
+.chest-img{width:76px;height:76px;image-rendering:pixelated;margin:12px 0;animation:chestPop .4s ease .3s both}
+.chest-name{font-size:24px;font-weight:900;text-align:center;margin-bottom:6px}
+.chest-rarity{font-size:17px;font-weight:800;margin-bottom:18px}
+.chest-btn{
+  background:#2e7d32;color:#fff;border:0;padding:11px 22px;font-family:inherit;font-size:16px;font-weight:900;
+  cursor:pointer;border-radius:999px;min-height:46px
+}
+@keyframes chestBounce{0%{transform:scale(0) rotate(-10deg)}50%{transform:scale(1.3) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes chestPop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.empty{text-align:center;padding:40px;color:#607d8b;font-size:16px;line-height:1.9;font-weight:800}
+.loot-float{
+  position:fixed;bottom:180px;left:50%;transform:translateX(-50%);
+  font-size:24px;font-weight:900;color:#f39c12;z-index:9999;pointer-events:none;
+  text-shadow:0 2px 4px rgba(0,0,0,.22);font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif
+}
+@media (max-width: 920px){
+  .hero-band,.stats,.controls{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 640px){
+  body{padding:12px 10px 24px}
+  .hero,.album-panel,.panel{border-radius:20px}
+  .hero h1{font-size:30px}
+  .hero p{font-size:16px}
+  .hero-band,.stats,.controls{grid-template-columns:1fr}
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .slot{min-height:160px;padding-bottom:52px}
+  .slot-name{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="hub-shell">
+  <section class="hero">
+    <div class="hero-top">
+      <div class="hero-copy">
+        <div class="eyebrow">🎁 村庄学堂收集中心</div>
+        <h1>打开宝箱，整理你的收藏册</h1>
+        <p>完成课件后会获得新的收集物。这里可以查看已经找到的物品、统计重复卡片，还能把多余的道具换成金币。</p>
+      </div>
+      <a href="village.html" class="btn-back">← 返回村庄</a>
+    </div>
+    <div class="hero-band">
+      <div class="hero-chip">
+        <div class="k">等级</div>
+        <div class="v lv" id="h-lv">LV.1</div>
+      </div>
+      <div class="hero-chip">
+        <div class="k">金币</div>
+        <div class="v coins" id="h-coins">💰 0</div>
+      </div>
+      <div class="hero-chip">
+        <div class="k">收藏进度</div>
+        <div class="v prog" id="h-prog">收集 0/0</div>
+      </div>
+      <div class="hero-chip">
+        <div class="k">小提示</div>
+        <div class="v" style="font-size:18px;color:#49636e;">重复物品可卖出</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="controls">
+    <div class="panel">
+      <div class="panel-title">按类别查看</div>
+      <div class="tabs">
+        <div class="tab active" data-tab="all" onclick="switchTab('all')">全部</div>
+        <div class="tab" data-tab="block" onclick="switchTab('block')">方块</div>
+        <div class="tab" data-tab="item" onclick="switchTab('item')">物品</div>
+        <div class="tab" data-tab="food" onclick="switchTab('food')">食物</div>
+        <div class="tab" data-tab="nature" onclick="switchTab('nature')">自然</div>
+        <div class="tab" data-tab="special" onclick="switchTab('special')">稀有</div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">按稀有度筛选</div>
+      <div class="rarity-bar">
+        <button class="rarity-btn active" data-r="all" onclick="filterRarity('all')">全部</button>
+        <button class="rarity-btn" data-r="common" onclick="filterRarity('common')">普通</button>
+        <button class="rarity-btn" data-r="uncommon" onclick="filterRarity('uncommon')">精良</button>
+        <button class="rarity-btn" data-r="rare" onclick="filterRarity('rare')">稀有</button>
+        <button class="rarity-btn" data-r="legendary" onclick="filterRarity('legendary')">传说</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat-box"><div class="stat-val" id="s-found">0</div><div class="stat-label">已收集</div></div>
+    <div class="stat-box"><div class="stat-val" id="s-dupes">0</div><div class="stat-label">重复物品</div></div>
+    <div class="stat-box"><div class="stat-val" id="s-traded">0</div><div class="stat-label">已卖出</div></div>
+  </section>
+
+  <section class="album-panel">
+    <div class="album-head">
+      <div class="album-title">我的收藏册</div>
+      <div class="album-note">点亮更多格子，慢慢收满整本图鉴</div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+</div>
+
+<!-- OPEN CHEST MODAL -->
+<div id="ov">
+  <div class="chest-card">
+    <div class="chest-anim">🎁</div>
+    <img class="chest-img" id="ov-img" src="">
+    <div class="chest-name" id="ov-name"></div>
+    <div class="chest-rarity" id="ov-rarity"></div>
+    <button class="chest-btn" onclick="closeOv()">收下！</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════ ITEM DATA ══════════════════
+var ITEMS = {
+  // ── 方块 (block) ──
+  grass_block:{n:'草方块',img:'grass_block.png',cat:'block',r:'common',v:1},
+  podzol:{n:'灰化土',img:'podzol.png',cat:'block',r:'common',v:1},
+  cobblestone:{n:'圆石',img:'cobblestone.png',cat:'block',r:'common',v:1},
+  stone:{n:'石头',img:'stone.png',cat:'block',r:'common',v:1},
+  sand:{n:'沙子',img:'sand.png',cat:'block',r:'common',v:1},
+  coal:{n:'煤炭',img:'coal.png',cat:'block',r:'common',v:1},
+  oak_planks:{n:'橡木板',img:'Oak_Planks.png',cat:'block',r:'common',v:1},
+  oak_log:{n:'橡木原木',img:'oak-log.png',cat:'block',r:'common',v:1},
+  oak_leaves:{n:'橡树叶',img:'Oak_Leaves.png',cat:'block',r:'common',v:1},
+  brick:{n:'砖块',img:'Oak_Planks.png',cat:'block',r:'uncommon',v:2},
+  oak_slab:{n:'橡木台阶',img:'oak_slab.png',cat:'block',r:'uncommon',v:2},
+  cobblestone_wall:{n:'石砖墙',img:'cobblestone.png',cat:'block',r:'uncommon',v:2},
+  oak_fence:{n:'栅栏',img:'oak_fence.png',cat:'block',r:'uncommon',v:2},
+  oak_door:{n:'橡木门',img:'oak_door.png',cat:'block',r:'rare',v:5},
+  oak_stairs:{n:'橡木楼梯',img:'oak_stairs.png',cat:'block',r:'rare',v:5},
+
+  // ── 物品 (item) ──
+  wooden_sword:{n:'木剑',img:'Wooden_Sword.png',cat:'item',r:'common',v:1},
+  iron_sword:{n:'铁剑',img:'iron-sword-item.png',cat:'item',r:'uncommon',v:3},
+  diamond_sword:{n:'钻石剑',img:'diamond-sword.png',cat:'item',r:'rare',v:10},
+  wooden_pickaxe:{n:'木镐',img:'Wooden_Pickaxe.png',cat:'item',r:'common',v:1},
+  iron_ingot:{n:'铁锭',img:'Iron_Ingot.png',cat:'item',r:'uncommon',v:2},
+  gold_ingot:{n:'金锭',img:'Gold_Ingot.png',cat:'item',r:'uncommon',v:3},
+  diamond:{n:'钻石',img:'diamond.png',cat:'item',r:'rare',v:15},
+  emerald:{n:'绿宝石',img:'emerald.png',cat:'item',r:'rare',v:12},
+  redstone:{n:'红石',img:'Redstone_Dust.png',cat:'item',r:'uncommon',v:2},
+  lapis_lazuli:{n:'青金石',img:'Lapis_Lazuli.png',cat:'item',r:'uncommon',v:2},
+  oak_button:{n:'橡木按钮',img:'oak_button.png',cat:'item',r:'common',v:1},
+  oak_trapdoor:{n:'活板门',img:'oak_trapdoor.png',cat:'item',r:'uncommon',v:3},
+  name_tag:{n:'命名牌',img:'Name_Tag.png',cat:'item',r:'uncommon',v:3},
+  saddle:{n:'鞍',img:'saddle.png',cat:'item',r:'rare',v:8},
+  chestplate:{n:'钻石胸甲',img:'diamond-chestplate.png',cat:'item',r:'legendary',v:30},
+  totem:{n:'不死图腾',img:'totem.png',cat:'item',r:'legendary',v:25},
+
+  // ── 食物 (food) ──
+  apple:{n:'苹果',img:'apple.png',cat:'food',r:'common',v:1},
+  bread:{n:'面包',img:'bread.png',cat:'food',r:'common',v:1},
+  cooked_porkchop:{n:'熟猪排',img:'cooked-porkchop.png',cat:'food',r:'common',v:1},
+  beetroot:{n:'甜菜根',img:'Beetroot.png',cat:'food',r:'common',v:1},
+  mushroom_stew:{n:'蘑菇煲',img:'Bowl.png',cat:'food',r:'uncommon',v:2},
+  golden_apple:{n:'金苹果',img:'apple.png',cat:'food',r:'rare',v:15},
+
+  // ── 自然 (nature) ──
+  daisy:{n:'滨菊',img:'Oxeye_Daisy.png',cat:'nature',r:'common',v:1},
+  sugar_cane:{n:'甘蔗',img:'Sugar.png',cat:'nature',r:'common',v:1},
+  cactus:{n:'仙人掌',img:'Cactus.png',cat:'nature',r:'common',v:1},
+  mushroom:{n:'蘑菇',img:'Brown_Mushroom.png',cat:'nature',r:'common',v:1},
+  sapling:{n:'树苗',img:'Sapling.png',cat:'nature',r:'common',v:1},
+  wheat:{n:'小麦',img:'Wheat.png',cat:'nature',r:'common',v:1},
+  red_tulip:{n:'红色郁金香',img:'Red_Tulip.png',cat:'nature',r:'uncommon',v:2},
+
+  // ── 特殊 (special) ──
+  tnt:{n:'TNT',img:'tnt.png',cat:'special',r:'uncommon',v:3},
+  crafting_table:{n:'工作台',img:'crafting-table.png',cat:'special',r:'common',v:1},
+  jukebox:{n:'唱片机',img:'Jukebox.png',cat:'special',r:'rare',v:8},
+  note_block:{n:'音符盒',img:'Note_Block.png',cat:'special',r:'uncommon',v:3},
+  firework:{n:'烟花',img:'Firework_Rocket.png',cat:'special',r:'uncommon',v:3},
+  diamond_ore:{n:'钻石矿',img:'diamond-ore.png',cat:'special',r:'rare',v:12},
+  enchanted_book:{n:'附魔书',img:'enchanted-book.png',cat:'special',r:'rare',v:10},
+  ender_pearl:{n:'末影珍珠',img:'ender-pearl.png',cat:'special',r:'rare',v:8},
+  trident:{n:'三叉戟',img:'trident.png',cat:'special',r:'legendary',v:35},
+};
+
+var RARITY_NAMES = {common:'普通',uncommon:'精良',rare:'稀有',legendary:'传说'};
+var RARITY_COLORS = {common:'#8BC34A',uncommon:'#2196F3',rare:'#FFD700',legendary:'#E040FB'};
+var STORAGE_KEY = 'village_state';
+
+// ══════════════════ STATE ══════════════════
+var S = loadState();
+
+function getDefaultState(){
+  return {level:1,xp:0,coins:0,collection:{},traded:0};
+}
+
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return getDefaultState();
+    var full = JSON.parse(raw);
+    var ch = full.collectionHub || {};
+    var s = getDefaultState();
+    s.level = ch.level || 1;
+    s.xp = ch.xp || 0;
+    s.coins = full.coins || 0;
+    s.collection = ch.collection || {};
+    s.traded = ch.traded || 0;
+    return s;
+  }catch(e){ return getDefaultState(); }
+}
+
+function saveState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    var full = raw ? JSON.parse(raw) : {};
+    full.collectionHub = {level:S.level,xp:S.xp,collection:S.collection,traded:S.traded};
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(full));
+  }catch(e){}
+}
+
+// ══════════════════ RENDER ══════════════════
+var curTab = 'all', curRarity = 'all';
+
+function render(){
+  // HUD
+  q('#h-lv').textContent = 'LV.'+S.level;
+  q('#h-coins').textContent = '💰 '+S.coins;
+
+  // Stats
+  var totalUnique = Object.keys(ITEMS).length;
+  var found = 0, dupes = 0;
+  for(var k in S.collection){
+    if(S.collection[k]>0){ found++; if(S.collection[k]>1) dupes += S.collection[k]-1; }
+  }
+  q('#s-found').textContent = found+'/'+totalUnique;
+  q('#s-dupes').textContent = dupes;
+  q('#s-traded').textContent = S.traded;
+  q('#h-prog').textContent = '收集 '+found+'/'+totalUnique;
+
+  // Grid
+  var grid = q('#grid');
+  grid.innerHTML = '';
+  var keys = Object.keys(ITEMS).sort(function(a,b){
+    var rv = {common:0,uncommon:1,rare:2,legendary:3};
+    var va = rv[ITEMS[a].r], vb = rv[ITEMS[b].r];
+    return va!==vb ? vb-va : a.localeCompare(b);
+  });
+
+  keys.forEach(function(k){
+    var item = ITEMS[k];
+    var count = S.collection[k]||0;
+    var found = count>0;
+
+    // Filter
+    if(curTab!=='all' && item.cat!==curTab) return;
+    if(curRarity!=='all' && item.r!==curRarity) return;
+
+    var el = document.createElement('div');
+    el.className = 'slot r-'+item.r+(found?' found':' unfound')+(count>1?' has-dupe':'');
+    el.innerHTML = found ?
+      '<div class="slot-badge">'+RARITY_NAMES[item.r]+'</div>'+
+      '<img class="slot-img" src="images/minecraft/'+item.img+'" alt="'+item.n+'" onerror="this.style.display=\'none\'">'+
+      '<div class="slot-name">'+item.n+'</div>'+
+      '<div class="slot-count">×'+count+'</div>'+
+      '<button class="slot-trade" onclick="event.stopPropagation();trade(\''+k+'\')">卖 💰'+item.v+'</button>' :
+      '<div class="slot-badge">?</div>'+
+      '<div class="slot-unknown">?</div>'+
+      '<div class="slot-name">???</div>';
+    grid.appendChild(el);
+  });
+}
+
+function q(s){return document.querySelector(s)}
+
+function switchTab(tab){
+  curTab = tab;
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===tab)});
+  render();
+}
+function filterRarity(r){
+  curRarity = r;
+  document.querySelectorAll('.rarity-btn').forEach(function(b){b.classList.toggle('active',b.dataset.r===r)});
+  render();
+}
+
+// ══════════════════ TRADE ══════════════════
+function trade(k){
+  if((S.collection[k]||0)<=1) return;
+  var item = ITEMS[k];
+  S.collection[k]--;
+  S.coins += item.v;
+  S.traded++;
+  saveState();
+  showFloat('+'+item.v+' 💰');
+  render();
+}
+
+function showFloat(txt){
+  var el = document.createElement('div');
+  el.className = 'loot-float';
+  el.textContent = txt;
+  document.body.appendChild(el);
+  if(typeof gsap!=='undefined'){
+    gsap.to(el,{y:-80,opacity:0,duration:1.5,ease:'power2.out',onComplete:function(){el.remove()}});
+  }else{
+    el.style.transition='all 1.5s ease-out';
+    setTimeout(function(){el.style.transform='translateX(-50%) translateY(-80px)';el.style.opacity='0'},50);
+    setTimeout(function(){el.remove()},1600);
+  }
+}
+
+// ══════════════════ OPEN CHEST ══════════════════
+function openChest(itemKey){
+  var item = ITEMS[itemKey]; if(!item) return;
+  S.collection[itemKey] = (S.collection[itemKey]||0)+1;
+  saveState();
+
+  q('#ov-img').src = 'images/minecraft/'+item.img;
+  q('#ov-name').textContent = item.n+' ×'+S.collection[itemKey];
+  q('#ov-name').style.color = RARITY_COLORS[item.r];
+  q('#ov-rarity').textContent = RARITY_NAMES[item.r];
+  q('#ov-rarity').style.color = RARITY_COLORS[item.r];
+  q('#ov').classList.add('show');
+}
+function closeOv(){
+  q('#ov').classList.remove('show');
+  render();
+}
+
+// ══════════════════ RANDOM REWARD ══════════════════
+// called from village-reporter.js
+function getRandomItem(){
+  var roll = Math.random();
+  var targetRarity = roll < 0.55 ? 'common' : roll < 0.85 ? 'uncommon' : roll < 0.97 ? 'rare' : 'legendary';
+  var pool = Object.keys(ITEMS).filter(function(k){return ITEMS[k].r===targetRarity});
+  return pool.length ? pool[Math.floor(Math.random()*pool.length)] : Object.keys(ITEMS)[0];
+}
+
+// ══════════════════ INIT ══════════════════
+// Check if we're being opened after a course completion with pending reward
+(function(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      var full = JSON.parse(raw);
+      if(full.pendingReward){
+        delete full.pendingReward;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(full));
+        var itemKey = getRandomItem();
+        openChest(itemKey);
+      }
+    }
+  }catch(e){}
+  render();
+})();
+
+// Expose for external callers
+window.collectionHub = {
+  getRandomItem: getRandomItem,
+  openChest: openChest,
+};
+</script>
+</body>
+</html>

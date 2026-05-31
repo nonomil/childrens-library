@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>萌宠小屋</title>
+  <link rel="stylesheet" href="shared/interior-pages.css">
+</head>
+<body>
+  <div class="interior-page" id="interiorPage">
+    <button class="back-button" id="backButton" type="button">返回村庄</button>
+    <div class="hero-copy" id="heroCopy"></div>
+    <div class="painted-hotspots" id="paintedHotspots"></div>
+    <section class="card-stage" aria-label="课程卡片墙">
+      <button class="nav-button" id="navPrev" type="button" aria-label="上一组">‹</button>
+      <div class="card-strip" id="cardStrip"></div>
+      <button class="nav-button" id="navNext" type="button" aria-label="下一组">›</button>
+    </section>
+    <div class="bottom-bar">
+      <div class="bottom-label">专题入口</div>
+      <div class="bottom-actions" id="bottomActions"></div>
+    </div>
+  </div>
+  <script>window.INTERIOR_PAGE_KEY='pets';</script>
+  <script src="shared/interior-pages.js"></script>
+</body>
+</html>

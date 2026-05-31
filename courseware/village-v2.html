@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>🏘️ 村庄学堂</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* ═══ Reset + Base ═══ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Press Start 2P',monospace}
+
+/* ═══ VIEWPORT ═══ */
+#vp{width:100%;height:100%;overflow:hidden;position:relative}
+
+/* ═══ WORLD (tile-rendered) ═══ */
+#world{
+  position:absolute;
+  width:1600px;height:1200px;
+  background-color:#4E8C33;
+  background-image:url('assets/kenney/tile_0000.png');
+  background-repeat:repeat;
+  background-size:64px 64px;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  will-change:transform;
+}
+
+/* ═══ TILE SPRITE ═══ */
+.tile{
+  position:absolute;
+  width:64px;height:64px;
+  background-size:64px 64px;
+  background-repeat:no-repeat;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
+
+/* ═══ PATHS ═══ */
+.path{position:absolute;image-rendering:pixelated;image-rendering:crisp-edges}
+.dirt-path{
+  background-image:url('assets/kenney/tile_0025.png');
+  background-repeat:repeat;background-size:64px 64px;
+}
+.stone-path{
+  background-image:url('assets/kenney/tile_0048.png');
+  background-repeat:repeat;background-size:64px 64px;
+}
+.sand-path{
+  background-image:url('assets/kenney/tile_0037.png');
+  background-repeat:repeat;background-size:64px 64px;
+}
+
+/* ═══ WATER ═══ */
+.water{
+  position:absolute;
+  background-image:url('assets/kenney/tile_0049.png');
+  background-repeat:repeat;background-size:64px 64px;
+  image-rendering:pixelated;
+  animation:wshim 3s ease-in-out infinite alternate;
+}
+@keyframes wshim{to{filter:brightness(1.15)}}
+
+/* ═══ BUILDINGS ═══ */
+.bld{position:absolute;width:200px;height:200px;cursor:pointer;z-index:5}
+.bld:hover{filter:brightness(1.1)}
+.bsign{
+  position:absolute;top:-38px;left:50%;transform:translateX(-50%);
+  background:#7B5020;border:3px solid #3D2000;padding:4px 8px;
+  font-size:6.5px;color:#FFF;white-space:nowrap;
+  text-shadow:1px 1px 0 #000;box-shadow:0 3px 0 #3D2000;z-index:10;
+  line-height:1.6;text-align:center;
+}
+.bentry{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:64px;height:20px;
+}
+
+/* ═══ PROXIMITY RING ═══ */
+.pring{
+  position:absolute;width:68px;height:68px;border-radius:50%;
+  border:3px solid #F5C800;pointer-events:none;
+  transform:translate(-50%,-50%);display:none;z-index:20;
+  animation:rpulse 1s ease-in-out infinite;
+}
+@keyframes rpulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1;border-color:#F5C800}
+  50%{transform:translate(-50%,-50%) scale(1.25);opacity:.5;border-color:#FFF}
+}
+
+/* ═══ TREES ═══ */
+.tree{position:absolute;z-index:4;width:64px;height:64px;
+  background-size:64px 64px;image-rendering:pixelated;image-rendering:crisp-edges}
+
+/* ═══ FLOWERS ═══ */
+.fl{
+  position:absolute;width:64px;height:64px;
+  background-size:64px 64px;image-rendering:pixelated;
+  image-rendering:crisp-edges;z-index:2;
+}
+
+/* ═══ FENCE (border) ═══ */
+.fence{position:absolute;background:#8B6340;z-index:1}
+.fence::before{
+  content:'';position:absolute;top:0;bottom:0;left:0;right:0;
+  background:repeating-linear-gradient(90deg,transparent 19px,rgba(0,0,0,.2) 20px);
+}
+
+/* ═══ ANIMALS ═══ */
+.npc{
+  position:absolute;z-index:6;cursor:pointer;
+  animation:anpeck 2.5s ease-in-out infinite;
+}
+.npc svg{display:block;image-rendering:pixelated}
+.npc:hover{filter:brightness(1.2)}
+@keyframes anpeck{
+  0%,60%,100%{transform:translateY(0)}
+  30%{transform:translateY(-6px)}
+}
+.npc.walk{animation:anwalk 1.8s ease-in-out infinite}
+@keyframes anwalk{
+  0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}
+}
+
+/* ═══ NPC BUBBLE ═══ */
+.nbubble{
+  position:absolute;bottom:calc(100% + 3px);left:50%;
+  transform:translateX(-50%);background:#fff;border:3px solid #222;
+  font-size:6px;color:#222;padding:3px 5px;white-space:nowrap;
+  pointer-events:none;
+  animation:bpop .15s ease;
+}
+.nbubble::after{
+  content:'';position:absolute;top:100%;left:50%;
+  transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:#222;
+}
+@keyframes bpop{from{opacity:0;transform:translateX(-50%) scale(0)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+
+/* ═══ STEVE ═══ */
+#steve{
+  position:absolute;width:48px;z-index:15;pointer-events:none;
+}
+#steve::before{
+  content:'';position:absolute;bottom:-3px;left:50%;
+  transform:translateX(-50%);width:28px;height:6px;
+  background:rgba(0,0,0,.28);border-radius:50%;
+}
+#steve svg{display:block;image-rendering:pixelated}
+#steve.walk{animation:swalk .28s steps(2) infinite}
+@keyframes swalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ═══ HUD ═══ */
+#hud{
+  position:fixed;top:0;left:0;right:0;
+  background:rgba(0,0,0,.85);border-bottom:3px solid #866043;
+  padding:7px 14px;display:flex;align-items:center;gap:10px;
+  z-index:100;flex-wrap:wrap;
+}
+.h-name{font-size:9px;color:#F5C800;text-shadow:2px 2px 0 #A88800}
+.h-lv{background:#25D5E8;color:#000;font-size:8px;padding:2px 7px;border:2px solid #0099BB}
+.h-xwrap{flex:1;min-width:80px}
+.h-xlbl{font-size:6px;color:#888;margin-bottom:2px}
+.h-bar{height:10px;background:#111;border:2px solid #333}
+.h-xfill{height:100%;background:#66FF00;width:0%;transition:width .5s}
+.h-coins{font-size:9px;color:#F5C800;display:flex;align-items:center;gap:5px}
+.h-coin{width:14px;height:14px;background:#F5C800;border:2px solid #A88800;border-radius:50%;box-shadow:0 0 5px #F5C800}
+.h-pet{font-size:8px;color:#12CC55;text-decoration:none}
+.h-pet:hover{text-shadow:0 0 8px #12CC55}
+.h-chest{position:relative}
+.h-dot{
+  position:absolute;top:-2px;right:-2px;width:8px;height:8px;
+  background:#FF3B30;border-radius:50%;border:2px solid #000;display:none;
+  animation:dpulse 1.2s ease-in-out infinite;
+}
+@keyframes dpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+/* ═══ D-PAD ═══ */
+#dpad{
+  position:fixed;bottom:16px;left:16px;z-index:100;
+  display:grid;grid-template-columns:52px 52px 52px;
+  grid-template-rows:52px 52px 52px;gap:3px;opacity:.85;
+}
+.dp{
+  width:52px;height:52px;background:rgba(0,0,0,.72);
+  border:2px solid #555;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;cursor:pointer;color:#fff;
+  user-select:none;-webkit-user-select:none;touch-action:none;
+}
+.dp:active,.dp.on{background:rgba(255,255,255,.18)}
+#dpu{grid-column:2;grid-row:1}
+#dpl{grid-column:1;grid-row:2}
+#dpc{grid-column:2;grid-row:2;background:rgba(245,200,0,.15);font-size:10px;color:#F5C800;border-color:#F5C80060}
+#dpr{grid-column:3;grid-row:2}
+#dpd{grid-column:2;grid-row:3}
+#dpc.near{background:rgba(245,200,0,.4);animation:abtn .7s ease-in-out infinite}
+@keyframes abtn{0%,100%{box-shadow:0 0 0 0 rgba(245,200,0,.4)}50%{box-shadow:0 0 0 8px rgba(245,200,0,0)}}
+
+/* ═══ ENTER PROMPT ═══ */
+#prompt{
+  position:fixed;bottom:88px;left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.92);border:2px solid #F5C800;
+  color:#F5C800;font-size:8px;padding:8px 16px;z-index:100;
+  display:none;white-space:nowrap;pointer-events:none;
+  animation:pbob .9s ease-in-out infinite alternate;
+}
+@keyframes pbob{
+  from{transform:translateX(-50%) translateY(0)}
+  to{transform:translateX(-50%) translateY(-5px)}
+}
+
+/* ═══ MINI MAP ═══ */
+#mini{
+  position:fixed;top:56px;right:12px;
+  width:110px;height:86px;background:rgba(0,0,0,.7);
+  border:2px solid #555;z-index:100;overflow:hidden;
+}
+#mini-bg{width:100%;height:100%;position:relative}
+#mini-steve{
+  position:absolute;width:5px;height:5px;
+  background:#FFD700;border-radius:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 4px #FFD700;
+}
+
+/* ═══ SCREEN FADE ═══ */
+#fade{
+  position:fixed;inset:0;background:#000;
+  opacity:0;pointer-events:none;z-index:999;
+  transition:opacity .4s ease;
+}
+#fade.in{opacity:1;pointer-events:all}
+
+/* ═══ ZONE PANEL ═══ */
+.panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.panel-overlay.show{opacity:1;pointer-events:auto}
+.zone-panel{
+  position:fixed;bottom:0;left:0;right:0;
+  max-height:75vh;background:rgba(15,15,20,.97);
+  z-index:201;border-radius:16px 16px 0 0;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.zone-panel.open{transform:translateY(0)}
+.panel-handle{display:flex;justify-content:center;padding:8px 0 4px}
+.panel-handle-bar{width:36px;height:4px;background:rgba(255,255,255,.25);border-radius:2px}
+.panel-header{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#fff}
+.panel-icon{font-size:24px}
+.panel-title{font-size:12px;font-weight:800;flex:1}
+.panel-close{
+  width:36px;height:36px;background:rgba(255,255,255,.1);
+  border:2px solid rgba(255,255,255,.2);border-radius:8px;
+  color:#fff;font-size:16px;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;min-width:36px;
+}
+.panel-desc{font-size:9px;color:rgba(255,255,255,.6);padding:0 16px 8px}
+.course-list{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;padding:0 16px 16px;overflow-y:auto;flex:1;
+  -webkit-overflow-scrolling:touch;
+}
+.course-card{
+  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:10px 8px;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.course-card:hover{border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.course-card.completed{border-color:#5D9C3C}
+.course-card .cc-emoji{font-size:22px;margin-bottom:4px}
+.course-card .cc-name{font-size:7px;color:#fff;font-weight:700;line-height:1.3}
+.course-card .cc-lesson{font-size:6px;color:rgba(255,255,255,.5);margin-top:2px}
+.course-card .cc-stars{font-size:8px;margin-top:3px}
+
+/* ═══ WELCOME ═══ */
+#welcome{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+}
+#welcome.hidden{display:none}
+.w-title{font-size:14px;color:#F5C800;text-shadow:2px 2px 0 #A88800;text-align:center;line-height:2}
+.w-hint{font-size:7px;color:#888;margin-top:4px}
+.w-btn{
+  margin-top:12px;padding:12px 28px;background:#5D9C3C;border:3px solid #3E7228;
+  color:#fff;font-family:inherit;font-size:9px;cursor:pointer;
+  box-shadow:0 4px 0 #2E5C1A;transition:all .1s;
+}
+.w-btn:active{box-shadow:none;transform:translateY(4px)}
+
+@media(max-width:480px){
+  #dpad{grid-template-columns:46px 46px 46px;grid-template-rows:46px 46px 46px;bottom:10px;left:10px}
+  .dp{width:46px;height:46px;font-size:16px}
+  #mini{width:80px;height:62px;top:50px;right:8px}
+  #prompt{font-size:7px;bottom:76px}
+}
+</style>
+</head>
+<body>
+<div id="fade"></div>
+
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="w-title">🏘️ 欢迎来到<br>村庄学堂！</div>
+  <div class="w-hint">用方向键或 D-pad 移动 Steve<br>走近小屋按 A 进入学习</div>
+  <button class="w-btn" onclick="startGame()">开始冒险！</button>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <span class="h-name" id="hName">🗡️ 小勇士</span>
+  <div class="h-lv" id="hLv">LV.1</div>
+  <div class="h-xwrap">
+    <div class="h-xlbl" id="hXp">EXP 0/80</div>
+    <div class="h-bar"><div class="h-xfill" id="hXpFill"></div></div>
+  </div>
+  <div class="h-coins"><div class="h-coin"></div><span id="hCoins">0</span></div>
+  <a href="pet-hub.html" class="h-pet">🐺 宠物</a>
+  <a href="collection-hub.html" class="h-pet h-chest" style="position:relative">
+    🎁<span class="h-dot" id="hChestDot"></span>
+  </a>
+</div>
+
+<!-- MINI MAP -->
+<div id="mini"><div id="mini-bg"><div id="mini-steve"></div></div></div>
+
+<!-- WORLD -->
+<div id="vp"><div id="world"></div></div>
+
+<!-- D-PAD -->
+<div id="dpad">
+  <div class="dp" id="dpu">▲</div>
+  <div class="dp" id="dpl">◀</div>
+  <div class="dp" id="dpc">A</div>
+  <div class="dp" id="dpr">▶</div>
+  <div class="dp" id="dpd">▼</div>
+</div>
+
+<!-- PROMPT -->
+<div id="prompt">🏠 走进去看看！按 A 进入</div>
+
+<!-- ZONE PANEL -->
+<div class="panel-overlay" id="panelOv" onclick="closePanel()"></div>
+<div class="zone-panel" id="zonePanel">
+  <div class="panel-handle"><div class="panel-handle-bar"></div></div>
+  <div class="panel-header">
+    <span class="panel-icon" id="pIcon">📚</span>
+    <span class="panel-title" id="pTitle">课程列表</span>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-desc" id="pDesc"></div>
+  <div class="course-list" id="courseList"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// WORLD CONFIG
+// ═══════════════════════════════════════════════
+var WW = 1600, WH = 1200;
+var SPD = 230;
+var PROX = 80;
+var TILE = 'assets/kenney/tile_';
+
+function pad4(n){ return String(n).padStart(4,'0'); }
+function tileUrl(idx){ return TILE + pad4(idx) + '.png'; }
+
+// ─── BUILDING TILE LAYOUTS (3×3 grids) ───
+// Each building composed of 9 tiles in a 3-col × 3-row grid
+var BLDG_TILES = {
+  // Red/warm building (故事屋, 英语小屋)
+  red: [
+    [9,   10,  11 ],   // roof row (partial-fill brownish)
+    [52,  53,  54 ],   // wall top (solid red)
+    [67,  55,  67 ],   // wall bot (dark center = door)
+  ],
+  // Brown/wood building (宠物之家)
+  brown: [
+    [33,  34,  35 ],   // roof row
+    [84,  85,  86 ],   // wall top
+    [83,  69,  83 ],   // wall bot
+  ],
+  // Grey/stone building (自然探索, 数学学堂)
+  grey: [
+    [44,  45,  46 ],   // roof row
+    [88,  89,  90 ],   // wall top
+    [102, 63,  102],   // wall bot
+  ],
+  // Green/nature building (语文学堂)
+  green: [
+    [3,   27,  3  ],   // roof row (brown)
+    [36,  37,  38 ],   // wall (beige/sand)
+    [14,  13,  14 ],   // wall bot
+  ],
+};
+
+// ─── PATHS ───
+var STONE_PATHS = [
+  {x:0,  y:480, w:WW, h:80},      // main horizontal
+  {x:700,y:0,   w:80, h:WH},      // main vertical
+];
+var DIRT_PATHS = [
+  {x:180,y:268, w:64, h:212},     // stories → main road
+  {x:1280,y:268,w:64, h:212},     // chinese → main road
+  {x:180,y:520, w:64, h:200},     // math → main road
+  {x:1280,y:520,w:64, h:200},     // english → main road
+];
+
+// ─── WATER ───
+var WATERS = [
+  {x:1120,y:300,w:256,h:128},
+  {x:320, y:640,w:192,h:128},
+];
+
+// ─── ZONE CONFIG (course panel) ───
+var ZONE_CONFIG = {
+  stories:  { name:'绘本故事屋', icon:'📖', desc:'精彩的故事绘本等你来读！', dir:'stories/', totalCount:17 },
+  science:  { name:'自然探索',   icon:'🌿', desc:'齿轮、太阳系、大冒险！', dir:'science/', totalCount:8 },
+  chinese:  { name:'语文学堂',   icon:'✏️', desc:'识字、拼音、阅读',       dir:'chinese/', totalCount:25 },
+  math:     { name:'数学学堂',   icon:'🔢', desc:'数字、计算、图形',       dir:'math/', totalCount:25 },
+  pets:     null,
+  english:  { name:'英语小屋',   icon:'🔤', desc:'单词、对话、歌曲',       dir:'english/', totalCount:25 },
+};
+
+// ─── BUILDINGS ───
+var BLDS = [
+  {id:'stories',  name:'绘本故事屋', sub:'故事·绘本', emoji:'📖',
+   x:80,  y:60,  w:200,h:200, style:'red',
+   ex:180, ey:268, href:null},
+  {id:'science',  name:'自然探索',   sub:'科学·探索', emoji:'🌿',
+   x:620, y:60,  w:200,h:200, style:'grey',
+   ex:720, ey:268, href:null},
+  {id:'chinese',  name:'语文学堂',   sub:'识字·阅读', emoji:'✏️',
+   x:1160,y:60,  w:200,h:200, style:'green',
+   ex:1260,ey:268, href:null},
+  {id:'math',     name:'数学学堂',   sub:'数字·计算', emoji:'🔢',
+   x:80,  y:720, w:200,h:200, style:'grey',
+   ex:180, ey:720, href:null},
+  {id:'pets',     name:'宠物之家',   sub:'我的宠物',   emoji:'🐾',
+   x:620, y:720, w:200,h:200, style:'brown',
+   ex:720, ey:720, href:'pet-hub.html'},
+  {id:'english',  name:'英语小屋',   sub:'单词·对话', emoji:'🔤',
+   x:1160,y:720, w:200,h:200, style:'red',
+   ex:1260,ey:720, href:null},
+];
+
+// ─── TREES (tile index for each tree) ───
+var TREES = [
+  {x:340, y:80,  t:5},  {x:420, y:110, t:19}, {x:500, y:75,  t:5},
+  {x:550, y:100, t:16}, {x:870, y:80,  t:19}, {x:940, y:105, t:5},
+  {x:1050,y:75,  t:16}, {x:340, y:800, t:5},  {x:420, y:830, t:19},
+  {x:500, y:795, t:16}, {x:870, y:800, t:19}, {x:940, y:830, t:5},
+  {x:55,  y:380, t:19}, {x:55,  y:445, t:5},  {x:1520,y:380, t:19},
+  {x:1520,y:445, t:5},  {x:1100,y:320, t:16}, {x:300, y:640, t:19},
+  // Border trees
+  {x:0,   y:0,   t:19}, {x:64,  y:0,   t:19}, {x:128, y:0,   t:5},
+  {x:192, y:0,   t:19}, {x:256, y:0,   t:19}, {x:320, y:0,   t:5},
+  {x:384, y:0,   t:19}, {x:448, y:0,   t:5},  {x:512, y:0,   t:19},
+  {x:576, y:0,   t:19}, {x:640, y:0,   t:5},  {x:704, y:0,   t:19},
+  {x:768, y:0,   t:5},  {x:832, y:0,   t:19}, {x:896, y:0,   t:19},
+  {x:960, y:0,   t:5},  {x:1024,y:0,   t:19}, {x:1088,y:0,   t:5},
+  {x:1152,y:0,   t:19}, {x:1216,y:0,   t:19}, {x:1280,y:0,   t:5},
+  {x:1344,y:0,   t:19}, {x:1408,y:0,   t:19}, {x:1472,y:0,   t:5},
+  {x:1536,y:0,   t:19},
+];
+
+// ─── FLOWERS (decorative ground tiles) ───
+var FLOS = [
+  {x:310,y:190,t:43},{x:380,y:175,t:2},
+  {x:490,y:200,t:43},{x:555,y:182,t:2},
+  {x:830,y:190,t:43},{x:880,y:210,t:2},
+  {x:1050,y:460,t:43},{x:1100,y:440,t:2},
+  {x:340,y:665,t:43},{x:400,y:680,t:2},
+  {x:510,y:648,t:43},{x:560,y:675,t:2},
+  {x:850,y:670,t:43},{x:900,y:648,t:2},
+  {x:1060,y:680,t:43},{x:1110,y:655,t:2},
+];
+
+// ─── ANIMAL NPCs ───
+var NPCS = [
+  {type:'chicken',x:380,y:340,dir:1,speed:22,range:140,
+   sounds:['咕咕！','叽！','咕～'],
+   svg:'<svg viewBox="0 0 16 16" width="36" height="36" shape-rendering="crispEdges"><rect x="7" y="1" width="2" height="2" fill="#F22"/><rect x="9" y="2" width="1" height="1" fill="#F22"/><rect x="5" y="3" width="6" height="5" fill="#EEE"/><rect x="4" y="4" width="1" height="3" fill="#DDD"/><rect x="9" y="4" width="1" height="2" fill="#111"/><rect x="11" y="5" width="2" height="1" fill="#F90"/><rect x="11" y="6" width="3" height="1" fill="#F70"/><rect x="11" y="6" width="1" height="2" fill="#F22"/><rect x="3" y="8" width="9" height="5" fill="#EEE"/><rect x="3" y="9" width="2" height="3" fill="#DDD"/><rect x="2" y="7" width="2" height="2" fill="#EEE"/><rect x="5" y="13" width="2" height="2" fill="#F90"/><rect x="9" y="13" width="2" height="2" fill="#F90"/><rect x="4" y="14" width="3" height="1" fill="#E80"/><rect x="8" y="14" width="3" height="1" fill="#E80"/></svg>'},
+  {type:'sheep',x:520,y:380,dir:-1,speed:16,range:120,
+   sounds:['咩！','咩咩！','咩～'],
+   svg:'<svg viewBox="0 0 16 16" width="44" height="44" shape-rendering="crispEdges"><rect x="2" y="4" width="3" height="3" fill="#F0F0F0"/><rect x="6" y="3" width="3" height="3" fill="#FAFAFA"/><rect x="10" y="4" width="3" height="3" fill="#F0F0F0"/><rect x="2" y="5" width="12" height="5" fill="#F5F5F5"/><rect x="1" y="6" width="14" height="3" fill="#FFF"/><rect x="11" y="7" width="4" height="4" fill="#999"/><rect x="14" y="8" width="1" height="1" fill="#111"/><rect x="12" y="10" width="2" height="1" fill="#777"/><rect x="4" y="10" width="2" height="4" fill="#888"/><rect x="9" y="10" width="2" height="4" fill="#888"/><rect x="4" y="13" width="2" height="1" fill="#444"/><rect x="9" y="13" width="2" height="1" fill="#444"/></svg>'},
+  {type:'cow',x:960,y:610,dir:1,speed:14,range:160,
+   sounds:['哞！','哞～','哞哞！'],
+   svg:'<svg viewBox="0 0 18 16" width="50" height="44" shape-rendering="crispEdges"><rect x="2" y="4" width="11" height="8" fill="#FFF"/><rect x="3" y="5" width="3" height="3" fill="#333"/><rect x="8" y="7" width="3" height="3" fill="#333"/><rect x="13" y="4" width="5" height="6" fill="#FFF"/><rect x="14" y="5" width="1" height="2" fill="#111"/><rect x="13" y="9" width="5" height="2" fill="#FFAABB"/><rect x="14" y="10" width="1" height="1" fill="#FF8899"/><rect x="16" y="10" width="1" height="1" fill="#FF8899"/><rect x="14" y="2" width="1" height="2" fill="#DDC888"/><rect x="16" y="2" width="1" height="2" fill="#DDC888"/><rect x="3" y="12" width="2" height="3" fill="#444"/><rect x="8" y="12" width="2" height="3" fill="#444"/><rect x="3" y="14" width="2" height="1" fill="#222"/><rect x="8" y="14" width="2" height="1" fill="#222"/></svg>'},
+  {type:'villager',x:780,y:520,dir:1,speed:0,range:0,
+   sounds:['嗯！','你好！','加油！','嗯嗯！'],
+   svg:'<svg viewBox="0 0 14 18" width="36" height="46" shape-rendering="crispEdges"><rect x="3" y="0" width="8" height="2" fill="#8B6343"/><rect x="2" y="2" width="10" height="6" fill="#F5C8A0"/><rect x="3" y="4" width="2" height="2" fill="#5A2810"/><rect x="9" y="4" width="2" height="2" fill="#5A2810"/><rect x="6" y="6" width="2" height="1" fill="#D4956A"/><rect x="4" y="7" width="6" height="1" fill="#333"/><rect x="1" y="8" width="12" height="7" fill="#8B6940"/><rect x="5" y="8" width="4" height="1" fill="#6B4920"/><rect x="0" y="9" width="2" height="5" fill="#8B6940"/><rect x="12" y="9" width="2" height="5" fill="#8B6940"/><rect x="0" y="13" width="2" height="2" fill="#F5C8A0"/><rect x="12" y="13" width="2" height="2" fill="#F5C8A0"/><rect x="3" y="15" width="3" height="3" fill="#333"/><rect x="8" y="15" width="3" height="3" fill="#333"/></svg>'},
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+var STORAGE_KEY = 'village_state';
+var VSTATE = null;
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    VSTATE = raw ? JSON.parse(raw) : {};
+  } catch(e) { VSTATE = {}; }
+  if (!VSTATE.zones) VSTATE.zones = {};
+  if (typeof VSTATE.coins === 'undefined') VSTATE.coins = 0;
+  if (typeof VSTATE.totalStars === 'undefined') VSTATE.totalStars = 0;
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(VSTATE)); } catch(e) {}
+}
+
+function updateHUD() {
+  var stars = VSTATE.totalStars || 0;
+  var level = Math.floor(stars / 10) + 1;
+  var xpInLevel = stars % 10;
+  var xpPct = (xpInLevel / 10) * 100;
+  var xpNeed = 10;
+
+  document.getElementById('hName').textContent = '🗡️ ' + (VSTATE.name || '小勇士');
+  document.getElementById('hLv').textContent = 'LV.' + level;
+  document.getElementById('hXp').textContent = 'EXP ' + xpInLevel + '/' + xpNeed;
+  document.getElementById('hXpFill').style.width = xpPct + '%';
+  document.getElementById('hCoins').textContent = VSTATE.coins || 0;
+
+  var dot = document.getElementById('hChestDot');
+  if (dot) dot.style.display = VSTATE.pendingReward ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════
+// BUILD WORLD
+// ═══════════════════════════════════════════════
+var world = document.getElementById('world');
+
+function el(tag, cls, style, html) {
+  var d = document.createElement(tag || 'div');
+  if (cls) d.className = cls;
+  if (style) d.style.cssText = style;
+  if (html) d.innerHTML = html;
+  return d;
+}
+
+// ─── Fence border ───
+world.append(el('div','fence path','left:0;top:0;width:'+WW+'px;height:14px'));
+world.append(el('div','fence path','left:0;top:'+(WH-14)+'px;width:'+WW+'px;height:14px'));
+world.append(el('div','fence path','left:0;top:0;width:14px;height:'+WH+'px'));
+world.append(el('div','fence path','left:'+(WW-14)+'px;top:0;width:14px;height:'+WH+'px'));
+
+// ─── Stone paths ───
+STONE_PATHS.forEach(function(p){
+  var d = el('div','path stone-path',
+    'left:'+p.x+'px;top:'+p.y+'px;width:'+p.w+'px;height:'+p.h+'px');
+  world.append(d);
+});
+
+// ─── Dirt connectors ───
+DIRT_PATHS.forEach(function(p){
+  var d = el('div','path dirt-path',
+    'left:'+p.x+'px;top:'+p.y+'px;width:'+p.w+'px;height:'+p.h+'px');
+  world.append(d);
+});
+
+// ─── Water ───
+WATERS.forEach(function(w){
+  world.append(el('div','water',
+    'left:'+w.x+'px;top:'+w.y+'px;width:'+w.w+'px;height:'+w.h+'px'));
+});
+
+// ─── Well (center of village) ───
+(function(){
+  var wx = 740-32, wy = 540-32;
+  var wellWrap = el('div','',
+    'position:absolute;left:'+wx+'px;top:'+wy+'px;width:64px;height:64px;z-index:6');
+  // Well base: use stone tile
+  var wellBase = el('div','tile','top:0;left:0');
+  wellBase.style.backgroundImage = 'url('+tileUrl(51)+')';
+  wellWrap.appendChild(wellBase);
+  // Water on top
+  var wellWater = el('div','tile','top:0;left:0;opacity:0.7;mix-blend-mode:multiply');
+  wellWater.style.backgroundImage = 'url('+tileUrl(61)+')';
+  wellWrap.appendChild(wellWater);
+  // Emoji overlay
+  var wellLabel = el('div','',
+    'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;z-index:1');
+  wellLabel.textContent = '💧';
+  wellWrap.appendChild(wellLabel);
+  world.append(wellWrap);
+})();
+
+// ─── Buildings ───
+BLDS.forEach(function(b){
+  var d = el('div','bld','left:'+b.x+'px;top:'+b.y+'px');
+  d.id = 'b-'+b.id;
+
+  // Tile grid (3×3 = 192×192, centered in 200×200 container with 4px offset)
+  var tileRows = BLDG_TILES[b.style];
+  for (var r = 0; r < tileRows.length; r++) {
+    for (var c = 0; c < tileRows[r].length; c++) {
+      var tIdx = tileRows[r][c];
+      var t = el('div','tile',
+        'left:'+(4+c*64)+'px;top:'+(4+r*64)+'px;' +
+        'background-image:url('+tileUrl(tIdx)+')');
+      d.appendChild(t);
+    }
+  }
+
+  // Door indicator (dark overlay on center-bottom tile)
+  var doorOverlay = el('div','',
+    'position:absolute;left:'+(4+64)+'px;top:'+(4+128)+'px;width:64px;height:64px;' +
+    'background:rgba(0,0,0,.35);z-index:1');
+  d.appendChild(doorOverlay);
+
+  // Door frame
+  var doorFrame = el('div','',
+    'position:absolute;left:'+(4+22)+'px;top:'+(4+90)+'px;width:20px;height:30px;' +
+    'background:rgba(0,0,0,.55);border-radius:2px 2px 0 0;z-index:2');
+  d.appendChild(doorFrame);
+
+  // Sign label
+  var sign = el('div','bsign',null,
+    b.emoji+' '+b.name+'<br><span style="color:#ccc;font-size:5.5px">'+b.sub+'</span>');
+  d.appendChild(sign);
+
+  d.onclick = function(){ if(nearBld && nearBld.id===b.id) enter(b); };
+  world.append(d);
+
+  // Proximity ring
+  var ring = el('div','pring','left:'+b.ex+'px;top:'+b.ey+'px');
+  ring.id='r-'+b.id;
+  world.append(ring);
+});
+
+// ─── Trees ───
+TREES.forEach(function(t){
+  var d = el('div','tree','left:'+t.x+'px;top:'+t.y+'px');
+  d.style.backgroundImage = 'url('+tileUrl(t.t)+')';
+  world.append(d);
+});
+
+// ─── Flowers / ground decorations ───
+FLOS.forEach(function(f){
+  var d = el('div','fl','left:'+f.x+'px;top:'+f.y+'px');
+  d.style.backgroundImage = 'url('+tileUrl(f.t)+')';
+  world.append(d);
+});
+
+// ─── NPCs ───
+var npcEls = [];
+NPCS.forEach(function(n){
+  var d = el('div','npc','left:'+n.x+'px;top:'+n.y+'px');
+  d.innerHTML = n.svg;
+  d._npc=n; d._ox=n.x; d._t=0; d._flip=n.dir<0;
+  d.onclick = function(){ showBubble(d, n.sounds[Math.floor(Math.random()*n.sounds.length)]); };
+  world.append(d);
+  npcEls.push(d);
+});
+
+// ─── Steve ───
+var steveEl = el('div','');
+steveEl.id='steve';
+steveEl.dataset.dir='down';
+world.append(steveEl);
+
+var SVG_D = '<svg viewBox="0 0 16 28" width="48" height="84" shape-rendering="crispEdges">'+
+  '<rect x="4" y="0" width="8" height="3" fill="#8B4513"/>'+
+  '<rect x="4" y="3" width="8" height="6" fill="#F5C8A0"/>'+
+  '<rect x="5" y="5" width="2" height="2" fill="#5B2C0B"/>'+
+  '<rect x="9" y="5" width="2" height="2" fill="#5B2C0B"/>'+
+  '<rect x="7" y="8" width="2" height="1" fill="#D4956A"/>'+
+  '<rect x="3" y="9" width="10" height="10" fill="#4A90E2"/>'+
+  '<rect x="1" y="9" width="2" height="9" fill="#3A80D2"/>'+
+  '<rect x="13" y="9" width="2" height="9" fill="#3A80D2"/>'+
+  '<rect x="3" y="19" width="4" height="6" fill="#555"/>'+
+  '<rect x="9" y="19" width="4" height="6" fill="#555"/>'+
+  '<rect x="3" y="24" width="4" height="4" fill="#222"/>'+
+  '<rect x="9" y="24" width="4" height="4" fill="#222"/>'+
+  '</svg>';
+var SVG_U = '<svg viewBox="0 0 16 28" width="48" height="84" shape-rendering="crispEdges">'+
+  '<rect x="4" y="0" width="8" height="8" fill="#8B4513"/>'+
+  '<rect x="4" y="6" width="8" height="2" fill="#6B3413"/>'+
+  '<rect x="3" y="8" width="10" height="11" fill="#3A80D2"/>'+
+  '<rect x="1" y="8" width="2" height="10" fill="#3A80D2"/>'+
+  '<rect x="13" y="8" width="2" height="10" fill="#3A80D2"/>'+
+  '<rect x="3" y="19" width="4" height="6" fill="#555"/>'+
+  '<rect x="9" y="19" width="4" height="6" fill="#555"/>'+
+  '<rect x="3" y="24" width="4" height="4" fill="#222"/>'+
+  '<rect x="9" y="24" width="4" height="4" fill="#222"/>'+
+  '</svg>';
+var SVGS = {down:SVG_D, up:SVG_U, left:SVG_D, right:SVG_D};
+
+function setSteveSprite(dir) {
+  steveEl.innerHTML = SVGS[dir];
+  var svg = steveEl.querySelector('svg');
+  if (svg) svg.style.transform = dir==='left' ? 'scaleX(-1)' : '';
+}
+setSteveSprite('down');
+
+// ═══════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════
+var steve = {x:740, y:540, dir:'down', walk:false};
+var cam = {x:0, y:0};
+var keys = {};
+var dp = {u:false, d:false, l:false, r:false};
+var nearBld = null;
+var lastDir = 'down';
+var lastTime = 0;
+var gameStarted = false;
+
+// Collision
+function blocked(nx, ny) {
+  var sw=16, sh=8;
+  for (var i=0; i<BLDS.length; i++) {
+    var b=BLDS[i], m=8;
+    if (nx+sw>b.x+m && nx-sw<b.x+b.w-m && ny>b.y+m && ny-sh<b.y+b.h-m) return true;
+  }
+  for (var j=0; j<WATERS.length; j++) {
+    var w=WATERS[j];
+    if (nx+sw>w.x && nx-sw<w.x+w.w && ny>w.y && ny-sh<w.y+w.h) return true;
+  }
+  for (var k=0; k<TREES.length; k++) {
+    var t=TREES[k];
+    if (nx+sw>t.x+8 && nx-sw<t.x+56 && ny>t.y+38 && ny-sh<t.y+62) return true;
+  }
+  return false;
+}
+
+// ═══════════════════════════════════════════════
+// GAME LOOP
+// ═══════════════════════════════════════════════
+function loop(ts) {
+  if (!gameStarted) { requestAnimationFrame(loop); return; }
+  var dt = Math.min((ts - lastTime) / 1000, .05);
+  lastTime = ts;
+
+  // INPUT
+  var dx=0, dy=0;
+  if (keys['ArrowLeft'] || keys['a'] || keys['A'] || dp.l) dx=-1;
+  if (keys['ArrowRight']|| keys['d'] || keys['D'] || dp.r) dx= 1;
+  if (keys['ArrowUp']   || keys['w'] || keys['W'] || dp.u) dy=-1;
+  if (keys['ArrowDown'] || keys['s'] || keys['S'] || dp.d) dy= 1;
+  if (dx && dy) { dx*=.707; dy*=.707; }
+
+  steve.walk = !!(dx || dy);
+
+  if (steve.walk) {
+    var spd = SPD * dt;
+    var nx = Math.max(30, Math.min(WW-30, steve.x + dx*spd));
+    var ny = Math.max(60, Math.min(WH-20, steve.y + dy*spd));
+    if (!blocked(nx, steve.y)) steve.x = nx;
+    if (!blocked(steve.x, ny)) steve.y = ny;
+    var newDir = Math.abs(dy) > Math.abs(dx) ? (dy<0?'up':'down') : (dx<0?'left':'right');
+    if (newDir !== lastDir) { setSteveSprite(newDir); lastDir = newDir; steve.dir = newDir; }
+  }
+
+  // CAMERA
+  var tcx = Math.max(0, Math.min(WW - window.innerWidth, steve.x - window.innerWidth/2));
+  var tcy = Math.max(0, Math.min(WH - window.innerHeight, steve.y - window.innerHeight/2));
+  cam.x += (tcx - cam.x) * .13;
+  cam.y += (tcy - cam.y) * .13;
+
+  // RENDER
+  world.style.transform = 'translate(' + (-(cam.x|0)) + 'px,' + (-(cam.y|0)) + 'px)';
+  steveEl.style.left = (steve.x - 24) + 'px';
+  steveEl.style.top = (steve.y - 84) + 'px';
+  steveEl.classList.toggle('walk', steve.walk);
+
+  // Mini-map dot
+  var ms = document.getElementById('mini-steve');
+  ms.style.left = (steve.x / WW * 100) + '%';
+  ms.style.top = (steve.y / WH * 100) + '%';
+
+  // PROXIMITY
+  nearBld = null;
+  for (var bi=0; bi<BLDS.length; bi++) {
+    var b2 = BLDS[bi];
+    var dx2 = steve.x - b2.ex, dy2 = steve.y - b2.ey;
+    if (Math.sqrt(dx2*dx2 + dy2*dy2) < PROX) { nearBld = b2; break; }
+  }
+  BLDS.forEach(function(b3){
+    var r = document.getElementById('r-'+b3.id);
+    if (r) r.style.display = (nearBld && nearBld.id===b3.id) ? 'block' : 'none';
+  });
+  var prompt = document.getElementById('prompt');
+  prompt.style.display = nearBld ? 'block' : 'none';
+  if (nearBld) prompt.textContent = nearBld.emoji + ' ' + nearBld.name + ' · 按 A 进入';
+  document.getElementById('dpc').classList.toggle('near', !!nearBld);
+
+  // NPCs walking
+  npcEls.forEach(function(d){
+    var n = d._npc;
+    if (!n.speed) return;
+    d._t = (d._t||0) + dt;
+    var px = d._ox + Math.sin(d._t * (n.speed/50)) * n.range/2;
+    d.style.left = px + 'px';
+  });
+
+  requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════
+function enter(b) {
+  if (b.href) {
+    var fade = document.getElementById('fade');
+    fade.classList.add('in');
+    setTimeout(function(){ window.location.href = b.href; }, 450);
+  } else {
+    openPanel(b.id);
+  }
+}
+
+function showBubble(el, txt) {
+  el.querySelectorAll('.nbubble').forEach(function(b){ b.remove(); });
+  var b = document.createElement('div');
+  b.className = 'nbubble'; b.textContent = txt;
+  el.appendChild(b);
+  setTimeout(function(){ b.remove(); }, 1800);
+}
+
+// ═══════════════════════════════════════════════
+// COURSE PANEL
+// ═══════════════════════════════════════════════
+var COURSE_META = {
+  'chinese-01-characters.html':  {emoji:'📖',lesson:'第1课'},
+  'chinese-02-strokes.html':     {emoji:'✏️',lesson:'第2课'},
+  'chinese-03-heaven-earth.html':{emoji:'🌍',lesson:'第3课'},
+  'chinese-04-nature.html':      {emoji:'🌿',lesson:'第4课'},
+  'chinese-05-family.html':      {emoji:'👨‍👩‍👧',lesson:'第5课'},
+  'chinese-06-school.html':      {emoji:'🏫',lesson:'第6课'},
+  'chinese-07-pinyin.html':      {emoji:'🔤',lesson:'第7课'},
+  'chinese-08-pinyin2.html':     {emoji:'🔤',lesson:'第8课'},
+  'chinese-09-shengmu1.html':    {emoji:'🅰️',lesson:'第9课'},
+  'chinese-10-shengmu2.html':    {emoji:'🅱️',lesson:'第10课'},
+  'english-01-hello.html':       {emoji:'👋',lesson:'第1课'},
+  'english-02-abc.html':         {emoji:'🅰️',lesson:'第2课'},
+  'english-03-abc-nz.html':      {emoji:'🅱️',lesson:'第3课'},
+  'english-04-colors.html':      {emoji:'🌈',lesson:'第4课'},
+  'english-05-numbers.html':     {emoji:'🔢',lesson:'第5课'},
+  'english-06-family.html':      {emoji:'👨‍👩‍👧',lesson:'第6课'},
+  'english-07-animals.html':     {emoji:'🐾',lesson:'第7课'},
+  'english-08-body.html':        {emoji:'🖐️',lesson:'第8课'},
+  'english-09-food.html':        {emoji:'🍕',lesson:'第9课'},
+  'english-10-toys.html':        {emoji:'🧸',lesson:'第10课'},
+  'math-01-counting.html':       {emoji:'1️⃣',lesson:'第1课'},
+  'math-02-counting-11to20.html':{emoji:'2️⃣',lesson:'第2课'},
+  'math-03-compare.html':        {emoji:'⚖️',lesson:'第3课'},
+  'math-04-addition.html':       {emoji:'➕',lesson:'第4课'},
+  'math-05-addition10.html':     {emoji:'🔟',lesson:'第5课'},
+  'story-brave-pea-shooter.html':{emoji:'🌱',lesson:'豌豆射手'},
+  'story-block-battle.html':     {emoji:'⚔️',lesson:'方块大战'},
+  'story-star-wars.html':        {emoji:'⭐',lesson:'星球大战'},
+};
+
+function openPanel(zoneId) {
+  var zone = ZONE_CONFIG[zoneId];
+  if (!zone) return;
+
+  document.getElementById('pIcon').textContent = zone.icon;
+  document.getElementById('pTitle').textContent = zone.name;
+  document.getElementById('pDesc').textContent = zone.desc;
+
+  var completed = {};
+  if (VSTATE.zones && VSTATE.zones[zoneId]) {
+    (VSTATE.zones[zoneId].completed || []).forEach(function(f){ completed[f] = true; });
+  }
+
+  var listEl = document.getElementById('courseList');
+  listEl.innerHTML = '';
+
+  var count = 0;
+  Object.keys(COURSE_META).forEach(function(filename) {
+    var match = false;
+    if (zone.dir === 'stories/' && filename.indexOf('story-') === 0) match = true;
+    else if (zone.dir === 'chinese/' && filename.indexOf('chinese-') === 0) match = true;
+    else if (zone.dir === 'english/' && filename.indexOf('english-') === 0) match = true;
+    else if (zone.dir === 'math/' && filename.indexOf('math-') === 0) match = true;
+    if (!match) return;
+
+    var meta = COURSE_META[filename];
+    var isDone = completed[filename];
+    var card = document.createElement('div');
+    card.className = 'course-card' + (isDone ? ' completed' : '');
+    card.innerHTML = '<div class="cc-emoji">'+meta.emoji+'</div>' +
+      '<div class="cc-name">'+filename.replace('.html','').replace(/-/g,' ')+'</div>' +
+      '<div class="cc-lesson">'+meta.lesson+'</div>' +
+      (isDone ? '<div class="cc-stars">⭐</div>' : '');
+    card.onclick = function(){
+      closePanel();
+      var fade = document.getElementById('fade');
+      fade.classList.add('in');
+      setTimeout(function(){ window.location.href = zone.dir + filename; }, 450);
+    };
+    listEl.appendChild(card);
+    count++;
+  });
+
+  if (count === 0) {
+    listEl.innerHTML = '<div style="color:#888;font-size:8px;padding:20px;text-align:center;grid-column:1/-1">课程加载中...</div>';
+  }
+
+  document.getElementById('panelOv').classList.add('show');
+  document.getElementById('zonePanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panelOv').classList.remove('show');
+  document.getElementById('zonePanel').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+// INPUT
+// ═══════════════════════════════════════════════
+window.addEventListener('keydown', function(e){
+  keys[e.key] = true;
+  if (e.key.startsWith('Arrow') || e.key === ' ') e.preventDefault();
+  if ((e.key === 'Enter' || e.key === ' ') && nearBld) enter(nearBld);
+  if (e.key === 'Escape') closePanel();
+});
+window.addEventListener('keyup', function(e){ keys[e.key] = false; });
+
+function dpOn(dir) { dp[dir] = true; }
+function dpOff(dir){ dp[dir] = false; }
+
+[['dpu','u'],['dpd','d'],['dpl','l'],['dpr','r']].forEach(function(pair){
+  var id=pair[0], dir=pair[1];
+  var dpe = document.getElementById(id);
+  dpe.addEventListener('pointerdown', function(e){ e.preventDefault(); dpOn(dir); dpe.classList.add('on'); });
+  dpe.addEventListener('pointerup', function(){ dpOff(dir); dpe.classList.remove('on'); });
+  dpe.addEventListener('pointerleave', function(){ dpOff(dir); dpe.classList.remove('on'); });
+});
+
+document.getElementById('dpc').addEventListener('pointerdown', function(e){
+  e.preventDefault();
+  if (nearBld) enter(nearBld);
+});
+
+// ═══════════════════════════════════════════════
+// MINI-MAP
+// ═══════════════════════════════════════════════
+(function drawMini(){
+  var mb = document.getElementById('mini-bg');
+  mb.style.background = '#4E8C33';
+  // Main roads
+  var mp = document.createElement('div');
+  mp.style.cssText = 'position:absolute;background:rgba(136,136,136,.6);left:0;right:0;top:'+Math.round(480/WH*100)+'%;height:6px';
+  mb.insertBefore(mp, mb.firstChild);
+  var mp2 = document.createElement('div');
+  mp2.style.cssText = 'position:absolute;background:rgba(136,136,136,.6);top:0;bottom:0;left:'+Math.round(700/WW*100)+'%;width:4px';
+  mb.insertBefore(mp2, mb.firstChild);
+  // Building dots
+  BLDS.forEach(function(b){
+    var d = document.createElement('div');
+    d.style.cssText = 'position:absolute;width:10px;height:8px;left:'+((b.x+4)/WW*100)+'%;top:'+((b.y+4)/WH*100)+'%;background:rgba(180,80,60,.8)';
+    mb.insertBefore(d, mb.firstChild);
+  });
+  // Water dots
+  WATERS.forEach(function(w){
+    var d = document.createElement('div');
+    d.style.cssText = 'position:absolute;background:rgba(68,136,255,.5);left:'+(w.x/WW*100)+'%;top:'+(w.y/WH*100)+'%;width:'+(w.w/WW*100)+'%;height:'+(w.h/WH*100)+'%';
+    mb.insertBefore(d, mb.firstChild);
+  });
+})();
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+function startGame() {
+  document.getElementById('welcome').classList.add('hidden');
+  gameStarted = true;
+  lastTime = performance.now();
+}
+
+loadState();
+updateHUD();
+setInterval(updateHUD, 3000);
+
+cam.x = Math.max(0, Math.min(WW - window.innerWidth, steve.x - window.innerWidth/2));
+cam.y = Math.max(0, Math.min(WH - window.innerHeight, steve.y - window.innerHeight/2));
+world.style.transform = 'translate(' + (-(cam.x|0)) + 'px,' + (-(cam.y|0)) + 'px)';
+
+// Fade in
+var fade = document.getElementById('fade');
+fade.style.transition = 'none'; fade.classList.add('in');
+setTimeout(function(){ fade.style.transition = 'opacity .6s ease'; fade.classList.remove('in'); }, 100);
+
+requestAnimationFrame(loop);
+</script>
+<script src="shared/village-animals.js"></script>
+</body>
+</html>

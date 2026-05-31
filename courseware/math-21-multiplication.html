@@ -1,16 +1,13 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-type="courseware">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#42A5F5">
 <title>第21课 · 乘法启蒙 | 儿童数学乐园</title>
   <meta name="description" content="第21课 · 乘法启蒙 | 儿童数学乐园 - 幼儿数学思维互动课件，适合5-7岁幼小衔接">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
 </script>
-<link rel="stylesheet" href="shared/courseware.css">
-
-<script src="shared/courseware.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f7ff;color:#1a2332;touch-action:manipulation;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
@@ -122,10 +119,10 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 .miscon-card.correct{background:#e8f5e9;border-color:#a5d6a7}
 .miscon-card .mc-icon{font-size:36px;margin-bottom:8px}
 .miscon-card .mc-title{font-size:16px;font-weight:700;color:#e65100;margin-bottom:4px}
-.miscon-card .mc-desc{font-size:13px;color:#795548;line-height:1.6}
+.miscon-card .mc-desc{font-size:15px;color:#795548;line-height:1.6}
 .miscon-card.wrong .mc-title{color:#c62828}
 .miscon-card.correct .mc-title{color:#2e7d32}
-.miscon-card .mc-explain{display:none;font-size:13px;color:#1565C0;margin-top:8px;padding:8px 12px;background:#e3f2fd;border-radius:8px}
+.miscon-card .mc-explain{display:none;font-size:15px;color:#1565C0;margin-top:8px;padding:8px 12px;background:#e3f2fd;border-radius:8px}
 .miscon-card .mc-explain.show{display:block}
 
 /* quiz */
@@ -194,12 +191,20 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
   .speak-btn.speaking { animation: speakPulse 1s ease-in-out infinite; }
   @keyframes speakPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.5); transform: scale(1); }
     50% { box-shadow: 0 0 0 10px rgba(255,255,255,0); transform: scale(1.08); } }
+/* ===== RESPONSIVE ===== */
+@media (max-width: 500px) {
+  .app { border-radius: 0; max-height: none; }
+  .slide { padding: 12px 10px 70px; }
+  .mc-box { padding: 12px 10px; }
+  .mc-title { font-size: 15px; }
+}
 </style>
+<script src="../shared/village-reporter.js"></script>
 </head>
 <body>
 
 <div class="top-bar">
-  <a href="../" aria-label="首页">🏠</a><button class="speak-btn" id="speakBtn" title="朗读本页" style="font-size:20px;background:none;border:none;cursor:pointer;padding:0 6px">🔊</button>
+  <a href="../village.html" aria-label="首页">🏠</a><button class="speak-btn" id="speakBtn" title="朗读本页" style="font-size:20px;background:none;border:none;cursor:pointer;padding:0 6px">🔊</button>
   <span class="spacer"></span>
   <span class="title">✖️ 乘法启蒙</span>
   <span class="spacer"></span>
@@ -222,7 +227,7 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 <!-- ===== PAGE 1: MINECRAFT STORY ===== -->
 <div class="page" id="page-1">
   <div class="card">
-    <div class="card-title"><span class="emoji">⛏️</span> Minecraft 乘法故事</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-01.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">⛏️</span> Minecraft 乘法故事</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-01.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="story-scene">
       <div class="story-icon">🧱</div>
@@ -249,7 +254,7 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 <!-- ===== PAGE 2: CORE CONCEPTS ===== -->
 <div class="page" id="page-2">
   <div class="card">
-    <div class="card-title"><span class="emoji">🧠</span> 核心概念：什么是乘法？</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-02.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">🧠</span> 核心概念：什么是乘法？</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-02.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="section-desc">乘法就是<strong>相同大小的组加起来</strong>。看看下面的例子：</div>
 
@@ -310,7 +315,7 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 <!-- ===== PAGE 3: PRACTICE ===== -->
 <div class="page" id="page-3">
   <div class="card">
-    <div class="card-title"><span class="emoji">✏️</span> 动手练习：跳着数</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-03.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">✏️</span> 动手练习：跳着数</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-03.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="section-desc">选择步长，然后填入缺少的数字！</div>
 
@@ -338,7 +343,7 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 <!-- ===== PAGE 4: COMMON MISCONCEPTIONS ===== -->
 <div class="page" id="page-4">
   <div class="card">
-    <div class="card-title"><span class="emoji">🤔</span> 常见误解</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-04.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">🤔</span> 常见误解</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-04.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="section-desc">点击下面每个小卡片，看看大家对乘法常有的疑问！</div>
     <div class="miscon-grid" id="misconGrid"></div>
@@ -352,7 +357,7 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
 <!-- ===== PAGE 5: QUIZ ===== -->
 <div class="page" id="page-5">
   <div class="card">
-    <div class="card-title"><span class="emoji">🏆</span> 乘法小测验</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-05.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">🏆</span> 乘法小测验</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-05.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="quiz-question" id="quizQuestion">3 × 2 等于几？</div>
     <div class="quiz-options" id="quizOptions"></div>
@@ -361,14 +366,14 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
       <button class="btn-nav secondary" onclick="goToPage(4)">⬅ 误解</button>
       <button class="btn-nav primary" onclick="nextQuiz()" id="quizNextBtn" disabled>下一题 ➡</button>
     </div>
-    <div style="text-align:center;margin-top:8px;color:#90CAF9;font-size:13px" id="quizProgress">第 1 / 8 题</div>
+    <div style="text-align:center;margin-top:8px;color:#90CAF9;font-size:15px" id="quizProgress">第 1 / 8 题</div>
   </div>
 </div>
 
 <!-- ===== PAGE 6: MINECRAFT CHALLENGE ===== -->
 <div class="page" id="page-6">
   <div class="card">
-    <div class="card-title"><span class="emoji">👾</span> Minecraft 闯关</div><div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-06.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
+    <div class="card-title"><span class="emoji">👾</span> Minecraft 闯关</div><div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-06.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
     
     <div class="section-desc">用乘法快速算出苦力怕的数量！点击苦力怕标记它们，然后写出乘法算式。</div>
     <div class="mc-level" id="mcLevel">第 1 / 5 关</div>
@@ -403,8 +408,8 @@ html,body{width:100%;min-height:100vh;overflow-x:hidden;font-family:'Nunito','Pi
     🔲 阵列帮助我们理解行和列<br>
     🧮 3×2 表示3个2，等于6</p>
     <div class="confetti-container" id="confettiBox"></div>
-    <div class="nav-row" <div style="text-align:center;margin-bottom:10px"><img src="images/math-21-multiplication/webp/page-07.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图"></div>
-    style="justify-content:center">
+    <div style="text-align:center;margin-bottom:10px"><img src="../images/math-21-multiplication/webp/page-07.webp" style="max-width:100%;border-radius:14px" loading="lazy" alt="配图" onerror="this.style.background='#f0f0f0';this.alt='图片加载中';this.onerror=null"></div>
+    <div class="nav-row" style="justify-content:center">
       <button class="btn-nav secondary" onclick="goToPage(6)">⬅ 再玩一次</button>
       <button class="btn-nav primary" onclick="location.href='../math-22-fractions.html'">下一课：分数 ▶</button>
     </div>
@@ -1032,6 +1037,90 @@ confettiStyle.textContent=`
 document.head.appendChild(confettiStyle);
 </script>
 
+
+
+<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
+<script>
+(function(){
+  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
+    btn.textContent = '🔊';
+    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(btn);
+  }
+  var sp = false, audioEl = null;
+  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
+  var uiv = document.documentElement.lang || 'en-US';
+  var lang = uiv.indexOf('zh') >= 0 ? 'zh-CN' : 'en-US';
+
+  function getPageIdx() {
+    var active = document.querySelector('.page.active, .slide.active');
+    if (!active) return -1;
+    var parent = active.parentNode;
+    return Array.prototype.indexOf.call(parent.children, active);
+  }
+
+  function speakPage() {
+    if (sp) { stopPage(); return; }
+    var idx = getPageIdx();
+    if (idx < 0) return;
+
+    // Try MP3 first: audio/COURSENAME/page-N.mp3
+    var mp3Path = '../audio/' + courseName + '/page-' + (idx + 1) + '.mp3';
+    if (audioEl) { audioEl.pause(); audioEl = null; }
+    audioEl = new Audio(mp3Path);
+    audioEl.onerror = function() {
+      // MP3 failed → try flat MP3: audio/COURSENAME.mp3 or audio/songname.mp3
+      var flatPath = '../audio/' + courseName + '.mp3';
+      var flatAudio = new Audio(flatPath);
+      flatAudio.onerror = function() {
+        // Both MP3 failed → use speechSynthesis TTS
+        speakTTS();
+      };
+      flatAudio.oncanplaythrough = function() {
+        if (audioEl) audioEl.pause();
+        audioEl = flatAudio;
+        audioEl.play().catch(function(){ speakTTS(); });
+        btn.textContent = '⏹'; btn.classList.add('speaking');
+      };
+      flatAudio.load();
+    };
+    audioEl.oncanplaythrough = function() {
+      audioEl.play();
+      btn.textContent = '⏹'; btn.classList.add('speaking');
+      sp = true;
+      audioEl.onended = function(){ stopPage(); };
+    };
+    audioEl.load();
+  }
+
+  function speakTTS() {
+    if (!window.speechSynthesis) return;
+    var active = document.querySelector('.page.active, .slide.active');
+    if (!active) return;
+    var txt = (active.innerText || active.textContent || '').replace(/\s+/g, ' ').trim();
+    if (!txt || txt.length < 2) return;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(txt);
+    u.lang = lang; u.rate = 0.85;
+    u.onstart = function(){ sp = true; btn.classList.add('speaking'); btn.textContent = '⏹'; };
+    u.onend = u.onerror = function(){ stopPage(); };
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopPage() {
+    if (audioEl) { audioEl.pause(); audioEl = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    sp = false; btn.classList.remove('speaking'); btn.textContent = '🔊';
+  }
+
+  btn.addEventListener('click', function(e){ e.stopPropagation(); speakPage(); });
+  if (btn.textContent.trim() === '' || btn.textContent.trim() === '▶') btn.textContent = '🔊';
+})();
+</script>
+
 <script>document.addEventListener('keydown',function(e){if(e.key==='ArrowRight')goToPage(Math.min(currentPage+1,totalPages-1));if(e.key==='ArrowLeft')goToPage(Math.max(0,currentPage-1));});</script>
 
 <script>
@@ -1063,5 +1152,6 @@ document.head.appendChild(confettiStyle);
   document.addEventListener('touchend', function() { swiping = false; }, {passive:true});
 })();
 </script>
+  <script src="../shared/village-animals.js"></script>
 </body>
 </html>

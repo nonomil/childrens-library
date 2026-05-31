@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
+<title>🏘️ 村庄学堂</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Press Start 2P',monospace}
+
+/* ── VIEWPORT ── */
+#vp{width:100%;height:100%;overflow:hidden;position:relative}
+
+/* ── WORLD (GPU-translated) ── */
+#world{
+  position:absolute;
+  width:1400px;height:1100px;
+  background: url('assets/gpt-sprites/backgrounds/background_02.png') 61% 48%/152% 152% no-repeat;
+  transform-origin:0 0;
+  will-change:transform;image-rendering:pixelated;
+  touch-action:none;
+}
+#world::before,
+#world::after{
+  content:'';
+  position:absolute;
+  top:0;bottom:0;
+  width:88px;
+  pointer-events:none;
+  z-index:2;
+  background:linear-gradient(180deg,#73C845 0%,#6FBE3E 45%,#6AB73A 100%);
+}
+#world::before{left:0}
+#world::after{right:0}
+
+/* ── PATHS ── */
+.path{position:absolute;image-rendering:pixelated}
+.stone{
+  background:#888;
+  background-image:repeating-linear-gradient(90deg,transparent 15px,rgba(0,0,0,.06) 16px),
+    repeating-linear-gradient(0deg,transparent 15px,rgba(0,0,0,.06) 16px);
+}
+.dirt{
+  background:#A07840;
+  background-image:repeating-linear-gradient(90deg,transparent 11px,rgba(0,0,0,.05) 12px);
+}
+
+/* ── WATER ── */
+.water{
+  position:absolute;
+  background:rgba(100,180,230,0.5);
+  animation:wshim 3s ease-in-out infinite alternate;
+}
+.water::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent 8px,rgba(255,255,255,.07) 8px,rgba(255,255,255,.07) 12px);
+}
+@keyframes wshim{to{background:rgba(120,200,245,0.6)}}
+
+/* ── BUILDINGS ── */
+.bld{position:absolute;cursor:pointer;z-index:5}
+.bld:hover .bwall{filter:brightness(1.12)}
+
+.bsign{
+  position:absolute;top:-42px;left:50%;transform:translateX(-50%);
+  background:#7B5020;border:3px solid #3D2000;padding:8px 14px;
+  font-size:12px;color:#FFF;white-space:nowrap;
+  text-shadow:1px 1px 0 #000;box-shadow:0 3px 0 #3D2000;z-index:10;
+  line-height:1.6;text-align:center;
+}
+
+.broof{height:28px;border-bottom:4px solid rgba(0,0,0,.35)}
+.bwall{
+  height:96px;position:relative;display:flex;
+  align-items:center;justify-content:space-around;padding:10px 18px;
+  background-image:repeating-linear-gradient(0deg,transparent 9px,rgba(0,0,0,.12) 10px);
+}
+.bwin{width:28px;height:28px;background:#B0E8FF;border:4px solid rgba(0,0,0,.4)}
+.bbot{height:60px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:0}
+.bdoor{width:44px;height:54px;background:rgba(0,0,0,.65);border-radius:2px 2px 0 0}
+.bentry{height:12px;background:#866043;width:56px;margin:0 auto}
+
+/* ── PROXIMITY RING ── */
+.pring{
+  position:absolute;width:68px;height:68px;border-radius:50%;
+  border:3px solid #F5C800;pointer-events:none;
+  transform:translate(-50%,-50%);display:none;z-index:20;
+  animation:rpulse 1s ease-in-out infinite;
+}
+@keyframes rpulse{
+  0%,100%{transform:translate(-50%,-50%) scale(1);opacity:1;border-color:#F5C800}
+  50%{transform:translate(-50%,-50%) scale(1.25);opacity:.5;border-color:#FFF}
+}
+
+/* ── TREES ── */
+.tree{position:absolute;z-index:4}
+.tree img{display:block;image-rendering:pixelated}
+
+/* ── WELL ── */
+#well{
+  position:absolute;width:56px;height:56px;
+  border-radius:50%;background:#555;border:6px solid #333;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;z-index:6;
+  box-shadow:0 0 0 4px #666,0 4px 0 #222;
+}
+#well::after{
+  content:'';position:absolute;top:-24px;left:50%;
+  transform:translateX(-50%);width:4px;height:20px;background:#8B6340;
+}
+
+/* ── FLOWERS ── */
+.fl{position:absolute;z-index:3}
+.fl img{display:block;image-rendering:pixelated}
+
+/* ── FENCE (world border) ── */
+.fence{position:absolute;background:#8B6340;z-index:1}
+.fence::before{
+  content:'';position:absolute;top:0;bottom:0;left:0;right:0;
+  background:repeating-linear-gradient(90deg,transparent 19px,rgba(0,0,0,.2) 20px);
+}
+
+/* ── ANIMALS ── */
+.npc{
+  position:absolute;z-index:6;cursor:pointer;
+  animation:anpeck 2.5s ease-in-out infinite;
+}
+.npc svg{display:block;image-rendering:pixelated}
+.npc img{display:block;image-rendering:pixelated}
+.npc:hover{filter:brightness(1.2)}
+@keyframes anpeck{
+  0%,60%,100%{transform:translateY(0)}
+  30%{transform:translateY(-6px)}
+}
+.npc.walk{animation:anwalk 1.8s ease-in-out infinite}
+@keyframes anwalk{
+  0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}
+}
+
+/* ── NPC BUBBLE ── */
+.nbubble{
+  position:absolute;bottom:calc(100% + 3px);left:50%;
+  transform:translateX(-50%);background:#fff;border:3px solid #222;
+  font-size:12px;color:#222;padding:6px 10px;white-space:nowrap;
+  pointer-events:none;
+  animation:bpop .15s ease;
+}
+.nbubble::after{
+  content:'';position:absolute;top:100%;left:50%;
+  transform:translateX(-50%);
+  border:4px solid transparent;border-top-color:#222;
+}
+@keyframes bpop{from{opacity:0;transform:translateX(-50%) scale(0)}to{opacity:1;transform:translateX(-50%) scale(1)}}
+
+/* ── STEVE ── */
+#steve{
+  position:absolute;width:48px;height:84px;z-index:15;pointer-events:none;
+}
+#steve img{width:auto;height:100%;max-width:none;display:block;position:absolute;bottom:0;left:50%;transform:translateX(-50%);image-rendering:pixelated}
+#steve::before{
+  content:'';position:absolute;bottom:-3px;left:50%;
+  transform:translateX(-50%);width:32px;height:6px;
+  background:rgba(0,0,0,.28);border-radius:50%;
+}
+#steve svg{display:block;image-rendering:pixelated}
+#steve.walk{animation:swalk .28s steps(2) infinite}
+@keyframes swalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+
+/* ── HUD ── */
+#hud{
+  position:fixed;top:0;left:0;right:0;
+  background:rgba(0,0,0,.85);border-bottom:3px solid #866043;
+  padding:7px 14px;display:flex;align-items:center;gap:10px;
+  z-index:100;flex-wrap:wrap;
+}
+.h-name{font-size:18px;color:#F5C800;text-shadow:2px 2px 0 #A88800}
+.h-lv{background:#25D5E8;color:#000;font-size:16px;padding:4px 10px;border:2px solid #0099BB}
+.h-xwrap{flex:1;min-width:80px}
+.h-xlbl{font-size:12px;color:#888;margin-bottom:2px}
+.h-bar{height:10px;background:#111;border:2px solid #333}
+.h-xfill{height:100%;background:#66FF00;width:0%;transition:width .5s}
+.h-coins{font-size:18px;color:#F5C800;display:flex;align-items:center;gap:5px}
+.h-coin{width:18px;height:18px;background:#F5C800;border:2px solid #A88800;border-radius:50%;box-shadow:0 0 5px #F5C800}
+.h-pet{font-size:16px;color:#12CC55;text-decoration:none}
+.h-pet:hover{text-shadow:0 0 8px #12CC55}
+.h-chest{position:relative}
+.h-dot{
+  position:absolute;top:-2px;right:-2px;width:8px;height:8px;
+  background:#FF3B30;border-radius:50%;border:2px solid #000;display:none;
+  animation:dpulse 1.2s ease-in-out infinite;
+}
+@keyframes dpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+/* ── D-PAD ── */
+#dpad{
+  position:fixed;bottom:16px;left:16px;z-index:100;
+  display:grid;grid-template-columns:56px 56px 56px;
+  grid-template-rows:56px 56px 56px;gap:4px;opacity:.85;
+}
+.dp{
+  width:56px;height:56px;background:rgba(0,0,0,.72);
+  border:2px solid #555;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;cursor:pointer;color:#fff;
+  user-select:none;-webkit-user-select:none;touch-action:none;
+}
+.dp:active,.dp.on{background:rgba(255,255,255,.18)}
+#dpu{grid-column:2;grid-row:1}
+#dpl{grid-column:1;grid-row:2}
+#dpc{grid-column:2;grid-row:2;background:rgba(245,200,0,.15);font-size:10px;color:#F5C800;border-color:#F5C80060}
+#dpr{grid-column:3;grid-row:2}
+#dpd{grid-column:2;grid-row:3}
+#dpc.near{background:rgba(245,200,0,.4);animation:abtn .7s ease-in-out infinite}
+@keyframes abtn{0%,100%{box-shadow:0 0 0 0 rgba(245,200,0,.4)}50%{box-shadow:0 0 0 8px rgba(245,200,0,0)}}
+
+/* ── ENTER PROMPT ── */
+#prompt{
+  position:fixed;bottom:88px;left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.92);border:2px solid #F5C800;
+  color:#F5C800;font-size:16px;padding:8px 16px;z-index:100;
+  display:none;white-space:nowrap;pointer-events:none;
+  animation:pbob .9s ease-in-out infinite alternate;
+}
+@keyframes pbob{
+  from{transform:translateX(-50%) translateY(0)}
+  to{transform:translateX(-50%) translateY(-5px)}
+}
+
+/* ── MINI MAP ── */
+#mini{
+  position:fixed;top:56px;right:12px;
+  width:110px;height:86px;background:rgba(0,0,0,.7);
+  border:2px solid #555;z-index:100;overflow:hidden;
+  display:none;
+}
+#mini-bg{width:100%;height:100%;position:relative}
+#mini-steve{
+  position:absolute;width:5px;height:5px;
+  background:#FFD700;border-radius:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 4px #FFD700;
+}
+
+/* ── SCREEN FADE ── */
+#fade{
+  position:fixed;inset:0;background:#000;
+  opacity:0;pointer-events:none;z-index:999;
+  transition:opacity .4s ease;
+}
+#fade.in{opacity:1;pointer-events:all}
+
+/* ── ZONE PANEL (course list) ── */
+.panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+}
+.panel-overlay.show{opacity:1;pointer-events:auto}
+.zone-panel{
+  position:fixed;bottom:0;left:0;right:0;
+  max-height:75vh;background:rgba(15,15,20,.97);
+  z-index:201;border-radius:16px 16px 0 0;
+  transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.zone-panel.open{transform:translateY(0)}
+.panel-handle{display:flex;justify-content:center;padding:8px 0 4px}
+.panel-handle-bar{width:36px;height:4px;background:rgba(255,255,255,.25);border-radius:2px}
+.panel-header{display:flex;align-items:center;gap:12px;padding:12px 16px;color:#fff}
+.panel-icon{font-size:24px}
+.panel-title{font-size:12px;font-weight:800;flex:1}
+.panel-close{
+  width:36px;height:36px;background:rgba(255,255,255,.1);
+  border:2px solid rgba(255,255,255,.2);border-radius:8px;
+  color:#fff;font-size:16px;cursor:pointer;display:flex;
+  align-items:center;justify-content:center;min-width:36px;
+}
+.panel-desc{font-size:18px;color:rgba(255,255,255,.6);padding:0 16px 8px}
+.course-list{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;padding:0 16px 16px;overflow-y:auto;flex:1;
+  -webkit-overflow-scrolling:touch;
+}
+.course-card{
+  background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:10px 8px;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.course-card:hover{border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+.course-card.completed{border-color:#5D9C3C}
+.course-card .cc-emoji{font-size:22px;margin-bottom:4px}
+.course-card .cc-name{font-size:14px;color:#fff;font-weight:700;line-height:1.3}
+.course-card .cc-lesson{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px}
+.course-card .cc-stars{font-size:8px;margin-top:3px}
+
+/* ── WELCOME OVERLAY ── */
+#welcome{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:300;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+}
+#welcome.hidden{display:none}
+.w-title{font-size:14px;color:#F5C800;text-shadow:2px 2px 0 #A88800;text-align:center;line-height:2}
+.w-hint{font-size:14px;color:#888;margin-top:4px}
+.w-btn{
+  margin-top:12px;padding:12px 28px;background:#5D9C3C;border:3px solid #3E7228;
+  color:#fff;font-family:inherit;font-size:18px;cursor:pointer;
+  box-shadow:0 4px 0 #2E5C1A;transition:all .1s;
+}
+.w-btn:active{box-shadow:none;transform:translateY(4px)}
+
+@media(max-width:480px){
+  #dpad{grid-template-columns:52px 52px 52px;grid-template-rows:52px 52px 52px;bottom:10px;left:10px}
+  .dp{width:52px;height:52px;font-size:18px}
+  #mini{width:80px;height:62px;top:50px;right:8px}
+  #prompt{font-size:14px;bottom:76px}
+}
+</style>
+</head>
+<body>
+<div id="fade"></div>
+
+<!-- CHARACTER SELECT -->
+<div id="charSelect" style="position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Press Start 2P',monospace;">
+  <h2 style="color:#FFD700;font-size:20px;margin-bottom:30px;text-shadow:2px 2px 0 #000;">选择你的角色</h2>
+  <div style="display:flex;gap:40px;">
+    <div id="pickSteve" style="cursor:pointer;text-align:center;padding:20px;border:3px solid transparent;border-radius:12px;transition:all .2s;">
+      <img src="assets/gpt-sprites/character/steve_idle_0.png" style="width:96px;height:160px;image-rendering:pixelated;display:block;margin:0 auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div style="display:none;width:96px;height:160px;background:#4A90E2;margin:0 auto;border-radius:4px;"></div>
+      <p style="color:#FFF;font-size:14px;margin-top:12px;">Steve</p>
+      <p style="color:#AAA;font-size:8px;margin-top:4px;">经典像素风</p>
+    </div>
+    <div id="pickMax" style="cursor:pointer;text-align:center;padding:20px;border:3px solid transparent;border-radius:12px;transition:all .2s;">
+      <img src="assets/gpt-sprites/character/max/max_idle_00.png" style="width:96px;height:160px;image-rendering:pixelated;display:block;margin:0 auto;" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div style="display:none;width:96px;height:160px;background:#E24A4A;margin:0 auto;border-radius:4px;"></div>
+      <p style="color:#FFF;font-size:14px;margin-top:12px;">Max</p>
+      <p style="color:#AAA;font-size:8px;margin-top:4px;">冒险少年</p>
+    </div>
+  </div>
+  <p style="color:#888;font-size:10px;margin-top:24px;">点击选择</p>
+</div>
+
+<!-- WELCOME -->
+<div id="welcome">
+  <div class="w-title">🏘️ 欢迎来到<br>村庄学堂！</div>
+  <div class="w-hint" id="welcomeHint">用方向键或 D-pad 移动角色<br>走近小屋按 ✕ 进入学习</div>
+  <button class="w-btn" onclick="startGame()">开始冒险！</button>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <span class="h-name" id="hName">🗡️ 小勇士</span>
+  <div class="h-lv" id="hLv">LV.1</div>
+  <div class="h-xwrap">
+    <div class="h-xlbl" id="hXp">EXP 0/80</div>
+    <div class="h-bar"><div class="h-xfill" id="hXpFill"></div></div>
+  </div>
+  <div class="h-coins"><div class="h-coin"></div><span id="hCoins">0</span></div>
+  <a href="pet-hub.html" class="h-pet">🐺 宠物</a>
+  <a href="collection-hub.html" class="h-pet h-chest" style="position:relative">
+    🎁<span class="h-dot" id="hChestDot"></span>
+  </a>
+</div>
+
+<!-- MINI MAP -->
+<div id="mini"><div id="mini-bg"><div id="mini-steve"></div></div></div>
+
+<!-- WORLD -->
+<div id="vp"><div id="world"></div></div>
+
+<!-- D-PAD -->
+<div id="dpad">
+  <div class="dp" id="dpu">▲</div>
+  <div class="dp" id="dpl">◀</div>
+  <div class="dp" id="dpc">✕</div>
+  <div class="dp" id="dpr">▶</div>
+  <div class="dp" id="dpd">▼</div>
+</div>
+
+<!-- PROMPT -->
+<div id="prompt">🏠 走进去看看！按 ✕ 进入</div>
+
+<!-- ZONE PANEL (course list) -->
+<div class="panel-overlay" id="panelOv" onclick="closePanel()"></div>
+<div class="zone-panel" id="zonePanel">
+  <div class="panel-handle"><div class="panel-handle-bar"></div></div>
+  <div class="panel-header">
+    <span class="panel-icon" id="pIcon">📚</span>
+    <span class="panel-title" id="pTitle">课程列表</span>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-desc" id="pDesc"></div>
+  <div class="course-list" id="courseList"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// WORLD CONFIG
+// ═══════════════════════════════════════════════
+const WW = 1400, WH = 1100;
+const SPD = 230;
+const PROX = 80;
+
+// ─── PATHS ───
+const STONE = [
+  {x:0,  y:470, w:WW, h:80},
+  {x:650,y:0,   w:80, h:WH},
+];
+const DIRT = [
+  {x:168,y:268, w:44, h:202},
+  {x:1168,y:268,w:44, h:202},
+  {x:168,y:550, w:44, h:144},
+  {x:1168,y:550,w:44, h:144},
+];
+
+// ─── WATER ───
+const WATERS = [
+  {x:1060,y:290,w:200,h:140},
+  {x:320, y:600,w:160,h:100},
+];
+
+// ─── ZONE CONFIG (for course panel) ───
+const ZONE_CONFIG = {
+  stories: { name: '绘本故事屋', icon: '📖', desc: '精彩的故事绘本等你来读！',
+    prefix: 'story-', dir: 'stories/', totalCount: 17 },
+  science: { name: '自然探索', icon: '🌿', desc: '齿轮、太阳系、大冒险！',
+    prefix: null, dir: 'science/', totalCount: 8 },
+  chinese: { name: '语文学堂', icon: '✏️', desc: '识字、拼音、阅读',
+    prefix: 'chinese-', dir: 'chinese/', totalCount: 25 },
+  math: { name: '数学学堂', icon: '🔢', desc: '数字、计算、图形',
+    prefix: 'math-', dir: 'math/', totalCount: 25 },
+  pets: null,
+  english: { name: '英语小屋', icon: '🔤', desc: '单词、对话、歌曲',
+    prefix: null, dir: 'english/', totalCount: 25 },
+};
+
+// ─── BUILDINGS ───
+const BLDS = [
+  {id:'stories', name:'绘本故事屋',sub:'故事·绘本',emoji:'📖',
+   x:60, y:220, w:240,h:240,
+   wall:'#A0522D',roof:'#6B1A1A',
+   ex:180,ey:472, href:'stories-hub.html'},
+  {id:'science', name:'自然探索',  sub:'科学·探索',emoji:'🌿',
+   x:570,y:220, w:240,h:240,
+   wall:'#2E7D32',roof:'#1A4E20',
+   ex:690,ey:472, href:'science-hub.html'},
+  {id:'chinese', name:'语文学堂',  sub:'识字·阅读',emoji:'✏️',
+   x:1080,y:220, w:240,h:240,
+   wall:'#D4A017',roof:'#8B6510',
+   ex:1200,ey:472, href:'chinese-hub.html'},
+  {id:'math',    name:'数学学堂',  sub:'数字·计算',emoji:'🔢',
+   x:60, y:660, w:240,h:240,
+   wall:'#1565C0',roof:'#0D3B7A',
+   ex:180,ey:660, href:'math-hub.html'},
+  {id:'pets',    name:'宠物之家',  sub:'我的宠物',emoji:'🐾',
+   x:570,y:660, w:240,h:240,
+   wall:'#8D6E3F',roof:'#5D3F1A',
+   ex:690,ey:660, href:'pets-hub.html'},
+  {id:'english', name:'英语小屋',  sub:'单词·对话',emoji:'🔤',
+   x:1080,y:660, w:240,h:240,
+   wall:'#7B1FA2',roof:'#4A0E6A',
+   ex:1200,ey:660, href:'english-hub.html'},
+];
+
+// ─── TREES ───
+const TREES = [
+  {x:330,y:80},{x:395,y:110},{x:460,y:75},{x:510,y:100},
+  {x:880,y:80},{x:945,y:105},{x:1010,y:75},{x:1060,y:100},
+  {x:330,y:780},{x:395,y:810},{x:460,y:775},
+  {x:880,y:778},{x:945,y:808},
+  {x:1060,y:320},{x:300,y:640},
+];
+
+// ─── FLOWERS ───
+const FLOS = [
+  {x:310,y:190,c:'#FF69B4'},{x:365,y:175,c:'#FF6633'},
+  {x:490,y:200,c:'#FFD700'},{x:548,y:182,c:'#FF69B4'},
+  {x:830,y:190,c:'#66EE66'},{x:875,y:210,c:'#FF69B4'},
+  {x:1040,y:460,c:'#FFD700'},{x:1080,y:440,c:'#FF69B4'},
+  {x:330,y:665,c:'#FF6633'},{x:395,y:680,c:'#FFD700'},
+  {x:510,y:648,c:'#FF69B4'},{x:560,y:675,c:'#66EE66'},
+  {x:850,y:670,c:'#FF69B4'},{x:900,y:648,c:'#FFD700'},
+  {x:1060,y:680,c:'#FF6633'},{x:1110,y:655,c:'#66EE66'},
+];
+
+// ─── ANIMAL NPCs ───
+const NPCS = [
+  {type:'chicken',x:350,y:340,dir:1,speed:22,range:140,
+   sounds:['咕咕！','叽！','咕～'],
+   svg:'<svg viewBox="0 0 16 16" width="64" height="64" shape-rendering="crispEdges"><rect x="7" y="1" width="2" height="2" fill="#F22"/><rect x="9" y="2" width="1" height="1" fill="#F22"/><rect x="5" y="3" width="6" height="5" fill="#EEE"/><rect x="4" y="4" width="1" height="3" fill="#DDD"/><rect x="9" y="4" width="1" height="2" fill="#111"/><rect x="11" y="5" width="2" height="1" fill="#F90"/><rect x="11" y="6" width="3" height="1" fill="#F70"/><rect x="11" y="6" width="1" height="2" fill="#F22"/><rect x="3" y="8" width="9" height="5" fill="#EEE"/><rect x="3" y="9" width="2" height="3" fill="#DDD"/><rect x="2" y="7" width="2" height="2" fill="#EEE"/><rect x="5" y="13" width="2" height="2" fill="#F90"/><rect x="9" y="13" width="2" height="2" fill="#F90"/><rect x="4" y="14" width="3" height="1" fill="#E80"/><rect x="8" y="14" width="3" height="1" fill="#E80"/></svg>'},
+  {type:'sheep',x:500,y:380,dir:-1,speed:16,range:120,
+   sounds:['咩！','咩咩！','咩～'],
+   svg:'<svg viewBox="0 0 16 16" width="64" height="64" shape-rendering="crispEdges"><rect x="2" y="4" width="3" height="3" fill="#F0F0F0"/><rect x="6" y="3" width="3" height="3" fill="#FAFAFA"/><rect x="10" y="4" width="3" height="3" fill="#F0F0F0"/><rect x="2" y="5" width="12" height="5" fill="#F5F5F5"/><rect x="1" y="6" width="14" height="3" fill="#FFF"/><rect x="11" y="7" width="4" height="4" fill="#999"/><rect x="14" y="8" width="1" height="1" fill="#111"/><rect x="12" y="10" width="2" height="1" fill="#777"/><rect x="4" y="10" width="2" height="4" fill="#888"/><rect x="9" y="10" width="2" height="4" fill="#888"/><rect x="4" y="13" width="2" height="1" fill="#444"/><rect x="9" y="13" width="2" height="1" fill="#444"/></svg>'},
+  {type:'cow',x:920,y:610,dir:1,speed:14,range:160,
+   sounds:['哞！','哞～','哞哞！'],
+   svg:'<svg viewBox="0 0 18 16" width="64" height="56" shape-rendering="crispEdges"><rect x="2" y="4" width="11" height="8" fill="#FFF"/><rect x="3" y="5" width="3" height="3" fill="#333"/><rect x="8" y="7" width="3" height="3" fill="#333"/><rect x="13" y="4" width="5" height="6" fill="#FFF"/><rect x="14" y="5" width="1" height="2" fill="#111"/><rect x="13" y="9" width="5" height="2" fill="#FFAABB"/><rect x="14" y="10" width="1" height="1" fill="#FF8899"/><rect x="16" y="10" width="1" height="1" fill="#FF8899"/><rect x="14" y="2" width="1" height="2" fill="#DDC888"/><rect x="16" y="2" width="1" height="2" fill="#DDC888"/><rect x="3" y="12" width="2" height="3" fill="#444"/><rect x="8" y="12" width="2" height="3" fill="#444"/><rect x="3" y="14" width="2" height="1" fill="#222"/><rect x="8" y="14" width="2" height="1" fill="#222"/></svg>'},
+];
+
+// ═══════════════════════════════════════════════
+// PRELOAD GPT SPRITES
+// ═══════════════════════════════════════════════
+var spriteImgs = [];
+function preloadSprite(src) {
+  var img = new Image();
+  img.src = src;
+  spriteImgs.push(img);
+  return img;
+}
+// Preload buildings
+BLDS.forEach(function(b){ preloadSprite('assets/gpt-sprites/buildings/'+b.id+'.png'); });
+// Preload trees
+for(var ti=0;ti<6;ti++) preloadSprite('assets/gpt-sprites/trees/tree_'+String(ti).padStart(2,'0')+'.png');
+// Preload plants
+for(var pi=0;pi<17;pi++) preloadSprite('assets/gpt-sprites/plants/plant_'+String(pi).padStart(2,'0')+'.png');
+// Preload animals (all animation frames)
+var animalTypes = ['chicken','sheep','pig','cat','dog'];
+var npcFrames = {};  // { chicken: [img0, img1, ...], ... }
+animalTypes.forEach(function(animal){
+  npcFrames[animal] = [];
+  for(var fi=0;fi<12;fi++){
+    var aimg = new Image();
+    aimg.src = 'assets/gpt-sprites/animals/'+animal+'/'+animal+'_frame_'+String(fi).padStart(2,'0')+'.png';
+    npcFrames[animal].push(aimg);
+    spriteImgs.push(aimg);
+  }
+});
+// Preload character (idle + run)
+for(var si=0;si<8;si++) preloadSprite('assets/gpt-sprites/character/steve_idle_'+si+'.png');
+for(var sr=0;sr<5;sr++) preloadSprite('assets/gpt-sprites/character/steve_run_'+sr+'.png');
+
+// Preload Max character sprites
+var maxSprites = {idle:[], walk:[]};
+['idle','walk'].forEach(function(action){
+  var count = action === 'idle' ? 8 : 13;
+  for(var mi=0;mi<count;mi++){
+    var mimg = new Image();
+    mimg.src = 'assets/gpt-sprites/character/max/max_'+action+'_'+String(mi).padStart(2,'0')+'.png';
+    mimg.onload = function() {
+      if (window.selectedChar === 'max') {
+        setSteveSprite(steve.dir || 'down', steve.walk || false);
+      }
+    };
+    maxSprites[action].push(mimg);
+    spriteImgs.push(mimg);
+  }
+});
+// Preload background
+preloadSprite('assets/gpt-sprites/backgrounds/background_02.png');
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+var STORAGE_KEY = 'village_state';
+var VSTATE = null;
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    VSTATE = raw ? JSON.parse(raw) : {};
+  } catch(e) { VSTATE = {}; }
+  if (!VSTATE.zones) VSTATE.zones = {};
+  if (typeof VSTATE.coins === 'undefined') VSTATE.coins = 0;
+  if (typeof VSTATE.totalStars === 'undefined') VSTATE.totalStars = 0;
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(VSTATE)); } catch(e) {}
+}
+
+function updateHUD() {
+  var stars = VSTATE.totalStars || 0;
+  var level = Math.floor(stars / 10) + 1;
+  var xpInLevel = stars % 10;
+  var xpPct = (xpInLevel / 10) * 100;
+  var xpNeed = 10;
+
+  var charLabel = window.selectedChar === 'steve' ? 'Steve' : (window.selectedChar === 'max' ? 'Max' : '');
+  document.getElementById('hName').textContent = '🗡️ ' + (charLabel || VSTATE.name || '小勇士');
+  document.getElementById('hLv').textContent = 'LV.' + level;
+  document.getElementById('hXp').textContent = 'EXP ' + xpInLevel + '/' + xpNeed;
+  document.getElementById('hXpFill').style.width = xpPct + '%';
+  document.getElementById('hCoins').textContent = VSTATE.coins || 0;
+
+  // Chest dot
+  var dot = document.getElementById('hChestDot');
+  if (dot) dot.style.display = VSTATE.pendingReward ? 'block' : 'none';
+}
+
+// ═══════════════════════════════════════════════
+// BUILD WORLD
+// ═══════════════════════════════════════════════
+const world = document.getElementById('world');
+
+function el(tag, cls, style, html) {
+  const d = document.createElement(tag || 'div');
+  if (cls) d.className = cls;
+  if (style) d.style.cssText = style;
+  if (html) d.innerHTML = html;
+  return d;
+}
+
+// The background artwork already contains terrain edges; skip extra border strips.
+
+// Stone paths — removed (no roads in village)
+// STONE.forEach(function(p){ world.append(el('div','path stone','left:'+p.x+'px;top:'+p.y+'px;width:'+p.w+'px;height:'+p.h+'px')); });
+// Dirt connectors — removed
+// DIRT.forEach(function(p){ world.append(el('div','path dirt','left:'+p.x+'px;top:'+p.y+'px;width:'+p.w+'px;height:'+p.h+'px')); });
+// The painted background already includes the ground/water look we want.
+
+// Well
+var wellEl = el('div','');
+wellEl.id='well'; wellEl.textContent='💧';
+wellEl.style.cssText='left:'+(690-28)+'px;top:'+(510-28)+'px';
+world.append(wellEl);
+
+// Trees
+TREES.forEach(function(t, i){
+  var treeIdx = i % 6; // tree_00 to tree_05
+  var d=el('div','tree','left:'+t.x+'px;top:'+t.y+'px');
+  d.innerHTML='<img src="assets/gpt-sprites/trees/tree_'+String(treeIdx).padStart(2,'0')+'.png" ' +
+    'style="width:80px;height:80px;image-rendering:pixelated;display:block">';
+  world.append(d);
+});
+
+// Flowers
+FLOS.forEach(function(f, i){
+  var plantIdx = i % 17; // plant_00 to plant_16
+  var d = el('div','fl','left:'+f.x+'px;top:'+f.y+'px');
+  d.innerHTML = '<img src="assets/gpt-sprites/plants/plant_'+String(plantIdx).padStart(2,'0')+'.png" ' +
+    'style="width:48px;height:48px;image-rendering:pixelated;display:block">';
+  world.append(d);
+});
+
+// Building fallback HTML generator
+function getOriginalBuildingHTML(id) {
+  for (var i=0; i<BLDS.length; i++) {
+    if (BLDS[i].id === id) {
+      var b = BLDS[i];
+      return '<div class="broof" style="background:'+b.roof+'"></div>'+
+        '<div class="bwall" style="background-color:'+b.wall+'">'+
+        '<div class="bwin"></div><div class="bwin"></div></div>'+
+        '<div class="bbot" style="background-color:'+b.wall+';background-image:repeating-linear-gradient(0deg,transparent 9px,rgba(0,0,0,.12) 10px)">'+
+        '<div class="bdoor"></div></div>'+
+        '<div class="bentry"></div>';
+    }
+  }
+  return '';
+}
+
+// Buildings
+BLDS.forEach(function(b){
+  var d = el('div','bld','left:'+b.x+'px;top:'+b.y+'px;width:'+b.w+'px;height:'+b.h+'px');
+  d.id = 'b-'+b.id;
+  d.innerHTML = '<img src="assets/gpt-sprites/buildings/'+b.id+'.png" ' +
+    'style="width:'+b.w+'px;height:'+b.h+'px;image-rendering:pixelated;display:block" ' +
+    'onerror="this.style.display=\'none\';this.parentElement.innerHTML+=getOriginalBuildingHTML(\''+b.id+'\')">' +
+    '<div class="bsign">'+b.emoji+' '+b.name+'<br><span style="color:#ccc;font-size:10px">'+b.sub+'</span></div>';
+  d.onclick = function(){
+    var dx = steve.x - b.ex, dy = steve.y - b.ey;
+    var dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 90) {
+      enter(b);
+    } else {
+      // Walk towards building then enter
+      var targetX = b.ex, targetY = b.ey + 30;
+      var walkSteps = Math.ceil(dist / (SPD * 0.016));
+      var stepIdx = 0;
+      var walkTimer = setInterval(function(){
+        if (stepIdx >= walkSteps) {
+          clearInterval(walkTimer);
+          steve.x = targetX; steve.y = targetY;
+          enter(b);
+          return;
+        }
+        var t = stepIdx / walkSteps;
+        steve.x = steve.x + (targetX - steve.x) * 0.15;
+        steve.y = steve.y + (targetY - steve.y) * 0.15;
+        steve.dir = targetX < steve.x ? 'left' : (targetX > steve.x ? 'right' : 'down');
+        steve.walk = true;
+        stepIdx++;
+      }, 30);
+    }
+  };
+  world.append(d);
+
+  // Proximity ring
+  var r = el('div','pring','left:'+b.ex+'px;top:'+b.ey+'px');
+  r.id='r-'+b.id;
+  world.append(r);
+});
+
+// NPCs — render initial sprite (animated frames loaded via npcFrames)
+var npcEls = [];
+NPCS.forEach(function(n){
+  var d = el('div','npc','left:'+n.x+'px;top:'+n.y+'px');
+  if(n.type && n.type !== 'villager' && npcFrames[n.type]){
+    var frame0 = npcFrames[n.type][0];
+    var src = (frame0 && frame0.complete && frame0.naturalWidth > 0) ? frame0.src : null;
+    if(src){
+      d.innerHTML = '<img src="'+src+'" style="width:64px;height:64px;image-rendering:pixelated;display:block">';
+    } else {
+      d.innerHTML = n.svg; // fallback to SVG until sprite loads
+    }
+  } else {
+    d.innerHTML = n.svg; // villager still uses SVG
+  }
+  d._npc=n; d._ox=n.x; d._t=0; d._flip=n.dir<0;
+  d.onclick = function(){ showBubble(d, n.sounds[Math.floor(Math.random()*n.sounds.length)]); };
+  world.append(d);
+  npcEls.push(d);
+});
+
+// Steve
+var steveEl = el('div','');
+steveEl.id='steve';
+steveEl.dataset.dir='down';
+world.append(steveEl);
+
+// GPT character sprite paths
+var steveSprites = {
+  down: 'assets/gpt-sprites/character/steve_idle_0.png',
+  up: 'assets/gpt-sprites/character/steve_idle_4.png',
+  left: 'assets/gpt-sprites/character/steve_idle_2.png',
+  right: 'assets/gpt-sprites/character/steve_idle_2.png'
+};
+var steveWalkSprites = {
+  down: 'assets/gpt-sprites/character/steve_run_0.png',
+  up: 'assets/gpt-sprites/character/steve_run_3.png',
+  left: 'assets/gpt-sprites/character/steve_run_1.png',
+  right: 'assets/gpt-sprites/character/steve_run_1.png'
+};
+
+// Track whether GPT sprites are available (detected on first load)
+var steveGptAvailable = {};
+
+// ═══════════════════════════════════════════════
+// CHARACTER SELECTION
+// ═══════════════════════════════════════════════
+window.selectedChar = null;
+
+(function(){
+  var saved = localStorage.getItem('selected_char');
+  var cs = document.getElementById('charSelect');
+
+  // 已选过角色 → 隐藏选择界面，直接进入
+  if (saved === 'steve' || saved === 'max') {
+    if (cs) cs.style.display = 'none';
+    window.selectedChar = saved;
+    return;
+  }
+
+  // 未选过 → 显示选择界面，等待用户点击
+  var stevePick = document.getElementById('pickSteve');
+  var maxPick = document.getElementById('pickMax');
+
+  [stevePick, maxPick].forEach(function(el){
+    el.addEventListener('mouseenter', function(){ el.style.borderColor='#FFD700'; el.style.background='rgba(255,255,255,0.08)'; });
+    el.addEventListener('mouseleave', function(){ el.style.borderColor='transparent'; el.style.background='none'; });
+  });
+
+  function pick(charName) {
+    localStorage.setItem('selected_char', charName);
+    window.selectedChar = charName;
+    if (cs) cs.style.display = 'none';
+    var hint = document.getElementById('welcomeHint');
+    if (hint) hint.innerHTML = '用方向键或 D-pad 移动 ' + (charName === 'max' ? 'Max' : 'Steve') + '<br>走近小屋按 ✕ 进入学习';
+    // 首次渲染角色
+    setSteveSprite('down', false);
+  }
+
+  stevePick.addEventListener('click', function(){ pick('steve'); });
+  maxPick.addEventListener('click', function(){ pick('max'); });
+})();
+
+function setSteveSprite(dir, walking) {
+  var charType = window.selectedChar || 'max';
+
+  if (charType === 'max') {
+    // Max sprites
+    var action = walking ? 'walk' : 'idle';
+    var frames = maxSprites[action] || [];
+    var frameIdx = (typeof steve !== 'undefined' && steve.walk && frames.length)
+      ? Math.floor(steve.frame / 8) % frames.length
+      : 0;
+    var maxImg = frames[frameIdx];
+
+    if (maxImg && maxImg.complete && maxImg.naturalWidth > 0) {
+      var scaleX = dir === 'left' ? -1 : 1;
+      steveEl.innerHTML = '<img src="'+maxImg.src+'" style="width:auto;height:100%;max-width:none;image-rendering:pixelated;display:block;position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX('+scaleX+')">';
+      return;
+    }
+  }
+
+  if (charType === 'steve') {
+    // Steve GPT sprites
+    var steveSrc = walking ? steveWalkSprites[dir] : steveSprites[dir];
+    if (steveSrc) {
+      var scaleX = dir === 'left' ? -1 : 1;
+      steveEl.innerHTML = '<img src="'+steveSrc+'" style="width:auto;height:100%;max-width:none;image-rendering:pixelated;display:block;position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleX('+scaleX+')">';
+      return;
+    }
+  }
+
+  // Sprite 不可用时暂时不渲染（等 sprite 加载完会自动刷新）
+  return;
+}
+setSteveSprite('down', false);
+
+// ═══════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════
+var steve = {x:690, y:510, dir:'down', walk:false, frame:0};
+var cam = {x:0, y:0};
+var keys = {};
+var dp = {u:false, d:false, l:false, r:false};
+var nearBld = null;
+var lastDir = 'down';
+var lastTime = 0;
+var gameStarted = false;
+var worldScale = 1;
+
+function updateWorldScale() {
+  worldScale = Math.max(1, window.innerWidth / WW, window.innerHeight / WH);
+}
+
+function cameraTarget() {
+  var viewW = window.innerWidth / worldScale;
+  var viewH = window.innerHeight / worldScale;
+  return {
+    x: Math.max(0, Math.min(Math.max(0, WW - viewW), steve.x - viewW / 2)),
+    y: Math.max(0, Math.min(Math.max(0, WH - viewH), steve.y - viewH / 2))
+  };
+}
+
+function renderWorld() {
+  var tx = -Math.round(cam.x * worldScale);
+  var ty = -Math.round(cam.y * worldScale);
+  world.style.transform = 'matrix(' + worldScale + ',0,0,' + worldScale + ',' + tx + ',' + ty + ')';
+}
+
+window.addEventListener('resize', function() {
+  updateWorldScale();
+  var target = cameraTarget();
+  cam.x = target.x;
+  cam.y = target.y;
+  renderWorld();
+});
+
+// Collision
+function blocked(nx, ny) {
+  var sw=16, sh=8;
+  for (var i=0; i<BLDS.length; i++) {
+    var b=BLDS[i], m=8;
+    if (nx+sw>b.x+m && nx-sw<b.x+b.w-m && ny>b.y+m && ny-sh<b.y+b.h-m) return true;
+  }
+  for (var k=0; k<TREES.length; k++) {
+    var t=TREES[k];
+    if (nx+sw>t.x+8 && nx-sw<t.x+44 && ny>t.y+38 && ny-sh<t.y+62) return true;
+  }
+  return false;
+}
+
+// ═══════════════════════════════════════════════
+// GAME LOOP
+// ═══════════════════════════════════════════════
+function loop(ts) {
+  if (!gameStarted) { requestAnimationFrame(loop); return; }
+  var dt = Math.min((ts - lastTime) / 1000, .05);
+  lastTime = ts;
+
+  // INPUT
+  var dx=0, dy=0;
+  if (keys['ArrowLeft'] || keys['a'] || keys['A'] || dp.l) dx=-1;
+  if (keys['ArrowRight']|| keys['d'] || keys['D'] || dp.r) dx= 1;
+  if (keys['ArrowUp']   || keys['w'] || keys['W'] || dp.u) dy=-1;
+  if (keys['ArrowDown'] || keys['s'] || keys['S'] || dp.d) dy= 1;
+  if (dx && dy) { dx*=.707; dy*=.707; }
+
+  steve.walk = !!(dx || dy);
+
+  if (steve.walk) {
+    var spd = SPD * dt;
+    var nx = Math.max(30, Math.min(WW-30, steve.x + dx*spd));
+    var ny = Math.max(60, Math.min(WH-20, steve.y + dy*spd));
+    if (!blocked(nx, steve.y)) steve.x = nx;
+    if (!blocked(steve.x, ny)) steve.y = ny;
+    var newDir = Math.abs(dy) > Math.abs(dx) ? (dy<0?'up':'down') : (dx<0?'left':'right');
+    if (newDir !== lastDir) { lastDir = newDir; steve.dir = newDir; }
+    steve.frame++;
+  } else {
+    steve.frame = 0;
+  }
+  // Force render character if sprite just finished loading
+  if (!steveEl.querySelector('img') && window.selectedChar === 'max') {
+    var tryFrames = maxSprites.idle || [];
+    if (tryFrames.length && tryFrames[0].complete && tryFrames[0].naturalWidth > 0) {
+      setSteveSprite(steve.dir || 'down', false);
+    }
+  }
+  // Update sprite every frame for walk animation, or on direction/state change
+  var lastFrame = steve._lastFrame || 0;
+  if (steve.dir !== steve._lastSpriteDir || steve.walk !== steve._lastSpriteWalk || steve.frame !== lastFrame) {
+    setSteveSprite(steve.dir, steve.walk);
+    steve._lastSpriteDir = steve.dir;
+    steve._lastSpriteWalk = steve.walk;
+    steve._lastFrame = steve.frame;
+  }
+
+  // CAMERA
+  var target = cameraTarget();
+  cam.x += (target.x - cam.x) * .13;
+  cam.y += (target.y - cam.y) * .13;
+
+  // RENDER
+  renderWorld();
+  steveEl.style.left = (steve.x - 24) + 'px';
+  steveEl.style.top = (steve.y - 84) + 'px';
+  steveEl.classList.toggle('walk', steve.walk);
+
+  // Mini-map dot
+  var ms = document.getElementById('mini-steve');
+  ms.style.left = (steve.x / WW * 100) + '%';
+  ms.style.top = (steve.y / WH * 100) + '%';
+
+  // PROXIMITY
+  nearBld = null;
+  for (var bi=0; bi<BLDS.length; bi++) {
+    var b2 = BLDS[bi];
+    var dx2 = steve.x - b2.ex, dy2 = steve.y - b2.ey;
+    if (Math.sqrt(dx2*dx2 + dy2*dy2) < PROX) { nearBld = b2; break; }
+  }
+  BLDS.forEach(function(b3){
+    var r = document.getElementById('r-'+b3.id);
+    if (r) r.style.display = (nearBld && nearBld.id===b3.id) ? 'block' : 'none';
+  });
+  var prompt = document.getElementById('prompt');
+  prompt.style.display = nearBld ? 'block' : 'none';
+  if (nearBld) prompt.textContent = nearBld.emoji + ' ' + nearBld.name + ' · 按 ✕ 进入';
+  document.getElementById('dpc').classList.toggle('near', !!nearBld);
+
+  // NPCs walking
+  npcEls.forEach(function(d){
+    var n = d._npc;
+    if (!n.speed) return;
+    d._t = (d._t||0) + dt;
+    var px = d._ox + Math.sin(d._t * (n.speed/50)) * n.range/2;
+    d.style.left = px + 'px';
+
+    // Update NPC animation frame based on walk time
+    if (n.type && n.type !== 'villager' && npcFrames[n.type]) {
+      var fi = Math.floor((d._t * 1000) / 200) % npcFrames[n.type].length;
+      var npcImg = npcFrames[n.type][fi];
+      if (npcImg && npcImg.complete && npcImg.naturalWidth > 0) {
+        var imgEl = d.querySelector('img');
+        if (imgEl && imgEl.src !== npcImg.src) {
+          imgEl.src = npcImg.src;
+        }
+      }
+    }
+  });
+
+  requestAnimationFrame(loop);
+}
+
+// ═══════════════════════════════════════════════
+// INTERACTIONS
+// ═══════════════════════════════════════════════
+function enter(b) {
+  if (b.href) {
+    // Direct link (pet-hub etc)
+    var fade = document.getElementById('fade');
+    fade.classList.add('in');
+    setTimeout(function(){ window.location.href = b.href; }, 450);
+  } else {
+    // Open course panel
+    openPanel(b.id);
+  }
+}
+
+function showBubble(el, txt) {
+  el.querySelectorAll('.nbubble').forEach(function(b){ b.remove(); });
+  var b = document.createElement('div');
+  b.className = 'nbubble'; b.textContent = txt;
+  el.appendChild(b);
+  setTimeout(function(){ b.remove(); }, 1800);
+}
+
+// ═══════════════════════════════════════════════
+// COURSE PANEL
+// ═══════════════════════════════════════════════
+// Course metadata (inline for performance)
+var COURSE_META = {
+  'chinese-01-characters.html':  {emoji:'📖',lesson:'第1课'},
+  'chinese-02-strokes.html':     {emoji:'✏️',lesson:'第2课'},
+  'chinese-03-heaven-earth.html':{emoji:'🌍',lesson:'第3课'},
+  'chinese-04-nature.html':      {emoji:'🌿',lesson:'第4课'},
+  'chinese-05-family.html':      {emoji:'👨‍👩‍👧',lesson:'第5课'},
+  'chinese-06-school.html':      {emoji:'🏫',lesson:'第6课'},
+  'chinese-07-pinyin.html':      {emoji:'🔤',lesson:'第7课'},
+  'chinese-08-pinyin2.html':     {emoji:'🔤',lesson:'第8课'},
+  'chinese-09-shengmu1.html':    {emoji:'🅰️',lesson:'第9课'},
+  'chinese-10-shengmu2.html':    {emoji:'🅱️',lesson:'第10课'},
+  'english-01-hello.html':       {emoji:'👋',lesson:'第1课'},
+  'english-02-abc.html':         {emoji:'🅰️',lesson:'第2课'},
+  'english-03-abc-nz.html':      {emoji:'🅱️',lesson:'第3课'},
+  'english-04-colors.html':      {emoji:'🌈',lesson:'第4课'},
+  'english-05-numbers.html':     {emoji:'🔢',lesson:'第5课'},
+  'english-06-family.html':      {emoji:'👨‍👩‍👧',lesson:'第6课'},
+  'english-07-animals.html':     {emoji:'🐾',lesson:'第7课'},
+  'english-08-body.html':        {emoji:'🖐️',lesson:'第8课'},
+  'english-09-food.html':        {emoji:'🍕',lesson:'第9课'},
+  'english-10-toys.html':        {emoji:'🧸',lesson:'第10课'},
+  'math-01-counting.html':       {emoji:'1️⃣',lesson:'第1课'},
+  'math-02-counting-11to20.html':{emoji:'2️⃣',lesson:'第2课'},
+  'math-03-compare.html':        {emoji:'⚖️',lesson:'第3课'},
+  'math-04-addition.html':       {emoji:'➕',lesson:'第4课'},
+  'math-05-addition10.html':     {emoji:'🔟',lesson:'第5课'},
+  'story-brave-pea-shooter.html':{emoji:'🌱',lesson:'豌豆射手'},
+  'story-block-battle.html':     {emoji:'⚔️',lesson:'方块大战'},
+  'story-star-wars.html':        {emoji:'⭐',lesson:'星球大战'},
+};
+
+function openPanel(zoneId) {
+  var zone = ZONE_CONFIG[zoneId];
+  if (!zone) return;
+
+  document.getElementById('pIcon').textContent = zone.icon;
+  document.getElementById('pTitle').textContent = zone.name;
+  document.getElementById('pDesc').textContent = zone.desc;
+
+  // Build course list from filesystem (via known prefixes)
+  var completed = {};
+  if (VSTATE.zones && VSTATE.zones[zoneId]) {
+    (VSTATE.zones[zoneId].completed || []).forEach(function(f){ completed[f] = true; });
+  }
+
+  var listEl = document.getElementById('courseList');
+  listEl.innerHTML = '';
+
+  // Generate cards from known meta keys matching the zone
+  var count = 0;
+  Object.keys(COURSE_META).forEach(function(filename) {
+    var match = false;
+    if (zone.dir === 'stories/' && filename.indexOf('story-') === 0) match = true;
+    else if (zone.dir === 'chinese/' && filename.indexOf('chinese-') === 0) match = true;
+    else if (zone.dir === 'english/' && filename.indexOf('english-') === 0) match = true;
+    else if (zone.dir === 'math/' && filename.indexOf('math-') === 0) match = true;
+    if (!match) return;
+
+    var meta = COURSE_META[filename];
+    var isDone = completed[filename];
+    var card = document.createElement('div');
+    card.className = 'course-card' + (isDone ? ' completed' : '');
+    card.innerHTML = '<div class="cc-emoji">'+meta.emoji+'</div>' +
+      '<div class="cc-name">'+filename.replace('.html','').replace(/-/g,' ')+'</div>' +
+      '<div class="cc-lesson">'+meta.lesson+'</div>' +
+      (isDone ? '<div class="cc-stars">⭐</div>' : '');
+    card.onclick = function(){
+      closePanel();
+      var fade = document.getElementById('fade');
+      fade.classList.add('in');
+      setTimeout(function(){ window.location.href = zone.dir + filename; }, 450);
+    };
+    listEl.appendChild(card);
+    count++;
+  });
+
+  if (count === 0) {
+    listEl.innerHTML = '<div style="color:#888;font-size:16px;padding:20px;text-align:center;grid-column:1/-1">课程加载中...</div>';
+  }
+
+  document.getElementById('panelOv').classList.add('show');
+  document.getElementById('zonePanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panelOv').classList.remove('show');
+  document.getElementById('zonePanel').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════
+// INPUT
+// ═══════════════════════════════════════════════
+window.addEventListener('keydown', function(e){
+  keys[e.key] = true;
+  if (e.key.startsWith('Arrow') || e.key === ' ') e.preventDefault();
+  if ((e.key === 'Enter' || e.key === ' ') && nearBld) enter(nearBld);
+  if (e.key === 'Escape') closePanel();
+});
+window.addEventListener('keyup', function(e){ keys[e.key] = false; });
+
+function dpOn(dir) { dp[dir] = true; }
+function dpOff(dir){ dp[dir] = false; }
+
+[['dpu','u'],['dpd','d'],['dpl','l'],['dpr','r']].forEach(function(pair){
+  var id=pair[0], dir=pair[1];
+  var dpe = document.getElementById(id);
+  dpe.addEventListener('pointerdown', function(e){ e.preventDefault(); dpOn(dir); dpe.classList.add('on'); });
+  dpe.addEventListener('pointerup', function(){ dpOff(dir); dpe.classList.remove('on'); });
+  dpe.addEventListener('pointerleave', function(){ dpOff(dir); dpe.classList.remove('on'); });
+});
+
+document.getElementById('dpc').addEventListener('pointerdown', function(e){
+  e.preventDefault();
+  if (nearBld) enter(nearBld);
+});
+
+// ═══════════════════════════════════════════════
+// MINI-MAP
+// ═══════════════════════════════════════════════
+(function drawMini(){
+  var mb = document.getElementById('mini-bg');
+  mb.style.background = '#4E8C33';
+  // Mini-map path indicators removed (roads removed)
+  BLDS.forEach(function(b){
+    var d = document.createElement('div');
+    d.style.cssText = 'position:absolute;background:'+b.roof+';width:10px;height:8px;left:'+b.x/WW*100+'%;top:'+b.y/WH*100+'%';
+    mb.insertBefore(d, mb.firstChild);
+  });
+})();
+
+// ═══════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════
+function startGame() {
+  if (!window.selectedChar) return; // Wait for character selection
+  document.getElementById('welcome').classList.add('hidden');
+  gameStarted = true;
+  lastTime = performance.now();
+}
+
+loadState();
+updateHUD();
+setInterval(updateHUD, 3000);
+
+updateWorldScale();
+var initialTarget = cameraTarget();
+cam.x = initialTarget.x;
+cam.y = initialTarget.y;
+renderWorld();
+
+// Fade in
+var fade = document.getElementById('fade');
+fade.style.transition = 'none'; fade.classList.add('in');
+setTimeout(function(){ fade.style.transition = 'opacity .6s ease'; fade.classList.remove('in'); }, 100);
+
+requestAnimationFrame(loop);
+</script>
+<script src="shared/sprite-loader.js"></script>
+<script src="shared/village-animals.js"></script>
+<script>
+// 初始化 SpriteLoader（异步，不阻塞页面）
+if (window.SpriteLoader) {
+  SpriteLoader.init().then(function() {
+    console.log('[Village] GPT sprites ready');
+  });
+}
+</script>
+</body>
+</html>

@@ -1,42 +1,70 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-type="courseware">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>🈚 汉字魔法 — 认识象形文字</title>
   <meta name="description" content="🈚 汉字魔法 — 认识象形文字 - 幼儿识字互动课件，适合5-7岁幼小衔接">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<link rel="stylesheet" href="shared/courseware.css">
-
-<script src="shared/courseware.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 body{
   font-family:'Nunito',sans-serif;
-  background:linear-gradient(145deg,#FFF8E7 0%,#FFE8C8 100%);
-  min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;margin:0;
+  background:linear-gradient(180deg,#fff8e8 0%,#fff4df 48%,#fffdf8 100%);
+  min-height:100dvh;
+  padding:clamp(8px,2vw,20px);margin:0;
+  overflow-x:hidden;
+}
+.lesson-shell{max-width:1120px;margin:0 auto}
+.lesson-top{
+  background:linear-gradient(135deg,#ff8a65,#ef5350);
+  color:#fff;border-radius:26px;padding:16px 18px;
+  display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;
+  box-shadow:0 14px 34px rgba(239,83,80,0.18)
+}
+.lesson-top a,.lesson-progress{
+  text-decoration:none;color:#fff;background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.16);border-radius:999px;min-height:46px;
+  display:inline-flex;align-items:center;justify-content:center;padding:0 16px;font-weight:900
+}
+.lesson-title-wrap{display:grid;gap:2px;text-align:center}
+.lesson-title-wrap .mini{font-size:13px;font-weight:800;opacity:.9}
+.lesson-title-wrap .main{font-size:24px;font-weight:900}
+.lesson-intro{
+  margin-top:14px;background:linear-gradient(135deg,#fff 0%,#fff7f3 58%,#fffbea 100%);
+  border:2px solid #ffe0d8;border-radius:26px;padding:18px 20px;
+  box-shadow:0 12px 30px rgba(239,83,80,.1);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap
+}
+.intro-copy{display:grid;gap:8px}
+.intro-copy h1{font-size:clamp(30px,4vw,40px);color:#e65145;line-height:1.06}
+.intro-copy p{font-size:16px;line-height:1.65;color:#7b6256;font-weight:700;max-width:620px}
+.intro-tags{display:flex;gap:10px;flex-wrap:wrap;align-content:flex-start}
+.intro-tag{
+  background:#fff1ec;border:2px solid #ffd6cb;border-radius:999px;padding:10px 14px;
+  color:#e65145;font-size:14px;font-weight:900
 }
 .book-card{flex-shrink:0;
   background:#fff;
-  border-radius:40px;
-  box-shadow:0 8px 0 #EF5350,0 12px 30px rgba(239,83,80,0.3);
-  max-width:800px;width:100%;
-  padding:30px 25px 80px;
+  border-radius:32px;
+  box-shadow:0 18px 42px rgba(239,83,80,0.18);
+  width:100%;
+  margin-top:14px;
+  min-height:calc(100dvh - 220px);
+  padding:98px 25px 92px;
   position:relative;
-  overflow:hidden;
+  overflow-y:auto;
+  border:2px solid #ffe1d7;
 }
 .page{display:none;flex-direction:column;align-items:center;gap:16px;}
 .page.active{display:flex;}
 .page-title{
-  font-size:28px;color:#EF5350;text-align:center;
+  font-size:clamp(28px,4vw,40px);color:#EF5350;text-align:center;
   text-shadow:2px 2px 0 rgba(239,83,80,0.15);
 }
 .page-subtitle{font-size:16px;color:#888;text-align:center;}
 .story-text{
-  font-size:17px;color:#555;text-align:center;line-height:1.7;
+  font-size:18px;color:#555;text-align:center;line-height:1.7;
   padding:0 10px;
 }
 .svg-wrap{width:100%;display:flex;justify-content:center;position:relative;}
@@ -83,9 +111,11 @@ body{
   100%{transform:scale(1);opacity:1;}
 }
 .navigation{
-  position:absolute;bottom:20px;left:0;right:0;
+  position:absolute;bottom:14px;left:14px;right:14px;
   display:flex;align-items:center;justify-content:center;gap:15px;
-  padding:0 25px;flex-wrap:wrap;
+  padding:10px 16px;flex-wrap:wrap;
+  background:rgba(255,245,241,.96);border:1px solid #ffd6cb;border-radius:24px;
+  backdrop-filter:blur(8px);
 }
 .nav-btn{
   width:44px;height:44px;border-radius:50%;
@@ -163,48 +193,67 @@ body{
 .char-card.wrong{background:#ef5350;border-color:#ef5350;color:#fff;animation:shake 0.4s;}
 .final-title{font-size:32px;color:#EF5350;text-align:center;}
 .confetti-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;}
+.book-head{
+  position:absolute;top:14px;left:14px;right:14px;display:grid;
+  grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;z-index:10
+}
+.book-meta,.page-pill{
+  background:#fff5f1;border:2px solid #ffd6cb;border-radius:18px;padding:10px 14px
+}
+.book-meta .k{font-size:12px;font-weight:800;color:#d96d63}
+.book-meta .v{font-size:22px;font-weight:900;color:#e65145;margin-top:2px}
+.page-pill{font-size:15px;font-weight:900;color:#d45b51;min-height:48px;display:flex;align-items:center}
 @media(max-width:600px){
-  .book-card{padding:20px 15px 90px;border-radius:30px;}
-  .page-title{font-size:22px;}
-  .story-text{font-size:15px;}
+  .lesson-top{grid-template-columns:1fr;justify-items:stretch}
+  .lesson-intro,.book-card{border-radius:22px}
+  .book-card{padding:118px 15px 92px;min-height:calc(100dvh - 180px);}
+  .book-head{grid-template-columns:1fr}
+  .page-title{font-size:26px;}
+  .story-text{font-size:16px;}
   .game-btn{font-size:20px;padding:10px 22px;}
   .speech-bubble{font-size:18px;padding:20px 25px;}
-  .nav-btn{width:38px;height:38px;font-size:22px;}
+  .nav-btn{width:44px;height:44px;font-size:22px;}
   .char-card{width:54px;height:66px;font-size:24px;}
-}
-
-/* === Tablet Landscape Override === */
-@media (min-width: 768px) {
-  .app, .slide, .book-container, .slider, .slides, .page-area {
-    max-width: 100% !important;
-    width: 100% !important;
-  }
-  body { padding: 12px 24px !important; }
-  .slide { padding: 80px 40px 100px !important; }
-  .slide-inner { padding: 32px 40px !important; }
-  img.real-img, img[style*="max-width:400"], img[style*="max-width:360"] {
-    max-width: 600px !important;
-  }
-  .page-num { font-size: 14px !important; }
-  h1, .title { font-size: 32px !important; }
-  h2 { font-size: 26px !important; }
-  h3 { font-size: 22px !important; }
-  p, li, .text { font-size: 18px !important; }
-  .nav-btn { width: 56px !important; height: 56px !important; font-size: 24px !important; }
-  .scroll-card { flex: 0 0 180px !important; }
-  .scroll-card .sc-icon { font-size: 42px !important; }
-  .scroll-card .sc-name { font-size: 14px !important; }
 }
 </style>
 
+
+
+<script src="../shared/village-reporter.js"></script>
 </head>
 <body>
 
+<div class="lesson-shell">
+  <div class="lesson-top">
+    <a href="../village.html">← 返回村庄</a>
+    <div class="lesson-title-wrap">
+      <div class="mini">Chinese · Magic Characters</div>
+      <div class="main">汉字魔法</div>
+    </div>
+    <div class="lesson-progress" id="topProgress">1 / 7</div>
+  </div>
+
+  <section class="lesson-intro">
+    <div class="intro-copy">
+      <h1>从图画到汉字，认识象形文字</h1>
+      <p>这一课用“日、月、山、水、火”这些最直观的象形字，带孩子理解汉字原来和看到的世界有关，让识字更像发现线索而不是死记硬背。</p>
+    </div>
+    <div class="intro-tags">
+      <div class="intro-tag">☀️ 日月山水火</div>
+      <div class="intro-tag">🎮 边玩边认字</div>
+      <div class="intro-tag">🗣️ 点击朗读</div>
+    </div>
+  </section>
+
 <div class="book-card" id="app">
+  <div class="book-head">
+    <div class="book-meta"><div class="k">当前内容</div><div class="v" id="bookTitle">汉字魔法</div></div>
+    <div class="page-pill" id="pageLabel">第 1 / 7 页</div>
+  </div>
 
   <!-- PAGE 0: Cover -->
   <div class="page active" data-page="0">
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="page-title">🈚 汉字魔法</div>
     <div class="page-subtitle">和 Steve 一起认识象形文字！</div>
     <div style="font-size:44px;letter-spacing:10px;">
@@ -224,7 +273,7 @@ body{
   <!-- PAGE 1: 山洞符文 -->
   <div class="page" data-page="1">
     <div class="page-title">🏔️ 山洞符文</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-01.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">Steve 在山洞里发现了古老的符文！古人把看到的东西画成符号，这就是最早的汉字...</div>
     <div class="game-area" id="page1Game">
       <button class="game-btn" data-rune="0">☀ 太阳</button>
@@ -239,7 +288,7 @@ body{
   <!-- PAGE 2: 日 -->
   <div class="page" data-page="2">
     <div class="page-title">☀️ 日 — 太阳</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-02.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">"日" 就是太阳。古人画一个圆圈中间加一点，后来慢慢变成了方方正正的 "日"。</div>
     <div class="game-area" id="page2Game">
       <button class="game-btn" data-choice="0">🌞 太阳</button>
@@ -253,7 +302,7 @@ body{
   <!-- PAGE 3: 月 -->
   <div class="page" data-page="3">
     <div class="page-title">🌙 月 — 月亮</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-03.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">"月" 是弯弯的月亮。古人画一个月牙，后来变成了 "月"。</div>
     <div class="game-area" id="page3Game" style="flex-direction:column;gap:10px;">
       <div class="card-row" id="page3Question">
@@ -273,7 +322,7 @@ body{
   <!-- PAGE 4: 山 -->
   <div class="page" data-page="4">
     <div class="page-title">⛰️ 山 — 大山</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-04.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">"山" 就是大山的样子，三个山峰连在一起。</div>
     <div class="game-area" id="page4Game">
       <div class="card-row" id="page4DragNums">
@@ -298,7 +347,7 @@ body{
   <!-- PAGE 5: 水 火 -->
   <div class="page" data-page="5">
     <div class="page-title">💧🔥 水与火</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-05.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">"水" 像流动的水波，"火" 像燃烧的火焰。看看你能配对成功吗？</div>
     <div class="game-area" id="page5Game" style="flex-direction:column;gap:8px;">
       <div class="card-row" id="page5Picto">
@@ -321,7 +370,7 @@ body{
   <!-- PAGE 6: 小测验 -->
   <div class="page" data-page="6">
     <div class="page-title">📝 小测验</div>
-    <div class="svg-wrap"><img loading="lazy" src="images/chinese/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
+    <div class="svg-wrap"><img loading="lazy" src="../images/chinese/webp/page-06.webp" onerror="this.style.display=\'none\'" alt="illustration" style="max-width:100%;height:auto;border-radius:16px;box-shadow:0 4px 15px rgba(0,0,0,0.1);"></div>
     <div class="story-text">来挑战一下，看你能认出多少汉字！</div>
     <div class="game-area" id="page6Game" style="flex-direction:column;gap:8px;">
       <div class="card-row" id="page6Question" style="font-size:20px;color:#555;">
@@ -352,6 +401,7 @@ body{
     <button class="close-bubble" id="closeBubble">✕</button>
     <div id="bubbleText"></div>
   </div>
+</div>
 </div>
 
 <script>
@@ -402,6 +452,12 @@ body{
     });
     prevBtn.disabled = idx === 0;
     nextBtn.disabled = idx === totalPages - 1;
+    var activeTitle = document.querySelector('.page.active .page-title');
+    if (activeTitle) {
+      document.getElementById('bookTitle').textContent = activeTitle.textContent.replace(/^[^\u4e00-\u9fa5A-Za-z0-9]+/,'');
+    }
+    document.getElementById('pageLabel').textContent = '第 ' + (idx + 1) + ' / ' + totalPages + ' 页';
+    document.getElementById('topProgress').textContent = (idx + 1) + ' / ' + totalPages;
     speechBubble.classList.remove('show');
     if (typeof gsap !== 'undefined') {
       gsap.fromTo('.page.active .page-title', {opacity:0,y:-20}, {opacity:1,y:0,duration:0.4,ease:'back.out(1.7)'});
@@ -755,13 +811,13 @@ body{
 
   // ====== AUDIO ======
   var AUDIO_FILES = {
-    0: 'audio/zh-0.mp3',
-    1: 'audio/zh-1.mp3',
-    2: 'audio/zh-2.mp3',
-    3: 'audio/zh-3.mp3',
-    4: 'audio/zh-4.mp3',
-    5: 'audio/zh-5.mp3',
-    6: 'audio/zh-6.mp3'
+    0: '../audio/zh-0.mp3',
+    1: '../audio/zh-1.mp3',
+    2: '../audio/zh-2.mp3',
+    3: '../audio/zh-3.mp3',
+    4: '../audio/zh-4.mp3',
+    5: '../audio/zh-5.mp3',
+    6: '../audio/zh-6.mp3'
   };
   var currentAudio = null;
   var PAGE_TEXTS = [
@@ -800,7 +856,7 @@ body{
 
 })();
 </script>
-<a href="../" style="position:fixed;top:8px;left:8px;z-index:9999;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s" onmouseover="this.style.transform=\'scale(1.1)\''" onmouseout="this.style.transform=\'scale(1)\''">🏠</a>
+<a href="../village.html" style="position:fixed;top:8px;left:8px;z-index:9999;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:transform .15s" onmouseover="this.style.transform=\'scale(1.1)\''" onmouseout="this.style.transform=\'scale(1)\''">🏠</a>
 
 <script>
 (function(){
@@ -832,5 +888,73 @@ body{
 })();
 </script>
 
+<!-- ═══ Speak Page - MP3优先, TTS后备 ═══ -->
+<script>
+(function(){
+  var btn = document.getElementById('speakBtn') || document.querySelector('.speak-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'speakBtn'; btn.className = 'speak-btn'; btn.title = '朗读本页';
+    btn.textContent = '🔊';
+    btn.style.cssText = 'position:fixed;bottom:90px;right:16px;z-index:9999;width:48px;height:48px;border-radius:50%;border:2px solid #42A5F5;background:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(66,165,245,.3);display:flex;align-items:center;justify-content:center';
+    document.body.appendChild(btn);
+  }
+  var sp = false, audioEl = null;
+  var courseName = (window.COURSE_NAME || (window.location.pathname.match(/\/(\w[\w-]*)\.html/) || [,''])[1] || '');
+  var lang = (document.documentElement.lang || 'en-US').indexOf('zh')>=0?'zh-CN':'en-US';
+
+  function getPageIdx(){
+    var a=document.querySelector('.page.active,.slide.active');
+    return a?Array.prototype.indexOf.call(a.parentNode.children,a):-1;
+  }
+
+  function speakPage(){
+    if(sp){stopPage();return;}
+    var idx=getPageIdx(); if(idx<0) return;
+    var mp3='../audio/'+courseName+'/page-'+(idx+1)+'.mp3';
+    if(audioEl){audioEl.pause();audioEl=null;}
+    audioEl=new Audio(mp3);
+    audioEl.onerror=function(){
+      var flat=new Audio('../audio/'+courseName+'.mp3');
+      flat.onerror=function(){speakTTS();};
+      flat.oncanplaythrough=function(){
+        if(audioEl)audioEl.pause(); audioEl=flat;
+        audioEl.play().catch(function(){speakTTS();});
+        btn.textContent='⏹';btn.classList.add('speaking');
+      };
+      flat.load();
+    };
+    audioEl.oncanplaythrough=function(){
+      audioEl.play(); btn.textContent='⏹';btn.classList.add('speaking');
+      sp=true; audioEl.onended=function(){stopPage();};
+    };
+    audioEl.load();
+  }
+
+  function speakTTS(){
+    if(!window.speechSynthesis)return;
+    var a=document.querySelector('.page.active,.slide.active');
+    if(!a)return;
+    var t=(a.innerText||a.textContent||'').replace(/\s+/g,' ').trim();
+    if(!t||t.length<2)return;
+    window.speechSynthesis.cancel();
+    var u=new SpeechSynthesisUtterance(t);
+    u.lang=lang;u.rate=0.85;
+    u.onstart=function(){sp=true;btn.classList.add('speaking');btn.textContent='⏹';};
+    u.onend=u.onerror=function(){stopPage();};
+    window.speechSynthesis.speak(u);
+  }
+
+  function stopPage(){
+    if(audioEl){audioEl.pause();audioEl=null;}
+    if(window.speechSynthesis)window.speechSynthesis.cancel();
+    sp=false;btn.classList.remove('speaking');btn.textContent='🔊';
+  }
+
+  btn.addEventListener('click',function(e){e.stopPropagation();speakPage();});
+  if(btn.textContent.trim()===''||btn.textContent.trim()==='▶')btn.textContent='🔊';
+})();
+</script>
+  <script src="../shared/village-animals.js"></script>
 </body>
 </html>
